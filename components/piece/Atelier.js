@@ -1,0 +1,271 @@
+'use client';
+// L'atelier : la maquette 3D de la pièce et son panneau (aménager, meubles, résultat)
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { api } from '@/components/api.js';
+import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
+import Catalogue from '@/components/piece/Catalogue.js';
+import Resultat from '@/components/piece/Resultat.js';
+import { prix, remplir } from '@/lib/i18n.js';
+import { estMural, estSuspendu, placerAuMur, murProche, demiEmpreinte, ANGLES } from '@/lib/agencement.js';
+
+const Icone = ({ d }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={d} /></svg>;
+const I = {
+  gauche: 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5', droite: 'M21 12a9 9 0 1 1-3-6.7M21 4v5h-5',
+  echanger: 'M7 7h13l-3-3M17 17H4l3 3', retirer: 'M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3', garder: 'M5 13l4 4L19 7', info: 'M12 16v-4M12 8h.01M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z'
+};
+
+export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, solde, setSolde, couts, services, retourPhotos }) {
+  const tp = t.piece;
+  const [items, setItems] = useState(piece.agencement || []);
+  const [selection, setSelection] = useState(null);
+  const [vue, setVue] = useState('dessus');
+  const [onglet, setOnglet] = useState((piece.agencement || []).some(it => it.origine === 'catalogue') ? 'meubles' : 'amenager');
+  const [produits, setProduits] = useState(null);
+  const [libelles, setLibelles] = useState({});
+  const [cat, setCat] = useState({ ouvert: false, famille: '', remplace: null });
+  const [opacite, setOpacite] = useState(0);
+  const [attente, setAttente] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [mode, setMode] = useState((piece.proposition && piece.proposition.mode) || 'tout');
+  const [envies, setEnvies] = useState((piece.proposition && piece.proposition.envies) || '');
+  const [budget, setBudget] = useState((piece.proposition && piece.proposition.budget) || '');
+  const [garder, setGarder] = useState(() => new Set());
+  const [aRemplacer, setARemplacer] = useState(() => new Set());
+  const [dims, setDims] = useState(piece.modele.dims);
+  const editeur = useRef(null);
+  const outils = useRef(null);
+  const sauvegarde = useRef(null);
+
+  useEffect(() => { chargerCatalogue().then(c => { setProduits(c.produits); setLibelles(c.libelles || {}); }); }, []);
+  useEffect(() => { setItems(piece.agencement || []); }, [piece.agencement]);
+  const dire = (texte, erreur) => { setToast({ texte, erreur }); setTimeout(() => setToast(null), 3800); };
+
+  // enregistrement différé des modifications faites à la main
+  const enregistrer = useCallback(liste => {
+    clearTimeout(sauvegarde.current);
+    sauvegarde.current = setTimeout(async () => {
+      const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { agencement: liste } });
+      if (!r.ok) dire(t.erreurs.generique, true);
+    }, 700);
+  }, [piece.id]);
+  const modifier = useCallback(f => setItems(l => { const n = f(l); enregistrer(n); return n; }), [enregistrer]);
+
+  // barre d'outils qui suit le meuble choisi à l'écran
+  useEffect(() => {
+    if (!selection) return;
+    let raf;
+    const suivre = () => {
+      const p = editeur.current && editeur.current.projeter(selection);
+      if (outils.current && p) { outils.current.style.left = p.x + 'px'; outils.current.style.top = p.y + 'px'; outils.current.style.display = p.visible ? '' : 'none'; }
+      raf = requestAnimationFrame(suivre);
+    };
+    suivre();
+    return () => cancelAnimationFrame(raf);
+  }, [selection]);
+
+  const produitDe = it => (it.sku ? produits && produits[it.sku] : it.p);
+  const choisi = items.find(it => it.id === selection);
+  const pChoisi = choisi && produitDe(choisi);
+
+  function surDeplacement(d) {
+    modifier(l => l.map(it => (it.id === d.id ? { ...it, x: d.x, z: d.z, rot: d.rot, ...(d.mur ? { mur: d.mur } : {}), ...(d.y != null ? { y: d.y } : {}) } : it)));
+  }
+  function tourner(delta) {
+    const r = editeur.current && editeur.current.tourner(selection, delta);
+    if (r) modifier(l => l.map(it => (it.id === r.id ? { ...it, rot: r.rot, x: r.x, z: r.z } : it)));
+  }
+  function basculerGarde(id) {
+    modifier(l => l.map(it => (it.id === id ? { ...it, garde: it.garde === false ? true : false } : it)));
+  }
+  function retirer(id) {
+    const it = items.find(x => x.id === id);
+    if (!it) return;
+    if (it.origine === 'existant') basculerGarde(id);
+    else { modifier(l => l.filter(x => x.id !== id)); setSelection(null); }
+  }
+  // ajout ou échange depuis le catalogue : le nouveau meuble prend la place (et le rôle) de l'ancien
+  function choisirProduit(p) {
+    const { largeur: L, profondeur: P, hauteur: H } = piece.modele.dims;
+    const ancien = cat.remplace && items.find(x => x.id === cat.remplace);
+    const id = 'c' + Date.now().toString(36);
+    let it = { id, origine: 'catalogue', sku: p.id, x: ancien ? ancien.x : 0, z: ancien ? ancien.z : 0, rot: ancien ? ancien.rot : ANGLES.entree };
+    if (estMural(p.fam)) it = placerAuMur(piece.modele, { ...it, mur: ancien && ancien.mur ? ancien.mur : murProche(piece.modele, it.x, -P / 2 + .1), y: ancien && ancien.y ? ancien.y : 1.6 }, p.dim, ancien && ancien.mur ? ancien.mur : 'fond');
+    else if (!estSuspendu(p.fam)) {
+      const [hx, hz] = demiEmpreinte(p.dim, it.rot);
+      it.x = Math.max(-L / 2 + hx, Math.min(L / 2 - hx, it.x));
+      it.z = Math.max(-P / 2 + hz, Math.min(P / 2 - hz, it.z));
+    }
+    void H;
+    modifier(l => {
+      let n = l;
+      if (ancien) n = ancien.origine === 'existant' ? n.map(x => (x.id === ancien.id ? { ...x, garde: false } : x)) : n.filter(x => x.id !== ancien.id);
+      return [...n, it];
+    });
+    setCat({ ouvert: false, famille: '', remplace: null });
+    setSelection(id);
+    setOnglet('meubles');
+  }
+  async function proposer() {
+    setAttente(true);
+    const r = await api(`/api/pieces/${piece.id}/amenager`, { method: 'POST', corps: { mode, envies, budget: +budget || 0, garder: [...garder], aRemplacer: [...aRemplacer], langue: lang } });
+    setAttente(false);
+    if (!r.ok) { dire(r.erreur === 'limite' ? t.connexion.erreurs.limite : t.erreurs.generique, true); return; }
+    setPiece(r.piece);
+    setSelection(null);
+    setOnglet('meubles');
+  }
+  async function appliquerDims() {
+    const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { dims } });
+    if (r.ok) setPiece(r.piece); else dire(t.erreurs.generique, true);
+  }
+
+  const existants = items.filter(it => it.origine === 'existant');
+  const nouveaux = items.filter(it => it.origine === 'catalogue');
+  const total = useMemo(() => nouveaux.reduce((s, it) => { const p = produitDe(it); return s + (p && p.prix > 0 ? p.prix : 0); }, 0), [nouveaux, produits]);
+  const photo = (piece.photos || []).find(p => p.role === 'entree');
+  const cm = v => Math.round(v * 100);
+  const suggestions = tp.suggestions[piece.fonction] || tp.suggestions.autre;
+
+  const ligne = it => {
+    const p = produitDe(it);
+    if (!p) return null;
+    return (
+      <button key={it.id} className={'ligne-meuble' + (it.garde === false ? ' is-retire' : '')} aria-current={it.id === selection} onClick={() => setSelection(it.id)} data-item={it.id}>
+        {it.origine === 'catalogue' && p.vign ? <img src={p.vign} alt="" loading="lazy" /> : <span className="pastille" style={{ background: (p.cols && p.cols[0]) || undefined }} />}
+        <span style={{ minWidth: 0 }}>
+          <b>{p.nom}</b>
+          <small>{it.origine === 'existant' ? (it.garde === false ? tp.retire : tp.existant) : p.cat} · {cm(p.dim[0])}×{cm(p.dim[1])} cm</small>
+        </span>
+        <span className="prix">{it.origine === 'catalogue' ? (p.prix > 0 ? prix(p.prix * 100, lang) : tp.surDevis) : ''}</span>
+      </button>
+    );
+  };
+
+  return (
+    <div className="atelier">
+      <div className="atelier__scene">
+        <Editeur3D ref={editeur} modele={piece.modele} items={items} selection={selection} vue={vue}
+          surSelection={id => { setSelection(id); if (id) setOnglet('meubles'); }} surDeplacement={surDeplacement} erreurWebgl={t.erreurs.webgl} />
+        {vue === 'photo' && photo && <div className="calque-photo" style={{ backgroundImage: `url(${photo.url})`, opacity: opacite }} />}
+        <div className="vues">
+          <div className="segment" role="group">
+            {['dessus', 'photo'].map(v => <button key={v} aria-pressed={vue === v} onClick={() => setVue(v)}>{tp.vues[v]}</button>)}
+          </div>
+        </div>
+        {vue === 'photo' && photo && (
+          <label className="opacite">{tp.comparer}<input type="range" min="0" max="1" step=".05" value={opacite} onChange={e => setOpacite(+e.target.value)} /></label>
+        )}
+        {choisi && pChoisi && (
+          <div ref={outils} className="outils-meuble" role="toolbar" aria-label={pChoisi.nom}>
+            {!estMural(pChoisi.fam) && <><button title={tp.tourner} onClick={() => tourner(-Math.PI / 12)}><Icone d={I.gauche} /></button><button title={tp.tourner} onClick={() => tourner(Math.PI / 12)}><Icone d={I.droite} /></button></>}
+            <button title={tp.echanger} onClick={() => setCat({ ouvert: true, famille: produits && Object.values(produits).some(p => p.fam === pChoisi.fam) ? pChoisi.fam : '', remplace: choisi.id })}><Icone d={I.echanger} /></button>
+            <button title={choisi.garde === false ? tp.garder : tp.supprimerMeuble} onClick={() => retirer(choisi.id)}><Icone d={choisi.garde === false ? I.garder : I.retirer} /></button>
+          </div>
+        )}
+        <p className="aide-scene">{lang === 'fr' ? 'Glisser : tourner · molette : zoom · meuble : le déplacer' : 'Drag: orbit · wheel: zoom · drag a piece: move it'}</p>
+      </div>
+
+      <aside className="atelier__panneau">
+        <div className="onglets" role="tablist">
+          {['amenager', 'meubles', 'resultat'].map(o => <button key={o} role="tab" aria-selected={onglet === o} onClick={() => setOnglet(o)}>{tp.panneau[o]}</button>)}
+        </div>
+        <div className="panneau__corps">
+          {onglet === 'amenager' && (
+            <>
+              <div className="champ"><span>{tp.modeTitre}</span>
+                <div className="choix-fonction" style={{ gridTemplateColumns: '1fr' }}>
+                  {['tout', 'partiel'].map(m => (
+                    <label key={m}><input type="radio" name="mode" checked={mode === m} onChange={() => setMode(m)} /><b>{tp.modes[m][0]}</b><br /><small className="discret">{tp.modes[m][1]}</small></label>
+                  ))}
+                </div>
+              </div>
+              {existants.length > 0 && (
+                <div className="champ"><span>{tp.garderTitre} · {mode === 'tout' ? tp.garder : tp.aRemplacer}</span>
+                  <div style={{ display: 'grid', gap: 6 }}>
+                    {existants.map(it => (
+                      <label key={it.id} className="coche">
+                        <input type="checkbox" checked={mode === 'tout' ? garder.has(it.id) : aRemplacer.has(it.id)}
+                          onChange={e => (mode === 'tout' ? setGarder : setARemplacer)(s => { const n = new Set(s); e.target.checked ? n.add(it.id) : n.delete(it.id); return n; })} />
+                        {it.p.nom}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <label className="champ"><span>{tp.envies}</span>
+                <textarea className="saisie" value={envies} placeholder={tp.enviesAide} maxLength={1200} onChange={e => setEnvies(e.target.value)} />
+              </label>
+              <div className="puces">
+                {suggestions.map(s => <button key={s} type="button" className="puce puce-bouton" onClick={() => setEnvies(v => (v ? v.replace(/[.\s]*$/, '') + ', ' : '') + s.toLowerCase())}>+ {s}</button>)}
+              </div>
+              <label className="champ"><span>{tp.budget}</span>
+                <span className="unite" data-unite="€"><input className="saisie" inputMode="numeric" value={budget} onChange={e => setBudget(e.target.value.replace(/\D/g, ''))} /></span>
+              </label>
+              <button className="btn btn--accent btn--large btn--bloc" onClick={proposer} disabled={attente || !services.analyse}>
+                {attente ? <><span className="rouage rouage--petit" /> {tp.proposition}</> : tp.proposer}
+              </button>
+              <details>
+                <summary className="petit discret" style={{ cursor: 'pointer' }}>{tp.corriger}</summary>
+                <div style={{ display: 'grid', gap: 10, marginTop: 12 }}>
+                  <div className="mesures" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+                    {['largeur', 'profondeur', 'hauteur'].map(k => (
+                      <label key={k} className="champ"><span className="petit">{tp[k].split(' (')[0]}</span>
+                        <span className="unite" data-unite="m"><input className="saisie" inputMode="decimal" value={dims[k]} onChange={e => setDims(d => ({ ...d, [k]: e.target.value.replace(',', '.') }))} /></span>
+                      </label>
+                    ))}
+                  </div>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    <button className="btn btn--clair btn--petit" onClick={appliquerDims}>{tp.appliquer}</button>
+                    <button className="btn btn--lien btn--petit" onClick={retourPhotos}>{tp.relancer}</button>
+                  </div>
+                </div>
+              </details>
+            </>
+          )}
+
+          {onglet === 'meubles' && (
+            <>
+              {piece.proposition && piece.proposition.concept && (
+                <div className="concept">
+                  <b>{tp.concept}</b>
+                  <p className="petit">{piece.proposition.concept}</p>
+                  {piece.proposition.conseils && piece.proposition.conseils.length > 0 && <><b className="petit">{tp.conseils}</b><ul>{piece.proposition.conseils.map(c => <li key={c}>{c}</li>)}</ul></>}
+                  {piece.proposition.alertes && piece.proposition.alertes.length > 0 && <><b className="petit">{tp.alertes}</b><ul>{piece.proposition.alertes.map(c => <li key={c}>{c}</li>)}</ul></>}
+                </div>
+              )}
+              {choisi && pChoisi && (
+                <div className="carte fiche">
+                  {choisi.origine === 'catalogue' && pChoisi.img && <img src={pChoisi.img} alt={pChoisi.titre} />}
+                  <div>
+                    <b>{pChoisi.nom}</b>
+                    <p className="petit discret">{choisi.origine === 'catalogue' ? pChoisi.titre : (choisi.garde === false ? tp.retire : tp.existant)}</p>
+                    <p className="petit discret">{remplir(tp.catalogue.dims, { l: cm(pChoisi.dim[0]), p: cm(pChoisi.dim[1]), h: cm(pChoisi.dim[2]) })}{choisi.origine === 'catalogue' ? ' · ' + (pChoisi.prix > 0 ? prix(pChoisi.prix * 100, lang) : tp.surDevis) : ''}</p>
+                    {choisi.raison && <p className="petit" style={{ marginTop: 6 }}>{choisi.raison}</p>}
+                  </div>
+                  <div className="fiche__actions">
+                    <button className="btn btn--clair btn--petit" onClick={() => setCat({ ouvert: true, famille: produits && Object.values(produits).some(p => p.fam === pChoisi.fam) ? pChoisi.fam : '', remplace: choisi.id })}>{tp.echanger}</button>
+                    <button className="btn btn--clair btn--petit" onClick={() => retirer(choisi.id)}>{choisi.garde === false ? tp.garder : tp.supprimerMeuble}</button>
+                    {choisi.origine === 'catalogue' && pChoisi.url && <a className="btn btn--plein btn--petit" href={pChoisi.url} target="_blank" rel="noopener">{tp.acheter} ↗</a>}
+                  </div>
+                </div>
+              )}
+              <button className="btn btn--clair btn--bloc" onClick={() => setCat({ ouvert: true, famille: '', remplace: null })} disabled={!produits}>+ {tp.ajouterMeuble}</button>
+              {nouveaux.length > 0 && <div className="liste-meubles">{nouveaux.map(ligne)}</div>}
+              {nouveaux.length > 0 && <div className="total"><span>{tp.total}</span><b>{prix(total * 100, lang)}</b></div>}
+              {existants.length > 0 && <><span className="petit discret">{tp.garderTitre}</span><div className="liste-meubles">{existants.map(ligne)}</div></>}
+            </>
+          )}
+
+          {onglet === 'resultat' && (
+            <Resultat lang={lang} t={t} piece={{ ...piece, agencement: items }} rendus={rendus} setRendus={setRendus} solde={solde} setSolde={setSolde} couts={couts} services={services}
+              capturer={o => editeur.current && editeur.current.capture(o)} />
+          )}
+        </div>
+      </aside>
+
+      {produits && <Catalogue lang={lang} t={t} produits={produits} libelles={libelles} dims={piece.modele.dims} famille={cat.famille} ouvert={cat.ouvert}
+        fermer={() => setCat({ ouvert: false, famille: '', remplace: null })} choisir={choisirProduit} action={cat.remplace ? tp.catalogue.choisir : tp.catalogue.ajouter} />}
+      {toast && <div className={'toast' + (toast.erreur ? ' toast--erreur' : '')} role="status">{toast.texte}</div>}
+    </div>
+  );
+}

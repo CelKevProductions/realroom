@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.data/
+.essais/
+.env*
+!.env.example
+.vercel
+build/*
+!build/shopify-brut.json
+tests/harnais/*.bundle.js
+__pycache__/
+*.log
+.DS_Store
