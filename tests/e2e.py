@@ -80,6 +80,8 @@ async def parcours(page, erreurs):
             await page.goto(BASE + '/')
             await expect(page).to_have_url(BASE + '/fr')
             await expect(page.locator('h1')).to_contain_text('vrais meubles')
+            await page.wait_for_selector('[data-ouverture]', state='hidden', timeout=10000)
+            await page.wait_for_timeout(1500)
             await capture(page, 'accueil')
             await page.goto(BASE + '/fr/connexion')
             await page.fill('input[name=email]', 'essai@example.com')

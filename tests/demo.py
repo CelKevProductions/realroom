@@ -45,7 +45,7 @@ async def capture(page, nom):
 
 async def parcours(page, appels_api):
     await page.goto(BASE + '/fr')
-    await page.click('.hero a:has-text("Voir la démo")')
+    await page.click('.acc-hero a:has-text("Voir la démo")')   # attend la fin de l'écran d'ouverture
     await page.wait_for_url('**/fr/demo')
     await expect(page.locator('.carte-projet').first).to_contain_text('Appartement témoin')
     await expect(page.locator('.app-entete [data-solde]')).to_have_attribute('data-solde', '3')
