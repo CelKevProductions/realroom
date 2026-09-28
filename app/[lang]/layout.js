@@ -8,7 +8,7 @@ import { texte } from '@/lib/i18n.js';
 export function generateStaticParams() {
   return LANGUES.map(lang => ({ lang }));
 }
-export const dynamicParams = false;
+// (pas de dynamicParams = false ici : il s'appliquerait aussi aux pages [id] de l'application)
 
 export async function generateMetadata({ params }) {
   const { lang } = await params;

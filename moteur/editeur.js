@@ -10,7 +10,7 @@ import {
   THREE, RoomEnvironment, M, std, bloc, cyl, sphere, groupe, cuire, graine,
   definirProduits, construireProduit, construireCatalogue, CAT_GENERIQUE, canvasTex
 } from './meubles.js';
-import { produitDe, estMural, estSuspendu, estPlat, estAdosse, demiEmpreinte, placerAuMur, normaliserAngle } from '../lib/agencement.js';
+import { produitDe, estMural, estSuspendu, estPlat, estAdosse, estPosable, porteurDe, demiEmpreinte, placerAuMur, normaliserAngle } from '../lib/agencement.js';
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -337,9 +337,18 @@ export function creerEditeur(canvas, opts = {}) {
     appliquerFantome(e);
     return e;
   }
+  // petits objets posés sur un meuble bas (télévision sur son meuble, lampe sur une table) : même règle que le solveur
+  const posable = e => !!e.p && estPosable(e.p.fam, e.p.dim);
+  function hauteurPose(e) {
+    if (!posable(e)) return 0;
+    const autres = [];
+    for (const o of E.items.values()) if (o !== e && !o.fantome && o.p) autres.push({ it: o.item, p: o.p });
+    const sur = porteurDe(e.item, e.p, autres);
+    return sur ? sur.p.dim[2] : 0;
+  }
   function placerPorteur(e) {
     const { item, p, porteur } = e, H = E.modele.dims.hauteur;
-    const y = estSuspendu(p.fam) ? H : estMural(p.fam) ? (item.y ?? 1.55) : 0;
+    const y = estSuspendu(p.fam) ? H : estMural(p.fam) ? (item.y ?? 1.55) : hauteurPose(e);
     porteur.position.set(item.x || 0, y, item.z || 0);
     porteur.rotation.y = item.rot || 0;
     porteur.updateMatrixWorld(true);
@@ -379,6 +388,7 @@ export function creerEditeur(canvas, opts = {}) {
       }
     }
     for (const id of [...E.items.keys()]) if (!vus.has(id)) retirer(id);
+    for (const e of E.items.values()) if (posable(e)) placerPorteur(e);
     if (E.selection && !E.items.has(E.selection)) selectionner(null);
     else majContour();
     E.ombres = true;

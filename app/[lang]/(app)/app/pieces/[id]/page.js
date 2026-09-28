@@ -9,7 +9,7 @@ export default async function PagePiece({ params }) {
   const { lang, id } = await params;
   const u = await utilisateur();
   let p;
-  try { p = await piece(u.id, id); } catch (_) { notFound(); }
+  try { p = await piece(u.id, id); } catch (e) { if (e && e.statut === 404) notFound(); throw e; }
   const rendus = (await rendusDe(u.id, id)).map(r => ({ ...r, resultat: r.resultat && { ...r.resultat, fichier: undefined } }));
   const services = {
     analyse: SIMULATION || !!process.env.ANTHROPIC_API_KEY,

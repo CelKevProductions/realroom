@@ -9,6 +9,7 @@ export default function Compte({ lang, t, email, credits, historique, packs, cou
   const tc = t.compte;
   const params = useSearchParams();
   const [solde, setSolde] = useState(credits);
+  useEffect(() => { dispatchEvent(new CustomEvent('realroom:credits', { detail: solde })); }, [solde]);
   const [consentement, setConsentement] = useState(false);
   const [attente, setAttente] = useState('');
   const [message, setMessage] = useState(params.get('paiement') === 'ok' ? { ok: true, texte: tc.paiementOk } : params.get('paiement') === 'annule' ? { texte: tc.paiementAnnule } : null);

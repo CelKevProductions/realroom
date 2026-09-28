@@ -43,6 +43,7 @@ h3 { font-size: 1.3rem; letter-spacing: -.005em; font-variation-settings: 'opsz'
 p { margin: 0; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
 ::selection { background: var(--accent-clair); }
+dialog:not([open]) { display: none !important; }
 .visuel-masque { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 .conteneur { width: min(1180px, 100% - 32px); margin-inline: auto; }
@@ -89,7 +90,7 @@ textarea.saisie { min-height: 92px; resize: vertical; line-height: 1.45; }
 .coche { display: flex; gap: 10px; align-items: flex-start; font-size: .9rem; color: var(--encre-2); cursor: pointer; }
 .coche input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent); flex: none; }
 
-.puce { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--papier-2); font-size: .8rem; font-weight: 600; color: var(--encre-2); }
+.puce { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; flex: none; padding: 5px 11px; border-radius: 999px; background: var(--papier-2); font-size: .8rem; font-weight: 600; color: var(--encre-2); }
 .puce--accent { background: var(--accent-clair); color: var(--accent-fonce); }
 .puce--vert { background: var(--vert-clair); color: var(--vert); }
 .puces { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -108,8 +109,8 @@ textarea.saisie { min-height: 92px; resize: vertical; line-height: 1.45; }
 .logo { display: inline-flex; align-items: center; gap: 10px; font-family: var(--titre); font-size: 1.35rem; font-weight: 600; letter-spacing: -.02em; text-decoration: none; font-variation-settings: 'opsz' 48; }
 .logo__marque { width: 28px; height: 28px; }
 .entete nav { display: flex; gap: 22px; margin-left: auto; align-items: center; }
-.entete nav a { text-decoration: none; font-size: .92rem; color: var(--encre-2); }
-.entete nav a:hover { color: var(--encre); }
+.entete nav a:not(.btn) { text-decoration: none; font-size: .92rem; color: var(--encre-2); }
+.entete nav a:not(.btn):hover { color: var(--encre); }
 .entete .btn { margin-left: 4px; }
 .langue { font-size: .8rem; font-weight: 700; letter-spacing: .08em; color: var(--encre-3); text-decoration: none; }
 @media (max-width: 760px) { .entete nav .lien-section { display: none; } .entete nav { gap: 14px; } }
@@ -189,6 +190,16 @@ textarea.saisie { min-height: 92px; resize: vertical; line-height: 1.45; }
 .app-entete { position: sticky; top: 0; z-index: 30; background: var(--papier); border-bottom: 1px solid var(--trait); }
 .app-entete__barre { height: 60px; display: flex; align-items: center; gap: 16px; }
 .app-entete nav { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+.deconnexion svg { display: none; }
+@media (max-width: 560px) {
+  .app-entete .lien-projets { display: none; }
+  .app-entete__barre { gap: 10px; }
+}
+@media (max-width: 420px) {
+  .deconnexion { padding: 8px; }
+  .deconnexion svg { display: block; }
+  .deconnexion__texte { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
 .solde { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-weight: 600; font-size: .9rem; padding: 6px 12px; border-radius: 999px; background: var(--carte); border: 1px solid var(--trait); }
 .solde b { color: var(--accent); }
 .fil { display: flex; gap: 8px; align-items: center; font-size: .9rem; color: var(--encre-2); min-width: 0; }

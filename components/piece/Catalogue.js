@@ -11,9 +11,11 @@ function tient(p, dims) {
   if (estMural(p.fam)) return w <= Math.max(L, P) - .2;
   return h <= H - .03 && ((w <= L - .15 && d <= P - .15) || (d <= L - .15 && w <= P - .15));
 }
-const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-export default function Catalogue({ lang, t, produits, libelles, dims, famille, ouvert, fermer, choisir, action }) {
+const EXTERIEUR = new Set(['salon-jardin', 'balancelle', 'jardiniere']);
+
+export default function Catalogue({ lang, t, produits, libelles, dims, exterieur, famille, ouvert, fermer, choisir, action }) {
   const dlg = useRef(null);
   const [fam, setFam] = useState(famille || '');
   const [q, setQ] = useState('');
@@ -25,7 +27,8 @@ export default function Catalogue({ lang, t, produits, libelles, dims, famille, 
     if (ouvert && !d.open) d.showModal();
     if (!ouvert && d.open) d.close();
   }, [ouvert]);
-  const tous = useMemo(() => Object.values(produits || {}), [produits]);
+  // pièce intérieure : pas de mobilier d'extérieur (et l'inverse pour une terrasse)
+  const tous = useMemo(() => Object.values(produits || {}).filter(p => (exterieur ? true : !(p.ext || EXTERIEUR.has(p.fam)))), [produits, exterieur]);
   const familles = useMemo(() => {
     const n = {};
     tous.forEach(p => { if (!tientSeul || tient(p, dims)) n[p.fam] = (n[p.fam] || 0) + 1; });

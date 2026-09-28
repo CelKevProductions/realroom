@@ -12,7 +12,10 @@ const cat = {
   lit: { nom: 'Lit', fam: 'lit', dim: [1.8, 2.1, 1.1] },
   geant: { nom: 'Géant', fam: 'canape', dim: [5.5, 1, .8] },
   tapis: { nom: 'Tapis', fam: 'tapis', dim: [2, 1.4, .01] },
-  applique: { nom: 'Applique', fam: 'applique', dim: [.2, .15, .3] }
+  applique: { nom: 'Applique', fam: 'applique', dim: [.2, .15, .3] },
+  meubletv: { nom: 'Meuble TV', fam: 'meuble', dim: [1.6, .42, .5] },
+  tv: { nom: 'TV', fam: 'tv', dim: [1.25, .06, .72] },
+  plante: { nom: 'Grande plante', fam: 'plante', dim: [.55, .55, 1.6] }
 };
 const sansChevauchement = (items) => {
   const sol = items.filter(i => i.garde !== false && !['tapis', 'applique'].includes(cat[i.sku].fam));
@@ -67,6 +70,29 @@ test('une applique se colle au mur le plus proche, tournée vers la pièce', () 
   assert.equal(it.mur, 'droite');
   assert.equal(it.x, 2);
   assert.ok(Math.abs(it.rot + Math.PI / 2) < 1e-9);
+});
+
+test('une applique évite la fenêtre du mur où on la pose', () => {
+  const it = placerAuMur(piece, { id: 'ap', x: 0, z: -2.4, y: 1.55 }, cat.applique.dim, 'fond');
+  assert.equal(it.mur, 'fond');
+  assert.ok(Math.abs(it.x) >= .7 + .1, 'applique sur la fenêtre : x = ' + it.x);
+});
+
+test('une télévision posée sur son meuble y reste, sans alerte', () => {
+  const tv = { id: 't', sku: 'tv', x: 1.75, z: .2, rot: -Math.PI / 2 };
+  const meuble = { id: 'm', sku: 'meubletv', x: 1.78, z: .2, rot: -Math.PI / 2 };
+  const { items, alertes } = resoudre(piece, [tv, meuble], cat, { jeu: 0 });
+  assert.equal(alertes.length, 0);
+  const t = items.find(i => i.id === 't'), m = boite(items.find(i => i.id === 'm'), cat.meubletv.dim);
+  assert.ok(t.x > m.x0 && t.x < m.x1 && t.z > m.z0 && t.z < m.z1, 'la télévision a quitté son meuble');
+  assert.deepEqual(verifier(piece, items, cat), []);
+});
+
+test('une grande plante ne se pose pas sur un meuble : elle en est écartée', () => {
+  const { items } = resoudre(piece, [{ id: 'm', sku: 'meubletv', x: 0, z: 0, rot: 0 }, { id: 'p', sku: 'plante', x: 0, z: 0, rot: 0 }], cat);
+  const a = boite(items.find(i => i.id === 'm'), cat.meubletv.dim), b = boite(items.find(i => i.id === 'p'), cat.plante.dim);
+  const dx = Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0), dz = Math.min(a.z1, b.z1) - Math.max(a.z0, b.z0);
+  assert.ok(!(dx > .001 && dz > .001), 'la plante chevauche le meuble');
 });
 
 test('verifier signale un chevauchement laissé à la main', () => {

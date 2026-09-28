@@ -1,4 +1,4 @@
-import { route, exiger, ErreurHTTP } from '@/lib/http.js';
+import { route, exiger, ErreurHTTP, origine } from '@/lib/http.js';
 import { paiementSimule } from '@/lib/paiement.js';
 import { crediter } from '@/lib/credits.js';
 import { nouvelId } from '@/lib/db.js';
@@ -13,5 +13,5 @@ export const GET = route(async request => {
   if (!pack) throw new ErreurHTTP(400, 'pack');
   await crediter(u.id, pack.credits, 'achat', 'simulation:' + nouvelId());
   const langue = q.get('langue') === 'en' ? 'en' : 'fr';
-  return Response.redirect(new URL(`/${langue}/app/compte?paiement=ok`, request.url), 303);
+  return Response.redirect(`${origine(request)}/${langue}/app/compte?paiement=ok`, 303);
 });

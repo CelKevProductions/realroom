@@ -8,7 +8,7 @@ export default async function PageProjet({ params }) {
   const { lang, id } = await params;
   const u = await utilisateur();
   let p;
-  try { p = await projet(u.id, id); } catch (_) { notFound(); }
+  try { p = await projet(u.id, id); } catch (e) { if (e && e.statut === 404) notFound(); throw e; }
   p.pieces = p.pieces.map(x => ({ ...x, photos: (x.photos || []).map(f => ({ url: f.url, role: f.role })) }));
   return <Projet lang={lang} t={texte(lang)} initial={JSON.parse(JSON.stringify(p))} />;
 }

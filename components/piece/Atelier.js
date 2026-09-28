@@ -6,7 +6,7 @@ import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
 import Resultat from '@/components/piece/Resultat.js';
 import { prix, remplir } from '@/lib/i18n.js';
-import { estMural, estSuspendu, placerAuMur, murProche, demiEmpreinte, ANGLES } from '@/lib/agencement.js';
+import { estMural, estSuspendu, estAdosse, placerAuMur, murProche, demiEmpreinte, resoudre, ANGLES } from '@/lib/agencement.js';
 
 const Icone = ({ d }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={d} /></svg>;
 const I = {
@@ -88,18 +88,28 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     const { largeur: L, profondeur: P, hauteur: H } = piece.modele.dims;
     const ancien = cat.remplace && items.find(x => x.id === cat.remplace);
     const id = 'c' + Date.now().toString(36);
-    let it = { id, origine: 'catalogue', sku: p.id, x: ancien ? ancien.x : 0, z: ancien ? ancien.z : 0, rot: ancien ? ancien.rot : ANGLES.entree };
-    if (estMural(p.fam)) it = placerAuMur(piece.modele, { ...it, mur: ancien && ancien.mur ? ancien.mur : murProche(piece.modele, it.x, -P / 2 + .1), y: ancien && ancien.y ? ancien.y : 1.6 }, p.dim, ancien && ancien.mur ? ancien.mur : 'fond');
+    // point de départ : la place de l'ancien meuble, sinon contre le mur du fond (meubles adossés),
+    // dans un coin (lampadaires, plantes, sculptures) ou au centre
+    const [hx0, hz0] = demiEmpreinte(p.dim, ANGLES.entree);
+    const coin = ['lampadaire', 'lampe', 'sculpture', 'jardiniere', 'plante'].includes(p.fam);
+    let it = { id, origine: 'catalogue', sku: p.id, rot: ancien ? ancien.rot : ANGLES.entree,
+      x: ancien ? ancien.x : coin ? L / 2 - hx0 - .1 : 0,
+      z: ancien ? ancien.z : estAdosse(p.fam) || coin ? -P / 2 + hz0 + .02 : 0 };
+    if (estMural(p.fam)) it = placerAuMur(piece.modele, { ...it, mur: ancien && ancien.mur ? ancien.mur : undefined, y: ancien && ancien.y ? ancien.y : 1.6 }, p.dim, ancien && ancien.mur ? ancien.mur : 'fond');
     else if (!estSuspendu(p.fam)) {
       const [hx, hz] = demiEmpreinte(p.dim, it.rot);
       it.x = Math.max(-L / 2 + hx, Math.min(L / 2 - hx, it.x));
       it.z = Math.max(-P / 2 + hz, Math.min(P / 2 - hz, it.z));
     }
-    void H;
+    void H; void murProche;
     modifier(l => {
       let n = l;
       if (ancien) n = ancien.origine === 'existant' ? n.map(x => (x.id === ancien.id ? { ...x, garde: false } : x)) : n.filter(x => x.id !== ancien.id);
-      return [...n, it];
+      // une place libre pour le nouveau meuble, les autres ne bougent pas
+      const { items: places } = resoudre(piece.modele, [...n.map(x => ({ ...x, fixe: true })), it], produits);
+      const place = places.find(x => x.id === id);
+      if (!place) dire(tp.alertes + ' : ' + p.nom, true);
+      return [...n, place ? { ...it, x: place.x, z: place.z, rot: place.rot, ...(place.mur ? { mur: place.mur, y: place.y } : {}) } : it];
     });
     setCat({ ouvert: false, famille: '', remplace: null });
     setSelection(id);
@@ -263,7 +273,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         </div>
       </aside>
 
-      {produits && <Catalogue lang={lang} t={t} produits={produits} libelles={libelles} dims={piece.modele.dims} famille={cat.famille} ouvert={cat.ouvert}
+      {produits && <Catalogue lang={lang} t={t} produits={produits} libelles={libelles} dims={piece.modele.dims} exterieur={piece.fonction === 'terrasse'} famille={cat.famille} ouvert={cat.ouvert}
         fermer={() => setCat({ ouvert: false, famille: '', remplace: null })} choisir={choisirProduit} action={cat.remplace ? tp.catalogue.choisir : tp.catalogue.ajouter} />}
       {toast && <div className={'toast' + (toast.erreur ? ' toast--erreur' : '')} role="status">{toast.texte}</div>}
     </div>

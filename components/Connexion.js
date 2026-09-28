@@ -1,11 +1,10 @@
 'use client';
 // Connexion en deux temps : l'adresse e-mail, puis le code reçu (6 chiffres)
 import { useState, useRef, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { api } from '@/components/api.js';
 
 export default function Connexion({ lang, t, liens }) {
-  const router = useRouter();
   const params = useSearchParams();
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
@@ -32,8 +31,8 @@ export default function Connexion({ lang, t, liens }) {
     if (!r.ok) { setAttente(false); setErreur(t.erreurs[r.erreur] || t.erreurs.code); return; }
     document.cookie = 'rr_langue=' + lang + ';path=/;max-age=31536000;samesite=lax';
     const suite = params.get('suite');
-    router.replace(suite && suite.startsWith('/' + lang + '/app') ? suite : `/${lang}/app`);
-    router.refresh();
+    // chargement complet : toute la page repart avec la session ouverte
+    location.assign(suite && suite.startsWith('/' + lang + '/app') ? suite : `/${lang}/app`);
   }
   return (
     <div className="carte formulaire">

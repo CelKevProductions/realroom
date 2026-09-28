@@ -46,7 +46,7 @@ export default async function Accueil({ params }) {
           </div>
           <div className="hero__visuel">
             <div className="hero__maquette">
-              <img src="/images/maquette-salon.jpg" alt={lang === 'fr' ? 'Maquette 3D d’un salon réaménagé avec des meubles Maison Corleone' : '3D model of a living room refurnished with Maison Corleone furniture'} width="1200" height="900" fetchPriority="high" />
+              <img src="/images/maquette-salon.jpg" alt={lang === 'fr' ? 'Maquette 3D d’un salon réaménagé avec des meubles Maison Corleone' : '3D model of a living room refurnished with Maison Corleone furniture'} width="1120" height="925" fetchPriority="high" />
             </div>
             <span className="puce puce--accent hero__etiquette">3D</span>
             {vedette && (

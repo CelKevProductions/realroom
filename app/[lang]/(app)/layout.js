@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import Logo from '@/components/Logo.js';
 import Deconnexion from '@/components/Deconnexion.js';
+import Solde from '@/components/Solde.js';
 import { utilisateur } from '@/lib/session.js';
 import { texte } from '@/lib/i18n.js';
 
@@ -19,8 +20,8 @@ export default async function MiseEnPageApp({ children, params }) {
         <div className="conteneur app-entete__barre" style={{ width: 'min(1400px, 100% - 24px)' }}>
           <Link href={`/${lang}/app`} className="logo" aria-label="RealRoom"><Logo />RealRoom</Link>
           <nav aria-label={t.nav.compte}>
-            <Link className="btn btn--lien" href={`/${lang}/app`}>{t.nav.mesProjets}</Link>
-            <Link className="solde" href={`/${lang}/app/compte`} data-solde={u.credits}><b>{u.credits}</b> {t.nav.credits}</Link>
+            <Link className="btn btn--lien lien-projets" href={`/${lang}/app`}>{t.nav.mesProjets}</Link>
+            <Solde lang={lang} initial={u.credits} libelle={t.nav.credits} />
             <Deconnexion lang={lang} libelle={t.nav.deconnexion} />
           </nav>
         </div>

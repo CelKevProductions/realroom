@@ -1,7 +1,7 @@
 'use client';
 // Une pièce : photos et mesures -> analyse (maquette 3D) -> atelier (aménager, rendu, visite 3D)
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { api } from '@/components/api.js';
 import Photos from '@/components/piece/Photos.js';
 import Atelier from '@/components/piece/Atelier.js';
@@ -14,6 +14,7 @@ export default function Piece({ lang, t, initiale, rendusInitiaux, credits, cout
   const [forcerPhotos, setForcerPhotos] = useState(false);
   const [analyse, setAnalyse] = useState(initiale.etat === 'analyse');
   const [erreur, setErreur] = useState(initiale.etat === 'erreur' ? t.erreurs.generique : '');
+  useEffect(() => { dispatchEvent(new CustomEvent('realroom:credits', { detail: solde })); }, [solde]);
 
   async function analyser() {
     setErreur(''); setAnalyse(true);
