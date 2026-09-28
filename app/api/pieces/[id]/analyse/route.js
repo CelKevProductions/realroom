@@ -1,5 +1,5 @@
 import { route, json, exiger, lireJSON, ErreurHTTP } from '@/lib/http.js';
-import { piece, majPiece, publique } from '@/lib/projets.js';
+import { piece, majPiece, publique, demarrerAnalyse } from '@/lib/projets.js';
 import { enDataUri } from '@/lib/stockage.js';
 import { compter } from '@/lib/db.js';
 import { LIMITES } from '@/lib/config.js';
@@ -8,7 +8,7 @@ import { depuisAnalyse } from '@/lib/piece.js';
 import { resoudre } from '@/lib/agencement.js';
 import { PRODUITS } from '@/lib/catalogue.js';
 
-export const maxDuration = 150;
+export const maxDuration = 300;
 
 // POST { langue } : Claude lit les photos -> modèle 3D de la pièce et meubles actuels
 export const POST = route(async (request, { params }) => {
@@ -19,7 +19,9 @@ export const POST = route(async (request, { params }) => {
   const photos = (p.photos || []).slice(0, 6);
   if (!photos.some(f => f.role === 'entree')) throw new ErreurHTTP(400, 'photo-entree');
   if (!(await compter('analyse:' + u.id, LIMITES.analysesParJour, 864e5))) throw new ErreurHTTP(429, 'limite');
-  await majPiece(u.id, id, { etat: 'analyse', erreur: null });
+  if (!(await compter('analyses-du-jour', LIMITES.analysesGlobalesParJour, 864e5))) throw new ErreurHTTP(429, 'limite');
+  // une analyse à la fois par pièce (un double clic ne paie pas deux fois)
+  if (!(await demarrerAnalyse(u.id, id))) throw new ErreurHTTP(409, 'en-cours');
   try {
     const images = [];
     for (const f of photos) { const d = await enDataUri(f); if (d) images.push({ role: f.role, dataUri: d }); }

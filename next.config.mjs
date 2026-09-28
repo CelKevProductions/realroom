@@ -4,7 +4,6 @@ const nextConfig = {
   // Postgres embarqué (développement) : jamais empaqueté ni envoyé en ligne
   serverExternalPackages: ['@electric-sql/pglite'],
   outputFileTracingExcludes: { '*': ['node_modules/@electric-sql/**', '.data/**', 'tests/**', 'outils/**', 'build/**', '.essais/**'] },
-  images: { remotePatterns: [{ protocol: 'https', hostname: 'cdn.shopify.com', pathname: '/**' }] },
   async headers() {
     return [{
       source: '/(.*)',

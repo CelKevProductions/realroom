@@ -1,12 +1,13 @@
 import { route, json, exiger } from '@/lib/http.js';
 import { une, sql } from '@/lib/db.js';
-import { crediter } from '@/lib/credits.js';
-import { enregistrer, typeReel } from '@/lib/stockage.js';
-import { suivreRendu, suivreMonde } from '@/lib/generation.js';
+import { echouerGeneration } from '@/lib/credits.js';
+import { renduPublic } from '@/lib/projets.js';
+import { suivreRendu, suivreMonde, copierRendu } from '@/lib/generation.js';
 
 export const maxDuration = 60;
 
-// GET : où en est la génération ; une fois finie, l'image est copiée dans nos fichiers
+// GET : où en est la génération ; une fois finie, l'image est copiée dans nos fichiers.
+// Tout échec (prestataire, délai, soumission interrompue) rembourse, une seule fois.
 export const GET = route(async (request, { params }) => {
   const u = await exiger(request);
   const { id } = await params;
@@ -14,26 +15,35 @@ export const GET = route(async (request, { params }) => {
   if (!r) return json({ erreur: 'introuvable' }, 404);
   if (r.etat === 'en_cours') {
     const age = Date.now() - new Date(r.cree_le).getTime();
-    let s = r.type === 'monde' ? await suivreMonde(r.suivi) : await suivreRendu(r.suivi);
-    if (s.etat === 'en_cours' && age > (r.type === 'monde' ? 40 : 10) * 60e3) s = { etat: 'erreur', erreur: 'délai dépassé' };
-    if (s.etat === 'fini') {
-      let resultat;
-      if (r.type === 'monde') resultat = { monde: s.monde };
-      else if (s.simulation) resultat = { image: r.suivi.capture.url, fichier: r.suivi.capture, source: 'simulation', simulation: true };
-      else {
-        const rep = await fetch(s.image);
-        const octets = Buffer.from(await rep.arrayBuffer());
-        const type = typeReel(octets) || 'image/jpeg';
-        const fichier = await enregistrer(u.id, 'rendus', octets, type);
-        resultat = { image: fichier.url, fichier, source: s.image, largeur: s.largeur, hauteur: s.hauteur };
-      }
-      await sql(`UPDATE rendus SET etat = 'fini', resultat = $2::jsonb, fini_le = now() WHERE id = $1 AND etat = 'en_cours'`, [id, JSON.stringify(resultat)]);
-    } else if (s.etat === 'erreur') {
-      const ok = await une(`UPDATE rendus SET etat = 'erreur', erreur = $2, fini_le = now() WHERE id = $1 AND etat = 'en_cours' RETURNING credits`, [id, String(s.erreur || '').slice(0, 300)]);
-      if (ok && ok.credits) await crediter(u.id, ok.credits, 'remboursement', 'remb:' + id);
-    } else return json({ id, type: r.type, etat: 'en_cours', progres: s.progres || null, position: s.position ?? null });
+    const encore = extra => json({ id, type: r.type, etat: 'en_cours', ...extra });
+    const soumis = r.suivi && (r.suivi.simulation || r.suivi.op || r.suivi.statut);
+    if (!soumis) {
+      // la demande n'est jamais partie (fonction arrêtée pendant l'envoi)
+      if (age < 3 * 60e3) return encore({});
+      await echouerGeneration(id, 'envoi interrompu');
+    } else {
+      let s = r.type === 'monde' ? await suivreMonde(r.suivi) : await suivreRendu(r.suivi);
+      if (s.etat === 'en_cours' && age > (r.type === 'monde' ? 40 : 10) * 60e3) s = { etat: 'erreur', erreur: 'délai dépassé' };
+      if (s.etat === 'fini') {
+        let resultat;
+        if (r.type === 'monde') resultat = { monde: s.monde };
+        else if (s.simulation) resultat = { image: r.suivi.capture.url, fichier: r.suivi.capture, simulation: true };
+        else {
+          const copie = await copierRendu(u.id, id, s.image);
+          if (copie && copie.refus) { await echouerGeneration(id, copie.refus); s = null; }
+          else if (!copie) {
+            // image pas encore lisible : on réessaie au prochain passage, dans la limite de 15 minutes
+            if (age < 15 * 60e3) return encore({});
+            await echouerGeneration(id, 'image illisible');
+            s = null;
+          } else resultat = { image: copie.url, fichier: copie, source: s.image, largeur: s.largeur, hauteur: s.hauteur };
+        }
+        if (resultat) await sql(`UPDATE rendus SET etat = 'fini', resultat = $2::jsonb, fini_le = now() WHERE id = $1 AND etat = 'en_cours'`, [id, JSON.stringify(resultat)]);
+      } else if (s.etat === 'erreur') {
+        await echouerGeneration(id, s.erreur);
+      } else return encore({ progres: s.progres || null, position: s.position ?? null });
+    }
   }
   const f = await une("SELECT id, type, etat, credits, resultat, erreur, cree_le, fini_le, suivi->>'source' AS source FROM rendus WHERE id = $1", [id]);
-  if (f.resultat) f.resultat = { ...f.resultat, fichier: undefined };
-  return json(f);
+  return json(renduPublic(f));
 });

@@ -1,5 +1,5 @@
 import { route, json, exiger, lireJSON, ErreurHTTP } from '@/lib/http.js';
-import { piece, majPiece, supprimerPiece, publique, rendusDe } from '@/lib/projets.js';
+import { piece, majPiece, supprimerPiece, publique, rendusDe, renduPublic } from '@/lib/projets.js';
 import { dimsValides } from '@/lib/piece.js';
 import { FONCTIONS } from '@/lib/config.js';
 import { resoudre, verifier } from '@/lib/agencement.js';
@@ -10,7 +10,7 @@ export const GET = route(async (request, { params }) => {
   const { id } = await params;
   const p = await piece(u.id, id);
   const rendus = await rendusDe(u.id, id);
-  return json({ piece: publique(p), rendus: rendus.map(r => ({ ...r, resultat: r.resultat && { ...r.resultat, fichier: undefined } })) });
+  return json({ piece: publique(p), rendus: rendus.map(renduPublic) });
 });
 
 // modifications de la pièce : nom, fonction, mesures, notes, modèle corrigé, agencement édité

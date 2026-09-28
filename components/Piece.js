@@ -13,12 +13,31 @@ export default function Piece({ lang, t, initiale, rendusInitiaux, credits, cout
   const [solde, setSolde] = useState(credits);
   const [forcerPhotos, setForcerPhotos] = useState(false);
   const [analyse, setAnalyse] = useState(initiale.etat === 'analyse');
+  // analyse lancée ailleurs (autre onglet, page quittée puis rouverte) : on suit son état
+  const [suivi, setSuivi] = useState(initiale.etat === 'analyse');
   const [erreur, setErreur] = useState(initiale.etat === 'erreur' ? t.erreurs.generique : '');
   useEffect(() => { dispatchEvent(new CustomEvent('realroom:credits', { detail: solde })); }, [solde]);
+  useEffect(() => {
+    if (!suivi) return;
+    let arret = false, h;
+    const tour = async () => {
+      const r = await api(`/api/pieces/${piece.id}`);
+      if (arret) return;
+      if (r.ok && r.piece.etat !== 'analyse') {
+        setSuivi(false); setAnalyse(false); setPiece(r.piece);
+        if (r.piece.etat === 'erreur') setErreur(t.erreurs.generique);
+        return;
+      }
+      h = setTimeout(tour, 4000);
+    };
+    h = setTimeout(tour, 4000);
+    return () => { arret = true; clearTimeout(h); };
+  }, [suivi]);
 
   async function analyser() {
     setErreur(''); setAnalyse(true);
     const r = await api(`/api/pieces/${piece.id}/analyse`, { method: 'POST', corps: { langue: lang } });
+    if (r.erreur === 'en-cours') { setSuivi(true); return; }
     setAnalyse(false);
     if (!r.ok) { setErreur(r.erreur === 'limite' ? t.connexion.erreurs.limite : t.erreurs.generique); return; }
     setPiece(r.piece);

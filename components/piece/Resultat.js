@@ -14,12 +14,15 @@ export default function Resultat({ lang, t, piece, rendus, setRendus, solde, set
   const photo = (piece.photos || []).find(p => p.role === 'entree');
   const enCours = rendus.filter(r => r.etat === 'en_cours');
 
-  // suivi des générations en cours
+  // suivi des générations en cours : un tour après l'autre (jamais deux suivis du même rendu en même temps)
   useEffect(() => {
     if (!enCours.length) return;
-    const h = setInterval(async () => {
+    const delai = enCours.some(r => r.type === 'image') ? 2500 : 8000;
+    let arret = false, h;
+    const tour = async () => {
       for (const r of enCours) {
         const s = await api(`/api/rendus/${r.id}`);
+        if (arret) return;
         if (!s.ok || s.etat === 'en_cours') continue;
         setRendus(l => l.map(x => (x.id === r.id ? { ...x, ...s } : x)));
         if (s.type === 'image' && s.etat === 'fini') setChoisi(s.id);
@@ -27,8 +30,10 @@ export default function Resultat({ lang, t, piece, rendus, setRendus, solde, set
         const m = await api('/api/moi');
         if (m.ok && m.connecte) setSolde(m.credits);
       }
-    }, enCours.some(r => r.type === 'image') ? 2500 : 8000);
-    return () => clearInterval(h);
+      if (!arret) h = setTimeout(tour, delai);
+    };
+    h = setTimeout(tour, delai);
+    return () => { arret = true; clearTimeout(h); };
   }, [enCours.map(r => r.id).join()]);
 
   async function generer(type, rendu) {
@@ -58,7 +63,7 @@ export default function Resultat({ lang, t, piece, rendus, setRendus, solde, set
       <div className="bloc__tete"><h3>{tp.renduTitre}</h3><p className="discret petit">{tp.renduTexte}</p></div>
       {!services.rendu && <p className="avis">{t.erreurs.generique}</p>}
       <button className="btn btn--accent btn--bloc" onClick={() => generer('image')} disabled={!services.rendu || !!imageEnCours}>
-        {imageEnCours ? <><span className="rouage rouage--petit" /> {tp.renduEnCours}</> : <>{tp.generer} · {remplir(tp.coute, { n: couts.rendu })}</>}
+        {imageEnCours ? <><span className="rouage rouage--petit" /> {tp.renduEnCours}</> : <>{tp.generer} · {remplir(tp.coute, { n: couts.rendu, s: couts.rendu > 1 ? 's' : '' })}</>}
       </button>
       {erreur && <p className="avis avis--alerte">{erreur} {erreur === tp.creditsManquants && <Link href={`/${lang}/app/compte`}>{tp.acheterCredits}</Link>}</p>}
       {actuel && actuel.etat === 'fini' && actuel.resultat && (
@@ -76,7 +81,7 @@ export default function Resultat({ lang, t, piece, rendus, setRendus, solde, set
               const w = m.resultat.monde;
               return w.url ? <a className="btn btn--plein btn--bloc" href={w.url} target="_blank" rel="noopener noreferrer">{tp.ouvrirMonde} ↗</a> : <p className="avis avis--ok">{tp.mondeTitre} (simulation)</p>;
             }
-            return <button className="btn btn--clair btn--bloc" onClick={() => generer('monde', actuel.id)} disabled={!services.monde}>{tp.genererMonde} · {remplir(tp.coute, { n: couts.monde })}</button>;
+            return <button className="btn btn--clair btn--bloc" onClick={() => generer('monde', actuel.id)} disabled={!services.monde}>{tp.genererMonde} · {remplir(tp.coute, { n: couts.monde, s: couts.monde > 1 ? 's' : '' })}</button>;
           })()}
         </>
       )}

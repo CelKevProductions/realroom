@@ -7,7 +7,7 @@ import { versClaude, depuisProposition } from '@/lib/piece.js';
 import { resoudre } from '@/lib/agencement.js';
 import { PRODUITS, candidats, tient } from '@/lib/catalogue.js';
 
-export const maxDuration = 150;
+export const maxDuration = 300;
 
 // POST { mode: 'tout' | 'partiel', envies, budget, garder: [ids], aRemplacer: [ids], langue }
 export const POST = route(async (request, { params }) => {
@@ -17,6 +17,7 @@ export const POST = route(async (request, { params }) => {
   const p = await piece(u.id, id);
   if (!p.modele) throw new ErreurHTTP(409, 'pas-de-modele');
   if (!(await compter('amenager:' + u.id, LIMITES.amenagementsParJour, 864e5))) throw new ErreurHTTP(429, 'limite');
+  if (!(await compter('amenagements-du-jour', LIMITES.amenagementsGlobauxParJour, 864e5))) throw new ErreurHTTP(429, 'limite');
   const mode = b.mode === 'partiel' ? 'partiel' : 'tout';
   const envies = String(b.envies || '').slice(0, 1200);
   const budget = Math.max(0, Math.min(1e6, Math.round(+b.budget || 0)));

@@ -13,7 +13,8 @@
     "catalogue": "node scripts/catalogue.mjs",
     "moteur": "node scripts/moteur.mjs",
     "test": "node --test tests/unitaires/*.test.js",
-    "e2e": "node tests/e2e.mjs"
+    "e2e": "python3 tests/e2e.py",
+    "test:api": "node tests/api.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",
