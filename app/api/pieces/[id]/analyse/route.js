@@ -1,7 +1,8 @@
 import { route, json, exiger, lireJSON, ErreurHTTP } from '@/lib/http.js';
 import { piece, majPiece, publique, demarrerAnalyse } from '@/lib/projets.js';
 import { enDataUri } from '@/lib/stockage.js';
-import { compter } from '@/lib/db.js';
+import { compter, lireCompteur } from '@/lib/db.js';
+import { aPaye } from '@/lib/credits.js';
 import { LIMITES } from '@/lib/config.js';
 import { analyserPiece } from '@/lib/claude.js';
 import { depuisAnalyse } from '@/lib/piece.js';
@@ -18,10 +19,18 @@ export const POST = route(async (request, { params }) => {
   const p = await piece(u.id, id);
   const photos = (p.photos || []).slice(0, 6);
   if (!photos.some(f => f.role === 'entree')) throw new ErreurHTTP(400, 'photo-entree');
-  if (!(await compter('analyse:' + u.id, LIMITES.analysesParJour, 864e5))) throw new ErreurHTTP(429, 'limite');
-  if (!(await compter('analyses-du-jour', LIMITES.analysesGlobalesParJour, 864e5))) throw new ErreurHTTP(429, 'limite');
+  // plafonds par jour : par compte (plus bas pour un compte d'essai) et, pour les comptes d'essai, global.
+  // On vérifie d'abord, on compte seulement une analyse réellement lancée.
+  const payant = await aPaye(u.id);
+  if ((await lireCompteur('analyse:' + u.id)) >= (payant ? LIMITES.analysesParJour : LIMITES.analysesEssaiParJour)) throw new ErreurHTTP(429, 'limite');
+  if (!payant && (await lireCompteur('analyses-du-jour')) >= LIMITES.analysesGlobalesParJour) {
+    console.error('Analyses : plafond du jour atteint pour les comptes d’essai (ANALYSES_GLOBALES_PAR_JOUR)');
+    throw new ErreurHTTP(429, 'limite');
+  }
   // une analyse à la fois par pièce (un double clic ne paie pas deux fois)
   if (!(await demarrerAnalyse(u.id, id))) throw new ErreurHTTP(409, 'en-cours');
+  await compter('analyse:' + u.id, Infinity, 864e5);
+  if (!payant) await compter('analyses-du-jour', Infinity, 864e5);
   try {
     const images = [];
     for (const f of photos) { const d = await enDataUri(f); if (d) images.push({ role: f.role, dataUri: d }); }

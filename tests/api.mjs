@@ -15,7 +15,8 @@ const PHOTO = fs.readFileSync(path.join(RACINE, 'tests', 'fixtures', 'salon-entr
 fs.rmSync(DONNEES, { recursive: true, force: true });
 const serveur = spawn('npx', ['next', 'start', '-p', String(PORT)], {
   cwd: RACINE, detached: true, stdio: 'ignore',
-  env: { ...process.env, REALROOM_SIMULATION: '1', REALROOM_ESSAIS: '1', PGLITE_DIR: path.join(DONNEES, 'pglite'), FICHIERS_DIR: path.join(DONNEES, 'fichiers'), PORT: String(PORT), SITE_URL: BASE }
+  env: { ...process.env, REALROOM_SIMULATION: '1', REALROOM_ESSAIS: '1', PGLITE_DIR: path.join(DONNEES, 'pglite'), FICHIERS_DIR: path.join(DONNEES, 'fichiers'), PORT: String(PORT), SITE_URL: BASE,
+    BIENVENUES_PAR_DOMAINE: '4', ANALYSES_ESSAI_PAR_JOUR: '3' }
 });
 const arreter = () => { try { process.kill(-serveur.pid, 'SIGTERM'); } catch (_) {} };
 process.on('exit', arreter);
@@ -86,11 +87,11 @@ essai('crédits offerts une seule fois par adresse (étiquettes, points Gmail, c
   assert.equal((await d.connexion('marie@example.com')).credits, 3);
 });
 
-essai('15 codes faux dans la journée bloquent l’adresse, même avec de nouveaux codes', async () => {
+essai('10 codes faux dans la journée, depuis un même réseau, bloquent l’adresse pour ce réseau', async () => {
   const api = client();
   const email = 'cible@example.com';
   let echecs = 0;
-  for (let envoi = 0; envoi < 3; envoi++) {
+  for (let envoi = 0; envoi < 2; envoi++) {
     const d = await api('/api/auth/code', { method: 'POST', corps: { email, langue: 'fr' } });
     assert.ok(d.code);
     const faux = d.code === '000000' ? '111111' : '000000';
@@ -99,10 +100,10 @@ essai('15 codes faux dans la journée bloquent l’adresse, même avec de nouvea
       assert.equal(v.statut, 400); echecs++;
     }
   }
-  assert.equal(echecs, 15);
+  assert.equal(echecs, 10);
   const d = await api('/api/auth/code', { method: 'POST', corps: { email, langue: 'fr' } });
   const v = await api('/api/auth/verifier', { method: 'POST', corps: { email, code: d.code } });
-  assert.notEqual(v.statut, 200, 'connexion acceptée malgré 15 échecs');
+  assert.equal(v.statut, 429, 'connexion acceptée malgré 10 échecs');
   assert.equal(v.erreur, 'limite');
 });
 
@@ -142,9 +143,11 @@ essai('rendu puis visite 3D : crédits débités, résultat sans lien interne, p
   const ph = await envoyerPhoto(api, id, 'entree');
   assert.equal(ph.statut, 200);
   const moi = { id: uidDe(ph.piece) };
-  // deux analyses lancées ensemble : une seule tourne
+  // deux analyses lancées ensemble : une seule tourne, et seule elle compte dans le plafond (3 pour l'essai)
   const doubles = await Promise.all([1, 2].map(() => api(`/api/pieces/${id}/analyse`, { method: 'POST', corps: { langue: 'fr' } })));
   assert.deepEqual(doubles.map(a => a.statut).sort(), [200, 409], JSON.stringify(doubles.map(a => [a.statut, a.erreur])));
+  for (let i = 0; i < 2; i++) assert.equal((await api(`/api/pieces/${id}/analyse`, { method: 'POST', corps: { langue: 'fr' } })).statut, 200);
+  assert.equal((await api(`/api/pieces/${id}/analyse`, { method: 'POST', corps: { langue: 'fr' } })).statut, 429);
   const g = await api(`/api/pieces/${id}/rendus`, { method: 'POST', corps: { type: 'image', capture: 'data:image/jpeg;base64,' + PHOTO.toString('base64') } });
   assert.equal(g.statut, 201);
   assert.equal((await api('/api/moi')).credits, 2);
@@ -173,6 +176,12 @@ essai('achat simulé local : crédits ajoutés ; route introuvable sans session'
   assert.equal((await api('/api/moi')).credits, 13);
   const anonyme = client();
   assert.equal((await anonyme(new URL(r.url).pathname + new URL(r.url).search)).statut, 401);
+});
+
+essai('crédits offerts plafonnés par domaine (hors grands fournisseurs), sans toucher aux autres', async () => {
+  // example.com : marie, photos, rendu, achat ont déjà reçu les leurs (plafond d'essai : 4 par jour)
+  assert.equal((await client().connexion('zoe@example.com')).credits, 0);
+  assert.equal((await client().connexion('zoe.martin@gmail.com')).credits, 3);
 });
 
 try {

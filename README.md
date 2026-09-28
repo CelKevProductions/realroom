@@ -33,7 +33,8 @@ Le client photographie une pièce (ou tout un logement) et donne des mesures app
 ```bash
 npm install
 npm run build
-REALROOM_SIMULATION=1 npm start     # sans aucune clé : analyse, aménagement, rendus et paiement simulés
+REALROOM_SIMULATION=1 REALROOM_ESSAIS=1 npm start   # sans aucune clé : analyse, aménagement, rendus et paiement simulés
+# ou, pendant le développement : REALROOM_SIMULATION=1 npm run dev
 ```
 
 En local seulement (jamais sur Vercel) : sans `RESEND_API_KEY`, le code de connexion s'affiche sur la page, et sans Stripe l'achat de crédits est simulé. Sans `DATABASE_URL`, la base est créée dans `.data/pglite`.
@@ -64,7 +65,7 @@ En local seulement (jamais sur Vercel) : sans `RESEND_API_KEY`, le code de conne
 | Rendu photo (Nano Banana Pro, 2K) | ≈ 0,15 $ | 1 crédit |
 | Visite 3D (Marble 1.1) | ≈ 1,26 $ | 5 crédits |
 
-Les packs sont réglables dans `lib/config.js` (10 crédits à 9 €, 30 à 24 €, 100 à 69 € ; 3 offerts à l'inscription, une seule fois par adresse). Des plafonds quotidiens globaux limitent les crédits offerts, les analyses et les aménagements (variables `*_PAR_JOUR`). Pensez aussi aux plafonds de dépense dans les tableaux de bord Anthropic, fal.ai et World Labs.
+Les packs sont réglables dans `lib/config.js` (10 crédits à 9 €, 30 à 24 €, 100 à 69 € ; 3 offerts à l'inscription, une seule fois par adresse). Des plafonds quotidiens limitent les crédits offerts (en tout et par domaine d'e-mail, hors grands fournisseurs), ainsi que les analyses et aménagements des comptes qui n'ont encore rien acheté (variables `*_PAR_JOUR` et `BIENVENUES_PAR_DOMAINE`). Quand un plafond global est atteint, un message l'indique dans les journaux Vercel ; les crédits offerts refusés ce jour-là sont versés à une connexion suivante. Pensez aussi aux plafonds de dépense dans les tableaux de bord Anthropic, fal.ai et World Labs.
 
 ## Fiabilité des générations
 

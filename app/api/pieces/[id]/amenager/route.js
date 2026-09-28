@@ -1,6 +1,7 @@
 import { route, json, exiger, lireJSON, ErreurHTTP } from '@/lib/http.js';
 import { piece, majPiece, publique } from '@/lib/projets.js';
-import { compter } from '@/lib/db.js';
+import { compter, lireCompteur } from '@/lib/db.js';
+import { aPaye } from '@/lib/credits.js';
 import { LIMITES } from '@/lib/config.js';
 import { proposerAmenagement } from '@/lib/claude.js';
 import { versClaude, depuisProposition } from '@/lib/piece.js';
@@ -16,8 +17,14 @@ export const POST = route(async (request, { params }) => {
   const b = await lireJSON(request, 20000);
   const p = await piece(u.id, id);
   if (!p.modele) throw new ErreurHTTP(409, 'pas-de-modele');
-  if (!(await compter('amenager:' + u.id, LIMITES.amenagementsParJour, 864e5))) throw new ErreurHTTP(429, 'limite');
-  if (!(await compter('amenagements-du-jour', LIMITES.amenagementsGlobauxParJour, 864e5))) throw new ErreurHTTP(429, 'limite');
+  const payant = await aPaye(u.id);
+  if ((await lireCompteur('amenager:' + u.id)) >= (payant ? LIMITES.amenagementsParJour : LIMITES.amenagementsEssaiParJour)) throw new ErreurHTTP(429, 'limite');
+  if (!payant && (await lireCompteur('amenagements-du-jour')) >= LIMITES.amenagementsGlobauxParJour) {
+    console.error('Aménagements : plafond du jour atteint pour les comptes d’essai (AMENAGEMENTS_GLOBAUX_PAR_JOUR)');
+    throw new ErreurHTTP(429, 'limite');
+  }
+  await compter('amenager:' + u.id, Infinity, 864e5);
+  if (!payant) await compter('amenagements-du-jour', Infinity, 864e5);
   const mode = b.mode === 'partiel' ? 'partiel' : 'tout';
   const envies = String(b.envies || '').slice(0, 1200);
   const budget = Math.max(0, Math.min(1e6, Math.round(+b.budget || 0)));
