@@ -4,17 +4,19 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/components/api.js';
+import { useRacine } from '@/components/chemins.js';
 import { remplir } from '@/lib/i18n.js';
 
 export default function Projets({ lang, t, initiaux }) {
   const router = useRouter();
+  const racine = useRacine(lang);
   const [projets, setProjets] = useState(initiaux);
   const [attente, setAttente] = useState(false);
   async function creer() {
     setAttente(true);
     const r = await api('/api/projets', { method: 'POST', corps: { nom: t.projets.nomDefaut } });
     setAttente(false);
-    if (r.ok) router.push(`/${lang}/app/projets/${r.projet.id}`);
+    if (r.ok) router.push(`${racine}/projets/${r.projet.id}`);
   }
   async function supprimer(id) {
     if (!confirm(t.projets.confirmer)) return;
@@ -31,9 +33,9 @@ export default function Projets({ lang, t, initiaux }) {
       <div className="grille-cartes">
         {projets.map(p => (
           <div key={p.id} className="carte carte-projet" style={{ position: 'relative' }}>
-            <Link href={`/${lang}/app/projets/${p.id}`} style={{ textDecoration: 'none', display: 'grid' }}>
+            <Link href={`${racine}/projets/${p.id}`} style={{ textDecoration: 'none', display: 'grid' }}>
               <div className="carte-projet__image" style={p.apercu ? { backgroundImage: `url(${p.apercu})` } : undefined}>{!p.apercu && '⌂'}</div>
-              <div className="carte-projet__texte"><b>{p.nom}</b><span className="discret petit">{remplir(t.projets.pieces, { n: p.nb })}</span></div>
+              <div className="carte-projet__texte"><b>{p.nom}</b><span className="discret petit">{remplir(t.projets.pieces, { n: p.nb, s: p.nb > 1 ? 's' : '' })}</span></div>
             </Link>
             <button className="btn btn--lien btn--petit" style={{ position: 'absolute', right: 8, bottom: 10 }} onClick={() => supprimer(p.id)}>{t.projets.supprimer}</button>
           </div>

@@ -41,6 +41,7 @@ export default async function Accueil({ params }) {
             <p className="hero__intro">{a.intro}</p>
             <div className="hero__actions">
               <Link className="btn btn--accent btn--large" href={`/${lang}/connexion?inscription=1`}>{a.cta}</Link>
+              <Link className="btn btn--clair btn--large" href={`/${lang}/demo`}>{a.demo}</Link>
               <span className="hero__note">{a.ctaNote}</span>
             </div>
           </div>

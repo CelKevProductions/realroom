@@ -3,8 +3,8 @@
 // affichage ; React lui transmet l'agencement, la sélection et la vue.
 import { useEffect, useImperativeHandle, useRef, useState } from 'react';
 
-let catalogueP = null;
-export const chargerCatalogue = () => (catalogueP ||= fetch('/catalogue.json').then(r => r.json()));
+export { chargerCatalogue } from '@/components/catalogueClient.js';
+import { chargerCatalogue } from '@/components/catalogueClient.js';
 
 export default function Editeur3D({ ref, modele, items, selection, vue, surSelection, surDeplacement, surPret, erreurWebgl }) {
   const canvas = useRef(null);

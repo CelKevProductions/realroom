@@ -5,11 +5,13 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/components/api.js';
+import { useRacine } from '@/components/chemins.js';
 import { remplir } from '@/lib/i18n.js';
 import { FONCTIONS } from '@/lib/config.js';
 
 export default function Projet({ lang, t, initial }) {
   const router = useRouter();
+  const racine = useRacine(lang);
   const [p, setP] = useState(initial);
   const [nom, setNom] = useState(initial.nom);
   const [fonction, setFonction] = useState('salon');
@@ -30,7 +32,7 @@ export default function Projet({ lang, t, initial }) {
   async function ajouter(e) {
     e.preventDefault();
     const r = await api(`/api/projets/${p.id}/pieces`, { method: 'POST', corps: { nom: nomPiece || t.fonctions[fonction], fonction } });
-    if (r.ok) router.push(`/${lang}/app/pieces/${r.piece.id}`);
+    if (r.ok) router.push(`${racine}/pieces/${r.piece.id}`);
   }
   // analyse en parallèle de toutes les pièces qui ont leur photo principale
   async function analyserTout() {
@@ -47,7 +49,7 @@ export default function Projet({ lang, t, initial }) {
 
   return (
     <div className="conteneur app-page">
-      <nav className="fil" aria-label="fil"><Link href={`/${lang}/app`}>{t.projets.titre}</Link><span>›</span></nav>
+      <nav className="fil" aria-label="fil"><Link href={racine}>{t.projets.titre}</Link><span>›</span></nav>
       <div className="app-page__tete">
         <input className="saisie" style={{ fontFamily: 'var(--titre)', fontSize: '2rem', border: 0, background: 'none', padding: 0, maxWidth: 560 }} value={nom}
           onChange={e => setNom(e.target.value)} onBlur={renommer} aria-label={t.projets.renommer} />
@@ -62,7 +64,7 @@ export default function Projet({ lang, t, initial }) {
         {p.pieces.map(x => {
           const image = x.dernier_rendu || (x.photos[0] && x.photos[0].url);
           return (
-            <Link key={x.id} href={`/${lang}/app/pieces/${x.id}`} className="carte carte-projet">
+            <Link key={x.id} href={`${racine}/pieces/${x.id}`} className="carte carte-projet">
               <div className="carte-projet__image" style={image ? { backgroundImage: `url(${image})` } : undefined}>{!image && '📷'}</div>
               <div className="carte-projet__texte">
                 <b>{x.nom}</b>

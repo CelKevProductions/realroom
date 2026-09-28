@@ -1,5 +1,10 @@
 // Appels à l'API depuis le navigateur : JSON, erreurs lisibles, jamais d'exception réseau non gérée
 export async function api(url, { method = 'GET', corps, formulaire, signal } = {}) {
+  // démo sans compte (/fr/demo…) : tout se passe dans le navigateur, rien n'est envoyé au serveur
+  if (typeof window !== 'undefined' && /^\/[a-z]{2}\/demo(\/|$)/.test(location.pathname)) {
+    const { repondre } = await import('@/components/demo/api.js');
+    return repondre(url, { method, corps, formulaire });
+  }
   try {
     const r = await fetch(url, {
       method,

@@ -3,11 +3,13 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { api } from '@/components/api.js';
+import { useRacine } from '@/components/chemins.js';
 import AvantApres from '@/components/piece/AvantApres.js';
 import { remplir } from '@/lib/i18n.js';
 
 export default function Resultat({ lang, t, piece, rendus, setRendus, solde, setSolde, couts, services, capturer }) {
   const tp = t.piece;
+  const racine = useRacine(lang);
   const images = rendus.filter(r => r.type === 'image');
   const [choisi, setChoisi] = useState(() => (images.find(r => r.etat === 'fini') || {}).id);
   const [erreur, setErreur] = useState('');
@@ -65,7 +67,7 @@ export default function Resultat({ lang, t, piece, rendus, setRendus, solde, set
       <button className="btn btn--accent btn--bloc" onClick={() => generer('image')} disabled={!services.rendu || !!imageEnCours}>
         {imageEnCours ? <><span className="rouage rouage--petit" /> {tp.renduEnCours}</> : <>{tp.generer} · {remplir(tp.coute, { n: couts.rendu, s: couts.rendu > 1 ? 's' : '' })}</>}
       </button>
-      {erreur && <p className="avis avis--alerte">{erreur} {erreur === tp.creditsManquants && <Link href={`/${lang}/app/compte`}>{tp.acheterCredits}</Link>}</p>}
+      {erreur && <p className="avis avis--alerte">{erreur} {erreur === tp.creditsManquants && <Link href={`${racine}/compte`}>{tp.acheterCredits}</Link>}</p>}
       {actuel && actuel.etat === 'fini' && actuel.resultat && (
         <>
           {photo ? <AvantApres avant={photo.url} apres={actuel.resultat.image} libelles={{ avant: tp.avant, apres: tp.apres }} etiquette="IA" /> : <img src={actuel.resultat.image} alt="" style={{ borderRadius: 12 }} />}

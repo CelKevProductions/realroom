@@ -5,8 +5,7 @@ import { compter, lireCompteur } from '@/lib/db.js';
 import { aPaye } from '@/lib/credits.js';
 import { LIMITES } from '@/lib/config.js';
 import { analyserPiece } from '@/lib/claude.js';
-import { depuisAnalyse } from '@/lib/piece.js';
-import { resoudre } from '@/lib/agencement.js';
+import { pieceDepuisAnalyse } from '@/lib/amenagement.js';
 import { PRODUITS } from '@/lib/catalogue.js';
 
 export const maxDuration = 300;
@@ -35,10 +34,9 @@ export const POST = route(async (request, { params }) => {
     const images = [];
     for (const f of photos) { const d = await enDataUri(f); if (d) images.push({ role: f.role, dataUri: d }); }
     const { analyse } = await analyserPiece({ photos: images, dims: p.dims, fonction: p.fonction, notes: p.notes, langue: b.langue === 'en' ? 'en' : 'fr' });
-    const { modele, meubles } = depuisAnalyse(analyse, p.dims || {});
     // les meubles relevés gardent leur place, on écarte seulement ceux qui se chevauchent
-    const { items } = resoudre(modele, meubles, PRODUITS, { jeu: 0 });
-    const n = await majPiece(u.id, id, { etat: 'prete', modele, agencement: items, proposition: null, erreur: null });
+    const { modele, agencement } = pieceDepuisAnalyse(analyse, p.dims, PRODUITS);
+    const n = await majPiece(u.id, id, { etat: 'prete', modele, agencement, proposition: null, erreur: null });
     return json({ piece: publique(n) });
   } catch (e) {
     console.error('analyse', id, e);

@@ -3,11 +3,13 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { api } from '@/components/api.js';
+import { useRacine } from '@/components/chemins.js';
 import Photos from '@/components/piece/Photos.js';
 import Atelier from '@/components/piece/Atelier.js';
 
 export default function Piece({ lang, t, initiale, rendusInitiaux, credits, couts, services }) {
   const tp = t.piece;
+  const racine = useRacine(lang);
   const [piece, setPiece] = useState(initiale);
   const [rendus, setRendus] = useState(rendusInitiaux);
   const [solde, setSolde] = useState(credits);
@@ -50,8 +52,8 @@ export default function Piece({ lang, t, initiale, rendusInitiaux, credits, cout
     <>
       <div className="conteneur" style={{ width: 'min(1400px, 100% - 24px)', paddingTop: 14 }}>
         <nav className="fil" aria-label="fil">
-          <Link href={`/${lang}/app`}>{t.projets.titre}</Link><span>›</span>
-          <Link href={`/${lang}/app/projets/${piece.projet_id}`}>{piece.projet_nom}</Link><span>›</span>
+          <Link href={racine}>{t.projets.titre}</Link><span>›</span>
+          <Link href={`${racine}/projets/${piece.projet_id}`}>{piece.projet_nom}</Link><span>›</span>
           <span style={{ color: 'var(--encre)', fontWeight: 600 }}>{piece.nom}</span>
           <span className="puce" style={{ marginLeft: 6 }}>{t.fonctions[piece.fonction]}</span>
         </nav>

@@ -5,10 +5,11 @@ import { useSearchParams } from 'next/navigation';
 import { api } from '@/components/api.js';
 import { prix, remplir } from '@/lib/i18n.js';
 
-export default function Compte({ lang, t, email, credits, historique, packs, couts, paiement }) {
+export default function Compte({ lang, t, email, credits, historique: historiqueInitial, packs, couts, paiement }) {
   const tc = t.compte;
   const params = useSearchParams();
   const [solde, setSolde] = useState(credits);
+  const [historique, setHistorique] = useState(historiqueInitial);
   useEffect(() => { dispatchEvent(new CustomEvent('realroom:credits', { detail: solde })); }, [solde]);
   const [consentement, setConsentement] = useState(false);
   const [attente, setAttente] = useState('');
@@ -24,6 +25,8 @@ export default function Compte({ lang, t, email, credits, historique, packs, cou
     if (!consentement) { setMessage({ texte: tc.retractation }); return; }
     setAttente(pack);
     const r = await api('/api/credits/achat', { method: 'POST', corps: { pack, langue: lang, consentement: true } });
+    // démo : crédits ajoutés sur place
+    if (r.ok && typeof r.credits === 'number') { setSolde(r.credits); if (r.historique) setHistorique(r.historique); setAttente(''); setMessage({ ok: true, texte: tc.paiementOk }); return; }
     if (r.ok && r.url) { location.href = r.url; return; }
     setAttente('');
     setMessage({ texte: t.erreurs.generique });
