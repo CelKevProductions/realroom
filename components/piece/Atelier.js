@@ -167,7 +167,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         )}
         {choisi && pChoisi && (
           <div ref={outils} className="outils-meuble" role="toolbar" aria-label={pChoisi.nom}>
-            {!estMural(pChoisi.fam) && <><button title={tp.tourner} onClick={() => tourner(-Math.PI / 12)}><Icone d={I.gauche} /></button><button title={tp.tourner} onClick={() => tourner(Math.PI / 12)}><Icone d={I.droite} /></button></>}
+            {!estMural(pChoisi.fam) && choisi.garde !== false && <><button title={tp.tourner} onClick={() => tourner(-Math.PI / 12)}><Icone d={I.gauche} /></button><button title={tp.tourner} onClick={() => tourner(Math.PI / 12)}><Icone d={I.droite} /></button></>}
             <button title={tp.echanger} onClick={() => setCat({ ouvert: true, famille: produits && Object.values(produits).some(p => p.fam === pChoisi.fam) ? pChoisi.fam : '', remplace: choisi.id })}><Icone d={I.echanger} /></button>
             <button title={choisi.garde === false ? tp.garder : tp.supprimerMeuble} onClick={() => retirer(choisi.id)}><Icone d={choisi.garde === false ? I.garder : I.retirer} /></button>
           </div>

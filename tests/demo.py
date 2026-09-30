@@ -4,7 +4,7 @@ Captures dans .essais/.
 
   npm run build && python3 tests/demo.py [desktop|mobile]
 """
-import asyncio, os, pathlib, shutil, subprocess, sys, time, urllib.request
+import asyncio, os, pathlib, re, shutil, subprocess, sys, time, urllib.request
 from playwright.async_api import async_playwright, expect
 
 RACINE = pathlib.Path(__file__).resolve().parent.parent
@@ -62,6 +62,15 @@ async def parcours(page, appels_api):
     await page.wait_for_selector('.atelier canvas', timeout=30000)
     await page.wait_for_timeout(1500)
     await capture(page, 'maquette')
+    # un meuble actuel retiré disparaît de la maquette (il reste dans la liste pour être remis)
+    await page.click('.onglets button:has-text("Meubles")')
+    await page.locator('.liste-meubles .ligne-meuble:has-text("Canapé")').first.click()
+    await page.locator('button:has-text("Retirer de la pièce")').first.click()
+    await expect(page.locator('.liste-meubles .ligne-meuble:has-text("Canapé")').first).to_have_class(re.compile('is-retire'))
+    await page.wait_for_timeout(800)
+    await capture(page, 'meuble-retire')
+    await page.locator('.bloc button:has-text("Garder"), .atelier__panneau button:has-text("Garder")').first.click()
+    await expect(page.locator('.liste-meubles .ligne-meuble:has-text("Canapé")').first).not_to_have_class(re.compile('is-retire'))
     await page.click('.onglets button:has-text("Aménager")')
     await page.click('button:has-text("Proposer un aménagement")')
     await page.wait_for_selector('.concept', timeout=30000)

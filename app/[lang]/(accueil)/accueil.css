@@ -235,7 +235,7 @@ html[data-acc~="ouverture"] .acc-ouverture {
 }
 
 /* image du héros : une fenêtre qui s'ouvre jusqu'au plein écran */
-.acc-trou { position: relative; margin: clamp(48px, 7vw, 96px) 0 0; height: 64vh; height: 64svh; }
+.acc-trou { position: relative; margin: clamp(48px, 7vw, 96px) 0 0; height: min(72vh, 100vw); height: min(72svh, 100vw); }
 @media (min-width: 760px) { .acc-trou { height: 100vh; height: 100svh; } }
 .acc-trou__cadre {
   --trou-x: 0%; --trou-y: 0%;
@@ -244,8 +244,9 @@ html[data-acc~="ouverture"] .acc-ouverture {
 }
 /* le « plan » couvre le cadre comme object-fit: cover, et garde les annotations calées sur l'image */
 .acc-trou__plan {
-  position: absolute; width: max(100cqw, 160cqh); height: max(62.5cqw, 100cqh);
-  left: calc(50cqw - max(50cqw, 80cqh)); top: calc(50cqh - max(31.25cqw, 50cqh));
+  /* photo au 3:2 : couvre le cadre, centrée, sans translate */
+  position: absolute; width: max(100cqw, 150cqh); height: max(66.667cqw, 100cqh);
+  left: calc(50cqw - max(50cqw, 75cqh)); top: calc(50cqh - max(33.333cqw, 50cqh));
 }
 .acc-trou__plan img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .acc-note { position: absolute; left: var(--x); top: var(--y); z-index: 1; width: 0; height: 0; }
@@ -261,16 +262,18 @@ html[data-acc~="ouverture"] .acc-ouverture {
 .acc-note__etiquette b { font-weight: 700; font-stretch: 90%; }
 .acc-note__etiquette .acc-mono { font-size: .6rem; color: var(--graphite); }
 .acc-note__etiquette::before { content: ''; position: absolute; left: 50%; bottom: 100%; width: 1px; height: 22px; background: var(--encre); }
-.acc-note--1 { --x: 38.5%; --y: 50%; }
-.acc-note--2 { --x: 57%; --y: 52%; }
-.acc-note--3 { --x: 45.8%; --y: 30.5%; }
-@media (max-width: 759.98px) { .acc-note--3 { display: none; } }
+/* repères sur la photo (en % de l'image) : lit, fauteuil, suspension, applique */
+.acc-note--1 { --x: 35%; --y: 66.5%; }
+.acc-note--2 { --x: 66.8%; --y: 65.5%; }
+.acc-note--3 { --x: 32%; --y: 44%; }
+.acc-note--4 { --x: 79.3%; --y: 27.7%; }
+@media (max-width: 759.98px) { .acc-note--3, .acc-note--4 { display: none; } }
 @media (min-width: 760px) {
   .acc-note__etiquette { left: 24px; top: 0; translate: 0 -50%; padding: 9px 12px 10px; font-size: .92rem; }
   .acc-note__etiquette .acc-mono { font-size: .68rem; }
   .acc-note__etiquette::before { left: auto; right: 100%; bottom: auto; top: 50%; width: 24px; height: 1px; }
-  .acc-note--1 .acc-note__etiquette { left: auto; right: 24px; }
-  .acc-note--1 .acc-note__etiquette::before { right: auto; left: 100%; }
+  .acc-note--1 .acc-note__etiquette, .acc-note--4 .acc-note__etiquette { left: auto; right: 24px; }
+  .acc-note--1 .acc-note__etiquette::before, .acc-note--4 .acc-note__etiquette::before { right: auto; left: 100%; }
 }
 
 /* ---------- sections ---------- */
@@ -288,12 +291,12 @@ html[data-acc~="ouverture"] .acc-ouverture {
   .acc-aa__texte { grid-column: 8 / -1; align-self: end; margin-top: 0; }
 }
 .acc-aa__cadre { margin-top: clamp(40px, 6vw, 80px); }
-.acc-aa__scene { --coupe: 50%; position: relative; height: 70vh; height: 70svh; overflow: hidden; background: #D8D3CA; }
+.acc-aa__scene { --coupe: 50%; position: relative; height: min(70vh, 110vw); height: min(70svh, 110vw); overflow: hidden; background: #D8D3CA; }
 @media (min-width: 760px) {
   .acc-aa__cadre { padding-inline: var(--marge); }
-  .acc-aa__scene { height: min(88svh, (100vw - 2 * var(--marge)) * .625); }
+  .acc-aa__scene { height: min(88svh, (100vw - 2 * var(--marge)) * .6667); }
 }
-.acc-aa__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 44% 50%; }
+.acc-aa__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 40% 50%; }
 .acc-aa__apres { position: absolute; inset: 0; clip-path: inset(0 0 0 var(--coupe)); }
 .acc-aa__ligne { position: absolute; top: 0; bottom: 0; left: var(--coupe); width: 2px; margin-left: -1px; background: var(--platre); z-index: 1; }
 .acc-aa__ligne::after {

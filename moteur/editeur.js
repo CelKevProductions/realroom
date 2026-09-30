@@ -353,16 +353,13 @@ export function creerEditeur(canvas, opts = {}) {
     porteur.rotation.y = item.rot || 0;
     porteur.updateMatrixWorld(true);
   }
+  // un meuble actuel retiré (garde: false) disparaît de la maquette ; il reste dans la liste pour être remis
   function appliquerFantome(e) {
     const f = e.item.garde === false;
     if (f === e.fantome) return;
     e.fantome = f;
-    e.porteur.traverse(o => {
-      if (!o.isMesh && !o.isSprite) return;
-      if (o.userData.matOrig === undefined) { o.userData.matOrig = o.material; o.userData.ombre = o.castShadow; }
-      o.material = f ? M('fantome') : o.userData.matOrig;
-      o.castShadow = f ? false : o.userData.ombre;
-    });
+    e.porteur.visible = !f;
+    E.ombres = true;
   }
   function retirer(id) {
     const e = E.items.get(id);
@@ -527,7 +524,10 @@ export function creerEditeur(canvas, opts = {}) {
   }
   function viser(e) {
     ray.setFromCamera(versNDC(e), camera);
-    const hits = ray.intersectObject(meublesG, true).filter(h => h.object.visible && !h.object.isSprite && h.object.userData.itemId);
+    const hits = ray.intersectObject(meublesG, true).filter(h => {
+      const e = h.object.userData.itemId && E.items.get(h.object.userData.itemId);
+      return e && !e.fantome && h.object.visible && !h.object.isSprite;
+    });
     return hits.length ? hits[0].object.userData.itemId : null;
   }
   const planSol = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
@@ -639,8 +639,6 @@ export function creerEditeur(canvas, opts = {}) {
     cam.position.set(p.px, p.py, p.pz); cam.lookAt(p.tx, p.ty, p.tz); cam.updateMatrixWorld();
     const avant = { taille: renderer.getSize(new THREE.Vector2()), dpr: renderer.getPixelRatio() };
     aides.visible = false;
-    const fantomes = [...E.items.values()].filter(e => e.fantome);
-    fantomes.forEach(e => { e.porteur.visible = false; });
     majMurs(cam, true);
     E.plafond.visible = true;
     renderer.shadowMap.needsUpdate = true;
@@ -651,7 +649,6 @@ export function creerEditeur(canvas, opts = {}) {
     renderer.setPixelRatio(avant.dpr);
     renderer.setSize(avant.taille.x, avant.taille.y, false);
     aides.visible = true;
-    fantomes.forEach(e => { e.porteur.visible = true; });
     E.murs.forEach(w2 => { w2.op = -1; });
     E.ombres = true;
     rendre();

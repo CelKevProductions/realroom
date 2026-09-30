@@ -14,12 +14,15 @@ export async function generateMetadata({ params }) {
   return {
     title: { absolute: t.meta.titre },
     alternates: { canonical: `/${lang}`, languages: { fr: '/fr', en: '/en', 'x-default': '/fr' } },
-    openGraph: { url: `/${lang}`, images: [{ url: '/images/accueil-photo-apres.jpg', width: 2000, height: 1250 }] }
+    openGraph: { url: `/${lang}`, images: [{ url: '/images/chambre-rendu-1200.jpg', width: 1200, height: 800 }] }
   };
 }
 
-// pièces du catalogue montrées sur l'accueil, telles qu'on les achète
-const VITRINE = ['sofa-220', 'terracotta', 'rce-05', 'sus-lnb-34', 'fpf-lamp-7705', 'cm-950', 'abbraccio', 'wa908', 'scg-light-2409', 'hl-550', 'mc-wall-3347', 'table-a-manger-marbre-bois-sculpte-zenoza'];
+// pièces du catalogue montrées sur l'accueil, telles qu'on les achète (d'abord celles de la chambre en photo)
+const VITRINE = ['cbb-03', 'fauteuil-velours-terracotta-pietement-plein-terra', 'lst-min-03', 'wom-wall-2414', 'sofa-220', 'terracotta', 'rce-05', 'fpf-lamp-7705', 'cm-950', 'abbraccio', 'wa908', 'scg-light-2409', 'hl-550', 'table-a-manger-marbre-bois-sculpte-zenoza'];
+// la chambre en photo : rendu réaliste tiré de sa maquette 3D (mêmes cadrage et meubles)
+const RENDU = w => `/images/chambre-rendu-${w}.jpg`;
+const MAQUETTE = w => `/images/chambre-maquette-${w}.jpg`;
 const cm = p => p.dim.slice(0, 2).map(v => Math.round(v * 100)).join(' × ') + ' cm';
 // vignettes Shopify à la bonne taille (le CDN redimensionne selon « width »)
 const taille = (u, w) => u.replace(/([?&])width=\d+/, `$1width=${w}`);
@@ -34,12 +37,14 @@ export default async function Accueil({ params }) {
   const t = texte(lang), a = t.accueil;
   const autre = lang === 'fr' ? 'en' : 'fr';
   const vitrine = VITRINE.map(id => PRODUITS[id]).filter(p => p && p.vign);
-  const annotations = [['mcs-01', p => cm(p)], ['terracotta', p => prix(Math.round(p.prix * 100), lang)], ['sus-lnb-34', p => cm(p)]]
+  // meubles repérés sur la photo du héros (le lit existe en deux versions « Cloud Bubble » : on n'affiche pas son prix)
+  const enEuros = p => prix(Math.round(p.prix * 100), lang);
+  const annotations = [['cbb-03', () => (lang === 'fr' ? 'bouclette' : 'bouclé')], ['fauteuil-velours-terracotta-pietement-plein-terra', enEuros], ['lst-min-03', enEuros], ['wom-wall-2414', enEuros]]
     .map(([id, f]) => PRODUITS[id] && [PRODUITS[id].nom, LIBELLES[PRODUITS[id].fam] || '', f(PRODUITS[id])]).filter(Boolean);
   const ld = [
     {
       '@context': 'https://schema.org', '@type': 'WebApplication', name: MARQUE.nom, url: `${MARQUE.site}/${lang}`, inLanguage: lang,
-      applicationCategory: 'DesignApplication', operatingSystem: 'Web', description: t.meta.description, image: `${MARQUE.site}/images/accueil-photo-apres.jpg`,
+      applicationCategory: 'DesignApplication', operatingSystem: 'Web', description: t.meta.description, image: `${MARQUE.site}/images/chambre-rendu-1200.jpg`,
       publisher: { '@type': 'Organization', name: MARQUE.editeur },
       offers: PACKS.map(p => ({ '@type': 'Offer', name: remplir(t.tarifs.credits, { n: p.credits }), price: (p.prix / 100).toFixed(2), priceCurrency: 'EUR' }))
     },
@@ -106,7 +111,7 @@ export default async function Accueil({ params }) {
           <figure className="acc-trou" data-trou>
             <div className="acc-trou__cadre" data-trou-cadre>
               <div className="acc-trou__plan" data-parallaxe>
-                <img src="/images/accueil-maquette.jpg" alt={a.visuelAlt} width="2400" height="1500" fetchPriority="high" />
+                <img src={RENDU(2048)} srcSet={`${RENDU(1200)} 1200w, ${RENDU(2048)} 2048w, ${RENDU(2400)} 2400w`} sizes="100vw" alt={a.visuelAlt} width="2400" height="1600" fetchPriority="high" />
                 {annotations.map(([nom, famille, valeur], i) => (
                   <span key={nom} className={`acc-note acc-note--${i + 1}`} data-note><span className="acc-note__etiquette"><b>{nom}</b><span className="acc-mono">{famille} · {valeur}</span></span></span>
                 ))}
@@ -124,9 +129,9 @@ export default async function Accueil({ params }) {
           </div>
           <div className="acc-aa__cadre" data-aa-cadre>
             <div className="acc-aa__scene" data-aa>
-              <img className="acc-aa__img" src="/images/accueil-photo-avant.jpg" alt={a.avantAlt} width="2000" height="1250" loading="lazy" />
+              <img className="acc-aa__img" src={MAQUETTE(2048)} srcSet={`${MAQUETTE(1200)} 1200w, ${MAQUETTE(2048)} 2048w`} sizes="(min-width: 760px) 94vw, 100vw" alt={a.avantAlt} width="2048" height="1365" loading="lazy" />
               <div className="acc-aa__apres" data-aa-apres>
-                <img className="acc-aa__img" src="/images/accueil-photo-apres.jpg" alt={a.apresAlt} width="2000" height="1250" loading="lazy" />
+                <img className="acc-aa__img" src={RENDU(2048)} srcSet={`${RENDU(1200)} 1200w, ${RENDU(2048)} 2048w`} sizes="(min-width: 760px) 94vw, 100vw" alt={a.apresAlt} width="2048" height="1365" loading="lazy" />
               </div>
               <span className="acc-aa__ligne" data-aa-ligne aria-hidden="true" />
               <span className="acc-mono acc-aa__etiquette acc-aa__etiquette--avant">{a.avant}</span>
