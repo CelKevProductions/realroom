@@ -3,11 +3,11 @@
 ou plusieurs zips, à envoyer à Claude pour refaire les meubles en 3D d'après les vraies photos.
 
 Aucune clé ni dépendance : Python 3 seul. Lit le catalogue publié par le site, télécharge
-2 photos par produit (réduites, ~40 Ko chacune) et range tout par identifiant de produit.
+jusqu'à 4 photos par produit (réduites, ~40 Ko chacune) et range tout par identifiant de produit.
 
   python3 photos_produits.py                  # tout le catalogue -> photos-produits-1.zip, -2.zip…
   python3 photos_produits.py --familles lit fauteuil
-  python3 photos_produits.py --ids terracotta rce-05 --par-produit 4
+  python3 photos_produits.py --ids terracotta rce-05 mcs-01
 """
 import argparse, concurrent.futures as cf, io, json, re, sys, time, urllib.request, zipfile
 
@@ -37,7 +37,7 @@ def a_la_largeur(url, largeur):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--catalogue', default=CATALOGUE, help='adresse ou chemin du catalogue.json')
-    ap.add_argument('--par-produit', type=int, default=2, help='photos par produit (défaut 2)')
+    ap.add_argument('--par-produit', type=int, default=4, help='photos par produit (défaut 4, le maximum publié)')
     ap.add_argument('--largeur', type=int, default=560, help='largeur des photos en pixels (défaut 560)')
     ap.add_argument('--familles', nargs='*', help='seulement ces familles (lit, fauteuil, canape…)')
     ap.add_argument('--ids', nargs='*', help='seulement ces produits (identifiants du catalogue)')
