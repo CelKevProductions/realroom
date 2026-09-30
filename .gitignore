@@ -11,3 +11,4 @@ tests/harnais/*.bundle.js
 __pycache__/
 *.log
 .DS_Store
+tests/harnais/galerie.html
