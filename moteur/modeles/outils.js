@@ -15,7 +15,7 @@
    suspensions : origine au plafond.
    ================================================================= */
 import * as THREE from 'three';
-import { M, mesh, place, groupe, alea, LUMINEUX } from '../meubles.js';
+import { M, mesh, place, groupe, alea, LUMINEUX, cyl, sphere, instances } from '../meubles.js';
 
 export const TAU = Math.PI * 2;
 export const V3 = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
@@ -158,6 +158,12 @@ export function geoTambour(r, h, o = {}) {
 }
 export function tambour(parent, r, h, m, x = 0, y = 0, z = 0, o = {}) {
   return place(parent, mesh(geoTambour(r, h, o), m), x, y, z, o.ry || 0);
+}
+// galette ovale : tambour étiré (demi-axes a en x, b en z), pour les assises des fauteuils ronds
+export function galette(parent, a, b, h, m, x = 0, y = 0, z = 0, o = {}) {
+  const r = Math.max(a, b), me = tambour(parent, r, h, m, x, y, z, o);
+  me.scale.set(a / r, 1, b / r);
+  return me;
 }
 // pièce tournée d'après un profil [[rayon, y], …] (vasques, pieds, globes)
 export function tourne(parent, profil, m, x = 0, y = 0, z = 0, seg = 40, phi0 = 0, phiL = TAU) {
@@ -320,13 +326,42 @@ function carteNormale(n, h, force) {
   t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 4;
   return t;
 }
-const GRAINS = {};
+const GRAINS = {}, HAUTEURS = {};
+// reliefs de tapissier : en plus du grain, une ombre douce dans les creux (carte de couleur)
+export const RELIEFS = new Set(['croco', 'capiton', 'cannelure', 'lignes', 'matelasse', 'galets', 'carres', 'cotes']);
+const OMBRE = { croco: .1, capiton: .5, cannelure: .38, lignes: .38, matelasse: .22, galets: .3, carres: .32, cotes: .18 };
 // grain : hauteur générée une fois, partagée par toutes les couleurs
 export function grain(nom) {
   if (GRAINS[nom]) return GRAINS[nom];
   const n = 256;
   let h, force = 3;
   switch (nom) {
+    case 'capiton': {       // capitonnage chesterfield : boutons en losanges, coussinets bombés
+      h = new Float32Array(n * n); const k = 4;
+      for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+        const x = i / n * k, y = j / n * k, q0 = Math.round(y / .5);
+        let d = 9;
+        for (let q = q0 - 1; q <= q0 + 1; q++) { const ox = (((q % 2) + 2) % 2) * .5, m0 = Math.round(x - ox); for (let m = m0 - 1; m <= m0 + 1; m++) d = Math.min(d, Math.hypot(x - (m + ox), y - q * .5)); }
+        h[j * n + i] = Math.sqrt(Math.min(1, d / .5));
+      }
+      force = 9; break;
+    }
+    case 'croco': {         // écailles de crocodile : rangées de tuiles rectangulaires bombées
+      h = new Float32Array(n * n); const r = alea(141), rangs = 10, bords = [];
+      for (let q = 0; q < rangs; q++) { const b = [0]; while (b[b.length - 1] < 1) b.push(b[b.length - 1] + .06 + r() * .1); b[b.length - 1] = 1; bords.push(b); }
+      for (let j = 0; j < n; j++) {
+        const y = j / n * rangs, q = Math.floor(y), fy = y - q, b = bords[q];
+        for (let i = 0; i < n; i++) {
+          const x = i / n; let k = 0; while (b[k + 1] < x) k++;
+          const dx = Math.min(x - b[k], b[k + 1] - x) / (b[k + 1] - b[k]), dy = Math.min(fy, 1 - fy);
+          h[j * n + i] = Math.sqrt(Math.min(1, Math.min(dx * 3, dy * 3)));
+        }
+      }
+      force = 6; break;
+    }
+    case 'cannelure': { h = new Float32Array(n * n); for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) h[j * n + i] = Math.pow(Math.abs(Math.sin(i / n * Math.PI * 8)), .45); force = 7; break; }
+    case 'lignes': { h = new Float32Array(n * n); for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) h[j * n + i] = Math.pow(Math.abs(Math.sin(j / n * Math.PI * 8)), .45); force = 7; break; }
+    case 'carres': { h = new Float32Array(n * n); for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) h[j * n + i] = Math.pow(Math.abs(Math.sin(i / n * Math.PI * 5) * Math.sin(j / n * Math.PI * 5)), .35); force = 7; break; }
     case 'boucle': {        // petites boucles serrées
       h = new Float32Array(n * n);
       const r = alea(11), rb = 6.5;
@@ -357,8 +392,28 @@ export function grain(nom) {
     case 'pierre': h = fbm(n, 8, 4, 71); force = 2; break;
     default: h = fbm(n, 6, 3, 1); force = 1;
   }
+  HAUTEURS[nom] = h;
   GRAINS[nom] = carteNormale(n, h, force);
   return GRAINS[nom];
+}
+// ombre des reliefs : facteur de luminosité (creux plus sombres), 0..1 par pixel de la tuile
+function facteurOmbre(nom) {
+  grain(nom);
+  const h = HAUTEURS[nom], f = new Float32Array(h.length);
+  let mn = 1e9, mx = -1e9;
+  for (const v of h) { mn = Math.min(mn, v); mx = Math.max(mx, v); }
+  const k = OMBRE[nom] ?? .4;
+  for (let i = 0; i < h.length; i++) f[i] = 1 - k + k * Math.pow((h[i] - mn) / (mx - mn || 1), .6);
+  return f;
+}
+// carte de couleur : couleur unie ou motif, assombrie dans les creux du relief
+function texteOmbree(nom, source) {
+  const n = 256, f = facteurOmbre(nom), c = canvas(n), x = c.getContext('2d');
+  if (source) x.drawImage(source, 0, 0, n, n); else { x.fillStyle = '#FFFFFF'; x.fillRect(0, 0, n, n); }
+  const img = x.getImageData(0, 0, n, n);
+  for (let i = 0; i < n * n; i++) for (let k = 0; k < 3; k++) img.data[i * 4 + k] *= f[i];
+  x.putImageData(img, 0, 0);
+  return textureCouleur(c);
 }
 
 /* ---------------------------------------------------------------
@@ -399,7 +454,7 @@ export function motif(nom, couleurs = []) {
       const v = fbmDeforme(n, 5, 6, 81, .35, .62), d = fbm(n, 32, 2, 82);
       for (let i = 0; i < v.length; i++) v[i] += (d[i] - .5) * .06;
       const [fond = '#1D2030', mi = '#5D6476', clair = '#C2AE88', vif = '#E3D3AE'] = couleurs;
-      c = seuils(n, v, quantiles(v, [[0, fond], [.5, mi], [.62, clair], [.84, vif]]), .012);
+      c = seuils(n, v, quantiles(v, [[0, fond], [.54, mi], [.67, clair], [.87, vif]]), .012);
       break;
     }
     case 'albatre': {      // albâtre : blanc chaud, veines douces
@@ -426,11 +481,134 @@ export function motif(nom, couleurs = []) {
       x.putImageData(img, 0, 0);
       break;
     }
+    case 'chine': {        // tissu chiné : fond + mouchetures de couleurs
+      const [fond = '#3B4C8E', ...autres] = couleurs, r = alea(151);
+      c = canvas(n); const x = c.getContext('2d');
+      x.fillStyle = fond; x.fillRect(0, 0, n, n);
+      const cols = autres.length ? autres : ['#6A7BC0', '#22305E'];
+      for (let i = 0; i < 14000; i++) { x.fillStyle = cols[i % cols.length]; x.globalAlpha = .35 + r() * .5; x.fillRect(r() * n, r() * n, 1 + r() * 3, 1 + r() * 1.5); }
+      x.globalAlpha = 1;
+      break;
+    }
+    case 'python': {       // peau de python : écailles cernées, taches plus sombres
+      const [bord = '#132228', ...tons] = couleurs, cl = tons.length ? tons : ['#2E6B6E', '#345C7A', '#3F7A5E'];
+      const cel = cellules(n, 900, 161, .55), tache = fbm(n, 4, 3, 162), r = alea(163), teintes = [];
+      for (let k = 0; k < cel.nb; k++) teintes.push(hexRgb(cl[(r() * cl.length) | 0]).map(v => v * (.85 + r() * .3)));
+      const b = hexRgb(bord);
+      c = canvas(n); const x = c.getContext('2d'), img = x.createImageData(n, n);
+      for (let i = 0; i < n * n; i++) {
+        const e = clamp((cel.f2[i] - cel.f1[i]) * 6, 0, 1), t = teintes[cel.id[i]], sombre = tache[i] > .58 ? .55 : 1;
+        for (let k = 0; k < 3; k++) img.data[i * 4 + k] = lerp(b[k], t[k] * sombre, e);
+        img.data[i * 4 + 3] = 255;
+      }
+      x.putImageData(img, 0, 0);
+      break;
+    }
+    case 'rayures': {      // rayures verticales régulières (couleurs alternées)
+      const cl = couleurs.length > 1 ? couleurs : ['#1E1E22', '#ECE6D8'], k = 12;
+      c = canvas(n); const x = c.getContext('2d');
+      for (let i = 0; i < k; i++) { x.fillStyle = cl[i % cl.length]; x.fillRect(i * n / k, 0, n / k + 1, n); }
+      break;
+    }
+    case 'floral': {       // grandes fleurs et feuillages sur fond uni
+      const [fond = '#A9ABA6', f1 = '#2A4FA8', f2 = '#7FA0DE', feuille = '#B9C93A', coeur = '#F2E6B0'] = couleurs, r = alea(171);
+      c = canvas(n); const x = c.getContext('2d');
+      x.fillStyle = fond; x.fillRect(0, 0, n, n);
+      const partout = (fn) => { for (const [dx, dy] of [[0, 0], [n, 0], [-n, 0], [0, n], [0, -n], [n, n], [-n, -n], [n, -n], [-n, n]]) { x.save(); x.translate(dx, dy); fn(); x.restore(); } };
+      for (let i = 0; i < 26; i++) {
+        const px = r() * n, py = r() * n, a = r() * TAU, l = 18 + r() * 30;
+        partout(() => { x.save(); x.translate(px, py); x.rotate(a); x.fillStyle = feuille; x.globalAlpha = .9; x.beginPath(); x.ellipse(0, 0, l, l * .32, 0, 0, TAU); x.fill(); x.restore(); });
+      }
+      for (let i = 0; i < 9; i++) {
+        const px = r() * n, py = r() * n, rr = 30 + r() * 34, np = 8 + (r() * 6 | 0), a0 = r() * TAU;
+        partout(() => {
+          x.save(); x.translate(px, py);
+          for (let k = 0; k < np; k++) { x.save(); x.rotate(a0 + k / np * TAU); x.fillStyle = k % 2 ? f1 : f2; x.globalAlpha = .95; x.beginPath(); x.ellipse(rr * .55, 0, rr * .5, rr * .2, 0, 0, TAU); x.fill(); x.restore(); }
+          x.fillStyle = coeur; x.beginPath(); x.arc(0, 0, rr * .18, 0, TAU); x.fill(); x.restore();
+        });
+      }
+      x.globalAlpha = 1;
+      break;
+    }
+    case 'zebre': {        // rayures zébrées ondulantes : fond, rayure sombre, rayure claire
+      const [fond = '#EFE4C8', sombre = '#18181B', clair = '#C99E2E'] = couleurs, w = fbm(n, 3, 3, 181), a = hexRgb(fond), b = hexRgb(sombre), cc = hexRgb(clair);
+      c = canvas(n); const x = c.getContext('2d'), img = x.createImageData(n, n);
+      for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+        const k = j * n + i, v = Math.sin(TAU * (i / n * 7 + (w[k] - .5) * 1.6));
+        const col = v > .25 ? b : v < -.35 ? cc : a;
+        img.data[k * 4] = col[0]; img.data[k * 4 + 1] = col[1]; img.data[k * 4 + 2] = col[2]; img.data[k * 4 + 3] = 255;
+      }
+      x.putImageData(img, 0, 0);
+      break;
+    }
+    case 'geometrique': {  // cercles concentriques et losanges façon op-art
+      const [fond = '#1E2A55', ...anneaux] = couleurs, cl = anneaux.length ? anneaux : ['#E07AA0', '#3FA7B5', '#F2EFE9', '#1E2A55'];
+      c = canvas(n); const x = c.getContext('2d');
+      x.fillStyle = fond; x.fillRect(0, 0, n, n);
+      const k = 3, t = n / k;
+      for (let j = 0; j < k; j++) for (let i = 0; i < k; i++) {
+        const cx = (i + .5) * t, cy = (j + .5) * t;
+        x.save(); x.translate(cx, cy); x.rotate(Math.PI / 4); x.fillStyle = cl[1 % cl.length]; x.fillRect(-t * .36, -t * .36, t * .72, t * .72); x.restore();
+        for (let q = 0; q < 4; q++) { x.fillStyle = cl[q % cl.length]; x.beginPath(); x.arc(cx, cy, t * (.34 - q * .08), 0, TAU); x.fill(); }
+      }
+      break;
+    }
+    case 'pied-de-poule': { // pied-de-poule : damier à dents en escalier (16 motifs par tuile)
+      const [clair = '#F1EEE7', fonce = '#1A1A1C'] = couleurs, a = hexRgb(clair), b = hexRgb(fonce), px = n / 16 / 8;
+      c = canvas(n); const x = c.getContext('2d'), img = x.createImageData(n, n);
+      for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+        const X = Math.floor(i / px) % 8, Y = Math.floor(j / px) % 8, bx = X >> 2, by = Y >> 2;
+        const sombre = bx === by ? true : bx === 1 && by === 0 ? (X - 4) + Y >= 4 : X - (Y - 4) >= 1;
+        const col = sombre ? b : a, k = (j * n + i) * 4;
+        img.data[k] = col[0]; img.data[k + 1] = col[1]; img.data[k + 2] = col[2]; img.data[k + 3] = 255;
+      }
+      x.putImageData(img, 0, 0);
+      break;
+    }
+    case 'pois': {         // pois réguliers en quinconce : fond, pois (k pois par tuile)
+      const [fond = '#4E7A4A', point = '#EEF0E6'] = couleurs, k = 8, t = n / k;
+      c = canvas(n); const x = c.getContext('2d');
+      x.fillStyle = fond; x.fillRect(0, 0, n, n); x.fillStyle = point;
+      for (let j = 0; j <= k; j++) for (let i = 0; i <= k; i++) { x.beginPath(); x.arc((i + (j % 2) * .5) * t, j * t, t * .26, 0, TAU); x.fill(); }
+      break;
+    }
+    case 'bambou': {       // tiges et feuilles de bambou noires sur fond clair
+      const [fond = '#F1EFEA', encre = '#1C1C1E'] = couleurs, r = alea(191);
+      c = canvas(n); const x = c.getContext('2d');
+      x.fillStyle = fond; x.fillRect(0, 0, n, n); x.fillStyle = encre; x.strokeStyle = encre;
+      for (let i = 0; i < 5; i++) {
+        const px = (i + .2 + r() * .5) * n / 5, w = 6 + r() * 6;
+        x.fillRect(px, 0, w, n);
+        for (let y = r() * 60; y < n; y += 70 + r() * 40) { x.fillStyle = fond; x.fillRect(px - 1, y, w + 2, 3); x.fillStyle = encre; x.fillRect(px - 3, y + 3, w + 6, 2); }
+      }
+      for (let i = 0; i < 70; i++) {
+        const px = r() * n, py = r() * n, a = (r() - .5) * 1.6 + (r() < .5 ? 0 : Math.PI), l = 30 + r() * 40;
+        for (const [dx, dy] of [[0, 0], [n, 0], [-n, 0], [0, n], [0, -n]]) { x.save(); x.translate(px + dx, py + dy); x.rotate(a); x.beginPath(); x.ellipse(l / 2, 0, l / 2, l * .12, 0, 0, TAU); x.fill(); x.restore(); }
+      }
+      break;
+    }
+    case 'traits': {       // coups de pinceau noirs et gris sur fond clair (Bubble Art)
+      const [fond = '#ECE9E2', noir = '#1E1E22', gris = '#7C7C80'] = couleurs, r = alea(111);
+      c = canvas(n); const x = c.getContext('2d');
+      x.fillStyle = fond; x.fillRect(0, 0, n, n); x.lineCap = 'round';
+      for (let i = 0; i < 46; i++) {
+        const px = r() * n, py = r() * n, l = 50 + r() * 90, a = (r() - .5) * .8 + (r() < .2 ? Math.PI / 2 : 0), w = 16 + r() * 22;
+        x.strokeStyle = r() < .55 ? noir : gris; x.lineWidth = w; x.globalAlpha = .75 + r() * .25;
+        for (const [dx, dy] of [[0, 0], [n, 0], [-n, 0], [0, n], [0, -n]]) {
+          x.beginPath(); x.moveTo(px + dx, py + dy);
+          x.quadraticCurveTo(px + dx + Math.cos(a) * l * .5 + (r() - .5) * 20, py + dy + Math.sin(a) * l * .5 + (r() - .5) * 20, px + dx + Math.cos(a) * l, py + dy + Math.sin(a) * l);
+          x.stroke();
+        }
+      }
+      x.globalAlpha = 1;
+      break;
+    }
     default: {
       c = canvas(8); const x = c.getContext('2d'); x.fillStyle = couleurs[0] || '#CCCCCC'; x.fillRect(0, 0, 8, 8);
     }
   }
   MOTIFS[cle] = textureCouleur(c);
+  MOTIFS[cle].userData.canvas = c;
   return MOTIFS[cle];
 }
 
@@ -456,10 +634,10 @@ export function matiere(type, couleur, o = {}) {
   if (MATIERES[cle]) return MATIERES[cle];
   const R = REGLAGES[type] || REGLAGES.tissu, gr = o.grain || R.grain;
   const base = o.motif ? '#FFFFFF' : couleur;
-  const clair = new THREE.Color(couleur).lerp(new THREE.Color('#FFFFFF'), .35);
+  const clair = new THREE.Color(couleur).lerp(new THREE.Color('#FFFFFF'), .28);
   let m;
   switch (type) {
-    case 'velours': m = new THREE.MeshPhysicalMaterial({ color: base, roughness: o.rough ?? .8, sheen: 1, sheenRoughness: .4, sheenColor: clair }); break;
+    case 'velours': m = new THREE.MeshPhysicalMaterial({ color: base, roughness: o.rough ?? .8, sheen: .8, sheenRoughness: .42, sheenColor: clair }); break;
     case 'chenille': m = new THREE.MeshPhysicalMaterial({ color: base, roughness: o.rough ?? .92, sheen: .6, sheenRoughness: .55, sheenColor: clair }); break;
     case 'cotele': m = new THREE.MeshPhysicalMaterial({ color: base, roughness: o.rough ?? .86, sheen: .8, sheenRoughness: .45, sheenColor: clair }); break;
     case 'cuir': m = new THREE.MeshPhysicalMaterial({ color: base, roughness: o.rough ?? .48, clearcoat: .35, clearcoatRoughness: .42 }); break;
@@ -469,6 +647,8 @@ export function matiere(type, couleur, o = {}) {
   }
   if (o.motif) m.map = motif(o.motif, o.couleurs || [couleur]);
   if (gr) { m.normalMap = grain(gr); const k = o.ns ?? R.ns; m.normalScale = new THREE.Vector2(k, k); }
+  // relief de tapissier : creux ombrés (sur la couleur ou sur le motif)
+  if (gr && RELIEFS.has(gr) && type !== 'bois') m.map = texteOmbree(gr, m.map ? m.map.userData.canvas : null);
   if (m.map || m.normalMap) m.userData.uvMonde = o.echelle || (m.map && type !== 'bois' ? .5 : R.uv || .3);
   m.name = 'modele:' + cle;
   MATIERES[cle] = m;
@@ -512,3 +692,113 @@ export function formeBandeArc(ri, re, a0, a1, cz = 0, n = 48) {
 }
 // point d'un arc vu de dessus, en coordonnées du monde (centre de l'arc en z = zc, π/2 = arrière)
 export const surArc = (a, r, y, zc) => [Math.cos(a) * r, y, zc - Math.sin(a) * r];
+
+/* ---------------------------------------------------------------
+   Coque paramétrique épaisse : f(u, t) → [x, y, z] décrit la face
+   extérieure (u : autour, de 0 à 1 ; t : du bas vers le haut) ; la face
+   intérieure est décalée de ep vers l'axe (cx, cz), les bords sont fermés
+   et arrondis par le lissage. Coques de fauteuils, baignoires, vasques.
+   --------------------------------------------------------------- */
+export function geoCoqueParam(f, o = {}) {
+  const nu = o.nu || 48, nt = o.nt || 18, ep = o.ep ?? .04, cx = o.cx || 0, cz = o.cz || 0, ferme = !!o.ferme;
+  const cols = ferme ? nu : nu + 1, P = [];
+  for (let j = 0; j <= nt; j++) for (let i = 0; i < cols; i++) P.push(V3(...f(i / nu, j / nt)));
+  const at = (i, j) => P[j * cols + (ferme ? ((i % nu) + nu) % nu : clamp(i, 0, nu))];
+  const N = P.map((p, k) => {
+    const i = k % cols, j = (k / cols) | 0;
+    const du = at(i + 1, j).clone().sub(at(i - 1, j)), dt = at(i, Math.min(nt, j + 1)).clone().sub(at(i, Math.max(0, j - 1)));
+    const n = V3().crossVectors(dt, du);
+    if (n.lengthSq() < 1e-12) n.set(p.x - cx, 0, p.z - cz);
+    n.normalize();
+    if (n.x * (p.x - cx) + n.z * (p.z - cz) < 0) n.negate();
+    return n;
+  });
+  const Q = P.map((p, k) => p.clone().addScaledVector(N[k], -(typeof ep === 'function' ? ep((k % cols) / nu, ((k / cols) | 0) / nt) : ep)));
+  const pos = [];
+  P.concat(Q).forEach(v => pos.push(v.x, v.y, v.z));
+  const nP = P.length, idx = [];
+  const id = (i, j, dedans) => (dedans ? nP : 0) + j * cols + (ferme ? i % nu : i);
+  // orientation : l'extérieur doit regarder vers N
+  const a0 = at(0, 0), du0 = at(1, 0).clone().sub(a0), dt0 = at(0, 1).clone().sub(a0);
+  const sens = V3().crossVectors(du0, dt0).dot(N[0]) > 0;
+  const quad = (a, b, c, d, inv) => { if (sens !== inv) idx.push(a, b, c, b, d, c); else idx.push(a, c, b, b, c, d); };
+  const iu = ferme ? nu : nu;
+  for (let j = 0; j < nt; j++) for (let i = 0; i < iu; i++) {
+    quad(id(i, j), id(i + 1, j), id(i, j + 1), id(i + 1, j + 1), false);
+    quad(id(i, j, 1), id(i + 1, j, 1), id(i, j + 1, 1), id(i + 1, j + 1, 1), true);
+  }
+  // bords : haut et bas, puis côtés si la coque est ouverte
+  for (let i = 0; i < iu; i++) {
+    quad(id(i, nt), id(i + 1, nt), id(i, nt, 1), id(i + 1, nt, 1), false);
+    quad(id(i, 0), id(i + 1, 0), id(i, 0, 1), id(i + 1, 0, 1), true);
+  }
+  if (!ferme) for (let j = 0; j < nt; j++) {
+    quad(id(0, j), id(0, j, 1), id(0, j + 1), id(0, j + 1, 1), false);
+    quad(id(nu, j), id(nu, j, 1), id(nu, j + 1), id(nu, j + 1, 1), true);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  return g;
+}
+export function coqueParam(parent, f, m, o = {}) {
+  const me = mesh(geoCoqueParam(f, o), m);
+  parent.add(me);
+  return me;
+}
+// contour en U vu de dessus (dossier + accoudoirs) : u de 0 (avant gauche) à 1 (avant droit)
+// demi-largeur a, profondeur b (de l'axe vers l'arrière), avancée des bras av ; centre en z = zc
+export function planU(u, a, b, av, zc = 0) {
+  const s = u * 2 - 1, phi = s * (Math.PI / 2 + av);
+  return [a * Math.sin(phi), zc - b * Math.cos(phi)];
+}
+
+/* ---------------------------------------------------------------
+   Pieds et piètements
+   --------------------------------------------------------------- */
+// pieds aux positions [[x, z], …] ; type : fuseau, droit, carre, tourne, boule, compas, roulette, luge
+export function pieds(g, pos, h, m, type = 'fuseau', o = {}) {
+  const r = o.r || .016;
+  pos.forEach(([x, z]) => {
+    switch (type) {
+      case 'droit': cyl(g, r, r, h, m, x, 0, z, 12); break;
+      case 'carre': { const b = mesh(new THREE.BoxGeometry(r * 2, h, r * 2), m); place(g, b, x, h / 2, z); break; }
+      case 'tourne': tourne(g, [[0, 0], [r * .7, 0], [r * .8, h * .1], [r * .6, h * .25], [r * 1.1, h * .5], [r * .7, h * .75], [r * .9, h * .9], [r * 1.1, h], [0, h]], m, x, 0, z, 14); break;
+      case 'roulette': tourne(g, [[0, h * .2], [r * .8, h * .22], [r * 1.1, h * .5], [r * .8, h * .8], [r * 1.2, h], [0, h]], m, x, 0, z, 14); sphere(g, h * .11, M('laiton'), x, h * .11, z, 1, 1, 1, 10); break;
+      case 'boule': sphere(g, Math.max(r * 1.8, h / 2), m, x, Math.max(r * 1.8, h / 2), z, 1, 1, 1, 14); break;
+      case 'compas': {        // pied fuselé incliné vers l'extérieur
+        const k = o.ecart ?? .12, l = Math.hypot(x, z) || 1, dx = x / l, dz = z / l;
+        const p = tourne(g, [[0, 0], [r * .55, 0], [r, h], [0, h]], m, x + dx * h * k / 2, 0, z + dz * h * k / 2, 12);
+        p.rotation.set(dz * k, 0, -dx * k);
+        break;
+      }
+      default: tourne(g, [[0, 0], [r * .55, 0], [r, h], [0, h]], m, x, 0, z, 12);
+    }
+  });
+}
+// coins d'un rectangle (pour pieds) : demi-largeur a, demi-profondeur b
+export const coins = (a, b) => [[-a, -b], [a, -b], [-a, b], [a, b]];
+// piètement pivotant : disque, colonne (type 'disque') ou croix à branches ('etoile', n branches)
+export function pivot(g, r, h, m, type = 'disque', n = 4) {
+  if (type === 'etoile') {
+    for (let i = 0; i < n; i++) { const a = i / n * TAU + Math.PI / n; boudin(g, [[0, .05, 0], [Math.cos(a) * r * .6, .035, Math.sin(a) * r * .6], [Math.cos(a) * r, .02, Math.sin(a) * r]], t => .022 - .008 * t, m, { seg: 12, radial: 8 }); }
+    cyl(g, .035, .04, h, m, 0, .03, 0, 16);
+  } else {
+    tourne(g, [[0, 0], [r, 0], [r, .008], [r * .9, .022], [0, .026]], m, 0, 0, 0, 40);
+    cyl(g, .03, .04, h, m, 0, .02, 0, 16);
+  }
+}
+// boutons de capitonnage aux positions [[x, y, z], …]
+export function boutons(g, pos, m, r = .012) {
+  return instances(g, new THREE.SphereGeometry(r, 8, 6), m, pos.map(p => [p[0], p[1], p[2], 0, 0, 0, 1, 1, 1, .5]));
+}
+// bourrelet arrondi sur le bord haut d'une coque paramétrique (f, épaisseur ep, axe cx, cz)
+export function bordCoque(parent, f, ep, m, o = {}) {
+  const n = o.n || 40, cx = o.cx || 0, cz = o.cz || 0, pts = [];
+  for (let i = 0; i <= n; i++) {
+    const [x, y, z] = f(i / n, 1), l = Math.hypot(x - cx, z - cz) || 1;
+    pts.push([x - (x - cx) / l * ep / 2, y, z - (z - cz) / l * ep / 2]);
+  }
+  return boudin(parent, pts, o.r || ep * .6, m, { plan: true, kv: o.kv || 1, seg: n * 3, radial: 14, kb: o.kb ?? .9 });
+}

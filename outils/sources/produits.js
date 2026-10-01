@@ -390,6 +390,11 @@ window.MC_DATA = (function () {
     P[h].boutique = true;
   });
   Object.keys(P).forEach(h => { if (!P[h].fam) P[h].fam = FAM_CAT[P[h].cat] || ''; });
+  // dimensions corrigées d'après les photos des produits (fiche absente ou manifestement fausse) : [l, p, h] en m
+  const DIMS = {
+    'boxing-glove': [.82, 1.6, .8]
+  };
+  Object.keys(DIMS).forEach(h => { if (P[h]) { P[h].dim = DIMS[h]; P[h].dimsLues = false; } });
 
   /* ---------------------------------------------------------------
      Les six espaces de la visite. Chaque emplacement propose un choix

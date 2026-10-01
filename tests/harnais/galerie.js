@@ -45,12 +45,12 @@ function vider() {
 }
 
 // rend un produit ; azimut en degrés (0 = de face, 35 = trois quarts)
-window.__rendre = (id, azimut = 32, elevation = 16) => {
+window.__rendre = (id, azimut = 32, elevation = 16, generique = false) => {
   vider();
   const p = P[id];
   if (!p) return null;
   graine(hash(id));
-  const opts = SUSPENDUS.has(p.fam) ? { hMax: 1.1, h: .8 } : {};
+  const opts = Object.assign(SUSPENDUS.has(p.fam) ? { hMax: 1.1, h: .8 } : {}, generique ? { generique: true } : {});
   const g = construireProduit(id, opts);
   cuire(g);
   const porteur = new THREE.Group();

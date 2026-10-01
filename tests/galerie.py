@@ -8,6 +8,7 @@ elles. Sert à juger la ressemblance famille par famille. Sorties dans .essais/g
   python3 tests/galerie.py --ids terracotta rce-05  # quelques produits
   python3 tests/galerie.py --photos ~/photos        # avec les photos (dossiers <id>/1.jpg…)
   python3 tests/galerie.py --vues --ids mcs-01       # quatre vues par produit (face, 3/4, côté, dessus)
+  python3 tests/galerie.py --avant-apres --photos ~/photos --ids …   # photo, maquette générique, modèle refait
 """
 import argparse, asyncio, base64, functools, http.server, io, pathlib, subprocess, threading
 from PIL import Image, ImageDraw, ImageFont
@@ -95,6 +96,8 @@ async def main():
     ap.add_argument('--photos', type=pathlib.Path, help='dossier des photos (un sous-dossier par produit)')
     ap.add_argument('--par-planche', type=int, default=12)
     ap.add_argument('--vues', action='store_true', help='quatre vues par produit, avec ses photos')
+    ap.add_argument('--avant-apres', action='store_true', help='photos, maquette générique et modèle refait')
+    ap.add_argument('--sortie', default='avant-apres', help='nom des planches avant/après')
     a = ap.parse_args()
     construire()
     srv = servir()
@@ -108,6 +111,37 @@ async def main():
         await page.wait_for_function('window.__pret === true', timeout=90000)
         produits = await page.evaluate('() => __ids()')
         choisis = [p for p in produits if (not a.familles or p['fam'] in a.familles) and (not a.ids or p['id'] in a.ids)]
+        if a.avant_apres:
+            lignes = []
+            for p in choisis:
+                rendus = []
+                for gen in (True, False):
+                    url = await page.evaluate('([id, g]) => __rendre(id, 32, 14, g)', [p['id'], gen])
+                    rendus.append(Image.open(io.BytesIO(base64.b64decode(url.split(',', 1)[1]))))
+                dossier = (a.photos / p['id']) if a.photos else None
+                photos = [Image.open(x) for x in sorted(dossier.glob('*.jpg'))[:2]] if dossier and dossier.exists() else []
+                lignes.append((p, photos, rendus))
+            C = 280
+            for k in range(0, len(lignes), a.par_planche):
+                lot = lignes[k:k + a.par_planche]
+                out = Image.new('RGB', (4 * (C + 6) + 6, len(lot) * (C + 26) + 34), 'white')
+                d = ImageDraw.Draw(out)
+                d.text((6, 8), 'Photos du produit · maquette d’avant · modèle refait d’après les photos', fill='black', font=police(14))
+                for i, (p, photos, rendus) in enumerate(lot):
+                    y = 34 + i * (C + 26)
+                    d.text((6, y), f"{p['nom']} — {p['titre'][:90]}", fill='black', font=police(12))
+                    cases = [carre(x, C) for x in photos[:2]] + [Image.new('RGB', (C, C), (230, 226, 218))] * (2 - len(photos[:2])) + [carre(r, C) for r in rendus]
+                    for j, c in enumerate(cases):
+                        out.paste(c, (6 + j * (C + 6), y + 18))
+                    d.text((6 + 2 * (C + 6) + 6, y + 22), 'avant', fill=(120, 110, 100), font=police(12))
+                    d.text((6 + 3 * (C + 6) + 6, y + 22), 'après', fill=(180, 70, 30), font=police(12))
+                chemin = SORTIE / f'{a.sortie}-{k // a.par_planche + 1}.jpg'
+                out.save(chemin, quality=86)
+                print(chemin.relative_to(RACINE))
+            print('erreurs :', erreurs or 'aucune')
+            await b.close()
+            srv.shutdown()
+            return
         if a.vues:
             (SORTIE / 'vues').mkdir(exist_ok=True)
             for p in choisis:

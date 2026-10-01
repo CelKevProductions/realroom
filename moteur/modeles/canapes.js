@@ -28,7 +28,7 @@ export const CANAPES = {
   'mcs-01'(p) {
     const g = groupe('canape');
     const [L, D, H] = p.dim;
-    const m = matiere('velours', '#2A2C38', { motif: 'mineral', couleurs: ['#16181F', '#3B4152', '#9C8D70', '#CDBFA0'], echelle: .5 });
+    const m = matiere('velours', '#2A2C38', { motif: 'mineral', couleurs: ['#15171E', '#383E4E', '#8C7F67', '#BDB094'], echelle: .5 });
     const e = Math.min(D, .95), A = arcCanape(L, D, e);
     const { re, ri, a0, a1, zc } = A, rm = (re + ri) / 2;
     // socle (assise) : bande en arc aux bouts ronds, arêtes très douces

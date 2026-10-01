@@ -1216,7 +1216,7 @@ function construireProduit(sku, o = {}) {
   if (!p) return groupe('vide');
   let g;
   // modèle fidèle s'il existe ; sinon pièces choisies : maquette détaillée ; reste : maquette générique
-  if (MODELES[sku] && p.dim) g = MODELES[sku](p, o);
+  if (MODELES[sku] && p.dim && !o.generique) g = MODELES[sku](p, o);
   else if (p.look) { const f = CAT_BUILD[p.cat]; g = f ? f(p.look, o) : groupe('vide'); }
   else g = construireCatalogue(p, o);
   g.userData.sku = sku;
