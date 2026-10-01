@@ -328,8 +328,8 @@ function carteNormale(n, h, force) {
 }
 const GRAINS = {}, HAUTEURS = {};
 // reliefs de tapissier : en plus du grain, une ombre douce dans les creux (carte de couleur)
-export const RELIEFS = new Set(['croco', 'capiton', 'cannelure', 'lignes', 'matelasse', 'galets', 'carres', 'cotes']);
-const OMBRE = { croco: .1, capiton: .5, cannelure: .38, lignes: .38, matelasse: .22, galets: .3, carres: .32, cotes: .18 };
+export const RELIEFS = new Set(['hexagones', 'croco', 'capiton', 'cannelure', 'lignes', 'matelasse', 'galets', 'carres', 'cotes']);
+const OMBRE = { hexagones: .35, croco: .1, capiton: .5, cannelure: .38, lignes: .38, matelasse: .22, galets: .3, carres: .32, cotes: .18 };
 // grain : hauteur générée une fois, partagée par toutes les couleurs
 export function grain(nom) {
   if (GRAINS[nom]) return GRAINS[nom];
@@ -358,6 +358,16 @@ export function grain(nom) {
         }
       }
       force = 6; break;
+    }
+    case 'hexagones': {     // matelassage en nid d'abeille
+      h = new Float32Array(n * n); const k = 7, m = 8;
+      for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+        const x = i / n * k, y = j / n * m, q0 = Math.round(y);
+        let d = 9;
+        for (let q = q0 - 1; q <= q0 + 1; q++) { const ox = (((q % 2) + 2) % 2) * .5, c0 = Math.round(x - ox); for (let c = c0 - 1; c <= c0 + 1; c++) d = Math.min(d, Math.hypot(x - (c + ox), (y - q) * .866)); }
+        h[j * n + i] = Math.sqrt(Math.max(0, 1 - Math.pow(d / .58, 2)));
+      }
+      force = 7; break;
     }
     case 'cannelure': { h = new Float32Array(n * n); for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) h[j * n + i] = Math.pow(Math.abs(Math.sin(i / n * Math.PI * 8)), .45); force = 7; break; }
     case 'lignes': { h = new Float32Array(n * n); for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) h[j * n + i] = Math.pow(Math.abs(Math.sin(j / n * Math.PI * 8)), .45); force = 7; break; }
@@ -587,13 +597,79 @@ export function motif(nom, couleurs = []) {
       }
       break;
     }
+    case 'pois-libres': {  // pois semés de tailles variées, cerclés : fond, pois, cerne
+      const [fond = '#D9532A', point = '#18181A', cerne = '#E8C33A'] = couleurs, r = alea(201);
+      c = canvas(n); const x = c.getContext('2d');
+      x.fillStyle = fond; x.fillRect(0, 0, n, n);
+      for (let i = 0; i < 26; i++) {
+        const px = r() * n, py = r() * n, rr = 14 + r() * 30;
+        for (const [dx, dy] of [[0, 0], [n, 0], [-n, 0], [0, n], [0, -n]]) {
+          x.fillStyle = cerne; x.beginPath(); x.ellipse(px + dx, py + dy, rr + 4, (rr + 4) * .85, 0, 0, TAU); x.fill();
+          x.fillStyle = point; x.beginPath(); x.ellipse(px + dx, py + dy, rr, rr * .85, 0, 0, TAU); x.fill();
+        }
+      }
+      break;
+    }
+    case 'vache': {        // peau de vache : grandes taches brunes sur blanc
+      const v = fbmDeforme(n, 3, 4, 211, .3, .55), [blanc = '#F2EFE8', brun = '#5A3A24', roux = '#8A5A34'] = couleurs;
+      c = seuils(n, v, quantiles(v, [[0, blanc], [.48, roux], [.54, brun]]), .01);
+      break;
+    }
+    case 'papillons': {    // petits papillons semés sur fond clair
+      const [fond = '#D9DFE2', a1 = '#2A3E6A', a2 = '#8A5A3A'] = couleurs, r = alea(231);
+      c = canvas(n); const x = c.getContext('2d');
+      x.fillStyle = fond; x.fillRect(0, 0, n, n);
+      for (let i = 0; i < 40; i++) {
+        const px = r() * n, py = r() * n, t = 8 + r() * 10, a = r() * TAU;
+        x.save(); x.translate(px, py); x.rotate(a); x.fillStyle = r() < .6 ? a1 : a2;
+        [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sy]) => { x.beginPath(); x.ellipse(sx * t * .55, sy * t * .4, t * (sy < 0 ? .6 : .42), t * .32, sx * sy * .5, 0, TAU); x.fill(); });
+        x.restore();
+      }
+      break;
+    }
+    case 'feuillage': {    // feuilles tropicales vertes et jaunes sur fond sombre
+      const [fond = '#1C2A1E', ...vs] = couleurs, cl = vs.length ? vs : ['#3E7A3A', '#7FAE3A', '#C9C24A', '#2E5A2E'], r = alea(241);
+      c = canvas(n); const x = c.getContext('2d');
+      x.fillStyle = fond; x.fillRect(0, 0, n, n);
+      for (let i = 0; i < 60; i++) {
+        const px = r() * n, py = r() * n, a = r() * TAU, l = 30 + r() * 50;
+        for (const [dx, dy] of [[0, 0], [n, 0], [-n, 0], [0, n], [0, -n]]) { x.save(); x.translate(px + dx, py + dy); x.rotate(a); x.fillStyle = cl[(r() * cl.length) | 0]; x.beginPath(); x.ellipse(l / 2, 0, l / 2, l * .22, 0, 0, TAU); x.fill(); x.restore(); }
+      }
+      break;
+    }
+    case 'journal': {      // coupures de journal (blocs de lignes) et papillons bleus sur fond blanc
+      const [fond = '#F1EFEA', encre = '#2A2A2C', bleu = '#4A7AB0'] = couleurs, r = alea(251);
+      c = canvas(n); const x = c.getContext('2d');
+      x.fillStyle = fond; x.fillRect(0, 0, n, n);
+      for (let i = 0; i < 16; i++) {
+        const px = r() * n, py = r() * n, w = 40 + r() * 60, h = 30 + r() * 60, a = (r() - .5) * .8;
+        x.save(); x.translate(px, py); x.rotate(a); x.fillStyle = '#FAF9F6'; x.fillRect(-w / 2, -h / 2, w, h); x.fillStyle = encre;
+        for (let y = -h / 2 + 4; y < h / 2 - 3; y += 4) x.fillRect(-w / 2 + 3, y, (w - 6) * (.6 + r() * .4), 1.5);
+        x.restore();
+      }
+      x.fillStyle = bleu;
+      for (let i = 0; i < 10; i++) { const px = r() * n, py = r() * n, t = 7 + r() * 6; [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sy]) => { x.beginPath(); x.ellipse(px + sx * t * .5, py + sy * t * .35, t * .5, t * .3, sx * sy * .5, 0, TAU); x.fill(); }); }
+      break;
+    }
+    case 'chevrons': {     // chevrons (zigzag) : couleurs alternées
+      const cl = couleurs.length > 1 ? couleurs : ['#2A4EA0', '#F1EEE7'], k = 10;
+      c = canvas(n); const x = c.getContext('2d'), img = x.createImageData(n, n);
+      const rgb = cl.map(hexRgb);
+      for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+        const u = i / n * k, v = j / n * k, z = Math.abs((u % 2) - 1), band = Math.floor(v * 2 + z * 2) % rgb.length, col = rgb[(band + rgb.length) % rgb.length], q = (j * n + i) * 4;
+        img.data[q] = col[0]; img.data[q + 1] = col[1]; img.data[q + 2] = col[2]; img.data[q + 3] = 255;
+      }
+      x.putImageData(img, 0, 0);
+      break;
+    }
     case 'traits': {       // coups de pinceau noirs et gris sur fond clair (Bubble Art)
       const [fond = '#ECE9E2', noir = '#1E1E22', gris = '#7C7C80'] = couleurs, r = alea(111);
       c = canvas(n); const x = c.getContext('2d');
       x.fillStyle = fond; x.fillRect(0, 0, n, n); x.lineCap = 'round';
-      for (let i = 0; i < 46; i++) {
+      for (let i = 0, nb = couleurs.length > 3 ? 130 : 46; i < nb; i++) {
         const px = r() * n, py = r() * n, l = 50 + r() * 90, a = (r() - .5) * .8 + (r() < .2 ? Math.PI / 2 : 0), w = 16 + r() * 22;
-        x.strokeStyle = r() < .55 ? noir : gris; x.lineWidth = w; x.globalAlpha = .75 + r() * .25;
+        const tons = couleurs.length > 3 ? couleurs.slice(1) : [noir, noir, gris];
+        x.strokeStyle = couleurs.length > 3 ? tons[(r() * tons.length) | 0] : (r() < .55 ? noir : gris); x.lineWidth = w; x.globalAlpha = .75 + r() * .25;
         for (const [dx, dy] of [[0, 0], [n, 0], [-n, 0], [0, n], [0, -n]]) {
           x.beginPath(); x.moveTo(px + dx, py + dy);
           x.quadraticCurveTo(px + dx + Math.cos(a) * l * .5 + (r() - .5) * 20, py + dy + Math.sin(a) * l * .5 + (r() - .5) * 20, px + dx + Math.cos(a) * l, py + dy + Math.sin(a) * l);
@@ -801,4 +877,22 @@ export function bordCoque(parent, f, ep, m, o = {}) {
     pts.push([x - (x - cx) / l * ep / 2, y, z - (z - cz) / l * ep / 2]);
   }
   return boudin(parent, pts, o.r || ep * .6, m, { plan: true, kv: o.kv || 1, seg: n * 3, radial: 14, kb: o.kb ?? .9 });
+}
+
+// matière ajourée : résine ou métal percé de cellules organiques (transparence par seuil)
+const AJOURES = {};
+export function matiereAjouree(couleur, echelle = .35, plein = .45, nb = 14) {
+  const cle = couleur + echelle + plein + nb;
+  if (AJOURES[cle]) return AJOURES[cle];
+  const n = 256, cel = cellules(n, nb, 221, .9), c = canvas(n), x = c.getContext('2d'), img = x.createImageData(n, n), rgb = hexRgb(couleur);
+  for (let i = 0; i < n * n; i++) {
+    const bord = cel.f2[i] - cel.f1[i];
+    img.data[i * 4] = rgb[0]; img.data[i * 4 + 1] = rgb[1]; img.data[i * 4 + 2] = rgb[2]; img.data[i * 4 + 3] = bord < plein * .5 ? 255 : 0;
+  }
+  x.putImageData(img, 0, 0);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  const m = new THREE.MeshStandardMaterial({ color: '#FFFFFF', map: t, alphaTest: .5, side: THREE.DoubleSide, roughness: .4 });
+  m.userData.uvMonde = echelle;
+  AJOURES[cle] = m;
+  return m;
 }
