@@ -2060,5 +2060,89 @@ export const FAUTEUILS = {
     pivot(g, .3, .05, M('noir'));
     [-1, 1].forEach(k => coussin(g, .03, .4, .45, matiere('bois', '#4A2E1C'), k * (W / 2 + .005), .2, -.05, { r: .012, ry: k * .25 }));
     return g;
+  },
+  /* Scarlet Wave : coque pivotante en velours côtelé rouge, rebord ondulé comme une corolle, pied chromé */
+  'fl-scw-21'(p) {
+    const g = groupe('fauteuil');
+    const [W, D, H] = p.dim;
+    const m = matiere('cotele', '#B4122E', { echelle: .12 });
+    pivot(g, .3, .3, M('chrome'));
+    const forme = (u, t) => {
+      const s = u * 2 - 1, phi = s * 1.9, r = (.12 + (W / 2 - .12) * Math.sin(Math.PI / 2 * Math.min(1, t * 1.2))) * (1 + .06 * Math.sin(s * 9) * t);
+      return [r * Math.sin(phi), .3 + t * (H - .3 - .22 * s * s + .05 * Math.sin(s * 9)), .02 - r * Math.cos(phi) * .9];
+    };
+    coqueParam(g, forme, m, { ep: .06, nu: 72, nt: 14, cz: .02 });
+    bordCoque(g, forme, .06, m, { cz: .02, r: .035, n: 72 });
+    galette(g, W / 2 - .16, D / 2 - .16, .1, m, 0, .34, .06, { ah: .04 });
+    ombreSol(g, W + .3, D + .3);
+    return g;
+  },
+
+  /* Soft Block : bouclé chiné ocre, bloc bas, dossier rabattu en deux coussins, bras roulés */
+  'fl-sb-64'(p) {
+    const g = groupe('fauteuil');
+    const [W, D, H] = p.dim;
+    const m = matiere('boucle', '#B07A2A', { motif: 'chine', couleurs: ['#B07A2A', '#D09A48', '#7A4E18'], echelle: .15 });
+    coussin(g, W, .26, D, m, 0, .02, 0, { r: .06 });
+    [-1, 1].forEach(k => boudin(g, [[k * (W / 2 - .1), .36, -D / 2 + .2], [k * (W / 2 - .1), .38, D / 2 - .08]], .1, m, { seg: 12, kb: .8 }));
+    coussin(g, W - .36, .14, D - .2, m, 0, .27, .08, { r: .06, b: [.01, .03, .02] });
+    coussin(g, W - .2, .42, .18, m, 0, .3, -D / 2 + .12, { rx: -.12, r: .07, b: [.01, .02, .03] });
+    coussin(g, W - .26, .22, .14, m, 0, .62, -D / 2 + .22, { rx: -1.1, r: .06 });
+    ombreSol(g, W + .3, D + .3);
+    return g;
+  },
+
+  /* Loop Sculpt : ruban en jacquard chenille gris et écru qui forme l'assise et s'enroule en boucle de dossier */
+  'fl-ls-78'(p) {
+    const g = groupe('fauteuil');
+    const [W, D, H] = p.dim;
+    const m = matiere('chenille', '#8A8A88', { motif: 'mineral', couleurs: ['#8E8E8C', '#ABA9A4', '#D2CFC8', '#EEEBE4'], echelle: .45 });
+    boudin(g, [[W / 2 - .08, .1, 0], [W * .2, .16, 0], [-W * .05, .3, 0], [-W * .3, .3, 0], [-W / 2 + .1, .5, 0], [-W / 2 + .14, H - .1, 0], [-W * .3, H - .05, 0], [-W * .28, .62, 0], [-W * .22, .36, 0]], .09, m,
+      { haut: [0, 0, 1], kv: (D / 2 - .04) / .09, seg: 120, radial: 16, kb: .9 });
+    coussin(g, W * .55, .16, D - .08, m, W * .2, 0, 0, { r: .07 });
+    ombreSol(g, W + .3, D + .3);
+    return g;
+  },
+
+  /* Cloud Nest : coque basse en cuir camel en forme de barque, galettes et coussins en chenille brune */
+  'fl-cn-92'(p) {
+    const g = groupe('fauteuil');
+    const [W, D, H] = p.dim;
+    const cuir = matiere('cuir', '#A4683A'), ch = matiere('chenille', '#6A4428', { ns: 1.2 });
+    const forme = (u, t) => { const phi = u * TAU, a = W / 2 - .03, b = D / 2 - .03, k = Math.sin(Math.PI / 2 * (.35 + .65 * t)); return [a * k * Math.sin(phi), .02 + t * (.36 + .12 * Math.max(0, -Math.cos(phi))), b * k * -Math.cos(phi)]; };
+    coqueParam(g, forme, cuir, { ep: .05, nu: 72, nt: 10, ferme: true });
+    coussin(g, W - .2, .2, D - .2, ch, 0, .2, .04, { r: .09, b: [.02, .04, .03] });
+    coussin(g, W - .26, .34, .24, ch, 0, .34, -D / 2 + .18, { rx: -.35, r: .1, b: [.02, .03, .04] });
+    coussin(g, .4, .34, .12, ch, -.25, .42, -.08, { rx: -.4, ry: .3, ordre: 'YXZ', r: .06 });
+    ombreSol(g, W + .3, D + .3);
+    return g;
+  },
+
+  /* Royal Chester Lounge : coque haute arrondie en cuir terracotta capitonné, galette, pieds noirs écartés */
+  'rcl-arm-2405'(p) {
+    const g = groupe('fauteuil');
+    const [W, D, H] = p.dim;
+    const cuir = matiere('cuir', '#A0522A'), cap = matiere('cuir', '#A0522A', { grain: 'capiton', echelle: .4 });
+    pieds(g, coins(W / 2 - .12, D / 2 - .12), .24, M('noirMat'), 'compas', { r: .016, ecart: .14 });
+    const forme = (u, t) => { const s = u * 2 - 1, phi = s * 1.75, a = W / 2 - .03, b = D / 2 - .05; return [a * Math.sin(phi) * (1 + .1 * t), .24 + t * (H - .24 - (H - .5) * Math.pow(Math.abs(s), 1.8)), .03 - b * Math.cos(phi)]; };
+    coqueParam(g, forme, cap, { ep: .07, nu: 56, nt: 12, cz: .03 });
+    bordCoque(g, forme, .07, cuir, { cz: .03, r: .04 });
+    galette(g, W / 2 - .06, D / 2 - .08, .14, cuir, 0, .24, .05, { ah: .06, dome: .02 });
+    ombreSol(g, W + .3, D + .3);
+    return g;
+  },
+
+  /* Urban Comfort : coussins de cuir noir capitonnés dans des flancs en noyer, pieds noirs */
+  'ucl-arm-2404'(p) {
+    const g = groupe('fauteuil');
+    const [W, D, H] = p.dim;
+    const cuir = matiere('cuir', '#1E1D21'), cap = matiere('cuir', '#1E1D21', { grain: 'capiton', echelle: .35 }), noyer = matiere('bois', '#5E3F2B', { couleurs: ['#6E4A33', '#45291B'] });
+    pieds(g, coins(W / 2 - .1, D / 2 - .1), .18, M('noirMat'), 'droit', { r: .012 });
+    const forme = (u, t) => { const s = u * 2 - 1, [x, z] = planU(u, W / 2 - .03, D * .42, .3, .04); return [x, .18 + t * (.6 - .06 * s * s - .18), z]; };
+    coqueParam(g, forme, noyer, { ep: .03, nu: 50, nt: 8, cz: .04 });
+    coussin(g, W - .14, .16, D - .16, cuir, 0, .2, .05, { r: .06, b: [.01, .03, .02] });
+    coussin(g, W - .16, .5, .16, cap, 0, .32, -D / 2 + .18, { rx: -.18, r: .07, b: [.01, .02, .03] });
+    ombreSol(g, W + .3, D + .3);
+    return g;
   }
 };
