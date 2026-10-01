@@ -391,6 +391,16 @@ function halo(parent, taille, x, y, z) {
    Cuisson : fusionne les maillages statiques d'un groupe par matériau
    (beaucoup moins d'appels de dessin, surtout sur mobile)
    --------------------------------------------------------------- */
+// couleurs par sommet d'après la position dans le modèle (dégradés peints) : f → [r, g, b] sRGB
+function colorerSommets(g, f) {
+  const p = g.attributes.position, c = new Float32Array(p.count * 3), k = new THREE.Color();
+  for (let i = 0; i < p.count; i++) {
+    const v = f(p.getX(i), p.getY(i), p.getZ(i));
+    k.setRGB(v[0], v[1], v[2], THREE.SRGBColorSpace);
+    c[i * 3] = k.r; c[i * 3 + 1] = k.g; c[i * 3 + 2] = k.b;
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(c, 3));
+}
 // UV « au mètre » : chaque triangle est projeté sur le plan qui lui fait le plus face ;
 // un motif ou un grain de tissu garde ainsi sa taille réelle quelle que soit la forme
 function projeterUV(g, echelle) {
@@ -426,6 +436,7 @@ function cuire(racine) {
     if (!g.attributes.normal) g.computeVertexNormals();
     g.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, o.matrixWorld));
     if (o.material.userData.uvMonde) projeterUV(g, o.material.userData.uvMonde);
+    if (o.material.userData.couleurMonde) colorerSommets(g, o.material.userData.couleurMonde);
     seaux.get(cle).geos.push(g);
     aRetirer.push(o);
   });

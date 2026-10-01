@@ -451,7 +451,7 @@ export const FAUTEUILS = {
   'serpent-royal'(p) {
     const g = groupe('fauteuil');
     const [W, D, H] = p.dim;
-    const py = matiere('cuir', '#2E6B6E', { motif: 'python', couleurs: ['#1C3236', '#3E8A8A', '#4A7FA0', '#5A9A78', '#3A6A86'], echelle: .3 });
+    const py = matiere('cuir', '#2E6B6E', { motif: 'python', couleurs: ['#101C20', '#2A5E62', '#2E4E66', '#356A58', '#2A4E64'], echelle: .3 });
     const bleu = matiere('cuir', '#4A5868'), cap = matiere('cuir', '#4A5868', { grain: 'capiton', echelle: .36 });
     const hp = .12;
     pieds(g, coins(W / 2 - .08, D / 2 - .08), hp, M('laiton'), 'fuseau', { r: .016 });
@@ -1834,7 +1834,7 @@ export const FAUTEUILS = {
   'snc-02'(p) {
     const g = groupe('fauteuil');
     const [W, D, H] = p.dim;
-    const m = matiere('chenille', '#7A7A78', { motif: 'zebre', couleurs: ['#E2DED4', '#1C1C1E', '#8A8A88'], echelle: .18 });
+    const m = matiere('chenille', '#4A4A4A', { motif: 'zebre', couleurs: ['#4A4A48', '#141416', '#D2CEC4'], echelle: .18 });
     coussin(g, W - .06, .3, D - .06, m, 0, 0, 0, { r: .12, b: [.03, .03, .03] });
     [-1, 1].forEach(k => coussin(g, .3, .36, D - .1, m, k * (W / 2 - .17), .24, .02, { r: .14, b: [.03, .03, .03], rz: k * .1 }));
     coussin(g, W - .2, .46, .32, m, 0, .26, -D / 2 + .17, { rx: -.1, r: .15, b: [.03, .03, .04] });
@@ -1934,7 +1934,7 @@ export const FAUTEUILS = {
   'fl-cl-set-09'(p) {
     const g = groupe('fauteuil');
     const [W, D, H] = p.dim;
-    const m = matiere('boucle', '#EEEBE4'), bois = matiere('bois', '#3A2618', { couleurs: ['#4A3020', '#2A1A10'] });
+    const m = matiere('boucle', '#EEEBE4'), bois = matiere('bois', '#221E1A', { couleurs: ['#2C2622', '#16120F'] });
     coussin(g, W - .14, .14, D - .14, bois, 0, 0, .02, { r: .02 });
     coussin(g, W, .22, D - .04, m, 0, .13, .02, { r: .1, b: [.02, .04, .03] });
     coussin(g, W - .04, .42, .26, m, 0, .3, -D / 2 + .16, { rx: -.35, r: .12, b: [.02, .03, .04] });
@@ -1946,7 +1946,7 @@ export const FAUTEUILS = {
   'fl-hw-retro-11'(p) {
     const g = groupe('fauteuil');
     const [W, D, H] = p.dim;
-    const bois = matiere('bois', '#5A3420', { couleurs: ['#6A4028', '#3E2414'] }), ray = matiere('chenille', '#7A8238', { motif: 'rayures', couleurs: ['#7A8238', '#C9C08A', '#6A7230', '#E8E2C8'], echelle: .5 });
+    const bois = matiere('bois', '#4E3020', { couleurs: ['#5A3A26', '#3A2416'] }), ray = matiere('chenille', '#7A8238', { motif: 'rayures', couleurs: ['#7A8238', '#C9C08A', '#6A7230', '#E8E2C8'], echelle: .5 });
     [-1, 1].forEach(k => {
       const x = k * (W / 2 - .03);
       boudin(g, [[x, .01, D / 2 - .05], [x, .62, -.05]], .02, bois, { haut: [1, 0, 0], kv: 1.3, seg: 6, tension: 0 });

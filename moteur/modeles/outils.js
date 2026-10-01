@@ -430,7 +430,23 @@ function texteOmbree(nom, source) {
    Motifs (couleurs) : imprimés, jacquards, marbrures, veinages
    --------------------------------------------------------------- */
 const MOTIFS = {};
-const hexRgb = h => { const c = new THREE.Color(h); return [c.r * 255, c.g * 255, c.b * 255]; };
+// couleur CSS → [r, g, b] 0..255 en sRGB (les pixels d'un canvas sont en sRGB, pas en linéaire)
+const hexRgb = h => { const c = new THREE.Color(h), o = {}; c.getRGB(o, THREE.SRGBColorSpace); return [o.r * 255, o.g * 255, o.b * 255]; };
+// dessine fn sur les 9 copies décalées de la tuile : motif raccordable
+function partout(x, n, fn) { for (let dx = -n; dx <= n; dx += n) for (let dy = -n; dy <= n; dy += n) { x.save(); x.translate(dx, dy); fn(); x.restore(); } }
+// tracés lissés passant par les milieux des segments (contour fermé, ou trait ouvert)
+function courbeFermee(x, pts) {
+  const k = pts.length, mi = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+  const d = mi(pts[k - 1], pts[0]);
+  x.beginPath(); x.moveTo(d[0], d[1]);
+  for (let i = 0; i < k; i++) { const p = pts[i], m = mi(p, pts[(i + 1) % k]); x.quadraticCurveTo(p[0], p[1], m[0], m[1]); }
+  x.closePath();
+}
+function courbeOuverte(x, pts) {
+  x.beginPath(); x.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length - 1; i++) { const p = pts[i], q = pts[i + 1]; x.quadraticCurveTo(p[0], p[1], (p[0] + q[0]) / 2, (p[1] + q[1]) / 2); }
+  const f = pts[pts.length - 1]; x.lineTo(f[0], f[1]);
+}
 function textureCouleur(c) {
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 8;
@@ -662,6 +678,17 @@ export function motif(nom, couleurs = []) {
       x.putImageData(img, 0, 0);
       break;
     }
+    case 'degrade': {      // dégradé arc-en-ciel le long de u (une seule tuile, à étirer avec l'échelle)
+      const cl = (couleurs.length > 1 ? couleurs : ['#2A6FD9', '#3AB0E0', '#F2C230', '#E8642A', '#D94A8A']).map(hexRgb);
+      c = canvas(n); const x = c.getContext('2d'), img = x.createImageData(n, n);
+      for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+        const t = (i / n) * (cl.length - 1), k = Math.min(cl.length - 2, Math.floor(t)), f = t - k, q = (j * n + i) * 4;
+        for (let ch = 0; ch < 3; ch++) img.data[q + ch] = lerp(cl[k][ch], cl[k + 1][ch], f);
+        img.data[q + 3] = 255;
+      }
+      x.putImageData(img, 0, 0);
+      break;
+    }
     case 'traits': {       // coups de pinceau noirs et gris sur fond clair (Bubble Art)
       const [fond = '#ECE9E2', noir = '#1E1E22', gris = '#7C7C80'] = couleurs, r = alea(111);
       c = canvas(n); const x = c.getContext('2d');
@@ -677,6 +704,89 @@ export function motif(nom, couleurs = []) {
         }
       }
       x.globalAlpha = 1;
+      break;
+    }
+    case 'graffiti': {     // tags noirs à la bombe, nuages de peinture, coulures, lettres bulles, sur toile blanche
+      const [fond = '#EEEDE8', encre = '#18181A', ...nuages] = couleurs, cl = nuages.length ? nuages : ['#E8924A', '#F2B27A', '#A8A8A8'], r = alea(261);
+      c = canvas(n); const x = c.getContext('2d');
+      x.fillStyle = fond; x.fillRect(0, 0, n, n);
+      // nuages de bombe (dégradés radiaux transparents sur les bords)
+      for (let i = 0; i < 9; i++) {
+        const px = r() * n, py = r() * n, rr = 30 + r() * 60, [cr, cg, cb] = hexRgb(cl[i % cl.length]).map(Math.round), a = .25 + r() * .3;
+        partout(x, n, () => {
+          const gr = x.createRadialGradient(px, py, 0, px, py, rr);
+          gr.addColorStop(0, `rgba(${cr},${cg},${cb},${a})`); gr.addColorStop(.6, `rgba(${cr},${cg},${cb},${a * .55})`); gr.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
+          x.fillStyle = gr; x.fillRect(px - rr, py - rr, 2 * rr, 2 * rr);
+        });
+      }
+      x.lineCap = 'round'; x.lineJoin = 'round';
+      // lettres bulles : contours noirs, remplissage blanc ou orangé
+      for (let i = 0; i < 6; i++) {
+        const px = r() * n, py = r() * n, s = 20 + r() * 26, nl = 2 + (r() * 3 | 0), a = (r() - .5) * .5, formes = [];
+        for (let k = 0; k < nl; k++) { const pts = []; for (let q = 0; q < 7; q++) { const an = q / 7 * TAU; pts.push([k * s * .85 + Math.cos(an) * s * (.36 + r() * .2), Math.sin(an) * s * (.55 + r() * .25)]); } formes.push({ pts, col: r() < .4 ? cl[0] : fond }); }
+        partout(x, n, () => { x.save(); x.translate(px, py); x.rotate(a); formes.forEach(f => { courbeFermee(x, f.pts); x.fillStyle = f.col; x.fill(); x.strokeStyle = encre; x.lineWidth = 3.5; x.stroke(); }); x.restore(); });
+      }
+      // tags : lettres griffonnées d'un trait épais, soulignés, coulures
+      x.strokeStyle = encre; x.fillStyle = encre;
+      for (let i = 0; i < 30; i++) {
+        const px = r() * n, py = r() * n, s = 16 + r() * 30, a = (r() - .5) * .6, nl = 3 + (r() * 5 | 0), ep = s * (.15 + r() * .16), lettres = [];
+        for (let k = 0; k < nl; k++) { const pts = [], np = 3 + (r() * 3 | 0); for (let q = 0; q < np; q++) pts.push([k * s * .75 + (r() - .2) * s * .7, (r() - .5) * s * 1.5]); lettres.push(pts); }
+        const souligne = r() < .5, coulures = [];
+        for (let k = 0; k < 3; k++) if (r() < .45) coulures.push([r() * nl * s * .75, s * .6, 10 + r() * 40]);
+        partout(x, n, () => {
+          x.save(); x.translate(px, py); x.rotate(a); x.lineWidth = ep;
+          lettres.forEach(pts => { courbeOuverte(x, pts); x.stroke(); });
+          if (souligne) { x.lineWidth = ep * .7; x.beginPath(); x.moveTo(-s * .3, s * .95); x.quadraticCurveTo(nl * s * .4, s * 1.4, nl * s * .85, s * .7); x.stroke(); }
+          x.lineWidth = Math.max(1.2, ep * .25);
+          coulures.forEach(([cx, cy, l]) => { x.beginPath(); x.moveTo(cx, cy); x.lineTo(cx + 1, cy + l); x.stroke(); x.beginPath(); x.arc(cx + 1, cy + l, x.lineWidth * 1.3, 0, TAU); x.fill(); });
+          x.restore();
+        });
+      }
+      break;
+    }
+    case 'popart': {       // dessin au trait noir épais et grands aplats de couleur sur fond blanc (art moderne)
+      const [fond = '#EEECE6', encre = '#1A1A1C', ...aplats] = couleurs, cl = aplats.length ? aplats : ['#D88A2A', '#C8282A', '#2A4AA8', '#E8A0A0'], r = alea(271);
+      c = canvas(n); const x = c.getContext('2d');
+      x.fillStyle = fond; x.fillRect(0, 0, n, n); x.lineCap = 'round'; x.lineJoin = 'round';
+      const formes = [];
+      for (let i = 0; i < 8; i++) {
+        const px = r() * n, py = r() * n, R = n * (.1 + r() * .13), k = 6 + (r() * 4 | 0), a0 = r() * TAU, pts = [];
+        for (let q = 0; q < k; q++) { const an = a0 + q / k * TAU + (r() - .5) * .3, rr = R * (.55 + r() * .7); pts.push([px + Math.cos(an) * rr * 1.2, py + Math.sin(an) * rr]); }
+        formes.push({ pts, col: cl[i % cl.length], trait: r() < .85 });
+      }
+      formes.forEach(f => partout(x, n, () => { courbeFermee(x, f.pts); x.fillStyle = f.col; x.fill(); if (f.trait) { x.strokeStyle = encre; x.lineWidth = 9; x.stroke(); } }));
+      // traits libres : contours, boucles, crochets
+      const traits = [];
+      for (let i = 0; i < 16; i++) {
+        let px = r() * n, py = r() * n, a = r() * TAU; const pts = [[px, py]], k = 3 + (r() * 4 | 0);
+        for (let q = 0; q < k; q++) { a += (r() - .5) * 2.2; const l = 25 + r() * 55; px += Math.cos(a) * l; py += Math.sin(a) * l; pts.push([px, py]); }
+        traits.push({ pts, ep: 7 + r() * 5 });
+      }
+      traits.forEach(t => partout(x, n, () => { courbeOuverte(x, t.pts); x.strokeStyle = encre; x.lineWidth = t.ep; x.stroke(); }));
+      const ronds = []; for (let i = 0; i < 8; i++) ronds.push([r() * n, r() * n, 6 + r() * 14, r() < .5]);
+      ronds.forEach(([px, py, rr, plein]) => partout(x, n, () => { x.beginPath(); x.arc(px, py, rr, 0, TAU); if (plein) { x.fillStyle = encre; x.fill(); } else { x.lineWidth = 6; x.strokeStyle = encre; x.stroke(); } }));
+      break;
+    }
+    case 'patchwork': {    // pavés tissés en rangées (ikat, patchwork), fil chiné
+      const cl = couleurs.length > 1 ? couleurs : ['#B05A30', '#C8743A', '#6A7A88', '#3A6A6A', '#6A4030', '#C8B8A0'], r = alea(281);
+      c = canvas(n); const x = c.getContext('2d');
+      for (let y = 0; y < n;) {
+        const h = Math.min(n - y, 18 + (r() * 30 | 0));
+        for (let px = 0; px < n;) { const w = Math.min(n - px, 16 + (r() * 40 | 0)); x.fillStyle = cl[(r() * cl.length) | 0]; x.fillRect(px, y, w, h); px += w; }
+        y += h;
+      }
+      for (let i = 0; i < 9000; i++) { x.fillStyle = r() < .5 ? 'rgba(255,255,255,.18)' : 'rgba(0,0,0,.16)'; x.fillRect(r() * n, r() * n, 3 + r() * 8, 1); }
+      break;
+    }
+    case 'pastilles': {    // feuilles rondes serrées (eucalyptus) : fond, verts
+      const [fond = '#E4E2D0', ...vs] = couleurs, cl = vs.length ? vs : ['#6E8A4A', '#8AA45E', '#55703A', '#A8BC80'], r = alea(291);
+      c = canvas(n); const x = c.getContext('2d');
+      x.fillStyle = fond; x.fillRect(0, 0, n, n);
+      const fs = []; for (let i = 0; i < 70; i++) fs.push([r() * n, r() * n, 20 + r() * 14, r() * TAU, cl[(r() * cl.length) | 0]]);
+      fs.forEach(([px, py, rr, a, col]) => partout(x, n, () => {
+        x.save(); x.translate(px, py); x.rotate(a); x.fillStyle = col; x.beginPath(); x.ellipse(0, 0, rr, rr * .84, 0, 0, TAU); x.fill();
+        x.strokeStyle = 'rgba(236,236,220,.6)'; x.lineWidth = 2; x.stroke(); x.beginPath(); x.moveTo(-rr * .75, 0); x.lineTo(rr * .75, 0); x.stroke(); x.restore();
+      }));
       break;
     }
     default: {
@@ -740,6 +850,25 @@ export function lumineux(nom, couleurs, emissive = '#FFC98E', jour = .35, soir =
   LUMINEUX.push({ m, jour, soir });
   MATIERES[cle] = m;
   return m;
+}
+// matière teintée sommet par sommet (dégradés peints) : f(x, y, z) → [r, g, b] sRGB 0..1,
+// évaluée à la cuisson dans le repère du modèle. Une matière neuve par appel (f propre au modèle).
+export function matiereCouleurs(type, f, o = {}) {
+  const base = matiere(type, '#FFFFFF', o), m = base.clone();
+  m.vertexColors = true;
+  if (m.sheenColor) { m.sheen = .55; m.sheenColor = new THREE.Color('#A8A8A8'); }
+  m.userData = { ...base.userData, couleurMonde: f };
+  m.name = base.name + '|sommets';
+  return m;
+}
+// rampe de couleurs : t ∈ [0, 1] → [r, g, b] sRGB 0..1 (interpolation entre les teintes)
+export function rampe(cols) {
+  const c = cols.map(h => { const k = new THREE.Color(h), o = {}; k.getRGB(o, THREE.SRGBColorSpace); return [o.r, o.g, o.b]; });
+  return t => {
+    t = clamp(t, 0, 1) * (c.length - 1);
+    const k = Math.min(c.length - 2, Math.floor(t)), f = t - k;
+    return [lerp(c[k][0], c[k + 1][0], f), lerp(c[k][1], c[k + 1][1], f), lerp(c[k][2], c[k + 1][2], f)];
+  };
 }
 
 /* ---------------------------------------------------------------

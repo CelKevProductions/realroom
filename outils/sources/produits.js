@@ -392,7 +392,9 @@ window.MC_DATA = (function () {
   Object.keys(P).forEach(h => { if (!P[h].fam) P[h].fam = FAM_CAT[P[h].cat] || ''; });
   // dimensions corrigées d'après les photos des produits (fiche absente ou manifestement fausse) : [l, p, h] en m
   const DIMS = {
-    'boxing-glove': [.82, 1.6, .8]
+    'boxing-glove': [.82, 1.6, .8],
+    // la profondeur de la fiche est celle du canapé : la méridienne avance bien plus loin
+    'canape-dangle-modulaire-design-2603-avec-meridienne-et-tissu-boucle': [4.1, 1.65, .8]
   };
   Object.keys(DIMS).forEach(h => { if (P[h]) { P[h].dim = DIMS[h]; P[h].dimsLues = false; } });
 
