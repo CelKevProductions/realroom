@@ -8,6 +8,7 @@ import { FAUTEUILS } from './fauteuils.js';
 import { CANAPES } from './canapes.js';
 import { LITS } from './lits.js';
 import { LUMINAIRES } from './luminaires.js';
+import { BAIGNOIRES } from './baignoires.js';
 
-export const MODELES = { ...FAUTEUILS, ...CANAPES, ...LITS, ...LUMINAIRES };
+export const MODELES = { ...FAUTEUILS, ...CANAPES, ...LITS, ...LUMINAIRES, ...BAIGNOIRES };
 enregistrerModeles(MODELES);
