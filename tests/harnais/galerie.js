@@ -2,6 +2,7 @@
 // en vue de trois quarts face (comme une photo de catalogue). Sert à comparer la maquette
 // à la photo du produit (tests/galerie.py).
 import { THREE, RoomEnvironment, definirProduits, construireProduit, cuire, graine } from '../../moteur/meubles.js';
+import '../../moteur/modeles/index.js';
 import catalogue from '../../data/catalogue.json';
 
 const P = catalogue.produits;

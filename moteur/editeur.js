@@ -10,6 +10,7 @@ import {
   THREE, RoomEnvironment, M, std, bloc, cyl, sphere, groupe, cuire, graine,
   definirProduits, construireProduit, construireCatalogue, CAT_GENERIQUE, canvasTex
 } from './meubles.js';
+import './modeles/index.js';   // modèles fidèles d'après les photos des produits
 import { produitDe, estMural, estSuspendu, estPlat, estAdosse, estPosable, porteurDe, demiEmpreinte, placerAuMur, normaliserAngle } from '../lib/agencement.js';
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));

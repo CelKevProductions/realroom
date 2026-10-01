@@ -62,6 +62,8 @@ window.MC_DATA = (function () {
     img: IMG('https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0902.06.03.jpg?v=1780100204'),
     texte: "Tête de lit et contour en tubes capitonnés de bouclette ivoire, sur trois côtés. Un relief façon nuage, au format proche de 200 × 200 cm.",
     points: [['Revêtement', 'Bouclette ivoire épaisse'], ['Format', 'Environ 200 × 200 cm'], ['Sommier', 'Lattes de bois massif']],
+    // encombrement d'après les photos : tête de lit avec ses deux chevets ronds (couchage 160 × 200)
+    dim: [3, 2.5, 1.1],
     look: { style: 'tubes', tete: '#EEE7D8', base: '#E6DECD' } });
   def('lhs-15', { nom: 'Hotel Signature', titre: 'Lit capitonné en cuir beige à tête matelassée XXL', cat: 'Lit', prix: 2650,
     img: IMG('https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0902.30.21.jpg?v=1780100173'),

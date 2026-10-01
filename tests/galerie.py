@@ -7,6 +7,7 @@ elles. Sert à juger la ressemblance famille par famille. Sorties dans .essais/g
   python3 tests/galerie.py fauteuil lit             # quelques familles
   python3 tests/galerie.py --ids terracotta rce-05  # quelques produits
   python3 tests/galerie.py --photos ~/photos        # avec les photos (dossiers <id>/1.jpg…)
+  python3 tests/galerie.py --vues --ids mcs-01       # quatre vues par produit (face, 3/4, côté, dessus)
 """
 import argparse, asyncio, base64, functools, http.server, io, pathlib, subprocess, threading
 from PIL import Image, ImageDraw, ImageFont
@@ -16,7 +17,7 @@ RACINE = pathlib.Path(__file__).resolve().parent.parent
 HARNAIS = RACINE / 'tests' / 'harnais'
 SORTIE = RACINE / '.essais' / 'galerie'
 PORT = 8794
-CASE = 320
+CASE = 300
 
 
 def construire():
@@ -27,10 +28,11 @@ def construire():
 
 
 def servir():
-    h = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(HARNAIS))
+    class Muet(http.server.SimpleHTTPRequestHandler):
+        def log_message(self, *a, **k): pass
+    h = functools.partial(Muet, directory=str(HARNAIS))
     class Q(http.server.ThreadingHTTPServer): allow_reuse_address = True
     srv = Q(('127.0.0.1', PORT), h)
-    srv.RequestHandlerClass.log_message = lambda *a, **k: None
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     return srv
 
@@ -56,18 +58,18 @@ def planche(entrees, titre, chemin, photos):
     """entrees : [(produit, rendu PIL)] ; une rangée par produit si photos, sinon une grille."""
     f, fp = police(15), police(12)
     if photos:
-        # photo(s) | maquette, une ligne par produit
-        cols = 3
+        # jusqu'à 4 photos | maquette, une ligne par produit
+        cols = 5
         lignes = []
         for p, rendu in entrees:
             dossier = photos / p['id']
-            imgs = [Image.open(x) for x in sorted(dossier.glob('*.jpg'))[:2]] if dossier.exists() else []
-            cases = [carre(i, CASE) for i in imgs] + [Image.new('RGB', (CASE, CASE), (230, 226, 218))] * (2 - len(imgs)) + [carre(rendu, CASE)]
+            imgs = [Image.open(x) for x in sorted(dossier.glob('*.jpg'))[:4]] if dossier.exists() else []
+            cases = [carre(i, CASE) for i in imgs] + [Image.new('RGB', (CASE, CASE), (230, 226, 218))] * (4 - len(imgs)) + [carre(rendu, CASE)]
             lignes.append((p, cases))
-        W, H = cols * CASE + 4 * 8, len(lignes) * (CASE + 30) + 40
+        W, H = cols * (CASE + 8) + 8, len(lignes) * (CASE + 30) + 40
         out = Image.new('RGB', (W, H), 'white')
         d = ImageDraw.Draw(out)
-        d.text((8, 10), titre + '   (photo 1 · photo 2 · maquette)', fill='black', font=f)
+        d.text((8, 10), titre + '   (photos · maquette actuelle à droite)', fill='black', font=f)
         for i, (p, cases) in enumerate(lignes):
             y = 40 + i * (CASE + 30)
             d.text((8, y), f"{p['id']} — {p['nom']} · {p['st']} · {p['titre'][:70]}", fill='black', font=fp)
@@ -92,6 +94,7 @@ async def main():
     ap.add_argument('--ids', nargs='*')
     ap.add_argument('--photos', type=pathlib.Path, help='dossier des photos (un sous-dossier par produit)')
     ap.add_argument('--par-planche', type=int, default=12)
+    ap.add_argument('--vues', action='store_true', help='quatre vues par produit, avec ses photos')
     a = ap.parse_args()
     construire()
     srv = servir()
@@ -105,6 +108,29 @@ async def main():
         await page.wait_for_function('window.__pret === true', timeout=90000)
         produits = await page.evaluate('() => __ids()')
         choisis = [p for p in produits if (not a.familles or p['fam'] in a.familles) and (not a.ids or p['id'] in a.ids)]
+        if a.vues:
+            (SORTIE / 'vues').mkdir(exist_ok=True)
+            for p in choisis:
+                ims = []
+                for az, el in ((0, 8), (35, 16), (90, 6), (200, 22)):
+                    url = await page.evaluate('([id, az, el]) => __rendre(id, az, el)', [p['id'], az, el])
+                    ims.append(Image.open(io.BytesIO(base64.b64decode(url.split(',', 1)[1]))))
+                dossier = (a.photos / p['id']) if a.photos else None
+                photos = [Image.open(x) for x in sorted(dossier.glob('*.jpg'))[:4]] if dossier and dossier.exists() else []
+                C = 360
+                out = Image.new('RGB', (4 * (C + 6) + 6, (2 if photos else 1) * (C + 6) + 30), 'white')
+                ImageDraw.Draw(out).text((6, 8), f"{p['id']} — {p['nom']} · face, 3/4, côté, dos" + (' · photos dessous' if photos else ''), fill='black', font=police(14))
+                for k, im in enumerate(ims):
+                    out.paste(carre(im, C), (6 + k * (C + 6), 30))
+                for k, im in enumerate(photos):
+                    out.paste(carre(im, C), (6 + k * (C + 6), 30 + C + 6))
+                chemin = SORTIE / 'vues' / f"{p['id']}.jpg"
+                out.save(chemin, quality=85)
+                print(chemin.relative_to(RACINE))
+            print('erreurs :', erreurs or 'aucune')
+            await b.close()
+            srv.shutdown()
+            return
         par_fam = {}
         for p in choisis:
             url = await page.evaluate('id => __rendre(id)', p['id'])

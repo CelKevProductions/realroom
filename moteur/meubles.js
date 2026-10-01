@@ -391,6 +391,23 @@ function halo(parent, taille, x, y, z) {
    Cuisson : fusionne les maillages statiques d'un groupe par matériau
    (beaucoup moins d'appels de dessin, surtout sur mobile)
    --------------------------------------------------------------- */
+// UV « au mètre » : chaque triangle est projeté sur le plan qui lui fait le plus face ;
+// un motif ou un grain de tissu garde ainsi sa taille réelle quelle que soit la forme
+function projeterUV(g, echelle) {
+  const p = g.attributes.position, n = p.count, uv = new Float32Array(n * 2), k = 1 / echelle;
+  const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3(), e = new THREE.Vector3();
+  for (let i = 0; i + 2 < n; i += 3) {
+    a.fromBufferAttribute(p, i); b.fromBufferAttribute(p, i + 1); c.fromBufferAttribute(p, i + 2);
+    e.subVectors(b, a).cross(c.clone().sub(a));
+    const ax = Math.abs(e.x), ay = Math.abs(e.y), az = Math.abs(e.z);
+    for (let j = 0; j < 3; j++) {
+      const v = j === 0 ? a : j === 1 ? b : c;
+      const [u, w] = ax >= ay && ax >= az ? [v.z, v.y] : ay >= az ? [v.x, v.z] : [v.x, v.y];
+      uv[(i + j) * 2] = u * k; uv[(i + j) * 2 + 1] = w * k;
+    }
+  }
+  g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+}
 function cuire(racine) {
   racine.updateMatrixWorld(true);
   const inv = new THREE.Matrix4().copy(racine.matrixWorld).invert();
@@ -408,10 +425,18 @@ function cuire(racine) {
     if (!g.attributes.uv) g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(g.attributes.position.count * 2), 2));
     if (!g.attributes.normal) g.computeVertexNormals();
     g.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, o.matrixWorld));
+    if (o.material.userData.uvMonde) projeterUV(g, o.material.userData.uvMonde);
     seaux.get(cle).geos.push(g);
     aRetirer.push(o);
   });
   aRetirer.forEach(o => o.parent && o.parent.remove(o));
+  // éléments non fusionnés (transparents, instances) à motif : projection dans leur propre repère
+  racine.traverse(o => {
+    if (!o.isMesh || !o.material || Array.isArray(o.material) || !o.material.userData.uvMonde || o.geometry.userData.uvProjetees) return;
+    if (o.geometry.index) o.geometry = o.geometry.toNonIndexed();
+    projeterUV(o.geometry, o.material.userData.uvMonde);
+    o.geometry.userData.uvProjetees = true;
+  });
   for (const s of seaux.values()) {
     const fusion = mergeGeometries(s.geos, false);
     if (!fusion) continue;
@@ -1183,12 +1208,16 @@ const CAT_BUILD = {
   'Salon extérieur': () => salonFeu(), 'Jardinière': () => jardiniere(), 'Salon de jardin': salonCorde,
   'Méridienne': () => meridienne(), 'Balancelles': () => balancelles()
 };
+// modèles fidèles, refaits pièce par pièce d'après les photos des produits (moteur/modeles/)
+const MODELES = {};
+function enregistrerModeles(m) { Object.assign(MODELES, m); }
 function construireProduit(sku, o = {}) {
   const p = DATA.PRODUITS[sku];
   if (!p) return groupe('vide');
   let g;
-  // pièces choisies : maquette détaillée ; reste du catalogue : maquette générique (v3d-catalogue.js)
-  if (p.look) { const f = CAT_BUILD[p.cat]; g = f ? f(p.look, o) : groupe('vide'); }
+  // modèle fidèle s'il existe ; sinon pièces choisies : maquette détaillée ; reste : maquette générique
+  if (MODELES[sku] && p.dim) g = MODELES[sku](p, o);
+  else if (p.look) { const f = CAT_BUILD[p.cat]; g = f ? f(p.look, o) : groupe('vide'); }
   else g = construireCatalogue(p, o);
   g.userData.sku = sku;
   return g;
@@ -2048,5 +2077,9 @@ function construireCatalogue(p, o = {}) {
 
 
 
-export { THREE, RoomEnvironment, mergeGeometries, TAU, V3, lerp, clamp, alea, graine, mesh, place, bloc, cyl, sphere, tore, tour, tube, extrude, groupe, instances, canvasTex, tex, std, M, LUMINEUX, ombreSol, halo, cuire, ANIMS, definirProduits, construireProduit, construireCatalogue, CAT_GENERIQUE };
+export {
+  THREE, RoomEnvironment, mergeGeometries, TAU, V3, lerp, clamp, alea, graine, mesh, place, bloc, cyl, sphere, tore, tour, tube, extrude, groupe, instances,
+  canvasTex, tex, std, M, LUMINEUX, ombreSol, halo, cuire, projeterUV, ANIMS, definirProduits, construireProduit, construireCatalogue, CAT_GENERIQUE,
+  enregistrerModeles, arcPlein, couronne, capsule, coque, literie, cable, rosace, geometrieSuspension, ajuster, boiteOpaque, teinte, coul, mTissu, mMetal, mBois, mVerre
+};
 
