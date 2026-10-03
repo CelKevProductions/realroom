@@ -12,6 +12,8 @@ export default function AvantApres({ avant, apres, libelles, etiquette }) {
       </div>
       <div className="avant-apres__poignee" style={{ left: k + '%' }} />
       <span className="etiquette-ia">{etiquette}</span>
+      <span className="avant-apres__etiquette avant-apres__etiquette--avant" aria-hidden="true">{libelles.avant}</span>
+      <span className="avant-apres__etiquette avant-apres__etiquette--apres" aria-hidden="true">{libelles.apres}</span>
       <input type="range" min="0" max="100" value={k} onChange={e => setK(+e.target.value)} aria-label={libelles.avant + ' / ' + libelles.apres} />
     </div>
   );

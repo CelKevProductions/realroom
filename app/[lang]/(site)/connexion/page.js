@@ -11,10 +11,8 @@ export default async function PageConnexion({ params }) {
   const { lang } = await params;
   const t = texte(lang);
   return (
-    <div className="page-etroite">
-      <Suspense>
-        <Connexion lang={lang} t={t.connexion} liens={{ cgv: `/${lang}/legal/cgv`, confidentialite: `/${lang}/legal/confidentialite` }} />
-      </Suspense>
-    </div>
+    <Suspense>
+      <Connexion lang={lang} t={t.connexion} liens={{ cgv: `/${lang}/legal/cgv`, confidentialite: `/${lang}/legal/confidentialite` }} />
+    </Suspense>
   );
 }

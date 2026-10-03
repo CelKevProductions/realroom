@@ -1,5 +1,6 @@
-import '@fontsource-variable/inter';
-import '@fontsource-variable/fraunces';
+import '@fontsource-variable/archivo/wdth.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
 import './globals.css';
 import { notFound } from 'next/navigation';
 import { LANGUES, MARQUE, estLangue } from '@/lib/config.js';
@@ -27,13 +28,20 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export const viewport = { themeColor: '#F6F3EE', width: 'device-width', initialScale: 1, viewportFit: 'cover' };
+export const viewport = { themeColor: '#EDEAE4', width: 'device-width', initialScale: 1, viewportFit: 'cover' };
+
+// avant le premier affichage : les animations d'entrée joueront (JavaScript actif, mouvement non réduit).
+// Sans ce marqueur, rien n'est masqué en attendant GSAP.
+const AMORCE = `(function(){try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.setAttribute('data-mvt','')}catch(_){}})();`;
 
 export default async function Racine({ children, params }) {
   const { lang } = await params;
   if (!estLangue(lang)) notFound();
   return (
-    <html lang={lang}>
+    <html lang={lang} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: AMORCE }} />
+      </head>
       <body>{children}</body>
     </html>
   );

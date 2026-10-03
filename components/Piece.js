@@ -1,9 +1,12 @@
 'use client';
-// Une pièce : photos et mesures -> analyse (maquette 3D) -> atelier (aménager, rendu, visite 3D)
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+// Une pièce : photos et mesures -> analyse (maquette 3D) -> atelier (aménager, meubles, résultat).
+// Avant l'atelier, les trois étapes sont tracées comme une cote sur un plan.
+import { useEffect, useRef, useState } from 'react';
 import { api } from '@/components/api.js';
 import { useRacine } from '@/components/chemins.js';
+import { useFil } from '@/components/fil.js';
+import { Titre, useEntree } from '@/components/Mouvement.js';
+import Croquis from '@/components/Croquis.js';
 import Photos from '@/components/piece/Photos.js';
 import Atelier from '@/components/piece/Atelier.js';
 
@@ -18,6 +21,12 @@ export default function Piece({ lang, t, initiale, rendusInitiaux, credits, cout
   // analyse lancée ailleurs (autre onglet, page quittée puis rouverte) : on suit son état
   const [suivi, setSuivi] = useState(initiale.etat === 'analyse');
   const [erreur, setErreur] = useState(initiale.etat === 'erreur' ? t.erreurs.generique : '');
+  const page = useRef(null);
+  useFil([
+    { nom: t.projets.titre, href: racine },
+    { nom: piece.projet_nom, href: `${racine}/projets/${piece.projet_id}` },
+    { nom: piece.nom }
+  ]);
   useEffect(() => { dispatchEvent(new CustomEvent('realroom:credits', { detail: solde })); }, [solde]);
   useEffect(() => {
     if (!suivi) return;
@@ -34,6 +43,7 @@ export default function Piece({ lang, t, initiale, rendusInitiaux, credits, cout
     };
     h = setTimeout(tour, 4000);
     return () => { arret = true; clearTimeout(h); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [suivi]);
 
   async function analyser() {
@@ -47,35 +57,41 @@ export default function Piece({ lang, t, initiale, rendusInitiaux, credits, cout
   }
   const etape = analyse ? 1 : !piece.modele || forcerPhotos ? 0 : 1;
   const enAtelier = !analyse && piece.modele && !forcerPhotos;
+  useEntree(page, enAtelier ? 'atelier' : analyse ? 'analyse' : 'photos');
 
+  if (enAtelier) {
+    return (
+      <Atelier lang={lang} t={t} piece={piece} setPiece={setPiece} rendus={rendus} setRendus={setRendus} solde={solde} setSolde={setSolde} couts={couts} services={services}
+        retourPhotos={() => setForcerPhotos(true)} />
+    );
+  }
   return (
-    <>
-      <div className="conteneur" style={{ width: 'min(1400px, 100% - 24px)', paddingTop: 14 }}>
-        <nav className="fil" aria-label="fil">
-          <Link href={racine}>{t.projets.titre}</Link><span>›</span>
-          <Link href={`${racine}/projets/${piece.projet_id}`}>{piece.projet_nom}</Link><span>›</span>
-          <span style={{ color: 'var(--encre)', fontWeight: 600 }}>{piece.nom}</span>
-          <span className="puce" style={{ marginLeft: 6 }}>{t.fonctions[piece.fonction]}</span>
-        </nav>
-        {!enAtelier && (
-          <ol className="etapes-piece" style={{ marginTop: 14 }}>
-            {tp.etapes.map((e, i) => <li key={e} aria-current={i === etape ? 'step' : undefined}>{i + 1}. {e}</li>)}
-          </ol>
-        )}
-      </div>
-      {erreur && !analyse && <div className="conteneur" style={{ maxWidth: 980 }}><p className="avis avis--alerte">{erreur}</p></div>}
+    <div className="conteneur app-page" ref={page}>
+      <header className="piece-tete">
+        <div className="piece-tete__ligne">
+          <Titre>{piece.nom}</Titre>
+          {t.fonctions[piece.fonction] !== piece.nom && <span className="piece-tete__fonction" data-entree="">{t.fonctions[piece.fonction]}</span>}
+        </div>
+        <ol className="cote-etapes" data-entree="trait">
+          {tp.etapes.map((e, i) => (
+            <li key={e} style={{ '--i': i }} className={i < etape ? 'is-fait' : i === etape ? 'is-actif' : undefined} aria-current={i === etape ? 'step' : undefined}>
+              <span className="cote-etapes__num">{String(i + 1).padStart(2, '0')}</span>
+              <span className="cote-etapes__nom">{e}</span>
+              {i === tp.etapes.length - 1 && <span className="cote-etapes__fin" aria-hidden="true" />}
+            </li>
+          ))}
+        </ol>
+      </header>
+      {erreur && !analyse && <p className="avis avis--alerte piece-erreur">{erreur}</p>}
       {analyse ? (
-        <div className="attente conteneur">
-          <span className="rouage" />
-          <h2 style={{ fontSize: '1.5rem' }}>{tp.analyseEnCours}</h2>
+        <div className="attente" data-entree="">
+          <Croquis trace />
+          <h2>{tp.analyseEnCours}</h2>
           <p className="discret">{tp.analyseDuree}</p>
         </div>
-      ) : enAtelier ? (
-        <Atelier lang={lang} t={t} piece={piece} setPiece={setPiece} rendus={rendus} setRendus={setRendus} solde={solde} setSolde={setSolde} couts={couts} services={services}
-          retourPhotos={() => setForcerPhotos(true)} />
       ) : (
         <Photos lang={lang} t={t} piece={piece} setPiece={setPiece} analyser={analyser} attente={analyse || !services.analyse} />
       )}
-    </>
+    </div>
   );
 }

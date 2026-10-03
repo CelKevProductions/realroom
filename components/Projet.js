@@ -1,13 +1,25 @@
 'use client';
-// Un projet : ses pièces (photos, état de l'analyse), l'ajout d'une pièce, l'analyse de plusieurs
-// pièces en même temps
+// Un projet : ses pièces (photo, état de l'analyse), l'ajout d'une pièce, l'analyse de plusieurs
+// pièces en même temps. Le nom du projet se modifie sur place.
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/components/api.js';
 import { useRacine } from '@/components/chemins.js';
+import { useFil } from '@/components/fil.js';
+import { useEntree, ouvrirDialogue, fermerDialogue } from '@/components/Mouvement.js';
+import Croquis from '@/components/Croquis.js';
 import { remplir } from '@/lib/i18n.js';
 import { FONCTIONS } from '@/lib/config.js';
+
+function Etat({ etat, t }) {
+  return (
+    <span className={'etat etat--' + etat}>
+      {etat === 'analyse' ? <span className="rouage rouage--petit" /> : <span className="point" />}
+      {t.projet.etats[etat] || etat}
+    </span>
+  );
+}
 
 export default function Projet({ lang, t, initial }) {
   const router = useRouter();
@@ -18,6 +30,9 @@ export default function Projet({ lang, t, initial }) {
   const [nomPiece, setNomPiece] = useState('');
   const [message, setMessage] = useState('');
   const dialogue = useRef(null);
+  const page = useRef(null);
+  useEntree(page);
+  useFil([{ nom: t.projets.titre, href: racine }, { nom: nom.trim() || p.nom }]);
 
   // tant qu'une analyse tourne, on rafraîchit l'état des pièces
   useEffect(() => {
@@ -27,16 +42,21 @@ export default function Projet({ lang, t, initial }) {
   }, [p]);
 
   async function renommer() {
-    if (nom.trim() && nom !== p.nom) await api(`/api/projets/${p.id}`, { method: 'PATCH', corps: { nom } });
+    if (nom.trim() && nom !== p.nom) {
+      const r = await api(`/api/projets/${p.id}`, { method: 'PATCH', corps: { nom } });
+      if (r.ok) setP(v => ({ ...v, nom }));
+    } else setNom(p.nom);
   }
   async function ajouter(e) {
     e.preventDefault();
     const r = await api(`/api/projets/${p.id}/pieces`, { method: 'POST', corps: { nom: nomPiece || t.fonctions[fonction], fonction } });
     if (r.ok) router.push(`${racine}/pieces/${r.piece.id}`);
   }
+  const ouvrir = () => ouvrirDialogue(dialogue.current);
+  const fermer = () => fermerDialogue(dialogue.current);
   // analyse en parallèle de toutes les pièces qui ont leur photo principale
+  const pretes = p.pieces.filter(x => x.etat !== 'analyse' && !x.nb_meubles && x.photos.some(f => f.role === 'entree'));
   async function analyserTout() {
-    const pretes = p.pieces.filter(x => x.etat !== 'analyse' && !x.nb_meubles && x.photos.some(f => f.role === 'entree'));
     if (!pretes.length) return;
     setP(v => ({ ...v, pieces: v.pieces.map(x => (pretes.includes(x) ? { ...x, etat: 'analyse' } : x)) }));
     setMessage(remplir(t.projet.analyseLancee, { n: pretes.length }));
@@ -45,47 +65,46 @@ export default function Projet({ lang, t, initial }) {
     if (r.ok) setP(r.projet);
     setMessage('');
   }
-  const aAnalyser = p.pieces.filter(x => x.etat !== 'analyse' && !x.nb_meubles && x.photos.some(f => f.role === 'entree')).length;
 
   return (
-    <div className="conteneur app-page">
-      <nav className="fil" aria-label="fil"><Link href={racine}>{t.projets.titre}</Link><span>›</span></nav>
+    <div className="conteneur app-page" ref={page}>
       <div className="app-page__tete">
-        <input className="saisie" style={{ fontFamily: 'var(--titre)', fontSize: '2rem', border: 0, background: 'none', padding: 0, maxWidth: 560 }} value={nom}
-          onChange={e => setNom(e.target.value)} onBlur={renommer} aria-label={t.projets.renommer} />
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          {aAnalyser > 1 && <button className="btn btn--clair" onClick={analyserTout}>{t.projet.analyserTout}</button>}
-          <button className="btn btn--accent" onClick={() => dialogue.current.showModal()}>{t.projet.ajouter}</button>
+        <input className="titre-modifiable" data-entree="" value={nom} maxLength={80} aria-label={t.projets.renommer}
+          onChange={e => setNom(e.target.value)} onBlur={renommer} onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
+        <div className="app-page__actions" data-entree="">
+          {pretes.length > 1 && <button className="btn btn--clair" onClick={analyserTout}>{t.projet.analyserTout}</button>}
+          <button className="btn btn--plein" onClick={ouvrir}>{t.projet.ajouter}</button>
         </div>
       </div>
-      {message && <p className="avis avis--ok" style={{ marginBottom: 16 }}>{message}</p>}
-      {!p.pieces.length && <p className="vide">{t.projet.vide}</p>}
-      <div className="grille-cartes">
+      {message && <p className="avis avis--ok app-page__avis">{message}</p>}
+      {!p.pieces.length && <p className="vide" data-entree="">{t.projet.vide}</p>}
+      <div className="grille-cartes" data-entree="">
         {p.pieces.map(x => {
           const image = x.dernier_rendu || (x.photos[0] && x.photos[0].url);
           return (
-            <Link key={x.id} href={`${racine}/pieces/${x.id}`} className="carte carte-projet">
-              <div className="carte-projet__image" style={image ? { backgroundImage: `url(${image})` } : undefined}>{!image && '📷'}</div>
-              <div className="carte-projet__texte">
+            <Link key={x.id} href={`${racine}/pieces/${x.id}`} className="carte-projet">
+              <span className="carte-projet__image">{image ? <img src={image} alt="" loading="lazy" /> : <Croquis />}</span>
+              <span className="carte-projet__texte">
                 <b>{x.nom}</b>
-                <span className="puces">
-                  <span className="puce">{t.fonctions[x.fonction]}</span>
-                  <span className={'puce ' + (x.etat === 'prete' ? 'puce--vert' : x.etat === 'erreur' ? 'puce--accent' : '')}>
-                    {x.etat === 'analyse' && <span className="rouage rouage--petit" />} {t.projet.etats[x.etat] || x.etat}
-                  </span>
+                <span className="carte-projet__meta">
+                  {t.fonctions[x.fonction] !== x.nom && <span>{t.fonctions[x.fonction]}</span>}
+                  <Etat etat={x.etat} t={t} />
                 </span>
-              </div>
+              </span>
             </Link>
           );
         })}
-        <button className="carte-vide" onClick={() => dialogue.current.showModal()}>+ {t.projet.ajouter}</button>
+        <button className="carte-vide" onClick={ouvrir}>
+          <span className="carte-vide__plus" aria-hidden="true" />
+          <b>{t.projet.ajouter}</b>
+        </button>
       </div>
 
-      <dialog ref={dialogue} className="dialogue" onClick={e => { if (e.target === dialogue.current) dialogue.current.close(); }}>
+      <dialog ref={dialogue} className="dialogue" onClick={e => { if (e.target === dialogue.current) fermer(); }} onCancel={e => { e.preventDefault(); fermer(); }}>
         <form className="dialogue__corps" onSubmit={ajouter}>
           <h3>{t.projet.ajouter}</h3>
-          <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
-            <legend className="champ" style={{ marginBottom: 8 }}><span>{t.projet.fonction}</span></legend>
+          <fieldset className="champ champ--groupe">
+            <legend>{t.projet.fonction}</legend>
             <div className="choix-fonction">
               {FONCTIONS.map(f => (
                 <label key={f}><input type="radio" name="fonction" value={f} checked={fonction === f} onChange={() => setFonction(f)} />{t.fonctions[f]}</label>
@@ -96,7 +115,7 @@ export default function Projet({ lang, t, initial }) {
             <input className="saisie" value={nomPiece} placeholder={t.fonctions[fonction]} onChange={e => setNomPiece(e.target.value)} maxLength={80} />
           </label>
           <div className="dialogue__actions">
-            <button type="button" className="btn btn--lien" onClick={() => dialogue.current.close()}>✕</button>
+            <button type="button" className="btn btn--lien" onClick={fermer}>{t.projet.annuler}</button>
             <button className="btn btn--plein">{t.projet.creer}</button>
           </div>
         </form>

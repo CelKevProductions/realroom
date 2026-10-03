@@ -6,7 +6,7 @@ import { reduireImage } from '@/components/piece/image.js';
 
 const ROLES = ['entree', 'fond', 'gauche', 'droite'];
 
-export default function Photos({ lang, t, piece, setPiece, analyser, attente }) {
+export default function Photos({ t, piece, setPiece, analyser, attente }) {
   const tp = t.piece;
   const [envoi, setEnvoi] = useState({});
   const [erreur, setErreur] = useState('');
@@ -45,9 +45,10 @@ export default function Photos({ lang, t, piece, setPiece, analyser, attente }) 
 
   const caseRendu = ({ role, p, principale, cle = role }) => (
     <div key={cle + (p ? p.url : '')} className={'case-photo' + (principale ? ' case-photo--principale' : '') + (envoi[cle] ? ' is-envoi' : '')} data-role={role}>
+      {principale && <span className="case-photo__repere">{tp.repereRendu}</span>}
       {p ? <img src={p.url} alt={tp.roles[role][0]} /> : (
         <div className="case-photo__vide">
-          <b>{tp.roles[role][0]}{principale ? ' *' : ''}</b>
+          <b>{tp.roles[role][0]}</b>
           <span>{tp.roles[role][1]}</span>
           <span className="btn btn--clair btn--petit" aria-hidden="true">{envoi[cle] ? tp.envoi : tp.prendre}</span>
         </div>
@@ -56,20 +57,20 @@ export default function Photos({ lang, t, piece, setPiece, analyser, attente }) 
       {p && (
         <div className="case-photo__pied">
           <span>{tp.roles[role][0]}</span>
-          <span style={{ display: 'flex', gap: 6 }}>
-            {role !== 'detail' && <label style={{ position: 'relative' }}><button type="button" tabIndex={-1}>{tp.remplacer}</button><input type="file" accept="image/*" style={{ position: 'absolute', inset: 0, opacity: 0 }} aria-label={tp.remplacer} onChange={e => envoyer(role, e.target.files[0], cle)} /></label>}
+          <span className="case-photo__boutons">
+            {role !== 'detail' && <label className="case-photo__remplacer"><span>{tp.remplacer}</span><input type="file" accept="image/*" aria-label={tp.remplacer} onChange={e => envoyer(role, e.target.files[0], cle)} /></label>}
             <button type="button" onClick={() => retirer(p.url)}>{tp.retirer}</button>
           </span>
         </div>
       )}
-      {envoi[cle] && <span className="rouage" style={{ position: 'absolute', zIndex: 2 }} />}
+      {envoi[cle] && <span className="rouage case-photo__rouage" />}
     </div>
   );
 
   return (
-    <div className="conteneur app-page" style={{ maxWidth: 980 }}>
-      <section className="carte bloc">
-        <div className="bloc__tete"><h2 style={{ fontSize: '1.6rem' }}>{tp.photosTitre}</h2><p>{tp.photosIntro}</p></div>
+    <div className="etape-photos">
+      <section className="bloc" data-entree="">
+        <div className="bloc__tete"><h2>{tp.photosTitre}</h2><p>{tp.photosIntro}</p></div>
         <div className="photos-grille">
           {ROLES.map(role => caseRendu({ role, p: photo(role), principale: role === 'entree' }))}
           {details.map((p, i) => caseRendu({ role: 'detail', p, cle: 'detail' + i }))}
@@ -78,8 +79,8 @@ export default function Photos({ lang, t, piece, setPiece, analyser, attente }) 
         {erreur && <p className="avis avis--alerte">{erreur}</p>}
       </section>
 
-      <section className="carte bloc">
-        <div className="bloc__tete"><h2 style={{ fontSize: '1.6rem' }}>{tp.mesuresTitre}</h2><p>{tp.mesuresIntro}</p></div>
+      <section className="bloc" data-entree="">
+        <div className="bloc__tete"><h2>{tp.mesuresTitre}</h2><p>{tp.mesuresIntro}</p></div>
         <div className="mesures">
           {['largeur', 'profondeur', 'hauteur'].map(k => (
             <label key={k} className="champ"><span>{tp[k]}</span>
@@ -95,8 +96,8 @@ export default function Photos({ lang, t, piece, setPiece, analyser, attente }) 
       </section>
 
       <div className="barre-action">
-        {!photo('entree') && <span className="discret petit">{tp.manquePhoto}</span>}
-        <button className="btn btn--accent btn--large" disabled={!photo('entree') || attente} onClick={async () => { await majDims(); analyser(); }}>{tp.analyser}</button>
+        {!photo('entree') && <span className="barre-action__aide">{tp.manquePhoto}</span>}
+        <button className="btn btn--plein btn--large" disabled={!photo('entree') || attente} onClick={async () => { await majDims(); analyser(); }}>{tp.analyser}</button>
       </div>
     </div>
   );

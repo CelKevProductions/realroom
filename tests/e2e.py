@@ -133,7 +133,12 @@ async def parcours(page, erreurs):
             await page.click('button:has-text("Ajouter un meuble")')
             await page.wait_for_selector('dialog.catalogue[open] .produit', timeout=10000)
             await capture(page, 'catalogue')
+            # un meuble choisi ouvre sa fiche (maquette 3D qui tourne), puis on l'ajoute à la pièce
             await page.locator('dialog.catalogue .produit').first.click()
+            await page.wait_for_selector('dialog.catalogue .detail canvas', timeout=5000)
+            await page.wait_for_timeout(1800)
+            await capture(page, 'fiche-produit')
+            await page.click('dialog.catalogue .detail__pied button:has-text("Ajouter à la pièce")')
             await page.wait_for_timeout(1200)
             nb2 = await page.locator('.liste-meubles').first.locator('.ligne-meuble').count()
             assert nb2 == nb + 1, f'le meuble du catalogue n’a pas été ajouté ({nb} -> {nb2})'

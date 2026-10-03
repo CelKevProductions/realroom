@@ -4,6 +4,9 @@
    des photos, ses meubles (relevés sur les photos ou choisis dans le
    catalogue), deux vues (maquette vue de dessus, vue de la photo),
    sélection, déplacement au doigt ou à la souris, capture pour le rendu.
+   Mouvements de caméra : arrivée d'en haut à l'ouverture, glissé jusqu'au
+   meuble choisi puis lent tour autour de lui, quart de tour qui dévoile un
+   nouvel aménagement. Le moindre geste rend la main.
    Repère et conventions : lib/agencement.js.
    ================================================================= */
 import {
@@ -17,7 +20,12 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, t) => a + (b - a) * t;
 const hash = s => { let h = 2166136261; for (const c of String(s)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
 const EPAISSEUR = .12;
-const ACCENT = '#C2502A';
+const ACCENT = '#B8411D';
+// courbes des mouvements de caméra
+const COURBES = {
+  sortie: k => 1 - Math.pow(1 - k, 4),
+  douce: k => (k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2)
+};
 
 /* ---------------------------------------------------------------
    Textures de sol teintées (planches, carreaux, béton)
@@ -145,7 +153,9 @@ function boiteGenerique(p) {
 export function creerEditeur(canvas, opts = {}) {
   const catalogue = opts.produits || {};
   definirProduits(catalogue);
-  const rappel = { selection: opts.surSelection || (() => {}), deplacement: opts.surDeplacement || (() => {}), vue: opts.surVue || (() => {}) };
+  const rappel = { selection: opts.surSelection || (() => {}), deplacement: opts.surDeplacement || (() => {}), vue: opts.surVue || (() => {}), cadre: opts.surCadre || (() => {}) };
+  // mouvement réduit demandé : la caméra saute directement à sa place, sans tour automatique
+  const reduit = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: false });
   if (!renderer.capabilities.isWebGL2) throw new Error('WebGL 2 indisponible');
@@ -181,7 +191,11 @@ export function creerEditeur(canvas, opts = {}) {
     modele: null, items: new Map(), murs: [], plafond: null, selection: null, mode: 'dessus',
     orbite: { theta: .55, phi: .92, r: 9, cible: new THREE.Vector3() },
     regard: { yaw: 0, pitch: 0 },
-    anim: null, sale: true, ombres: true, raf: 0, detruit: false
+    anim: null, sale: true, ombres: true, raf: 0, detruit: false,
+    tween: null,     // glissé de l'orbite (angle, hauteur, distance, point visé)
+    auto: null,      // tour lent autour du meuble cadré
+    cadre: null,     // meuble cadré
+    dernier: 0
   };
 
   /* ---------- la pièce ---------- */
@@ -300,8 +314,9 @@ export function creerEditeur(canvas, opts = {}) {
     const vitre = new THREE.Mesh(new THREE.PlaneGeometry(w - .06, h - .06), M('verre'));
     vitre.position.set(0, o.y0 + h / 2, ep / 2); vitre.renderOrder = 4;
     cadre.add(vitre);
-    const ciel = new THREE.Mesh(new THREE.PlaneGeometry(w * 2.2, h * 1.8), M('fenetre'));
-    ciel.position.set(0, o.y0 + h / 2, ep + 1.4);
+    // ciel à la taille de la baie, contre la face extérieure du mur : on ne le voit qu'à travers la vitre
+    const ciel = new THREE.Mesh(new THREE.PlaneGeometry(w, h), M('fenetre'));
+    ciel.position.set(0, o.y0 + h / 2, ep + .01);
     ciel.rotation.y = Math.PI;
     cadre.add(ciel);
   }
@@ -387,6 +402,7 @@ export function creerEditeur(canvas, opts = {}) {
     }
     for (const id of [...E.items.keys()]) if (!vus.has(id)) retirer(id);
     for (const e of E.items.values()) if (posable(e)) placerPorteur(e);
+    if (E.cadre && !E.items.has(E.cadre)) ensemble();
     if (E.selection && !E.items.has(E.selection)) selectionner(null);
     else majContour();
     E.ombres = true;
@@ -468,12 +484,87 @@ export function creerEditeur(canvas, opts = {}) {
     const depart = poseAffichee ? { ...poseAffichee } : null;
     E.mode = mode === 'photo' ? 'photo' : 'dessus';
     E.regard.yaw = E.regard.pitch = 0;
+    // changer de vue quitte le cadrage : retour à la vue d'ensemble (même angle)
+    E.tween = null; E.auto = null;
+    if (E.cadre) { E.cadre = null; rappel.cadre(null); poserOrbite({ ...orbiteDefaut(), theta: E.orbite.theta }); }
     const arrivee = poseCourante();
-    if (!anime || !depart) { E.anim = null; appliquerPose(arrivee); demander(); rappel.vue(E.mode); return; }
-    E.anim = { depart, t0: performance.now(), duree: 850 };
+    if (!anime || !depart || reduit) { E.anim = null; appliquerPose(arrivee); demander(); rappel.vue(E.mode); return; }
+    E.anim = { depart, t0: performance.now(), duree: 1150 };
     rappel.vue(E.mode);
     demander();
   }
+
+  /* ---------- mouvements de caméra (vue maquette) ---------- */
+  const etatOrbite = () => ({ theta: E.orbite.theta, phi: E.orbite.phi, r: E.orbite.r, cx: E.orbite.cible.x, cy: E.orbite.cible.y, cz: E.orbite.cible.z });
+  function poserOrbite(v) {
+    const o = E.orbite;
+    o.theta = v.theta; o.phi = v.phi; o.r = v.r; o.cible.set(v.cx, v.cy, v.cz);
+  }
+  function orbiteDefaut() {
+    const { largeur: L, profondeur: P, hauteur: H } = E.modele.dims;
+    return { theta: .55, phi: .92, r: Math.max(L, P) * 1.55 + 2, cx: 0, cy: H * .25, cz: 0 };
+  }
+  // glisse l'orbite vers une nouvelle position (le plus court chemin en angle)
+  function glisser(vers, duree, courbe = 'douce', fin) {
+    const de = etatOrbite(), cible = { ...de, ...vers };
+    cible.theta = de.theta + Math.atan2(Math.sin(cible.theta - de.theta), Math.cos(cible.theta - de.theta));
+    if (reduit || E.mode !== 'dessus') { E.tween = null; poserOrbite(cible); if (fin) fin(); demander(); return; }
+    E.tween = { de, vers: cible, t0: performance.now(), duree, courbe: COURBES[courbe], fin };
+    demander();
+  }
+  // arrivée : la caméra descend d'en haut en tournant, jusqu'à la vue d'ensemble
+  function intro() {
+    if (!E.modele || reduit || E.mode !== 'dessus') return;
+    const d = orbiteDefaut();
+    poserOrbite({ ...d, theta: d.theta - 1.15, phi: .3, r: d.r * 1.75, cy: d.cy + .5 });
+    glisser(d, 2600, 'sortie');
+    E.tween.vers.theta = d.theta;   // l'arc complet, pas le plus court chemin
+  }
+  // cadre un meuble : la caméra glisse jusqu'à lui, de trois quarts face, puis en fait lentement le tour
+  // (les appliques et miroirs : un balancement devant le mur plutôt qu'un tour complet)
+  function cadrer(id) {
+    const e = E.items.get(id);
+    if (!e || e.fantome || E.mode !== 'dessus' || !E.modele) return false;
+    const b = new THREE.Box3().setFromObject(e.modele);
+    if (b.isEmpty()) return false;
+    const c = b.getCenter(new THREE.Vector3()), s = b.getSize(new THREE.Vector3());
+    const taille = Math.max(s.x, s.y, s.z, .3);
+    const mural = estMural(e.p.fam), suspendu = estSuspendu(e.p.fam);
+    const rot = e.item.rot || 0;
+    const vers = {
+      cx: c.x, cy: clamp(c.y, .2, E.modele.dims.hauteur - .3), cz: c.z,
+      r: clamp(taille * 2.1 + .8, 1.5, 7),
+      phi: suspendu ? 1.32 : mural ? 1.25 : .98,
+      theta: mural ? rot : suspendu ? E.orbite.theta : rot + .6
+    };
+    E.cadre = id; E.auto = null;
+    rappel.cadre(id);
+    glisser(vers, 1400, 'douce', () => {
+      if (E.cadre !== id || reduit) return;
+      E.auto = mural ? { type: 'balancier', base: vers.theta, t0: performance.now() } : { type: 'tour', vitesse: .17 };
+      demander();
+    });
+    return true;
+  }
+  function ensemble() {
+    if (!E.modele) return;
+    const avait = E.cadre;
+    E.cadre = null; E.auto = null;
+    if (avait) rappel.cadre(null);
+    // retour à la vue de départ (depuis l'entrée), la plus lisible
+    glisser(orbiteDefaut(), 1500, 'douce');
+  }
+  // nouvel aménagement : un lent quart de tour qui le dévoile
+  function balayer() {
+    if (!E.modele || E.mode !== 'dessus') return;
+    E.cadre = null; E.auto = null;
+    rappel.cadre(null);
+    const d = orbiteDefaut();
+    glisser({ ...d, theta: E.orbite.theta + .95 }, 2800, 'douce');
+    if (E.tween) E.tween.vers.theta = E.orbite.theta + .95;
+  }
+  // le moindre geste rend la main
+  function interrompre() { E.tween = null; E.auto = null; }
 
   /* ---------- murs qui s'effacent (vue de dessus) ---------- */
   function majMurs(cam, force) {
@@ -504,6 +595,22 @@ export function creerEditeur(canvas, opts = {}) {
   function rendre(t) {
     E.raf = 0;
     if (!E.modele) return;
+    const maintenant = performance.now();
+    const dt = E.dernier ? Math.min(.05, (maintenant - E.dernier) / 1000) : 0;
+    E.dernier = maintenant;
+    let encore = false;
+    if (E.tween && E.mode === 'dessus') {
+      const tw = E.tween, k = clamp((maintenant - tw.t0) / tw.duree, 0, 1), s = tw.courbe(k);
+      poserOrbite({ theta: lerp(tw.de.theta, tw.vers.theta, s), phi: lerp(tw.de.phi, tw.vers.phi, s), r: lerp(tw.de.r, tw.vers.r, s), cx: lerp(tw.de.cx, tw.vers.cx, s), cy: lerp(tw.de.cy, tw.vers.cy, s), cz: lerp(tw.de.cz, tw.vers.cz, s) });
+      if (k >= 1) { E.tween = null; if (tw.fin) tw.fin(); } else encore = true;
+    } else if (E.auto && E.mode === 'dessus') {
+      // un tour complet (ou une demi-minute de balancement), puis la caméra s'arrête
+      if (E.auto.type === 'tour') { E.orbite.theta += E.auto.vitesse * dt; E.auto.cumul = (E.auto.cumul || 0) + E.auto.vitesse * dt; }
+      else E.orbite.theta = E.auto.base + Math.sin((maintenant - E.auto.t0) / 1000 * .45) * .55;
+      encore = true;
+      if (E.auto.cumul >= Math.PI * 2 || maintenant - (E.auto.t0 || maintenant) > 28000) E.auto = null;
+    }
+    if (encore) demander(); else E.dernier = 0;
     if (E.anim) {
       const k = clamp((performance.now() - E.anim.t0) / E.anim.duree, 0, 1), s = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
       const a = E.anim.depart, b = poseCourante();
@@ -540,6 +647,7 @@ export function creerEditeur(canvas, opts = {}) {
   }
   canvas.addEventListener('pointerdown', e => {
     if (!E.modele) return;
+    interrompre();
     pointeurs.set(e.pointerId, { x: e.clientX, y: e.clientY });
     try { canvas.setPointerCapture(e.pointerId); } catch (_) { /* rien */ }
     if (pointeurs.size === 2) { const [a, b] = [...pointeurs.values()]; geste = { type: 'pince', d: Math.hypot(a.x - b.x, a.y - b.y), r: E.orbite.r, fov: camera.fov }; return; }
@@ -613,6 +721,7 @@ export function creerEditeur(canvas, opts = {}) {
   canvas.addEventListener('wheel', e => {
     if (!E.modele) return;
     e.preventDefault();
+    interrompre();
     const k = Math.exp(e.deltaY * .0012);
     if (E.mode === 'photo') { camera.fov = clamp(camera.fov * k, 30, 80); camera.updateProjectionMatrix(); E.modele.vue = { ...(E.modele.vue || {}), fov: camera.fov }; }
     else E.orbite.r = clamp(E.orbite.r * k, 1.5, 30);
@@ -661,9 +770,8 @@ export function creerEditeur(canvas, opts = {}) {
     E.modele = JSON.parse(JSON.stringify(modele));
     for (const id of [...E.items.keys()]) retirer(id);
     construirePiece(E.modele);
-    const { largeur: L, profondeur: P, hauteur: H } = E.modele.dims;
-    E.orbite.cible.set(0, H * .25, 0);
-    E.orbite.r = Math.max(L, P) * 1.55 + 2;
+    E.tween = null; E.auto = null; E.cadre = null;
+    poserOrbite(orbiteDefaut());
     majItems(items);
     redimensionner();
     vue(E.mode, false);
@@ -674,6 +782,10 @@ export function creerEditeur(canvas, opts = {}) {
     majVuePhoto(v) { if (!E.modele) return; E.modele.vue = { ...(E.modele.vue || {}), ...v }; if (E.mode === 'photo') vue('photo', false); },
     selectionner: id => selectionner(id, false),
     vue,
+    intro,
+    cadrer,
+    ensemble,
+    balayer,
     get mode() { return E.mode; },
     capture,
     // position à l'écran (px, dans le canevas) du haut d'un meuble : barre d'outils flottante

@@ -49,11 +49,13 @@ async def parcours(page, appels_api):
     await page.wait_for_url('**/fr/demo')
     await expect(page.locator('.carte-projet').first).to_contain_text('Appartement témoin')
     await expect(page.locator('.app-entete [data-solde]')).to_have_attribute('data-solde', '3')
+    await page.wait_for_timeout(1400)   # entrée de la page
     await capture(page, 'projets')
 
     await page.click('.carte-projet a:has-text("Appartement témoin")')
     await page.wait_for_url('**/fr/demo/projets/**')
     await expect(page.locator('.carte-projet')).to_have_count(2)
+    await page.wait_for_timeout(1400)
     await capture(page, 'projet')
 
     # salon d'exemple : proposition, rendu
@@ -99,6 +101,8 @@ async def parcours(page, appels_api):
     await page.click('.carte-projet a:has-text("Appartement témoin")')
     await page.click('.carte-projet:has-text("Chambre")')
     await page.wait_for_url('**/fr/demo/pieces/**')
+    await page.wait_for_timeout(1400)
+    await capture(page, 'photos')
     await page.set_input_files('.case-photo--principale input[type=file]', str(PHOTO))
     await expect(page.locator('.case-photo--principale img')).to_be_visible(timeout=20000)
     await page.fill('input[name=largeur]', '3,6')
@@ -113,6 +117,7 @@ async def parcours(page, appels_api):
     # rechargement : la démo reprend où elle en était (même onglet)
     await page.reload()
     await page.wait_for_selector('.atelier canvas', timeout=30000)
+    await page.wait_for_load_state('networkidle')
     await expect(page.locator('.app-entete [data-solde]')).to_have_attribute('data-solde', '12')
 
     # l'application réelle reste protégée

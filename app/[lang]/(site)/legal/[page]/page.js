@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { pageLegale } from '@/lib/legal.js';
+import { Entree, Titre } from '@/components/Mouvement.js';
 
 const PAGES = ['mentions', 'cgv', 'confidentialite'];
 export function generateStaticParams() {
@@ -21,14 +22,16 @@ export default async function PageLegale({ params }) {
   const p = pageLegale(page, lang);
   if (!p) notFound();
   return (
-    <article className="page-texte">
-      <h1>{p.titre}</h1>
-      {p.sections.map(([titre, paras]) => (
-        <section key={titre}>
-          <h2>{titre}</h2>
-          {paras.map((t, i) => <p key={i}>{paragraphe(t)}</p>)}
-        </section>
-      ))}
-    </article>
+    <Entree as="article" className="page-texte">
+      <Titre>{p.titre}</Titre>
+      <div data-entree="">
+        {p.sections.map(([titre, paras]) => (
+          <section key={titre}>
+            <h2>{titre}</h2>
+            {paras.map((t, i) => <p key={i}>{paragraphe(t)}</p>)}
+          </section>
+        ))}
+      </div>
+    </Entree>
   );
 }

@@ -1,10 +1,13 @@
 'use client';
 // Mes projets : un projet = un logement (ou un lieu), avec ses pièces
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/components/api.js';
 import { useRacine } from '@/components/chemins.js';
+import { useFil } from '@/components/fil.js';
+import { Titre, useEntree } from '@/components/Mouvement.js';
+import Croquis from '@/components/Croquis.js';
 import { remplir } from '@/lib/i18n.js';
 
 export default function Projets({ lang, t, initiaux }) {
@@ -12,6 +15,10 @@ export default function Projets({ lang, t, initiaux }) {
   const racine = useRacine(lang);
   const [projets, setProjets] = useState(initiaux);
   const [attente, setAttente] = useState(false);
+  const page = useRef(null);
+  useEntree(page);
+  useFil([{ nom: t.projets.titre }]);
+
   async function creer() {
     setAttente(true);
     const r = await api('/api/projets', { method: 'POST', corps: { nom: t.projets.nomDefaut } });
@@ -24,23 +31,31 @@ export default function Projets({ lang, t, initiaux }) {
     if (r.ok) setProjets(p => p.filter(x => x.id !== id));
   }
   return (
-    <div className="conteneur app-page">
+    <div className="conteneur app-page" ref={page}>
       <div className="app-page__tete">
-        <h1>{t.projets.titre}</h1>
-        <button className="btn btn--accent" onClick={creer} disabled={attente}>{t.projets.nouveau}</button>
+        <Titre>{t.projets.titre}</Titre>
+        <button className="btn btn--plein" onClick={creer} disabled={attente} data-entree="">{t.projets.nouveau}</button>
       </div>
-      {!projets.length && <p className="vide">{t.projets.vide}</p>}
-      <div className="grille-cartes">
+      {!projets.length && <p className="vide" data-entree="">{t.projets.vide}</p>}
+      <div className="grille-cartes" data-entree="">
         {projets.map(p => (
-          <div key={p.id} className="carte carte-projet" style={{ position: 'relative' }}>
-            <Link href={`${racine}/projets/${p.id}`} style={{ textDecoration: 'none', display: 'grid' }}>
-              <div className="carte-projet__image" style={p.apercu ? { backgroundImage: `url(${p.apercu})` } : undefined}>{!p.apercu && '⌂'}</div>
-              <div className="carte-projet__texte"><b>{p.nom}</b><span className="discret petit">{remplir(t.projets.pieces, { n: p.nb, s: p.nb > 1 ? 's' : '' })}</span></div>
+          <article key={p.id} className="carte-projet">
+            <Link href={`${racine}/projets/${p.id}`}>
+              <span className="carte-projet__image">{p.apercu ? <img src={p.apercu} alt="" loading="lazy" /> : <Croquis />}</span>
+              <span className="carte-projet__texte">
+                <b>{p.nom}</b>
+                <span className="carte-projet__meta">{remplir(t.projets.pieces, { n: p.nb, s: p.nb > 1 ? 's' : '' })}</span>
+              </span>
             </Link>
-            <button className="btn btn--lien btn--petit" style={{ position: 'absolute', right: 8, bottom: 10 }} onClick={() => supprimer(p.id)}>{t.projets.supprimer}</button>
-          </div>
+            <div className="carte-projet__actions">
+              <button className="btn btn--clair btn--petit" onClick={() => supprimer(p.id)}>{t.projets.supprimer}</button>
+            </div>
+          </article>
         ))}
-        <button className="carte-vide" onClick={creer} disabled={attente}>+ {t.projets.nouveau}</button>
+        <button className="carte-vide" onClick={creer} disabled={attente}>
+          <span className="carte-vide__plus" aria-hidden="true" />
+          <b>{t.projets.nouveau}</b>
+        </button>
       </div>
     </div>
   );

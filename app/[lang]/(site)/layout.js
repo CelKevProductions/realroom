@@ -3,7 +3,7 @@ import Logo from '@/components/Logo.js';
 import CtaCompte from '@/components/CtaCompte.js';
 import { texte } from '@/lib/i18n.js';
 
-// en-tête et pied des pages publiques (accueil, connexion, pages légales)
+// en-tête et pied des pages publiques hors accueil (connexion, pages légales)
 export default async function MiseEnPageSite({ children, params }) {
   const { lang } = await params;
   const t = texte(lang);
@@ -11,10 +11,10 @@ export default async function MiseEnPageSite({ children, params }) {
   return (
     <>
       <header className="entete">
-        <div className="conteneur entete__barre">
+        <div className="entete__barre">
           <Link href={`/${lang}`} className="logo" aria-label="RealRoom"><Logo />RealRoom</Link>
           <nav aria-label={lang === 'fr' ? 'Navigation principale' : 'Main navigation'}>
-            <a className="lien-section" href={`/${lang}#comment`}>{t.nav.comment}</a>
+            <a className="lien-section" href={`/${lang}#methode`}>{t.nav.comment}</a>
             <a className="lien-section" href={`/${lang}#tarifs`}>{t.nav.tarifs}</a>
             <a className="lien-section" href={`/${lang}#faq`}>{t.nav.faq}</a>
             <Link className="langue" href={`/${autre}`} hrefLang={autre} lang={autre}>{autre.toUpperCase()}</Link>
@@ -24,10 +24,10 @@ export default async function MiseEnPageSite({ children, params }) {
       </header>
       <main id="contenu">{children}</main>
       <footer className="pied">
-        <div className="conteneur pied__ligne">
+        <div className="pied__ligne">
           <div>
-            <Link href={`/${lang}`} className="logo" style={{ fontSize: '1.1rem' }}><Logo taille={22} />RealRoom</Link>
-            <p style={{ marginTop: 8 }}>{t.pied.editeur} · {t.pied.meubles}</p>
+            <Link href={`/${lang}`} className="logo"><Logo taille={22} />RealRoom</Link>
+            <p className="pied__credit">{t.pied.editeur}. {t.pied.meubles}.</p>
           </div>
           <nav aria-label={lang === 'fr' ? 'Informations légales' : 'Legal'}>
             <Link href={`/${lang}/legal/mentions`}>{t.pied.mentions}</Link>
