@@ -8,6 +8,7 @@ import { useRacine } from '@/components/chemins.js';
 import { useFil } from '@/components/fil.js';
 import { Titre, useEntree } from '@/components/Mouvement.js';
 import Croquis from '@/components/Croquis.js';
+import Tuto from '@/components/Tuto.js';
 import { remplir } from '@/lib/i18n.js';
 
 export default function Projets({ lang, t, initiaux }) {
@@ -34,7 +35,10 @@ export default function Projets({ lang, t, initiaux }) {
     <div className="conteneur app-page" ref={page}>
       <div className="app-page__tete">
         <Titre>{t.projets.titre}</Titre>
-        <button className="btn btn--plein" onClick={creer} disabled={attente} data-entree="">{t.projets.nouveau}</button>
+        <div className="app-page__actions" data-entree="">
+          <Tuto id="accueil" etapes={t.tuto.accueil} libelles={t.tuto} />
+          <button className="btn btn--plein" onClick={creer} disabled={attente}>{t.projets.nouveau}</button>
+        </div>
       </div>
       {!projets.length && <p className="vide" data-entree="">{t.projets.vide}</p>}
       <div className="grille-cartes" data-entree="">

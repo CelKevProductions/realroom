@@ -265,6 +265,19 @@ dialog.dialogue::backdrop { background: rgba(18, 18, 17, .42); }
 .dialogue__corps { padding: 26px; display: grid; gap: 20px; }
 .dialogue__corps h3 { font: 800 2rem/.95 var(--d); font-stretch: 78%; letter-spacing: -.02em; }
 .dialogue__actions { display: flex; justify-content: flex-end; align-items: center; gap: 14px; }
+/* guide des nouveaux venus : une illustration au trait, l'étape, deux boutons */
+dialog.tuto { width: min(520px, 100% - 24px); }
+.tuto__illu { border-bottom: 1px solid var(--trait); background: var(--calque) linear-gradient(var(--guide) 1px, transparent 1px) 0 0 / 100% 16px; padding: 18px 0 10px; }
+.tuto__illu svg { display: block; width: min(220px, 60%); height: auto; margin: 0 auto; fill: none; stroke: var(--encre); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.tuto__illu .tuto__accent { stroke: var(--rouille); }
+.tuto__illu .tuto__ia { fill: var(--rouille); stroke: none; font: 700 12px var(--m); }
+.tuto__corps { gap: 14px; }
+.tuto__etape { font: 500 .75rem var(--m); color: var(--graphite); }
+.tuto__texte { color: var(--graphite); line-height: 1.55; }
+.tuto__points { display: flex; gap: 6px; }
+.tuto__points i { width: 18px; height: 2px; background: var(--trait-fort); transition: background-color .3s, width .3s var(--sortie); }
+.tuto__points i.is-actif { width: 30px; background: var(--rouille); }
+@media (max-width: 520px) { .tuto .dialogue__actions { flex-wrap: wrap; } }
 .choix-fonction { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
 .choix-fonction label { position: relative; border: 1px solid var(--trait-fort); border-radius: var(--rayon); padding: 10px 12px; cursor: pointer; font-size: .9rem; transition: border-color .2s, background-color .2s; }
 .choix-fonction label:hover { border-color: var(--encre); }
@@ -389,11 +402,15 @@ dialog.dialogue::backdrop { background: rgba(18, 18, 17, .42); }
 .outils-meuble button:hover { background: rgba(237, 234, 228, .14); }
 .outils-meuble svg { width: 18px; height: 18px; }
 .aide-scene { position: absolute; right: 14px; bottom: 16px; z-index: 3; max-width: 46ch; font-size: .78rem; color: var(--graphite); background: rgba(237, 234, 228, .9); padding: 6px 10px; }
+.guide-scene { position: absolute; top: 14px; right: 14px; z-index: 3; }
+.guide-scene .btn--clair { background: var(--platre); }
+.app-page__actions { display: flex; align-items: center; gap: 14px; }
 @media (max-width: 900px) {
   .atelier { grid-template-columns: 1fr; grid-template-rows: 42svh minmax(0, 1fr); }
   .atelier__panneau { border-left: 0; border-top: 1px solid var(--trait); grid-template-rows: auto minmax(0, 1fr) auto; }
   .aide-scene { display: none; }
   .vues { top: 10px; left: 10px; }
+  .guide-scene { top: 10px; right: 10px; }
   .opacite { left: 10px; bottom: 10px; }
   /* onglets sur une ligne, pied plus serré */
   .onglets button { display: flex; gap: 7px; align-items: baseline; padding: 12px 12px 11px; }

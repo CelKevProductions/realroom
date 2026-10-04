@@ -7,6 +7,7 @@ import { api } from '@/components/api.js';
 import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
 import Resultat from '@/components/piece/Resultat.js';
+import Tuto from '@/components/Tuto.js';
 import { apparaitre, deplier, animer } from '@/components/Mouvement.js';
 import { prix, remplir } from '@/lib/i18n.js';
 import { estMural, estSuspendu, estAdosse, placerAuMur, demiEmpreinte, resoudre, ANGLES } from '@/lib/agencement.js';
@@ -317,6 +318,8 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         <button className="btn btn--clair btn--bloc" onClick={() => ouvrirCatalogue('', null)} disabled={!produits}>
           <span className="plus" aria-hidden="true" />{tp.ajouterMeuble}
         </button>
+        {/* l'étape suivante, dite clairement : la photo réaliste par IA */}
+        <button className="btn btn--plein btn--bloc" onClick={() => setOnglet('resultat')}>{tp.versRendu}</button>
       </div>
     </>
   );
@@ -344,6 +347,8 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
           </div>
         )}
         <p className="aide-scene">{tp.aide}</p>
+        {/* guide de l'atelier : s'ouvre seul à la première visite ; le bouton le rouvre */}
+        <div className="guide-scene"><Tuto id="atelier" etapes={t.tuto.atelier} libelles={t.tuto} className="btn btn--clair btn--petit" /></div>
       </div>
 
       <aside className="atelier__panneau" ref={panneau}>

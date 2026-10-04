@@ -78,7 +78,7 @@ export default function Resultat({ lang, t, piece, rendus, setRendus, solde, set
     <>
       <div className="panneau__corps" role="tabpanel">
         <div className="bloc__tete"><h3>{tp.renduTitre}</h3><p>{tp.renduTexte}</p></div>
-        {!services.rendu && <p className="avis">{t.erreurs.generique}</p>}
+        {!services.rendu && <p className="avis">{tp.renduIndispo}</p>}
         {erreur && erreur.de === 'image' && avisErreur}
         {imageEnCours && (
           <div className="rendu-attente">

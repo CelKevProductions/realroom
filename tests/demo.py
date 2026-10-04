@@ -81,7 +81,7 @@ async def parcours(page, appels_api):
     assert nb >= 4, 'proposition trop maigre : %d' % nb
     await page.wait_for_timeout(1200)
     await capture(page, 'amenagement')
-    await page.click('.onglets button:has-text("Résultat")')
+    await page.click('.onglets button:has-text("Rendu IA")')
     await page.click('button:has-text("Générer le rendu")')
     await page.wait_for_selector('.avant-apres', timeout=30000)
     await expect(page.locator('.app-entete [data-solde]')).to_have_attribute('data-solde', '2')
@@ -135,6 +135,8 @@ async def main():
             b = await pw.chromium.launch(args=['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'])
             vp = {'width': 390, 'height': 844} if FORMAT == 'mobile' else {'width': 1400, 'height': 900}
             ctx = await b.new_context(viewport=vp, locale='fr-FR', is_mobile=FORMAT == 'mobile', has_touch=FORMAT == 'mobile', device_scale_factor=1)
+            # guides des nouveaux venus déjà vus (sinon leur dialogue couvre la page)
+            await ctx.add_init_script("try { localStorage.setItem('rr-tuto-accueil', '1'); localStorage.setItem('rr-tuto-atelier', '1'); } catch (e) {}")
             await ctx.route('https://cdn.shopify.com/**', lambda r: r.fulfill(path=str(PHOTO), content_type='image/jpeg'))
             page = await ctx.new_page()
             page.on('pageerror', lambda e: erreurs.append(str(e)))

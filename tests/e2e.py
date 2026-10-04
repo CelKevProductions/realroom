@@ -52,6 +52,8 @@ async def main():
             b = await pw.chromium.launch(args=['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'])
             vp = {'width': 390, 'height': 844} if FORMAT == 'mobile' else {'width': 1400, 'height': 900}
             ctx = await b.new_context(viewport=vp, locale='fr-FR', is_mobile=FORMAT == 'mobile', has_touch=FORMAT == 'mobile', device_scale_factor=1)
+            # guides des nouveaux venus déjà vus (sinon leur dialogue couvre la page)
+            await ctx.add_init_script("try { localStorage.setItem('rr-tuto-accueil', '1'); localStorage.setItem('rr-tuto-atelier', '1'); } catch (e) {}")
             # images Shopify inaccessibles hors ligne : on sert une vignette neutre
             await ctx.route('https://cdn.shopify.com/**', lambda r: r.fulfill(path=str(PHOTO), content_type='image/jpeg'))
             page = await ctx.new_page()
@@ -151,7 +153,7 @@ async def parcours(page, erreurs):
             await capture(page, 'vue-photo')
 
             # rendu (1 crédit), puis visite 3D (5 crédits : pas assez -> message)
-            await page.click('.onglets button:has-text("Résultat")')
+            await page.click('.onglets button:has-text("Rendu IA")')
             await page.click('button:has-text("Générer le rendu")')
             await page.wait_for_selector('.avant-apres', timeout=40000)
             await expect(page.locator('.app-entete [data-solde]')).to_have_attribute('data-solde', '2')
@@ -175,7 +177,7 @@ async def parcours(page, erreurs):
             await page.go_back()
             await page.go_back()
             await page.wait_for_selector('.atelier canvas', timeout=30000)
-            await page.click('.onglets button:has-text("Résultat")')
+            await page.click('.onglets button:has-text("Rendu IA")')
             await page.click('button:has-text("Créer la visite 3D")')
             await page.wait_for_selector('text=visite 3D (simulation)', timeout=40000)
             await capture(page, 'visite')
