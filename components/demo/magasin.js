@@ -4,7 +4,11 @@ import { pieceDepuisAnalyse } from '@/lib/amenagement.js';
 import { simulerAnalyse } from '@/lib/simulation.js';
 import { CREDITS } from '@/lib/config.js';
 
-const CLE = 'realroom-demo-1';
+// deux démos : RealRoom (/fr/demo, avec un appartement témoin) et l'édition Maison Corleone
+// (/fr/maison-corleone/demo : 2 rendus offerts, le parcours guidé crée sa propre pièce)
+const edition = () => (typeof location !== 'undefined' && location.pathname.includes('/maison-corleone') ? 'mc' : 'rr');
+const RENDUS_OFFERTS_MC = 2;
+const cle = () => (edition() === 'mc' ? 'mc-demo-1' : 'realroom-demo-1');
 const PHOTO_EXEMPLE = { url: '/images/demo-salon.jpg', role: 'entree', largeur: 1200, hauteur: 800 };
 let etat = null;
 const abonnes = new Set();
@@ -24,6 +28,16 @@ function pieceExemple(langue, projetId) {
 }
 
 function depart(langue) {
+  if (edition() === 'mc') {
+    return {
+      langue, edition: 'mc',
+      credits: RENDUS_OFFERTS_MC,
+      mouvements: [{ delta: RENDUS_OFFERTS_MC, motif: 'offert-mc', cree_le: maintenant() }],
+      projets: [{ id: 'p_mc', nom: 'Maison Corleone', cree_le: maintenant(), maj_le: maintenant() }],
+      pieces: [],
+      rendus: []
+    };
+  }
   const projetId = 'p_demo';
   return {
     langue,
@@ -41,7 +55,7 @@ function depart(langue) {
 export function lire(langue = 'fr') {
   if (etat) return etat;
   try {
-    const brut = sessionStorage.getItem(CLE);
+    const brut = sessionStorage.getItem(cle());
     if (brut) etat = JSON.parse(brut);
   } catch (_) { etat = null; }
   if (!etat || !Array.isArray(etat.pieces)) etat = depart(langue);
@@ -52,14 +66,14 @@ export function lire(langue = 'fr') {
 export function ecrire(f) {
   const e = lire();
   f(e);
-  try { sessionStorage.setItem(CLE, JSON.stringify(e)); } catch (_) { /* quota dépassé : en mémoire seulement */ }
+  try { sessionStorage.setItem(cle(), JSON.stringify(e)); } catch (_) { /* quota dépassé : en mémoire seulement */ }
   abonnes.forEach(a => a());
   return e;
 }
 
 export function remettreAZero(langue) {
   etat = depart(langue || (etat && etat.langue) || 'fr');
-  try { sessionStorage.removeItem(CLE); } catch (_) {}
+  try { sessionStorage.removeItem(cle()); } catch (_) {}
   abonnes.forEach(a => a());
 }
 

@@ -7,6 +7,7 @@ import { LIMITES } from '@/lib/config.js';
 import { analyserPiece } from '@/lib/claude.js';
 import { pieceDepuisAnalyse } from '@/lib/amenagement.js';
 import { PRODUITS } from '@/lib/catalogue.js';
+import { analyseMaisonPermise, compterAnalyseMaison } from '@/lib/maison.js';
 
 export const maxDuration = 300;
 
@@ -26,9 +27,12 @@ export const POST = route(async (request, { params }) => {
     console.error('Analyses : plafond du jour atteint pour les comptes d’essai (ANALYSES_GLOBALES_PAR_JOUR)');
     throw new ErreurHTTP(429, 'limite');
   }
+  // édition Maison Corleone (gratuite) : nombre total de pièces analysées par client
+  if (!(await analyseMaisonPermise(u))) throw new ErreurHTTP(429, 'limite-mc');
   // une analyse à la fois par pièce (un double clic ne paie pas deux fois)
   if (!(await demarrerAnalyse(u.id, id))) throw new ErreurHTTP(409, 'en-cours');
   await compter('analyse:' + u.id, Infinity, 864e5);
+  await compterAnalyseMaison(u);
   if (!payant) await compter('analyses-du-jour', Infinity, 864e5);
   try {
     const images = [];

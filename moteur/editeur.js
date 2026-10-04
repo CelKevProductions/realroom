@@ -11,7 +11,7 @@
    ================================================================= */
 import {
   THREE, RoomEnvironment, M, std, bloc, cyl, sphere, groupe, cuire, graine,
-  definirProduits, construireProduit, construireCatalogue, CAT_GENERIQUE, canvasTex
+  definirProduits, construireProduit, construireCatalogue, CAT_GENERIQUE, canvasTex, LUMINEUX
 } from './meubles.js';
 import './modeles/index.js';   // modèles fidèles d'après les photos des produits
 import { produitDe, estMural, estSuspendu, estPlat, estAdosse, estPosable, porteurDe, demiEmpreinte, placerAuMur, normaliserAngle } from '../lib/agencement.js';
@@ -195,7 +195,9 @@ export function creerEditeur(canvas, opts = {}) {
     tween: null,     // glissé de l'orbite (angle, hauteur, distance, point visé)
     auto: null,      // tour lent autour du meuble cadré
     cadre: null,     // meuble cadré
-    dernier: 0
+    dernier: 0,
+    amb: { k: 0, de: 0, cible: 0, t0: 0, duree: 0 },          // 0 : jour, 1 : soir
+    decal: { x: 0, y: 0, cx: 0, cy: 0 }                        // décalage de la vue (part de l'écran)
   };
 
   /* ---------- la pièce ---------- */
@@ -403,6 +405,7 @@ export function creerEditeur(canvas, opts = {}) {
     for (const id of [...E.items.keys()]) if (!vus.has(id)) retirer(id);
     for (const e of E.items.values()) if (posable(e)) placerPorteur(e);
     if (E.cadre && !E.items.has(E.cadre)) ensemble();
+    if (E.amb.k > 0 || E.amb.cible > 0) { majFeux(); appliquerAmbiance(E.amb.k); }
     if (E.selection && !E.items.has(E.selection)) selectionner(null);
     else majContour();
     E.ombres = true;
@@ -566,6 +569,61 @@ export function creerEditeur(canvas, opts = {}) {
   // le moindre geste rend la main
   function interrompre() { E.tween = null; E.auto = null; }
 
+  /* ---------- ambiance : jour ou soir (luminaires allumés, lumière du jour qui baisse) ---------- */
+  const FONDS = { jour: new THREE.Color(opts.fond || '#EFEBE3'), soir: new THREE.Color(opts.fondSoir || '#251C14') };
+  const LUMINAIRES = new Set(['suspension', 'lustre', 'plafonnier', 'lampadaire', 'lampe', 'applique']);
+  const feux = [];
+  function majFeux() {
+    const sources = [];
+    for (const e of E.items.values()) {
+      if (e.fantome || !e.p || !LUMINAIRES.has(e.p.fam)) continue;
+      const b = new THREE.Box3().setFromObject(e.modele), c = b.getCenter(new THREE.Vector3());
+      if (['suspension', 'lustre', 'plafonnier'].includes(e.p.fam)) c.y = b.min.y + .12;
+      else if (e.p.fam === 'applique') c.add(new THREE.Vector3(Math.sin(e.item.rot || 0), 0, Math.cos(e.item.rot || 0)).multiplyScalar(.22));
+      else c.y = b.max.y - .18;
+      sources.push({ c, i: e.p.fam === 'applique' ? 1.6 : e.p.fam === 'lampe' ? 2 : 4.5 });
+      if (sources.length >= 6) break;
+    }
+    while (feux.length < sources.length) { const l = new THREE.PointLight('#FFB46E', 0, 6.5, 2); scene.add(l); feux.push({ l, i: 0 }); }
+    feux.forEach((f, n) => { const s = sources[n]; f.i = s ? s.i : 0; if (s) f.l.position.copy(s.c); });
+  }
+  const cAmb = new THREE.Color();
+  function appliquerAmbiance(k) {
+    for (const Lu of LUMINEUX) {
+      const v = Lu.jour + (Lu.soir - Lu.jour) * k;
+      if (Lu.champ === 'opacite') Lu.m.opacity = v;
+      else if (Lu.champ === 'couleur') { if (Lu.m.userData.base) Lu.m.color.copy(Lu.m.userData.base).multiplyScalar(v); }
+      else Lu.m.emissiveIntensity = v;
+    }
+    hemi.intensity = lerp(1.05, .26, k);
+    hemi.color.set('#FFF7EC').lerp(cAmb.set('#7F88A8'), k);
+    soleil.intensity = lerp(2.1, .16, k);
+    soleil.color.set('#FFF1DE').lerp(cAmb.set('#8E9AC8'), k);
+    scene.environmentIntensity = lerp(.55, .16, k);
+    scene.background.copy(FONDS.jour).lerp(FONDS.soir, k);
+    const s = k * k * (3 - 2 * k);
+    feux.forEach(f => { f.l.intensity = f.i * s; });
+  }
+  // ambiance(1) : le soir, en glissant (duree en ms)
+  function ambiance(k, duree = 1100) {
+    const a = E.amb;
+    a.de = a.k; a.cible = clamp(k, 0, 1); a.t0 = performance.now(); a.duree = reduit ? 0 : duree;
+    majFeux();
+    demander();
+  }
+  // décalage de la vue : la pièce se range à côté d'un panneau (x, y : part de la largeur, de la hauteur)
+  function decalage(x = 0, y = 0, instant = false) {
+    E.decal.x = x; E.decal.y = y;
+    if (instant || reduit) { E.decal.cx = x; E.decal.cy = y; appliquerDecalage(); }
+    demander();
+  }
+  let tailleVue = { w: 1, h: 1 };
+  function appliquerDecalage() {
+    const { w, h } = tailleVue, d = E.decal;
+    if (Math.abs(d.cx) < 1e-4 && Math.abs(d.cy) < 1e-4) camera.clearViewOffset();
+    else camera.setViewOffset(w, h, -d.cx * w, -d.cy * h, w, h);
+  }
+
   /* ---------- murs qui s'effacent (vue de dessus) ---------- */
   function majMurs(cam, force) {
     if (!E.modele) return false;
@@ -609,6 +667,21 @@ export function creerEditeur(canvas, opts = {}) {
       else E.orbite.theta = E.auto.base + Math.sin((maintenant - E.auto.t0) / 1000 * .45) * .55;
       encore = true;
       if (E.auto.cumul >= Math.PI * 2 || maintenant - (E.auto.t0 || maintenant) > 28000) E.auto = null;
+    }
+    const a = E.amb;
+    if (a.k !== a.cible) {
+      const k = a.duree ? clamp((maintenant - a.t0) / a.duree, 0, 1) : 1;
+      a.k = k >= 1 ? a.cible : lerp(a.de, a.cible, k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2);
+      appliquerAmbiance(a.k);
+      if (a.k !== a.cible) encore = true;
+    }
+    const d = E.decal;
+    if (Math.abs(d.cx - d.x) > 1e-4 || Math.abs(d.cy - d.y) > 1e-4) {
+      const f = 1 - Math.exp(-(dt || .016) * 7);
+      d.cx += (d.x - d.cx) * f; d.cy += (d.y - d.cy) * f;
+      if (Math.abs(d.cx - d.x) < 1e-3 && Math.abs(d.cy - d.y) < 1e-3) { d.cx = d.x; d.cy = d.y; }
+      appliquerDecalage();
+      encore = true;
     }
     if (encore) demander(); else E.dernier = 0;
     if (E.anim) {
@@ -734,6 +807,8 @@ export function creerEditeur(canvas, opts = {}) {
     const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
+    tailleVue = { w, h };
+    appliquerDecalage();
     camera.updateProjectionMatrix();
     demander();
   }
@@ -748,6 +823,9 @@ export function creerEditeur(canvas, opts = {}) {
     const cam = new THREE.PerspectiveCamera(o.fov || p.fov, w / h, .05, 200);
     cam.position.set(p.px, p.py, p.pz); cam.lookAt(p.tx, p.ty, p.tz); cam.updateMatrixWorld();
     const avant = { taille: renderer.getSize(new THREE.Vector2()), dpr: renderer.getPixelRatio() };
+    // le rendu réaliste part de la photo, prise de jour : la capture se fait toujours en lumière du jour
+    const kAmb = E.amb.k;
+    if (kAmb > 0) appliquerAmbiance(0);
     aides.visible = false;
     majMurs(cam, true);
     E.plafond.visible = true;
@@ -758,6 +836,7 @@ export function creerEditeur(canvas, opts = {}) {
     const url = canvas.toDataURL('image/jpeg', o.qualite || .9);
     renderer.setPixelRatio(avant.dpr);
     renderer.setSize(avant.taille.x, avant.taille.y, false);
+    if (kAmb > 0) appliquerAmbiance(kAmb);
     aides.visible = true;
     E.murs.forEach(w2 => { w2.op = -1; });
     E.ombres = true;
@@ -786,6 +865,8 @@ export function creerEditeur(canvas, opts = {}) {
     cadrer,
     ensemble,
     balayer,
+    ambiance,
+    decalage,
     get mode() { return E.mode; },
     capture,
     // position à l'écran (px, dans le canevas) du haut d'un meuble : barre d'outils flottante
@@ -811,6 +892,7 @@ export function creerEditeur(canvas, opts = {}) {
     rendre: () => rendre(),
     detruire() {
       E.detruit = true;
+      if (E.amb.k > 0) appliquerAmbiance(0);
       if (E.raf) cancelAnimationFrame(E.raf);
       if (obs) obs.disconnect();
       viderGroupe(racine); viderGroupe(meublesG); viderGroupe(aides);

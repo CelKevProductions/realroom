@@ -23,6 +23,15 @@ export async function repondre(url, { method = 'GET', corps, formulaire } = {}) 
   const [, , type, idRes, sous] = u.pathname.split('/');   // /api/<type>/<id>/<sous>
   const langue = lire().langue || 'fr';
   try {
+    // --- édition Maison Corleone : profil (rendus offerts restants, pièces aménagées), déconnexion
+    if (type === 'mc') {
+      if (idRes === 'profil') {
+        const e = lire();
+        const pieces = e.pieces.filter(p => p.modele).sort((a, b) => (a.maj_le < b.maj_le ? 1 : -1)).slice(0, 6);
+        return ok({ profil: { prenom: null, rendus: e.credits, projetId: (e.projets[0] && e.projets[0].id) || null, pieces: pieces.map(p => ({ id: p.id, nom: p.nom, fonction: p.fonction, maj_le: p.maj_le })) } });
+      }
+      return ok();
+    }
     // --- compte et crédits
     if (type === 'moi') return ok({ connecte: true, email: 'demo@realroom.app', credits: lire().credits, langue });
     if (type === 'auth') return ok();

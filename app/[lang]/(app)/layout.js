@@ -5,6 +5,7 @@ import Deconnexion from '@/components/Deconnexion.js';
 import Solde from '@/components/Solde.js';
 import { Fil } from '@/components/fil.js';
 import { utilisateur } from '@/lib/session.js';
+import { estCompteMaison } from '@/lib/maison.js';
 import { texte } from '@/lib/i18n.js';
 
 export const metadata = { robots: { index: false, follow: false } };
@@ -15,6 +16,8 @@ export default async function MiseEnPageApp({ children, params }) {
   const { lang } = await params;
   const u = await utilisateur();
   if (!u) redirect(`/${lang}/connexion`);
+  // compte client Maison Corleone (édition gratuite) : il a sa propre page
+  if (estCompteMaison(u)) redirect(`/${lang}/maison-corleone`);
   const t = texte(lang);
   return (
     <>

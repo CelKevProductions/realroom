@@ -11,7 +11,7 @@ import { chargerCatalogue } from '@/components/catalogueClient.js';
 let quitte = false;
 if (typeof window !== 'undefined') addEventListener('pagehide', () => { quitte = true; });
 
-export default function Editeur3D({ ref, modele, items, selection, vue, surSelection, surDeplacement, surCadre, surPret, erreurWebgl }) {
+export default function Editeur3D({ ref, modele, items, selection, vue, surSelection, surDeplacement, surCadre, surPret, erreurWebgl, fond, fondSoir }) {
   const canvas = useRef(null);
   const ed = useRef(null);
   const rappels = useRef({});
@@ -27,6 +27,8 @@ export default function Editeur3D({ ref, modele, items, selection, vue, surSelec
         if (!vivant || !canvas.current) return;
         ed.current = creerEditeur(canvas.current, {
           produits: cat.produits,
+          ...(fond ? { fond } : {}),
+          ...(fondSoir ? { fondSoir } : {}),
           surSelection: id => rappels.current.surSelection && rappels.current.surSelection(id),
           surDeplacement: d => rappels.current.surDeplacement && rappels.current.surDeplacement(d),
           surCadre: id => rappels.current.surCadre && rappels.current.surCadre(id)
@@ -57,7 +59,10 @@ export default function Editeur3D({ ref, modele, items, selection, vue, surSelec
     tourner: (id, d) => (ed.current ? ed.current.tourner(id, d) : null),
     cadrer: id => (ed.current ? ed.current.cadrer(id) : false),
     ensemble: () => { if (ed.current) ed.current.ensemble(); },
-    balayer: () => { if (ed.current) ed.current.balayer(); }
+    balayer: () => { if (ed.current) ed.current.balayer(); },
+    ambiance: (k, duree) => { if (ed.current) ed.current.ambiance(k, duree); },
+    decalage: (x, y, instant) => { if (ed.current) ed.current.decalage(x, y, instant); },
+    pret: () => !!ed.current
   }), []);
 
   if (panne) return <div className="attente"><p>{erreurWebgl}</p></div>;

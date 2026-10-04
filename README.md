@@ -56,6 +56,21 @@ En local seulement (jamais sur Vercel) : sans `RESEND_API_KEY`, le code de conne
 5. Resend : vérifier le domaine d'envoi (enregistrements DNS).
 6. Compléter les mentions légales, les CGV et la politique de confidentialité. Les passages à compléter sont surlignés en jaune (`lib/legal.js`), et le tout est à faire relire.
 
+## Édition Maison Corleone (« Chez vous »)
+
+`/fr/maison-corleone` : l'aménagement offert aux clients de maisoncorleone.com, avec leur compte client de la boutique. Préchargement (celui de la visite privée, aux couleurs de la boutique), intro 3D dirigée par le défilement (`moteur/intro.js`), parcours guidé (pièce, budget, style, priorité, photos), chargement 3D (`moteur/chargeur.js`), puis la pièce en 3D avec l'éditeur de RealRoom. Deux rendus photo réalistes offerts par client, une seule fois. Démo sans compte : `/fr/maison-corleone/demo` (tout dans le navigateur, analyse et rendus simulés). Code : `components/maison`, `lib/maison.js`, `app/api/mc`.
+
+Connexion : comptes clients Shopify (Customer Account API, OAuth 2.0 / OpenID Connect).
+
+1. Admin Shopify → *Canaux de vente* → installer **Headless** → créer une vitrine.
+2. Dans la vitrine : *Customer Account API* → *Paramètres de l'application* : type de client **confidentiel**, puis :
+   - URI de rappel : `https://<domaine>/api/mc/retour`
+   - Origine JavaScript : `https://<domaine>`
+   - URL de déconnexion : `https://<domaine>/fr/maison-corleone`
+3. Copier l'identifiant client et le secret dans Vercel : `MC_CLIENT_ID`, `MC_CLIENT_SECRET` (sensible), puis redéployer.
+
+Sans `MC_CLIENT_ID`, la page indique que la connexion ouvre bientôt et propose la démo (en local, la connexion est simulée). Réglages facultatifs : `MC_BOUTIQUE` (`maisoncorleone.com`), `MC_RENDUS_OFFERTS` (2), `MC_ANALYSES_MAX` (6 pièces analysées au total par client), `MC_NOUVEAUX_PAR_JOUR` (300 nouveaux clients servis en rendus offerts par jour). Les liens vers les fiches produits portent `utm_source=chez-vous`.
+
 ## Coûts par opération (ordres de grandeur)
 
 | Opération | Coût API | Prix client |
@@ -90,5 +105,7 @@ Les pièces choisies à la main (`outils/sources/produits.js`) gardent leur maqu
 npm test                                   # solveur d'agencement, crédits (base PGlite temporaire)
 npm run build && npm run test:api          # cas limites de l'API : envois simultanés, crédits offerts, codes faux…
 python3 tests/e2e.py                       # parcours complet, services simulés (aussi : mobile)
+python3 tests/maison.py compte             # édition Maison Corleone : connexion simulée, parcours guidé, pièce 3D, rendu
+python3 tests/maison.py demo-mobile        # sa démo, sans serveur (aussi : demo-desktop ; --mouvement joue les animations)
 python3 tests/harnais/essai-editeur.py     # moteur 3D seul (après : npx esbuild tests/harnais/editeur.js --bundle …)
 ```

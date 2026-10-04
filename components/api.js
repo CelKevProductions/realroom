@@ -1,7 +1,7 @@
 // Appels à l'API depuis le navigateur : JSON, erreurs lisibles, jamais d'exception réseau non gérée
 export async function api(url, { method = 'GET', corps, formulaire, signal } = {}) {
   // démo sans compte (/fr/demo…) : tout se passe dans le navigateur, rien n'est envoyé au serveur
-  if (typeof window !== 'undefined' && /^\/[a-z]{2}\/demo(\/|$)/.test(location.pathname)) {
+  if (typeof window !== 'undefined' && /^\/[a-z]{2}\/(maison-corleone\/)?demo(\/|$)/.test(location.pathname)) {
     const { repondre } = await import('@/components/demo/api.js');
     return repondre(url, { method, corps, formulaire });
   }
@@ -16,7 +16,10 @@ export async function api(url, { method = 'GET', corps, formulaire, signal } = {
     const j = await r.json().catch(() => ({}));
     if (r.status === 401 && typeof window !== 'undefined' && !url.startsWith('/api/auth')) {
       const lang = location.pathname.split('/')[1] || 'fr';
-      location.href = `/${lang}/connexion?suite=${encodeURIComponent(location.pathname)}`;
+      // édition Maison Corleone : on se reconnecte avec le compte client de la boutique
+      location.href = location.pathname.includes('/maison-corleone')
+        ? `/api/mc/connexion?lang=${lang}&suite=${encodeURIComponent(location.pathname)}`
+        : `/${lang}/connexion?suite=${encodeURIComponent(location.pathname)}`;
     }
     return { ...j, ok: r.ok && j.ok !== false, statut: r.status };
   } catch (e) {

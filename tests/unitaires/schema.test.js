@@ -9,7 +9,7 @@ import { PGlite } from '@electric-sql/pglite';
 const dossier = fs.mkdtempSync(path.join(os.tmpdir(), 'realroom-schema-'));
 after(() => fs.rmSync(dossier, { recursive: true, force: true }));
 
-test('une base de la version 1 est migrée : les codes passent aux empreintes, les données restent', async () => {
+test('une base de la version 1 est migrée : codes par empreinte, profils Maison Corleone, données intactes', async () => {
   const ancienne = new PGlite(dossier);
   await ancienne.exec(`
     CREATE TABLE utilisateurs (id text PRIMARY KEY, email text UNIQUE NOT NULL, langue text NOT NULL DEFAULT 'fr', credits integer NOT NULL DEFAULT 0 CHECK (credits >= 0), cree_le timestamptz NOT NULL DEFAULT now());
@@ -24,6 +24,8 @@ test('une base de la version 1 est migrée : les codes passent aux empreintes, l
   const { sql, une } = await import('../../lib/db.js');
   await sql("INSERT INTO codes (cle, empreinte, expire_le) VALUES ('code:abc', 'y', now())");
   assert.equal((await une("SELECT credits FROM utilisateurs WHERE id = 'u_ancien'")).credits, 7);
-  assert.equal((await une("SELECT valeur FROM meta WHERE cle = 'schema'")).valeur, '2');
-  assert.ok(await une("SELECT to_regclass('public.bienvenues') AS t"));
+  assert.equal((await une("SELECT valeur FROM meta WHERE cle = 'schema'")).valeur, '3');
+  assert.ok((await une("SELECT to_regclass('public.bienvenues') AS t")).t);
+  // version 3 : profils des clients Maison Corleone (édition gratuite)
+  assert.ok((await une("SELECT to_regclass('public.profils_mc') AS t")).t);
 });
