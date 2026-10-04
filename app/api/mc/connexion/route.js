@@ -1,6 +1,6 @@
 import { origine } from '@/lib/http.js';
 import { ouvrirSession } from '@/lib/session.js';
-import { MAISON, maisonConfiguree, maisonSimulee, urlConnexion, suiteSure, compteMaison } from '@/lib/maison.js';
+import { MAISON, maisonConfiguree, maisonSimulee, urlConnexion, suiteSure, compteMaison, raisonErreur } from '@/lib/maison.js';
 
 // GET /api/mc/connexion?suite=/fr/maison-corleone&lang=fr : vers la page de connexion des comptes
 // clients Maison Corleone. Sans client configuré : connexion simulée en essais locaux, sinon retour
@@ -20,7 +20,8 @@ export async function GET(request) {
     }
     return vers(suite, 'mc=inactif');
   } catch (e) {
-    console.error('connexion Maison Corleone', MAISON.boutique, e && e.message);
-    return vers(suite, 'mc=erreur');
+    const raison = raisonErreur(e);
+    console.error('connexion Maison Corleone', MAISON.boutique, raison, e && e.message);
+    return vers(suite, 'mc=erreur&raison=' + encodeURIComponent(raison));
   }
 }

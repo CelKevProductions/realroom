@@ -1,4 +1,7 @@
-// La fleur de Maison Corleone (reprise de la visite privée) et l'emblème à anneau de texte tournant
+// La fleur de la visite privée (préchargement) et la marque en haut à gauche : le logo MC de la
+// boutique, qui y ramène
+import Logo from '@/components/maison/Logo.js';
+
 export function Fleur({ className }) {
   const petale = 'M50 49C45.5 44 45.2 38.6 50 35.5C54.8 38.6 54.5 44 50 49Z';
   return (
@@ -11,22 +14,11 @@ export function Fleur({ className }) {
   );
 }
 
-// href : lien (retour à la boutique) ; sinon bouton
-export default function Embleme({ texte, label, onClick, href, style }) {
-  const Balise = href ? 'a' : 'button';
-  const attributs = href ? { href } : { type: 'button', onClick };
+// label : nom accessible du lien (« Retour à la boutique Maison Corleone »)
+export default function Marque({ label, href = 'https://maisoncorleone.com' }) {
   return (
-    <Balise className="mc-embleme" aria-label={label} style={style} {...attributs}>
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <defs><path id="mc-cercle" d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0" /></defs>
-        <g className="mc-embleme__rot"><text><textPath href="#mc-cercle" textLength="224" lengthAdjust="spacing">{texte}</textPath></text></g>
-        <svg x="37" y="37" width="26" height="26" viewBox="33 33 34 34">
-          <g className="fleur">
-            {[0, 90, 180, 270].map(r => <path key={r} d="M50 49C45.5 44 45.2 38.6 50 35.5C54.8 38.6 54.5 44 50 49Z" transform={`rotate(${r} 50 50)`} />)}
-            <circle cx="50" cy="50" r="1.5" />
-          </g>
-        </svg>
-      </svg>
-    </Balise>
+    <a className="mc-marque" href={href} aria-label={label}>
+      <Logo largeur={240} />
+    </a>
   );
 }

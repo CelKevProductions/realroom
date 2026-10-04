@@ -9,7 +9,7 @@ import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
 import { texte as texteRealRoom, prix } from '@/lib/i18n.js';
 import { estMural, estSuspendu, estAdosse, placerAuMur, demiEmpreinte, resoudre, ANGLES } from '@/lib/agencement.js';
-import Embleme from '@/components/maison/Embleme.js';
+import Marque from '@/components/maison/Embleme.js';
 import Fiche from '@/components/maison/Fiche.js';
 import Rendu from '@/components/maison/Rendu.js';
 import { remplir } from '@/components/maison/textes.js';
@@ -342,7 +342,7 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
         )}
       </div>
       <div className="mc-piece__voile" aria-hidden="true" />
-      <Embleme texte={t.emblème} label={ts.boutique} href="https://maisoncorleone.com" />
+      <Marque label={ts.boutique} />
 
       <header className="mc-piece__tete">
         <p className="mc-piece__nom">{t.marque}</p>

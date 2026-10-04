@@ -8,6 +8,12 @@
    regler(p) fixe tout l'état pour p ∈ [0, 1] : une position de défilement
    donne toujours la même image. Seuls la poussière et le tracé du plan à
    l'ouverture vivent avec le temps.
+   Fluidité : tout est compilé et envoyé au processeur graphique avant la
+   première image (les deux éclairages, jour et soir) ; la définition est
+   choisie d'après quelques images chronométrées ; la caméra suit des courbes
+   sans arrêt aux étapes ; une seule boucle par image (défilement, textes,
+   rendu), cadencée à 60 images régulières si l'écran va plus vite que la
+   carte graphique.
    ================================================================= */
 import { THREE, RoomEnvironment, definirProduits, construireProduit, cuire, graine, std, M, bloc, cyl, sphere, LUMINEUX, canvasTex } from './meubles.js';
 import './modeles/index.js';
@@ -19,6 +25,23 @@ const sortie = t => 1 - Math.pow(1 - t, 3);
 const rebond = t => { const c = 1.35; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
 const fen = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
 const hash = s => { let h = 2166136261; for (const c of String(s)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
+// interpolation cubique monotone (Fritsch-Carlson) : passe par chaque clé sans dépassement, vitesse
+// continue (pas d'arrêt aux clés intermédiaires), départ et arrivée en douceur
+function pchip(xs, ys) {
+  const n = xs.length, h = [], d = [], m = new Array(n).fill(0);
+  for (let i = 0; i < n - 1; i++) { h[i] = xs[i + 1] - xs[i]; d[i] = (ys[i + 1] - ys[i]) / h[i]; }
+  for (let i = 1; i < n - 1; i++) {
+    if (d[i - 1] * d[i] > 0) { const w1 = 2 * h[i] + h[i - 1], w2 = h[i] + 2 * h[i - 1]; m[i] = (w1 + w2) / (w1 / d[i - 1] + w2 / d[i]); }
+  }
+  return x => {
+    if (x <= xs[0]) return ys[0];
+    if (x >= xs[n - 1]) return ys[n - 1];
+    let i = 0;
+    while (i < n - 2 && x > xs[i + 1]) i++;
+    const t = (x - xs[i]) / h[i], t2 = t * t, t3 = t2 * t;
+    return (2 * t3 - 3 * t2 + 1) * ys[i] + (t3 - 2 * t2 + t) * h[i] * m[i] + (-2 * t3 + 3 * t2) * ys[i + 1] + (t3 - t2) * h[i] * m[i + 1];
+  };
+}
 const alea = n => { let s = n >>> 0; return () => { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; };
 
 // la pièce : murs du fond (z = -P/2) et de gauche (x = -L/2), ouverte vers la caméra comme une maquette
@@ -129,7 +152,7 @@ export async function creerIntro(canvas, opts = {}) {
   const mobile = !!opts.mobile;
   const annule = opts.annule || (() => false);
   const mesure = opts.mesure || null;
-  const TOTAL = 9 + PIECES.length;
+  const TOTAL = 10 + PIECES.length;   // étapes : 5 de décor, une par pièce, lumières, 2 × shaders, premières images, calibrage
   let fait = 0, chrono = performance.now();
   const souffle = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
   async function etape(nom) {
@@ -142,8 +165,9 @@ export async function creerIntro(canvas, opts = {}) {
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
   if (!renderer.capabilities.isWebGL2) throw new Error('WebGL 2 indisponible');
-  // définition : plafonnée (écrans Retina), puis abaissée d'elle-même si les images arrivent trop lentement
-  const dprMax = Math.min(window.devicePixelRatio || 1, mobile ? 1.3 : 1.5), dprMin = mobile ? .75 : .9;
+  // définition : plafonnée (écrans Retina), choisie d'après quelques images chronométrées (calibrer),
+  // puis abaissée d'elle-même si des images sont manquées pendant le défilement
+  const dprMax = Math.min(window.devicePixelRatio || 1, mobile ? 1.3 : 1.5), dprMin = mobile ? .7 : .85;
   let dpr = dprMax;
   renderer.setPixelRatio(dpr);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -169,7 +193,7 @@ export async function creerIntro(canvas, opts = {}) {
   const soleil = new THREE.DirectionalLight('#FFF0DA', 2.5);
   soleil.position.set(5.5, 9.5, 6.5);
   soleil.castShadow = true;
-  soleil.shadow.mapSize.set(mobile ? 1024 : 1536, mobile ? 1024 : 1536);
+  soleil.shadow.mapSize.set(1024, 1024);
   soleil.shadow.bias = -.0004; soleil.shadow.normalBias = .02; soleil.shadow.radius = 4;
   Object.assign(soleil.shadow.camera, { left: -6, right: 6, top: 6, bottom: -6, near: 1, far: 30 });
   soleil.shadow.camera.updateProjectionMatrix();
@@ -343,9 +367,12 @@ export async function creerIntro(canvas, opts = {}) {
   }
 
   /* ---------- lumières du soir et poussière ---------- */
+  // invisibles le jour : quatre lampes à zéro coûteraient quand même leur calcul sur chaque pixel
+  // (les shaders des deux éclairages sont compilés d'avance : passer de l'un à l'autre ne coûte rien)
   const feux = FEUX.map(f => {
     const l = new THREE.PointLight('#FFB46E', 0, 7.5, 2);
     l.position.set(f.x, f.y, f.z);
+    l.visible = false;
     maquette.add(l);
     return { l, i: f.i, de: f.de };
   });
@@ -358,20 +385,38 @@ export async function creerIntro(canvas, opts = {}) {
   const mP = new THREE.PointsMaterial({ size: mobile ? .06 : .05, map: poussiere(), transparent: true, depthWrite: false, opacity: .5, color: '#FFFFFF', sizeAttenuation: true });
   const poussieres = new THREE.Points(gP, mP);
   scene.add(poussieres);
+  // voile : les bords de l'image s'assombrissent un peu (dessiné ici, à la définition du rendu, plutôt
+  // qu'en calque CSS plein écran que le navigateur recomposerait à chaque image)
+  const voile = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({
+    transparent: true, depthTest: false, depthWrite: false,
+    uniforms: { uCouleur: { value: new THREE.Color('#1E160E') } },
+    vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 0., 1.); }',
+    fragmentShader: 'uniform vec3 uCouleur; varying vec2 vUv; void main() { vec2 d = (vUv - vec2(.5, .6)) / vec2(1.2, .9); float k = clamp((length(d) - .55) / .45, 0., 1.); gl_FragColor = vec4(uCouleur, .22 * k);\n#include <colorspace_fragment>\n}'
+  }));
+  voile.frustumCulled = false;
+  voile.renderOrder = 999;
+  scene.add(voile);
   await etape('lumières');
 
   /* ---------- caméra : courbes passant par les clés ---------- */
+  // Les courbes sont parcourues à vitesse réglée par la longueur (getPointAt) : la part de longueur
+  // atteinte à chaque clé est interpolée sans à-coup entre les clés (pchip). Avant, chaque segment
+  // était lissé à part : la caméra s'arrêtait à chaque clé puis repartait.
   const courbePos = new THREE.CatmullRomCurve3(CLES.map(c => new THREE.Vector3(...c.pos)), false, 'centripetal');
   const courbeVise = new THREE.CatmullRomCurve3(CLES.map(c => new THREE.Vector3(...c.vise)), false, 'centripetal');
+  const DIV = 160;
+  const partsCles = courbe => {
+    courbe.arcLengthDivisions = DIV * (CLES.length - 1);
+    const l = courbe.getLengths();
+    return CLES.map((_, i) => l[i * DIV] / l[l.length - 1]);
+  };
+  const tCles = CLES.map(c => c.t);
+  const sPos = pchip(tCles, partsCles(courbePos)), sVise = pchip(tCles, partsCles(courbeVise));
+  const fovDe = pchip(tCles, CLES.map(c => c.fov));
   function poseCamera(p) {
-    let i = 0;
-    while (i < CLES.length - 2 && p > CLES[i + 1].t) i++;
-    const a = CLES[i], b = CLES[i + 1];
-    const k = lisse(fen(p, a.t, b.t));
-    const u = (i + k) / (CLES.length - 1);
-    courbePos.getPoint(u, E.cpos);
-    courbeVise.getPoint(u, E.cvise);
-    const fov = lerp(a.fov, b.fov, k);
+    courbePos.getPointAt(clamp(sPos(p), 0, 1), E.cpos);
+    courbeVise.getPointAt(clamp(sVise(p), 0, 1), E.cvise);
+    const fov = fovDe(p);
     if (Math.abs(camera.fov - fov) > .01) { camera.fov = fov; camera.updateProjectionMatrix(); }
     placerCamera();
   }
@@ -382,7 +427,7 @@ export async function creerIntro(canvas, opts = {}) {
   }
 
   /* ---------- l'état pour une progression p ---------- */
-  const E = { p: 0, trace: 0, t0: 0, raf: 0, actif: false, detruit: false, flotte: 0, bob: 0, soir: -1, w: 1, h: 1, ombres: true, n: 0, cpos: new THREE.Vector3(), cvise: new THREE.Vector3() };
+  const E = { p: 0, trace: 0, t0: 0, raf: 0, actif: false, detruit: false, flotte: 0, bob: 0, soir: -1, w: 1, h: 1, ombres: true, n: 0, image: null, cpos: new THREE.Vector3(), cvise: new THREE.Vector3() };
   const cAmb = new THREE.Color();
   function ambiance(k) {
     if (Math.abs(k - E.soir) < .002) return;
@@ -404,7 +449,8 @@ export async function creerIntro(canvas, opts = {}) {
       else if (Lu.champ === 'couleur') { if (Lu.m.userData.base) Lu.m.color.copy(Lu.m.userData.base).multiplyScalar(v); }
       else Lu.m.emissiveIntensity = v;
     }
-    feux.forEach(f => { f.l.intensity = f.i * lisse(k); });
+    const allumes = k > .002;
+    feux.forEach(f => { f.l.intensity = f.i * lisse(k); f.l.visible = allumes; });
   }
 
   // fenêtre du défilement où des objets bougent (murs, meubles d'avant, pièces qui se posent)
@@ -476,37 +522,45 @@ export async function creerIntro(canvas, opts = {}) {
     });
   }
 
-  /* ---------- boucle : poussière, flottement, tracé ---------- */
+  /* ---------- boucle : défilement (image), poussière, flottement, tracé, rendu ---------- */
+  // Une seule boucle : la page y règle la progression (image) juste avant le rendu.
+  // Rythme : sur un écran rapide (100 Hz et plus) qui manque des images, on passe à une image sur
+  // deux (60 régulières valent mieux qu'une alternance 120/60) ; ensuite seulement, la définition baisse.
   function demander() { if (!E.raf && !E.detruit && E.actif) E.raf = requestAnimationFrame(tick); }
-  let dernier = 0, baisse = 0;
-  const durees = [];
+  let dernier = 0, baisse = 0, cadence = 1;   // cadence 2 : une image sur deux
+  const ecarts = [];
+  function surveiller(ecart, t) {
+    if (!(ecart > 0 && ecart < 250)) return;
+    ecarts.push(ecart);
+    if (ecarts.length > 60) ecarts.shift();
+    if (ecarts.length < 60 || t - baisse < 2000) return;
+    const tri = ecarts.slice().sort((a, b) => a - b);
+    const periode = tri[3];                       // ≈ période de l'écran (au rythme choisi)
+    const manquees = ecarts.filter(e => e > periode * 1.5).length / ecarts.length;
+    if (manquees < .2) return;
+    if (cadence === 1 && periode < 10.5) cadence = 2;
+    else if (dpr > dprMin) { dpr = Math.max(dprMin, Math.round((dpr - .15) * 100) / 100); renderer.setPixelRatio(dpr); renderer.setSize(E.w, E.h, false); }
+    else return;
+    baisse = t; ecarts.length = 0;
+  }
   function tick(t) {
     E.raf = 0;
+    if (E.detruit || !E.actif) return;
+    E.raf = requestAnimationFrame(tick);
+    if (cadence === 2 && (E.n++ & 1)) return;    // une image sur deux
     const ecart = dernier ? t - dernier : 0;
     const dt = Math.min(.05, ecart / 1000);
     dernier = t;
-    // images trop lentes (plus de 25 ms pour un quart d'entre elles) : on baisse la définition
-    if (ecart > 0 && ecart < 250) durees.push(ecart);
-    if (durees.length > 48) durees.shift();
-    if (durees.length === 48 && dpr > dprMin && t - baisse > 1800) {
-      const tri = durees.slice().sort((a, b) => a - b);
-      if (tri[36] > 25) {
-        dpr = Math.max(dprMin, Math.round((dpr - .2) * 100) / 100);
-        renderer.setPixelRatio(dpr);
-        renderer.setSize(E.w, E.h, false);
-        baisse = t; durees.length = 0;
-      }
-    }
+    surveiller(ecart, t);
+    if (E.image) E.image(t);                     // la page : défilement → regler(p), textes, étiquettes
     if (E.trace < 1 && E.t0) tracer(clamp((t - E.t0) / 2600, 0, 1));
     poussieres.rotation.y += dt * .012;
     poussieres.position.y = Math.sin(t / 4000) * .12;
     E.bob = Math.sin(t / 1300) * .06 * E.flotte;
     placerCamera();
-    // ombres recalculées une image sur deux au plus pendant que des objets bougent
-    E.n = (E.n + 1) % 2;
-    if (E.ombres && E.n === 0) { renderer.shadowMap.needsUpdate = true; E.ombres = false; }
+    // ombres recalculées à chaque image tant que des objets bougent (coût régulier : pas d'à-coups)
+    if (E.ombres) { renderer.shadowMap.needsUpdate = true; E.ombres = false; }
     renderer.render(scene, camera);
-    if (E.actif) demander();
   }
 
   function redimensionner() {
@@ -524,14 +578,20 @@ export async function creerIntro(canvas, opts = {}) {
     if (E.ombres) { renderer.shadowMap.needsUpdate = true; E.ombres = false; }
     renderer.render(scene, camera);
   }
-  // tout compiler et tout envoyer au processeur graphique avant la première image : une image de
-  // préparation où tout est visible (sous le préchargement), puis l'état de départ
+  // tout compiler et tout envoyer au processeur graphique avant la première image : des images de
+  // préparation où tout est visible (sous le préchargement), avec et sans les lampes du soir, puis
+  // l'état de départ
   const visibles = [];
   scene.traverse(o => { visibles.push([o, o.visible]); o.visible = true; });
+  const lampes = on => feux.forEach(f => { f.l.visible = on; });
   camera.aspect = Math.max(.2, (canvas.clientWidth || 1) / (canvas.clientHeight || 1));
   camera.position.set(...CLES[0].pos); camera.lookAt(...CLES[0].vise); camera.updateProjectionMatrix();
+  lampes(true);
   await renderer.compileAsync(scene, camera);
-  await etape('shaders');
+  await etape('shaders du soir');
+  lampes(false);
+  await renderer.compileAsync(scene, camera);
+  await etape('shaders du jour');
   // textures envoyées quelques-unes à la fois (une image peinte entre deux), pas toutes d'un bloc
   const textures = new Set();
   scene.traverse(o => {
@@ -546,31 +606,67 @@ export async function creerIntro(canvas, opts = {}) {
   if (mesure) mesure('textures (' + textures.size + ')', performance.now() - chrono);
   chrono = performance.now();
   renderer.shadowMap.needsUpdate = true;
-  renderer.render(scene, camera);
+  renderer.render(scene, camera);                 // jour
+  await souffle();
+  lampes(true);
+  renderer.render(scene, camera);                 // soir
   visibles.forEach(([o, v]) => { o.visible = v; });
-  renderer.shadowMap.needsUpdate = true;    // l'image de préparation montrait tout : ombres à refaire
-  await etape('première image');
+  renderer.shadowMap.needsUpdate = true;    // les images de préparation montraient tout : ombres à refaire
+  await etape('premières images');
 
   const obs = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(redimensionner) : null;
   if (obs) obs.observe(canvas);
-  regler(0);
   redimensionner();
+
+  // Calibrage : quelques images du moment le plus chargé (tout est posé, les lampes du soir sont
+  // allumées, la caméra est dans la pièce), chronométrées jusqu'au bout (lecture d'un pixel) ; au-delà
+  // de 10 ms par image, la définition baisse (le coût suit le nombre de pixels)
+  const gl = renderer.getContext(), pixel = new Uint8Array(4);
+  const chronometrer = () => {
+    const t0 = performance.now();
+    renderer.shadowMap.needsUpdate = true;
+    renderer.render(scene, camera);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+    return performance.now() - t0;
+  };
+  regler(.8);
+  for (let passe = 0; passe < 2 && dpr > dprMin; passe++) {
+    // la première image peut encore préparer des états ; si elle dépasse déjà 100 ms, la carte est
+    // très lente (ou le rendu logiciel) : définition minimale sans insister
+    const premiere = chronometrer();
+    if (premiere > 100) { dpr = dprMin; renderer.setPixelRatio(dpr); renderer.setSize(E.w, E.h, false); break; }
+    const t = [];
+    for (let i = 0; i < 3; i++) { const d = chronometrer(); t.push(d); if (d > 100) break; }
+    t.sort((a, b) => a - b);
+    const med = t[Math.floor((t.length - 1) / 2)];
+    if (mesure) mesure(`calibrage ${dpr} : ${med.toFixed(1)} ms`, performance.now() - chrono);
+    if (med <= 10) break;
+    dpr = Math.max(dprMin, Math.round(dpr * Math.sqrt(10 / med) * 100) / 100);
+    renderer.setPixelRatio(dpr);
+    renderer.setSize(E.w, E.h, false);
+    await souffle();
+  }
+  regler(0);
+  rendreMaintenant();
+  await etape('calibrage');
 
   return {
     regler,
     etiquettes,
     get progression() { return E.p; },
-    // anime le tracé du plan puis vit (poussière) ; trace : false pour un plan déjà tracé
-    demarrer({ trace = true } = {}) {
+    // anime le tracé du plan puis vit (poussière) ; trace : false pour un plan déjà tracé ;
+    // image(t) : appelée à chaque image, avant le rendu (la page y règle la progression)
+    demarrer({ trace = true, image = null } = {}) {
       E.actif = true;
+      E.image = image;
       if (trace && E.trace < 1) E.t0 = performance.now(); else tracer(1);
       demander();
     },
-    arreter() { E.actif = false; if (E.raf) cancelAnimationFrame(E.raf); E.raf = 0; },
+    arreter() { E.actif = false; E.image = null; if (E.raf) cancelAnimationFrame(E.raf); E.raf = 0; },
     redimensionner,
     rendre: rendreMaintenant,
     // pour les essais : appels de dessin, programmes compilés, définition
-    infos: () => ({ appels: renderer.info.render.calls, triangles: renderer.info.render.triangles, programmes: renderer.info.programs ? renderer.info.programs.length : 0, textures: renderer.info.memory.textures, dpr }),
+    infos: () => ({ appels: renderer.info.render.calls, triangles: renderer.info.render.triangles, programmes: renderer.info.programs ? renderer.info.programs.length : 0, textures: renderer.info.memory.textures, dpr, cadence, lampes: feux[0].l.visible }),
     detruire() {
       E.detruit = true; E.actif = false;
       if (E.raf) cancelAnimationFrame(E.raf);

@@ -5,7 +5,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { api } from '@/components/api.js';
 import { chargerCatalogue } from '@/components/catalogueClient.js';
-import Embleme from '@/components/maison/Embleme.js';
+import Marque from '@/components/maison/Embleme.js';
 import { composerEnvies, aGarder } from '@/components/maison/demande.js';
 import { initGsap, lettres, entreeTitre, entreeScript, monter, dechiffrer, reduit } from '@/components/maison/anim.js';
 
@@ -127,7 +127,7 @@ export default function Chargement({ t, lang, demo, piece, choix, aDesPieces, on
   const reessayer = () => { etat.current = { phase: 'analyse', t0: performance.now(), aff: Math.min(etat.current.aff, .5) }; setEssai(n => n + 1); };
   return (
     <div className="mc-charge mc-fixe" ref={racine}>
-      <Embleme texte={t.emblème} label={t.scene.boutique} href="https://maisoncorleone.com" />
+      <Marque label={t.scene.boutique} />
       <div className="mc-charge__texte">
         <p className="mc-question__label mc-mono"><i /><span data-label={t.marque + ' · ' + t.service}>{t.marque + ' · ' + t.service}</span></p>
         <h1 className="mc-charge__titre mc-display">{tc.lignes.map((l, i) => <span key={i} className="mc-ligne">{l}</span>)}</h1>

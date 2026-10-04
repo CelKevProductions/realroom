@@ -21,9 +21,11 @@ export default async function Page({ params, searchParams }) {
   const u = await utilisateur();
   const profil = estCompteMaison(u) ? await profilMaison(u) : null;
   const message = ['inactif', 'erreur', 'annule'].includes(sp.mc) ? sp.mc : null;
+  // étape en cause, sous le message d'erreur (decouverte, etat, jeton-401…)
+  const raison = message === 'erreur' && typeof sp.raison === 'string' && /^[a-z]{3,12}(-\d{3})?$/.test(sp.raison) ? sp.raison : null;
   const pieceId = profil && typeof sp.piece === 'string' && /^r_[A-Za-z0-9_-]{4,40}$/.test(sp.piece) ? sp.piece : null;
   return (
     <Experience lang={lang} profil={profil ? JSON.parse(JSON.stringify(profil)) : null} connexion={maisonConfiguree() || maisonSimulee()}
-      message={message} bienvenue={!!profil && sp.bienvenue === '1'} pieceId={pieceId} />
+      message={message} raison={raison} bienvenue={!!profil && sp.bienvenue === '1'} pieceId={pieceId} />
   );
 }

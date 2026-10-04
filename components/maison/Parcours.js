@@ -7,7 +7,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { api } from '@/components/api.js';
 import { reduireImage } from '@/components/piece/image.js';
 import { prix } from '@/lib/i18n.js';
-import Embleme from '@/components/maison/Embleme.js';
+import Marque from '@/components/maison/Embleme.js';
 import { Fleche } from '@/components/maison/icones.js';
 import { remplir, PRIORITES } from '@/components/maison/textes.js';
 import { suggerer } from '@/components/maison/demande.js';
@@ -32,7 +32,7 @@ function Montant({ valeur, lang, libre }) {
 }
 
 export default function Parcours({
-  t, lang, demo, etapeInitiale, connecte, profil, connexion, message, choix, setChoix,
+  t, lang, demo, etapeInitiale, connecte, profil, connexion, message, raison, choix, setChoix,
   piece, setPiece, assurerPiece, produits, onConnecteDemo, onOuvrirPiece, onLancer, onDeconnexion
 }) {
   const [etape, setEtape] = useState(etapeInitiale);
@@ -148,7 +148,7 @@ export default function Parcours({
         <div className="mc-reponses">
           <div className="mc-compte">
             <ul className="mc-compte__offre">{t.compte.offre.map(([b, s]) => <li key={s}><b>{b}</b><span>{s}</span></li>)}</ul>
-            {message && <p className="mc-avis" role="status">{t.compte[message]}</p>}
+            {message && <p className="mc-avis" role="status">{t.compte[message]}{raison && <small className="mc-avis__ref">{t.compte.ref} {raison}</small>}</p>}
             {demo ? (
               <>
                 <button type="button" className="mc-btn mc-btn--plein mc-btn--grand" onClick={() => { onConnecteDemo(); aller(pieces.length ? 'reprise' : 'piece'); }}>{t.compte.bouton}<Fleche /></button>
@@ -345,7 +345,7 @@ export default function Parcours({
   const bonjour = profil && profil.prenom ? remplir(t.nav.bonjour, { p: profil.prenom }) : t.nav.connecte;
   return (
     <div className="mc-guide mc-fixe">
-      <Embleme texte={t.emblème} label={t.scene.boutique} href="https://maisoncorleone.com" />
+      <Marque label={t.scene.boutique} />
       <header className="mc-guide__tete">
         {demo ? <span className="mc-pill">{t.nav.demoCourt}</span> : connecte && <span className="mc-guide__compte mc-mono">{bonjour}</span>}
         {connecte && <button type="button" className="mc-lien" onClick={onDeconnexion}>{demo ? t.scene.recommencer : t.nav.deconnexion}</button>}

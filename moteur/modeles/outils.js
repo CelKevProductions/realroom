@@ -418,9 +418,14 @@ function facteurOmbre(nom) {
 }
 // carte de couleur : couleur unie ou motif, assombrie dans les creux du relief
 function texteOmbree(nom, source) {
-  const n = 256, f = facteurOmbre(nom), c = canvas(n), x = c.getContext('2d');
-  if (source) x.drawImage(source, 0, 0, n, n); else { x.fillStyle = '#FFFFFF'; x.fillRect(0, 0, n, n); }
-  const img = x.getImageData(0, 0, n, n);
+  const n = 256, f = facteurOmbre(nom), c = canvas(n);
+  // Sans motif, les pixels sont calculés directement : relire un canvas que le navigateur dessine
+  // sur la carte graphique bloque tout (plusieurs secondes sur une carte lente, pour le dossier
+  // d'Abbraccio). Avec un motif, le canvas est lu côté processeur (willReadFrequently).
+  const x = c.getContext('2d', source ? { willReadFrequently: true } : undefined);
+  let img;
+  if (source) { x.drawImage(source, 0, 0, n, n); img = x.getImageData(0, 0, n, n); }
+  else { img = x.createImageData(n, n); img.data.fill(255); }
   for (let i = 0; i < n * n; i++) for (let k = 0; k < 3; k++) img.data[i * 4 + k] *= f[i];
   x.putImageData(img, 0, 0);
   return textureCouleur(c);

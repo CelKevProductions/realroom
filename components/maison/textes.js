@@ -3,7 +3,6 @@
 const fr = {
   marque: 'Maison Corleone',
   service: 'Chez vous',
-  emblème: 'Maison Corleone · Chez vous · Aménagement · ',
   pre: { gauche: 'Votre pièce', droite: 'Réinventée', etapes: ['Préparation de l’atelier', 'Mise en lumière', 'Ouverture'], pied: ['Maison Corleone · Nanterre', 'Le design s’invite chez vous.'] },
   intro: {
     passer: 'Passer l’intro', defiler: 'Faites défiler', sur: 'sur',
@@ -26,6 +25,7 @@ const fr = {
     inactif: 'La connexion avec votre compte Maison Corleone ouvre très bientôt.',
     erreur: 'La connexion n’a pas abouti. Réessayez dans un instant.',
     annule: 'Connexion annulée.',
+    ref: 'Réf.',
     demo: 'Essayer la démo', demoNote: 'Démo : la connexion est simulée, rien n’est envoyé.'
   },
   reprise: { label: 'Bon retour', lignes: ['Vos pièces'], script: 'vous attendent', texte: 'Reprenez une pièce déjà aménagée, ou réinventez-en une nouvelle.', nouvelle: 'Aménager une nouvelle pièce', le: 'Modifiée le {d}' },
@@ -92,7 +92,6 @@ const fr = {
 const en = {
   marque: 'Maison Corleone',
   service: 'At home',
-  emblème: 'Maison Corleone · At home · Interior design · ',
   pre: { gauche: 'Your room', droite: 'Reimagined', etapes: ['Preparing the studio', 'Setting the light', 'Opening'], pied: ['Maison Corleone · Nanterre', 'Design comes home.'] },
   intro: {
     passer: 'Skip intro', defiler: 'Scroll', sur: 'of',
@@ -115,6 +114,7 @@ const en = {
     inactif: 'Signing in with your Maison Corleone account opens very soon.',
     erreur: 'Sign-in did not go through. Try again in a moment.',
     annule: 'Sign-in cancelled.',
+    ref: 'Ref.',
     demo: 'Try the demo', demoNote: 'Demo: sign-in is simulated, nothing is sent.'
   },
   reprise: { label: 'Welcome back', lignes: ['Your rooms'], script: 'await you', texte: 'Pick up a room you have already designed, or reimagine a new one.', nouvelle: 'Design a new room', le: 'Edited on {d}' },
