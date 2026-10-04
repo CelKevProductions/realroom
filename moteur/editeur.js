@@ -410,6 +410,7 @@ export function creerEditeur(canvas, opts = {}) {
     else majContour();
     E.ombres = true;
     demander();
+    prechauffer();
   }
 
   /* ---------- sélection ---------- */
@@ -572,7 +573,21 @@ export function creerEditeur(canvas, opts = {}) {
   /* ---------- ambiance : jour ou soir (luminaires allumés, lumière du jour qui baisse) ---------- */
   const FONDS = { jour: new THREE.Color(opts.fond || '#EFEBE3'), soir: new THREE.Color(opts.fondSoir || '#251C14') };
   const LUMINAIRES = new Set(['suspension', 'lustre', 'plafonnier', 'lampadaire', 'lampe', 'applique']);
-  const feux = [];
+  // six lumières créées d'avance, cachées le jour : leur nombre ne change jamais, et leurs shaders
+  // sont compilés en tâche de fond après le chargement (passer au soir ne fige pas l'écran)
+  const feux = Array.from({ length: 6 }, () => { const l = new THREE.PointLight('#FFB46E', 0, 6.5, 2); l.visible = false; scene.add(l); return { l, i: 0 }; });
+  const allumer = oui => { for (const f of feux) f.l.visible = oui; };
+  let prechauffe = 0;
+  function prechauffer() {
+    clearTimeout(prechauffe);
+    prechauffe = setTimeout(() => {
+      if (E.detruit || !E.modele) return;
+      const allumees = feux[0].l.visible;
+      allumer(true);
+      renderer.compileAsync(scene, camera).catch(() => {});
+      allumer(allumees);
+    }, 1200);
+  }
   function majFeux() {
     const sources = [];
     for (const e of E.items.values()) {
@@ -584,7 +599,6 @@ export function creerEditeur(canvas, opts = {}) {
       sources.push({ c, i: e.p.fam === 'applique' ? 1.6 : e.p.fam === 'lampe' ? 2 : 4.5 });
       if (sources.length >= 6) break;
     }
-    while (feux.length < sources.length) { const l = new THREE.PointLight('#FFB46E', 0, 6.5, 2); scene.add(l); feux.push({ l, i: 0 }); }
     feux.forEach((f, n) => { const s = sources[n]; f.i = s ? s.i : 0; if (s) f.l.position.copy(s.c); });
   }
   const cAmb = new THREE.Color();
@@ -603,6 +617,7 @@ export function creerEditeur(canvas, opts = {}) {
     scene.background.copy(FONDS.jour).lerp(FONDS.soir, k);
     const s = k * k * (3 - 2 * k);
     feux.forEach(f => { f.l.intensity = f.i * s; });
+    allumer(k > .001);
   }
   // ambiance(1) : le soir, en glissant (duree en ms)
   function ambiance(k, duree = 1100) {
@@ -892,6 +907,7 @@ export function creerEditeur(canvas, opts = {}) {
     rendre: () => rendre(),
     detruire() {
       E.detruit = true;
+      clearTimeout(prechauffe);
       if (E.amb.k > 0) appliquerAmbiance(0);
       if (E.raf) cancelAnimationFrame(E.raf);
       if (obs) obs.disconnect();

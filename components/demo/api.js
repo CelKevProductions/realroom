@@ -182,7 +182,8 @@ async function amenager(p, b, langue) {
   await pause(1600);
   const produits = (await chargerCatalogue()).produits;
   const prep = preparerAmenagement(p.agencement || [], b);
-  const cands = choisirCandidats(produits, { dims: p.modele.dims, fonction: p.fonction, envies: prep.envies, budget: prep.budget });
+  // démo : un choix plus large que pour Claude, pour que la proposition simulée trouve des pièces qui tiennent
+  const cands = choisirCandidats(produits, { dims: p.modele.dims, fonction: p.fonction, envies: prep.envies, budget: prep.budget, parFamille: 30 });
   const { proposition } = simulerAmenagement({ piece: versClaude(p.modele, prep.base, produits), mode: prep.mode, aRemplacer: prep.aRemplacer, candidats: cands, langue, demo: true });
   const r = appliquerProposition({ modele: p.modele, prep, proposition, produits });
   ecrire(() => { p.agencement = r.agencement; p.proposition = r.proposition; toucher(p); });

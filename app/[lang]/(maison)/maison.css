@@ -57,7 +57,7 @@ html:has(.mc-fixe) { overflow: hidden; }
 .mc-mono { font-family: var(--mono); font-size: .6875rem; font-weight: 500; letter-spacing: .04em; line-height: 1.5; font-variant-numeric: tabular-nums; text-transform: uppercase; }
 .mc-caps { font-size: .625rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; line-height: 1.7; }
 .mc-ligne { display: block; }
-.mc .char { display: inline-block; will-change: transform, opacity, filter; }
+.mc .char { display: inline-block; }
 .mc .mot { display: inline-block; white-space: nowrap; }
 
 /* ---------- boutons ---------- */
@@ -134,8 +134,9 @@ html:has(.mc-fixe) { overflow: hidden; }
 .mc-hud { position: absolute; z-index: 5; color: var(--encre); transition: color .8s var(--ease); }
 .mc-intro.is-soir .mc-hud, .mc-intro.is-soir .mc-recit { color: var(--creme); }
 .mc-hud--haut { top: calc(var(--haut) + 26px); right: var(--pad); display: flex; gap: 22px; align-items: center; }
-.mc-hud--haut .mc-lien { padding: .85em 1.2em .8em; border: 0; border-radius: 999px; background: rgba(246, 241, 232, .72); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: background-color .8s var(--ease), opacity .3s; }
-.mc-intro.is-soir .mc-hud--haut .mc-lien { background: rgba(30, 22, 14, .5); }
+/* pas de backdrop-filter par-dessus la 3D (il faudrait reflouter le fond à chaque image) */
+.mc-hud--haut .mc-lien { padding: .85em 1.2em .8em; border: 0; border-radius: 999px; background: rgba(246, 241, 232, .86); transition: background-color .8s var(--ease), opacity .3s; }
+.mc-intro.is-soir .mc-hud--haut .mc-lien { background: rgba(30, 22, 14, .62); }
 .mc-hud--bas { left: var(--pad); right: var(--pad); bottom: calc(var(--bas) + 26px); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 18px; align-items: center; }
 .mc-hud__barre { height: 1px; background: currentColor; opacity: .25; position: relative; }
 .mc-hud__barre > span { position: absolute; inset: 0; background: currentColor; transform-origin: 0 50%; transform: scaleX(0); opacity: 1; }
@@ -147,10 +148,11 @@ html:has(.mc-fixe) { overflow: hidden; }
 .mc-recit__bloc { position: absolute; display: grid; gap: 14px; max-width: min(520px, 42vw); visibility: hidden; isolation: isolate; }
 .mc-recit__bloc.is-actif { visibility: visible; }
 /* un halo derrière le texte : il reste lisible sur les murs clairs comme sur la pièce du soir */
-.mc-recit__bloc::before { content: ''; position: absolute; z-index: -1; inset: -26% -18%; border-radius: 50%; pointer-events: none; opacity: 0; transition: opacity .9s var(--ease), background .9s;
+.mc-recit__bloc::before { content: ''; position: absolute; z-index: -1; inset: -26% -18%; border-radius: 50%; pointer-events: none;
   background: radial-gradient(closest-side, rgba(236, 228, 214, .82), rgba(236, 228, 214, .5) 55%, rgba(236, 228, 214, 0)); }
 .mc-recit__bloc--hero::before { inset: -14% -8%; }
-.mc-recit__bloc.is-actif::before { opacity: 1; }
+.mc-intro.is-soir .mc-intro__go { background: var(--creme); color: var(--expresso); border-color: var(--creme); }
+.mc-intro.is-soir .mc-intro__go:hover { background: transparent; color: var(--creme); }
 .mc-intro.is-soir .mc-recit__bloc::before { background: radial-gradient(closest-side, rgba(24, 17, 10, .8), rgba(24, 17, 10, .5) 58%, rgba(24, 17, 10, 0)); }
 .mc-intro.is-soir .mc-hud--bas { text-shadow: 0 1px 12px rgba(24, 17, 10, .8); }
 .mc-recit__bloc--g { left: calc(var(--pad) + 6px); bottom: calc(var(--bas) + 110px); }

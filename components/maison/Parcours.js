@@ -54,7 +54,7 @@ export default function Parcours({
     if (!el || reduit()) { setEtape(suivante); return; }
     occupe.current = true;
     gsap.timeline({ onComplete: () => { occupe.current = false; setEtape(suivante); } })
-      .to(el.querySelectorAll('.char'), { opacity: 0, filter: 'blur(10px)', yPercent: -16, duration: .42, stagger: .008, ease: 'power2.in', overwrite: true }, 0)
+      .to(el.querySelectorAll('.char'), { opacity: 0, yPercent: -24, duration: .4, stagger: .007, ease: 'power2.in', overwrite: true }, 0)
       .to(el.querySelectorAll('.mc-question__label, .mc-question__texte, .mc-reponses'), { autoAlpha: 0, y: -16, duration: .38, ease: 'power2.in', overwrite: true }, 0);
   }
   // entrée de l'écran

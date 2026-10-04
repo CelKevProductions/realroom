@@ -34,7 +34,7 @@ export const TEMPS = {
 // pièces Maison Corleone posées (produits réels du catalogue) ; arrivee : part du défilement
 export const PIECES = [
   { id: 'tapis', type: 'tapis', x: -1.0, z: .15, rot: Math.PI / 2, dim: [2.7, 1.9], arrivee: .465 },
-  { id: 'canape', sku: 'mcs-01', x: -2.24, z: .15, rot: Math.PI / 2, arrivee: .49 },
+  { id: 'canape', sku: 'com-600', x: -2.12, z: .15, rot: Math.PI / 2, arrivee: .49 },
   { id: 'table', sku: 'nordic-table-basse', x: -1.0, z: .15, rot: 0, arrivee: .515 },
   { id: 'fauteuil1', sku: 'terracotta', x: .35, z: -.9, rot: -2.15, arrivee: .54 },
   { id: 'fauteuil2', sku: 'abbraccio', x: .5, z: 1.1, rot: -.95, arrivee: .565 },
@@ -119,18 +119,41 @@ function poussiere() {
 /* ---------------------------------------------------------------
    L'intro
    --------------------------------------------------------------- */
-export function creerIntro(canvas, opts = {}) {
+// La construction est découpée en étapes courtes, avec une image peinte entre deux (le
+// préchargement continue de vivre) ; tous les shaders sont compilés et toutes les textures envoyées
+// avant la première image : rien ne se compile pendant le défilement.
+// opts : produits, mobile, avance(q) (0 → 1), annule() (true : on abandonne), mesure(nom, ms)
+export async function creerIntro(canvas, opts = {}) {
   const produits = opts.produits || {};
   definirProduits(produits);
   const mobile = !!opts.mobile;
+  const annule = opts.annule || (() => false);
+  const mesure = opts.mesure || null;
+  const TOTAL = 9 + PIECES.length;
+  let fait = 0, chrono = performance.now();
+  const souffle = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+  async function etape(nom) {
+    if (mesure) mesure(nom, performance.now() - chrono);
+    if (opts.avance) opts.avance(Math.min(1, ++fait / TOTAL));
+    await souffle();
+    if (annule()) { liberer(); throw Object.assign(new Error('intro annulée'), { annule: true }); }
+    chrono = performance.now();
+  }
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
   if (!renderer.capabilities.isWebGL2) throw new Error('WebGL 2 indisponible');
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 1.75));
+  // définition : plafonnée (écrans Retina), puis abaissée d'elle-même si les images arrivent trop lentement
+  const dprMax = Math.min(window.devicePixelRatio || 1, mobile ? 1.3 : 1.5), dprMin = mobile ? .75 : .9;
+  let dpr = dprMax;
+  renderer.setPixelRatio(dpr);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  // les ombres ne sont recalculées que lorsque des objets bougent (voir regler)
+  renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.needsUpdate = true;
+  const liberer = () => { try { renderer.dispose(); renderer.forceContextLoss(); } catch (_) { /* déjà libéré */ } };
 
   const scene = new THREE.Scene();
   const BRUME = { jour: new THREE.Color('#E7DDCC'), soir: new THREE.Color('#1E160E') };
@@ -140,12 +163,13 @@ export function creerIntro(canvas, opts = {}) {
   const studio = new RoomEnvironment();
   const env = pmrem.fromScene(studio, .04);
   scene.environment = env.texture;
+  await etape('environnement');
 
   const hemi = new THREE.HemisphereLight('#FFF6E8', '#B9A58A', 1.15);
   const soleil = new THREE.DirectionalLight('#FFF0DA', 2.5);
   soleil.position.set(5.5, 9.5, 6.5);
   soleil.castShadow = true;
-  soleil.shadow.mapSize.set(mobile ? 1024 : 2048, mobile ? 1024 : 2048);
+  soleil.shadow.mapSize.set(mobile ? 1024 : 1536, mobile ? 1024 : 1536);
   soleil.shadow.bias = -.0004; soleil.shadow.normalBias = .02; soleil.shadow.radius = 4;
   Object.assign(soleil.shadow.camera, { left: -6, right: 6, top: 6, bottom: -6, near: 1, far: 30 });
   soleil.shadow.camera.updateProjectionMatrix();
@@ -161,8 +185,10 @@ export function creerIntro(canvas, opts = {}) {
   ombre.rotation.x = -Math.PI / 2; ombre.position.y = -1.9; ombre.receiveShadow = true;
   scene.add(ombre);
 
-  // sol : le parquet apparaît sur le plâtre
-  const mSol = std('#FFFFFF', .62, 0, { map: parquet(), transparent: true, opacity: 0 });
+  // sol : le parquet apparaît sur le plâtre (toujours « transparent » : changer ce réglage recompilerait un shader)
+  const texParquet = parquet();
+  await etape('parquet');
+  const mSol = std('#FFFFFF', .62, 0, { map: texParquet, transparent: true, opacity: 0 });
   const sol = new THREE.Mesh(new THREE.PlaneGeometry(L, P), mSol);
   sol.rotation.x = -Math.PI / 2; sol.position.y = .002; sol.receiveShadow = true;
   maquette.add(sol);
@@ -213,6 +239,7 @@ export function creerIntro(canvas, opts = {}) {
   for (let i = 0; i < nG; i++) lame(-P / 2 + i * P / nG, -P / 2 + (i + 1) * P / nG, 0, H, 'gauche', i);
   // ordre de pose : depuis l'angle du fond, vers les extrémités
   lames.forEach(g => { const b = g.userData.base; g.userData.ordre = Math.hypot(b.x + L / 2, b.z + P / 2) / Math.hypot(L, P); });
+  await etape('murs');
 
   // fenêtre : dormant, meneau, vitre, ciel
   const fenetre = new THREE.Group();
@@ -244,7 +271,7 @@ export function creerIntro(canvas, opts = {}) {
   seg([-L / 2, H, -P / 2], [-L / 2, H, P / 2]); seg([-L / 2, H, P / 2], [-L / 2, 0, P / 2]);
   [[FEN.x0, FEN.y0], [FEN.x1, FEN.y0], [FEN.x1, FEN.y1], [FEN.x0, FEN.y1]].forEach((a, i, t) => { const b = t[(i + 1) % 4]; seg([a[0], a[1], -P / 2 + .004], [b[0], b[1], -P / 2 + .004]); });
   // l'emprise des futurs meubles, en avant-goût
-  rect(-2.24, .15, 2.4, 1, Math.PI / 2); rect(-1.0, .15, 2.7, 1.9, Math.PI / 2); rect(.35, -.9, .95, .9, -2.15); rect(.5, 1.1, .78, .82, -.95); rect(1.78, -P / 2 + .23, 1.7, .42);
+  rect(-2.12, .15, 3.2, 1.3, Math.PI / 2); rect(-1.0, .15, 2.7, 1.9, Math.PI / 2); rect(.35, -.9, .95, .9, -2.15); rect(.5, 1.1, .78, .82, -.95); rect(1.78, -P / 2 + .23, 1.7, .42);
   // cote de largeur, en avant de la pièce
   seg([-L / 2, y, P / 2 + .45], [L / 2, y, P / 2 + .45]);
   seg([-L / 2, y, P / 2 + .33], [-L / 2, y, P / 2 + .57]); seg([L / 2, y, P / 2 + .33], [L / 2, y, P / 2 + .57]);
@@ -255,6 +282,7 @@ export function creerIntro(canvas, opts = {}) {
   plan.renderOrder = 6;
   maquette.add(plan);
   const nSegments = pts.length / 6;
+  await etape('fenêtre et plan');
 
   /* ---------- les meubles d'avant (gris, ils partiront) ---------- */
   const vieux = [];
@@ -274,6 +302,7 @@ export function creerIntro(canvas, opts = {}) {
   vieuxMeuble('etagere', (g, m) => { bloc(g, 1.0, 1.9, .34, m, 0, 0, 0, .01); }, 1.75, -P / 2 + .2, 0, 0);
   vieuxMeuble('lampe', (g, m) => { cyl(g, .15, .15, .03, m, 0, 0, 0, 20); cyl(g, .015, .015, 1.45, m, 0, .03, 0, 8); cyl(g, .12, .2, .26, m, 0, 1.42, 0, 20, true); }, -2.4, -1.9, 0, 1);
   vieuxMeuble('tapis', (g, m) => { bloc(g, 2.0, .012, 1.4, m, 0, 0, 0); }, -1.05, .2, Math.PI / 2, 2);
+  await etape('meubles d’avant');
 
   /* ---------- les pièces Maison Corleone ---------- */
   const nouveaux = [];
@@ -310,6 +339,7 @@ export function creerIntro(canvas, opts = {}) {
     porteur.userData = { d, base: porteur.position.clone(), ancre, nom: p ? p.nom : null, prix: p ? p.prix : 0, cat: p ? p.cat : null };
     porteur.visible = false;
     nouveaux.push(porteur);
+    await etape(d.id);
   }
 
   /* ---------- lumières du soir et poussière ---------- */
@@ -328,6 +358,7 @@ export function creerIntro(canvas, opts = {}) {
   const mP = new THREE.PointsMaterial({ size: mobile ? .06 : .05, map: poussiere(), transparent: true, depthWrite: false, opacity: .5, color: '#FFFFFF', sizeAttenuation: true });
   const poussieres = new THREE.Points(gP, mP);
   scene.add(poussieres);
+  await etape('lumières');
 
   /* ---------- caméra : courbes passant par les clés ---------- */
   const courbePos = new THREE.CatmullRomCurve3(CLES.map(c => new THREE.Vector3(...c.pos)), false, 'centripetal');
@@ -338,14 +369,20 @@ export function creerIntro(canvas, opts = {}) {
     const a = CLES[i], b = CLES[i + 1];
     const k = lisse(fen(p, a.t, b.t));
     const u = (i + k) / (CLES.length - 1);
-    camera.position.copy(courbePos.getPoint(u));
-    camera.lookAt(courbeVise.getPoint(u));
+    courbePos.getPoint(u, E.cpos);
+    courbeVise.getPoint(u, E.cvise);
     const fov = lerp(a.fov, b.fov, k);
     if (Math.abs(camera.fov - fov) > .01) { camera.fov = fov; camera.updateProjectionMatrix(); }
+    placerCamera();
+  }
+  // la maquette « flotte » : la caméra oscille doucement (déplacer la maquette obligerait à recalculer les ombres)
+  function placerCamera() {
+    camera.position.set(E.cpos.x, E.cpos.y - E.bob, E.cpos.z);
+    camera.lookAt(E.cvise.x, E.cvise.y - E.bob, E.cvise.z);
   }
 
   /* ---------- l'état pour une progression p ---------- */
-  const E = { p: 0, trace: 0, t0: 0, raf: 0, actif: false, detruit: false, flotte: 0, soir: -1 };
+  const E = { p: 0, trace: 0, t0: 0, raf: 0, actif: false, detruit: false, flotte: 0, bob: 0, soir: -1, w: 1, h: 1, ombres: true, n: 0, cpos: new THREE.Vector3(), cvise: new THREE.Vector3() };
   const cAmb = new THREE.Color();
   function ambiance(k) {
     if (Math.abs(k - E.soir) < .002) return;
@@ -370,9 +407,13 @@ export function creerIntro(canvas, opts = {}) {
     feux.forEach(f => { f.l.intensity = f.i * lisse(k); });
   }
 
+  // fenêtre du défilement où des objets bougent (murs, meubles d'avant, pièces qui se posent)
+  const BOUGE = [TEMPS.murs[0] - .01, TEMPS.nouveaux[1] + .07];
   function regler(p) {
     p = clamp(p, 0, 1);
+    const avant = E.p;
     E.p = p;
+    if (Math.min(avant, p) <= BOUGE[1] && Math.max(avant, p) >= BOUGE[0]) E.ombres = true;
     // murs
     const qm = fen(p, ...TEMPS.murs);
     for (const g of lames) {
@@ -384,7 +425,6 @@ export function creerIntro(canvas, opts = {}) {
     fenetre.visible = qm > .82;
     // le sol prend son parquet ; le plan s'efface sous les murs
     mSol.opacity = lisse(fen(p, ...TEMPS.sol));
-    mSol.transparent = mSol.opacity < .999;
     mPlan.opacity = 1 - lisse(fen(p, .2, .32));
     plan.visible = mPlan.opacity > .01;
     // meubles d'avant : ils apparaissent, puis s'envolent en s'effaçant
@@ -398,7 +438,6 @@ export function creerIntro(canvas, opts = {}) {
       g.rotation.y = u.rotBase + e * .5;
       g.scale.setScalar(lerp(.94, 1, sortie(kin)) * (1 - e * .25));
       u.m.opacity = sortie(kin) * (1 - lisse(kout));
-      u.m.transparent = u.m.opacity < .999;
     }
     // pièces Maison Corleone : elles descendent et se posent
     for (const g of nouveaux) {
@@ -416,6 +455,7 @@ export function creerIntro(canvas, opts = {}) {
     E.flotte = 1 - fen(p, .02, .14);
     demander();
   }
+  E.p = -1;
 
   // tracé du plan à l'ouverture (indépendant du défilement)
   function tracer(q) {
@@ -427,7 +467,7 @@ export function creerIntro(canvas, opts = {}) {
   /* ---------- étiquettes des pièces (position à l'écran, visibilité) ---------- */
   const v = new THREE.Vector3();
   function etiquettes() {
-    const r = canvas.getBoundingClientRect();
+    const r = { width: E.w, height: E.h };
     return nouveaux.filter(g => g.userData.nom).map(g => {
       const u = g.userData;
       v.copy(u.ancre).applyMatrix4(maquette.matrixWorld).project(camera);
@@ -438,15 +478,33 @@ export function creerIntro(canvas, opts = {}) {
 
   /* ---------- boucle : poussière, flottement, tracé ---------- */
   function demander() { if (!E.raf && !E.detruit && E.actif) E.raf = requestAnimationFrame(tick); }
-  let dernier = 0;
+  let dernier = 0, baisse = 0;
+  const durees = [];
   function tick(t) {
     E.raf = 0;
-    const dt = dernier ? Math.min(.05, (t - dernier) / 1000) : 0;
+    const ecart = dernier ? t - dernier : 0;
+    const dt = Math.min(.05, ecart / 1000);
     dernier = t;
+    // images trop lentes (plus de 25 ms pour un quart d'entre elles) : on baisse la définition
+    if (ecart > 0 && ecart < 250) durees.push(ecart);
+    if (durees.length > 48) durees.shift();
+    if (durees.length === 48 && dpr > dprMin && t - baisse > 1800) {
+      const tri = durees.slice().sort((a, b) => a - b);
+      if (tri[36] > 25) {
+        dpr = Math.max(dprMin, Math.round((dpr - .2) * 100) / 100);
+        renderer.setPixelRatio(dpr);
+        renderer.setSize(E.w, E.h, false);
+        baisse = t; durees.length = 0;
+      }
+    }
     if (E.trace < 1 && E.t0) tracer(clamp((t - E.t0) / 2600, 0, 1));
     poussieres.rotation.y += dt * .012;
     poussieres.position.y = Math.sin(t / 4000) * .12;
-    maquette.position.y = Math.sin(t / 1300) * .06 * E.flotte;
+    E.bob = Math.sin(t / 1300) * .06 * E.flotte;
+    placerCamera();
+    // ombres recalculées une image sur deux au plus pendant que des objets bougent
+    E.n = (E.n + 1) % 2;
+    if (E.ombres && E.n === 0) { renderer.shadowMap.needsUpdate = true; E.ombres = false; }
     renderer.render(scene, camera);
     if (E.actif) demander();
   }
@@ -454,17 +512,49 @@ export function creerIntro(canvas, opts = {}) {
   function redimensionner() {
     const r = canvas.getBoundingClientRect();
     const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
+    E.w = w; E.h = h;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     // écran étroit (téléphone) : on recule un peu pour garder la pièce entière
     camera.zoom = w / h < .8 ? .72 : w / h < 1.2 ? .86 : 1;
     camera.updateProjectionMatrix();
+    rendreMaintenant();
+  }
+  function rendreMaintenant() {
+    if (E.ombres) { renderer.shadowMap.needsUpdate = true; E.ombres = false; }
     renderer.render(scene, camera);
   }
+  // tout compiler et tout envoyer au processeur graphique avant la première image : une image de
+  // préparation où tout est visible (sous le préchargement), puis l'état de départ
+  const visibles = [];
+  scene.traverse(o => { visibles.push([o, o.visible]); o.visible = true; });
+  camera.aspect = Math.max(.2, (canvas.clientWidth || 1) / (canvas.clientHeight || 1));
+  camera.position.set(...CLES[0].pos); camera.lookAt(...CLES[0].vise); camera.updateProjectionMatrix();
+  await renderer.compileAsync(scene, camera);
+  await etape('shaders');
+  // textures envoyées quelques-unes à la fois (une image peinte entre deux), pas toutes d'un bloc
+  const textures = new Set();
+  scene.traverse(o => {
+    const ms = o.material ? (Array.isArray(o.material) ? o.material : [o.material]) : [];
+    for (const mt of ms) for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap', 'alphaMap', 'bumpMap']) if (mt[k] && mt[k].isTexture) textures.add(mt[k]);
+  });
+  let envoyees = 0;
+  for (const tx of textures) {
+    renderer.initTexture(tx);
+    if (++envoyees % 3 === 0) { await souffle(); if (annule()) { liberer(); throw Object.assign(new Error('intro annulée'), { annule: true }); } }
+  }
+  if (mesure) mesure('textures (' + textures.size + ')', performance.now() - chrono);
+  chrono = performance.now();
+  renderer.shadowMap.needsUpdate = true;
+  renderer.render(scene, camera);
+  visibles.forEach(([o, v]) => { o.visible = v; });
+  renderer.shadowMap.needsUpdate = true;    // l'image de préparation montrait tout : ombres à refaire
+  await etape('première image');
+
   const obs = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(redimensionner) : null;
   if (obs) obs.observe(canvas);
-  redimensionner();
   regler(0);
+  redimensionner();
 
   return {
     regler,
@@ -478,7 +568,9 @@ export function creerIntro(canvas, opts = {}) {
     },
     arreter() { E.actif = false; if (E.raf) cancelAnimationFrame(E.raf); E.raf = 0; },
     redimensionner,
-    rendre: () => renderer.render(scene, camera),
+    rendre: rendreMaintenant,
+    // pour les essais : appels de dessin, programmes compilés, définition
+    infos: () => ({ appels: renderer.info.render.calls, triangles: renderer.info.render.triangles, programmes: renderer.info.programs ? renderer.info.programs.length : 0, textures: renderer.info.memory.textures, dpr }),
     detruire() {
       E.detruit = true; E.actif = false;
       if (E.raf) cancelAnimationFrame(E.raf);

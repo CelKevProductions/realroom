@@ -42,16 +42,23 @@ export default function Experience({ lang, demo = false, profil: profilServeur =
   const connecte = demo ? demoConnecte : !!profil;
 
   // ---------- rideau entre deux temps ----------
+  // Le rideau monte et couvre l'écran, le temps suivant s'installe dessous, puis le rideau
+  // continue sa course vers le haut. (y: 0 partout : sans cela, GSAP lirait le translateY(100%) du
+  // CSS comme un décalage en pixels qui s'ajoute, et le rideau resterait hors de l'écran à l'aller.)
+  const enTransition = useRef(false);
+  useEffect(() => { if (rideau.current) { initGsap(); gsap.set(rideau.current, { yPercent: 100, y: 0 }); } }, []);
   const transition = useCallback(suite => {
     const el = rideau.current;
+    if (enTransition.current) return;
     if (!el || reduit()) { suite(); scrollTo(0, 0); return; }
+    enTransition.current = true;
     initGsap();
     el.style.pointerEvents = 'auto';
-    gsap.timeline()
-      .fromTo(el, { yPercent: 100 }, { yPercent: 0, duration: .75, ease: 'mc' })
-      .fromTo(el.querySelector('svg'), { rotation: -90, scale: .4, autoAlpha: 0 }, { rotation: 0, scale: 1, autoAlpha: 1, duration: .8, ease: 'expo.out' }, .3)
-      .add(() => { suite(); scrollTo(0, 0); })
-      .to(el, { yPercent: -100, duration: .85, ease: 'mc', delay: .35, onComplete: () => { el.style.pointerEvents = 'none'; gsap.set(el, { yPercent: 100 }); } });
+    gsap.timeline({ onComplete: () => { enTransition.current = false; el.style.pointerEvents = 'none'; gsap.set(el, { yPercent: 100, y: 0 }); } })
+      .fromTo(el, { yPercent: 100, y: 0 }, { yPercent: 0, y: 0, duration: .8, ease: 'mc' })
+      .fromTo(el.querySelector('svg'), { rotation: -90, scale: .4, autoAlpha: 0 }, { rotation: 0, scale: 1, autoAlpha: 1, duration: .7, ease: 'expo.out' }, .35)
+      .add(() => { suite(); scrollTo(0, 0); }, .85)
+      .to(el, { yPercent: -100, y: 0, duration: .9, ease: 'mc' }, 1.25);
   }, []);
 
   // ---------- profil (prénom, rendus restants, pièces) ----------

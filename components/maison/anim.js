@@ -30,21 +30,22 @@ export function lettres(el) {
   return el.__split.chars;
 }
 
-// titre : lettres étirées et floues qui se posent (visite privée)
+// titre : lettres étirées qui se posent (visite privée). Transformations et opacité seulement :
+// un flou animé sur chaque lettre coûte cher, surtout par-dessus de la 3D.
 export function entreeTitre(chars, delai = 0) {
   if (!chars || !chars.length || reduit()) return gsap.timeline();
   return gsap.timeline({ delay: delai }).fromTo(chars,
-    { opacity: 0, scaleY: 1.9, yPercent: -12, filter: 'blur(8px)', transformOrigin: '50% 0%' },
-    { opacity: 1, scaleY: 1, yPercent: 0, filter: 'blur(0px)', duration: 1.2, stagger: .03, ease: 'expo.out', overwrite: true });
+    { opacity: 0, scaleY: 1.6, yPercent: 30, transformOrigin: '50% 100%' },
+    { opacity: 1, scaleY: 1, yPercent: 0, duration: 1, stagger: .022, ease: 'expo.out', overwrite: true });
 }
 export function entreeScript(chars, delai = 0) {
   if (!chars || !chars.length || reduit()) return gsap.timeline();
-  return gsap.timeline({ delay: delai }).fromTo(chars, { opacity: 0, x: -12, filter: 'blur(6px)' },
-    { opacity: 1, x: 0, filter: 'blur(0px)', duration: 1, stagger: .03, ease: 'power2.out', overwrite: true });
+  return gsap.timeline({ delay: delai }).fromTo(chars, { opacity: 0, x: -12 },
+    { opacity: 1, x: 0, duration: .9, stagger: .028, ease: 'power2.out', overwrite: true });
 }
 export function sortieLettres(chars) {
   if (!chars || !chars.length || reduit()) return gsap.timeline();
-  return gsap.timeline().to(chars, { opacity: 0, filter: 'blur(10px)', yPercent: -16, duration: .45, stagger: .01, ease: 'power2.in', overwrite: true });
+  return gsap.timeline().to(chars, { opacity: 0, yPercent: -24, duration: .4, stagger: .008, ease: 'power2.in', overwrite: true });
 }
 // repère en chasse fixe : se déchiffre comme un écran de contrôle
 export function dechiffrer(el, texte, duree = .9) {
