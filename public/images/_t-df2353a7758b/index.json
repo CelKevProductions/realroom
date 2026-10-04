@@ -1,0 +1,630 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "slideshow_8KKtNU": {
+      "type": "slideshow",
+      "blocks": {
+        "slider_item_iAiXpe": {
+          "type": "slider_item",
+          "settings": {
+            "local_video": "shopify://files/videos/0c2f769f4a844900ab08b6c1f10e1f38.HD-720p-4.5Mbps-40838454.mp4",
+            "overlay_opacity": 20,
+            "slider_effect": "effect_fadeindown",
+            "subheading": "CRÉEZ UN COMPTE",
+            "heading": "Pour Suivre Les Nouveautés",
+            "description": "",
+            "first_button_label": "S'Inscrire",
+            "first_button_link": "https://account.maisoncorleone.com",
+            "first_button_style": true,
+            "second_button_label": "",
+            "second_button_link": "",
+            "second_button_style": false,
+            "content_alignment": "center",
+            "content_position": "bottom-center",
+            "content_width": "fluid_container",
+            "content_max_width": 100,
+            "content_padding_block": 80,
+            "content_padding_inline": 60,
+            "show_content_background": false,
+            "content_background": "#ffffff",
+            "content_box_opacity": 100,
+            "content_alignment_mobile": "center"
+          }
+        }
+      },
+      "block_order": [
+        "slider_item_iAiXpe"
+      ],
+      "custom_css": [
+        ".h-full_screen {--height-topbar: 39.28px;}"
+      ],
+      "settings": {
+        "section_width": "stretch_width",
+        "section_scroll_animation": false,
+        "slide_height": "custom",
+        "desktop_height": 740,
+        "mobile_height": 460,
+        "color_scheme": "scheme-3d10de96-a479-49bd-819c-e044746b4f3e",
+        "subheading_font_size": 24,
+        "subheading_font_weight": "heading_weight",
+        "subheading_spacing_bottom": 0,
+        "heading_font_size": 60,
+        "heading_font_weight": "heading_weight",
+        "heading_uppercase": false,
+        "heading_spacing_bottom": 30,
+        "des_font_size": 18,
+        "des_font_weight": "body_weight",
+        "des_spacing_bottom": 40,
+        "show_arrow": false,
+        "carousel_pagination": "show_dots",
+        "pagination_position": "center",
+        "autoplay": false,
+        "autorotate_speed": 5,
+        "content_below_image": false,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "reset_spacing": false
+      }
+    },
+    "collection_list_yBqLBG": {
+      "type": "collection-list",
+      "blocks": {
+        "collection_8nYDYJ": {
+          "type": "collection",
+          "settings": {
+            "collection": "chambres",
+            "collection_image": "shopify://shop_images/minh-pham-OtXADkUh3-I-unsplash_7673823d-8743-457c-b771-cee24be496aa.jpg",
+            "collection_title": ""
+          }
+        },
+        "collection_iCw9Yb": {
+          "type": "collection",
+          "settings": {
+            "collection": "decorations-dinterieur",
+            "collection_title": ""
+          }
+        },
+        "collection_gfYHed": {
+          "type": "collection",
+          "settings": {
+            "collection": "mobilier-d-exterieur-hotellerie",
+            "collection_image": "shopify://shop_images/klara-kulikova-2k7rkcraTF8-unsplash_1.jpg",
+            "collection_title": "Extérieur"
+          }
+        },
+        "collection_rNwdhT": {
+          "type": "collection",
+          "settings": {
+            "collection": "salles-de-bain-bien-etre",
+            "collection_image": "shopify://shop_images/amira-aboalnaga-O7WjrXiKy_s-unsplash_eea202b3-88a3-48a5-9470-2c506cbbd038.jpg",
+            "collection_title": ""
+          }
+        },
+        "collection_H8B4KE": {
+          "type": "collection",
+          "settings": {
+            "collection": "sejour",
+            "collection_image": "shopify://shop_images/tanya-semenchuk-0u0kKxfpvQ0-unsplash_24498b77-baa1-4879-ac1b-d1a49280466b.jpg",
+            "collection_title": ""
+          }
+        },
+        "collection_C9UPtA": {
+          "type": "collection",
+          "settings": {
+            "collection": "salle-a-manger",
+            "collection_image": "shopify://shop_images/petr-magera-WHqEneu5jgY-unsplash.jpg",
+            "collection_title": ""
+          }
+        }
+      },
+      "block_order": [
+        "collection_8nYDYJ",
+        "collection_iCw9Yb",
+        "collection_gfYHed",
+        "collection_rNwdhT",
+        "collection_H8B4KE",
+        "collection_C9UPtA"
+      ],
+      "settings": {
+        "section_width": "stretch_width",
+        "color_scheme": "",
+        "heading": "Catégories",
+        "description": "",
+        "show_view_all_button": false,
+        "header_size": "medium",
+        "header_alignment": "left",
+        "display_mode": "carousel",
+        "image_ratio": "adapt",
+        "custom_ratio": "",
+        "items_per_row": 4,
+        "column_gap": 20,
+        "collection_information_position": "overlay_image",
+        "design": "default",
+        "text_alignment": "center",
+        "show_product_count": false,
+        "show_description": false,
+        "font_size": 16,
+        "font_weight": "heading_weight",
+        "information_spacing": 12,
+        "rounded_image": false,
+        "image_custom_width": false,
+        "image_width": 200,
+        "show_arrow": true,
+        "carousel_pagination": "show_dots_on_mobile",
+        "infinite": true,
+        "autoplay": false,
+        "autorotate_speed": 5,
+        "reveal": false,
+        "items_per_row_mobile": 1,
+        "speed": 30,
+        "img_width": 300,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "reset_spacing": false
+      }
+    },
+    "products_carousel_AdKeFt": {
+      "type": "products-carousel",
+      "settings": {
+        "section_width": "stretch_width",
+        "color_scheme": "default",
+        "heading": "Nouveautés",
+        "description": "",
+        "show_view_all_button": false,
+        "header_size": "medium",
+        "header_alignment": "left",
+        "collection": "new",
+        "items_to_show": 7,
+        "items_per_row": 5,
+        "column_gap": 20,
+        "show_banner": false,
+        "sticky_banner": false,
+        "banner_width": 30,
+        "position": "left",
+        "banner_link": "",
+        "banner_type": "image",
+        "video_url": "",
+        "video_autoplay": true,
+        "show_arrow": true,
+        "carousel_pagination": "show_dots_on_mobile",
+        "infinite": true,
+        "autoplay": false,
+        "autorotate_speed": 5,
+        "reveal": false,
+        "items_per_row_mobile": 2,
+        "padding_top": 0,
+        "padding_bottom": 10,
+        "reset_spacing": false
+      }
+    },
+    "slideshow_BfkhTM": {
+      "type": "slideshow",
+      "blocks": {
+        "slider_item_ARCQy6": {
+          "type": "slider_item",
+          "settings": {
+            "local_video": "shopify://files/videos/maisoncorleonecouchhome.mp4",
+            "overlay_opacity": 20,
+            "slider_effect": "effect_fadeindown",
+            "subheading": "Canapé d'Intérieur",
+            "heading": "MINERAL CLOUD SOFA",
+            "description": "",
+            "first_button_label": "Découvrir",
+            "first_button_link": "shopify://products/mcs-01",
+            "first_button_style": true,
+            "second_button_label": "",
+            "second_button_link": "",
+            "second_button_style": false,
+            "content_alignment": "center",
+            "content_position": "bottom-center",
+            "content_width": "fluid_container",
+            "content_max_width": 100,
+            "content_padding_block": 80,
+            "content_padding_inline": 60,
+            "show_content_background": false,
+            "content_background": "#ffffff",
+            "content_box_opacity": 100,
+            "content_alignment_mobile": "center"
+          }
+        }
+      },
+      "block_order": [
+        "slider_item_ARCQy6"
+      ],
+      "custom_css": [
+        ".h-full_screen {--height-topbar: 39.28px;}"
+      ],
+      "settings": {
+        "section_width": "stretch_width",
+        "section_scroll_animation": false,
+        "slide_height": "custom",
+        "desktop_height": 740,
+        "mobile_height": 460,
+        "color_scheme": "scheme-3d10de96-a479-49bd-819c-e044746b4f3e",
+        "subheading_font_size": 24,
+        "subheading_font_weight": "heading_weight",
+        "subheading_spacing_bottom": 0,
+        "heading_font_size": 60,
+        "heading_font_weight": "heading_weight",
+        "heading_uppercase": false,
+        "heading_spacing_bottom": 30,
+        "des_font_size": 18,
+        "des_font_weight": "body_weight",
+        "des_spacing_bottom": 40,
+        "show_arrow": false,
+        "carousel_pagination": "show_dots",
+        "pagination_position": "center",
+        "autoplay": false,
+        "autorotate_speed": 5,
+        "content_below_image": false,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "reset_spacing": false
+      }
+    },
+    "scrolling_text_JarbtD": {
+      "type": "scrolling-text",
+      "blocks": {
+        "scrolling_text_3adRX6": {
+          "type": "scrolling_text",
+          "settings": {
+            "content": "Large Sélection de Produits"
+          }
+        },
+        "scrolling_text_g79j4Y": {
+          "type": "scrolling_text",
+          "settings": {
+            "content": "Meuble Lifestyle"
+          }
+        },
+        "scrolling_text_fYiqr9": {
+          "type": "scrolling_text",
+          "settings": {
+            "content": "<strong>Intérieur et Extérieur</strong>"
+          }
+        }
+      },
+      "block_order": [
+        "scrolling_text_3adRX6",
+        "scrolling_text_g79j4Y",
+        "scrolling_text_fYiqr9"
+      ],
+      "settings": {
+        "section_width": "stretch_width",
+        "color_scheme": "scheme-accf3b11-ba40-4a3e-bafb-243ece6683ec",
+        "direction": "left",
+        "icon_between_item": "wireless",
+        "rounded_image": false,
+        "image_width": 70,
+        "speed": 100,
+        "space_between_text": 60,
+        "font_size": 40,
+        "font_weight": "heading_weight",
+        "uppercase": false,
+        "use_heading_font": false,
+        "outline_text": false,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "reset_spacing": true
+      }
+    },
+    "divider_XRaTWf": {
+      "type": "divider",
+      "settings": {
+        "section_width": "stretch_width",
+        "border_height": 1,
+        "border_color": "#111111",
+        "reset_spacing": false
+      }
+    },
+    "rich_text_zfaFjz": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_bLrhfF": {
+          "type": "heading",
+          "settings": {
+            "heading": "Votre intérieur mérite mieux.",
+            "font_size": 40,
+            "font_weight": "subheading_weight",
+            "uppercase": false,
+            "spacing_bottom": 30
+          }
+        },
+        "button_Cc76fP": {
+          "type": "button",
+          "settings": {
+            "first_button_label": "Notre Philosophie",
+            "first_button_link": "shopify://pages/qui-sommes-nous",
+            "first_button_type": "outline",
+            "second_button_label": "",
+            "second_button_link": "",
+            "second_button_type": "primary",
+            "spacing_bottom": 0
+          }
+        }
+      },
+      "block_order": [
+        "heading_bLrhfF",
+        "button_Cc76fP"
+      ],
+      "settings": {
+        "section_width": "container",
+        "color_scheme": "",
+        "content_alignment": "center",
+        "content_max_width": 90,
+        "enable_expand_content": false,
+        "expand_content_button": "See all Information",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "reset_spacing": false
+      }
+    },
+    "mc_piece_3d": {
+      "type": "mc-piece-3d",
+      "settings": {
+        "produit_canape": "com-600",
+        "produit_table": "nordic-table-basse",
+        "produit_fauteuil": "terracotta",
+        "produit_lampe": "fpf-lamp-7705",
+        "section_width": "container"
+      }
+    },
+    "lookbook_image_7m3gB6": {
+      "type": "lookbook-image",
+      "blocks": {
+        "lookbook_item_tFXMWE": {
+          "type": "lookbook_item",
+          "settings": {
+            "lookbook_image": "shopify://shop_images/2026-04-1107.31.48_2e229701-5556-4e9e-a44d-76a31b9d8395.jpg",
+            "product__1": "wave-line",
+            "offset_top__1": 30,
+            "offset_left__1": 48,
+            "product__2": "",
+            "offset_top__2": 1,
+            "offset_left__2": 43,
+            "product__3": "",
+            "offset_top__3": 10,
+            "offset_left__3": 40,
+            "product__4": "",
+            "offset_top__4": 60,
+            "offset_left__4": 70,
+            "product__5": "",
+            "offset_top__5": 1,
+            "offset_left__5": 4
+          }
+        },
+        "lookbook_item_pimHfn": {
+          "type": "lookbook_item",
+          "settings": {
+            "lookbook_image": "shopify://shop_images/2026-04-0907.08.50_1_b95bc2d5-df24-4202-8d2e-e6a2cb040b87.jpg",
+            "product__1": "vsc-09",
+            "offset_top__1": 59,
+            "offset_left__1": 74,
+            "product__2": "",
+            "offset_top__2": 43,
+            "offset_left__2": 79,
+            "product__3": "",
+            "offset_top__3": 10,
+            "offset_left__3": 40,
+            "product__4": "",
+            "offset_top__4": 60,
+            "offset_left__4": 70,
+            "product__5": "",
+            "offset_top__5": 1,
+            "offset_left__5": 4
+          }
+        }
+      },
+      "block_order": [
+        "lookbook_item_tFXMWE",
+        "lookbook_item_pimHfn"
+      ],
+      "settings": {
+        "section_width": "stretch_width",
+        "color_scheme": "",
+        "heading": "",
+        "description": "",
+        "header_size": "medium",
+        "header_alignment": "left",
+        "image_ratio": "landscape",
+        "custom_ratio": "",
+        "hotspot_style": "dot",
+        "action_when_click_on_hotspot": "open",
+        "items_per_row": 2,
+        "column_gap": 20,
+        "show_arrow": false,
+        "carousel_pagination": "show_dots_on_mobile",
+        "infinite": false,
+        "autoplay": false,
+        "autorotate_speed": 5,
+        "reveal": false,
+        "items_per_row_mobile": 1,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "reset_spacing": false
+      }
+    },
+    "products_carousel_gqRtYy": {
+      "type": "products-carousel",
+      "settings": {
+        "section_width": "stretch_width",
+        "color_scheme": "",
+        "heading": "Best Sellers",
+        "description": "",
+        "show_view_all_button": true,
+        "header_size": "medium",
+        "header_alignment": "left",
+        "collection": "best-sellers",
+        "items_to_show": 8,
+        "items_per_row": 5,
+        "column_gap": 20,
+        "show_banner": false,
+        "sticky_banner": false,
+        "banner_width": 30,
+        "position": "left",
+        "banner_link": "",
+        "banner_type": "image",
+        "video_url": "",
+        "video_autoplay": true,
+        "show_arrow": true,
+        "carousel_pagination": "show_dots_on_mobile",
+        "infinite": true,
+        "autoplay": false,
+        "autorotate_speed": 5,
+        "reveal": false,
+        "items_per_row_mobile": 2,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "reset_spacing": false
+      }
+    },
+    "image_with_text_overlay_WQthym": {
+      "type": "image-with-text-overlay",
+      "blocks": {
+        "heading_BpLAxr": {
+          "type": "heading",
+          "settings": {
+            "heading": "LITS & SOMMIERS",
+            "font_size": 45,
+            "font_weight": "heading_weight",
+            "uppercase": true,
+            "spacing_bottom": 15
+          }
+        },
+        "description_RUWCbB": {
+          "type": "description",
+          "settings": {
+            "description": "<p>Simples & Stylisées</p>",
+            "font_size": 18,
+            "font_weight": "body_weight",
+            "spacing_bottom": 30
+          }
+        },
+        "button_KaNhNL": {
+          "type": "button",
+          "settings": {
+            "first_button_label": "Découvrir",
+            "first_button_link": "shopify://collections/lits",
+            "first_button_type": "primary",
+            "second_button_label": "",
+            "second_button_link": "",
+            "second_button_type": "primary",
+            "spacing_bottom": 0
+          }
+        }
+      },
+      "block_order": [
+        "heading_BpLAxr",
+        "description_RUWCbB",
+        "button_KaNhNL"
+      ],
+      "settings": {
+        "section_width": "stretch_width",
+        "color_scheme": "scheme-3d10de96-a479-49bd-819c-e044746b4f3e",
+        "image": "shopify://shop_images/2026-04-0818.41.41_3.webp",
+        "image_behavior": "none",
+        "overlay_opacity": 0,
+        "image_height": "custom",
+        "desktop_height": 700,
+        "mobile_height": 400,
+        "content_alignment": "left",
+        "content_position": "middle-left",
+        "content_width": "full_width",
+        "content_max_width": 100,
+        "content_padding_block": 50,
+        "content_padding_inline": 50,
+        "show_content_background": false,
+        "content_background": "#ffffff",
+        "content_box_opacity": 100,
+        "content_below_image": false,
+        "content_alignment_mobile": "left",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "reset_spacing": false
+      }
+    },
+    "help_center_AawQfF": {
+      "type": "help-center",
+      "blocks": {
+        "faq_GRFRVX": {
+          "type": "faq",
+          "settings": {
+            "question": "Proposez-vous des options de financement pour l’achat de meubles ?",
+            "answer": "<p>Oui, nous proposons plusieurs solutions de financement afin de faciliter vos achats. Vous pouvez choisir un paiement en plusieurs fois sécurisé directement lors du passage de votre commande.</p>"
+          }
+        },
+        "faq_fVpm9g": {
+          "type": "faq",
+          "settings": {
+            "question": "Avez-vous des meubles respectueux de l’environnement ?",
+            "answer": "<p>Oui, nous mettons un point d’honneur à proposer une sélection de meubles conçus à partir de matériaux durables et respectueux de l’environnement. Nous travaillons avec des fournisseurs qui privilégient des procédés responsables.</p>"
+          }
+        },
+        "faq_N3Bwqp": {
+          "type": "faq",
+          "settings": {
+            "question": "Proposez-vous des consultations en design ?",
+            "answer": "<p>Oui, nos experts en aménagement et décoration peuvent vous conseiller afin de choisir les meubles les plus adaptés à votre espace et à votre style. Ce service est disponible sur demande. Vous pouvez nous contacter par mail</p>"
+          }
+        },
+        "faq_jdU8dn": {
+          "type": "faq",
+          "settings": {
+            "question": "Quel est le temps moyen de livraison ?",
+            "answer": "<p>Le délai de livraison standard est d’environ <strong>2 mois (21 à 56 jours)</strong>, le temps nécessaire pour préparer, emballer et acheminer votre meuble dans les meilleures conditions.</p>"
+          }
+        },
+        "faq_QbmXww": {
+          "type": "faq",
+          "settings": {
+            "question": "Acceptez-vous les commandes personnalisées pour des meubles qui ne sont pas en stock ?",
+            "answer": "<p>Oui, nous acceptons les commandes sur mesure et les précommandes pour certains modèles qui ne sont pas disponibles immédiatement. Nos conseillers vous accompagneront pour définir vos besoins et vous informer des délais spécifiques.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_GRFRVX",
+        "faq_fVpm9g",
+        "faq_N3Bwqp",
+        "faq_jdU8dn",
+        "faq_QbmXww"
+      ],
+      "settings": {
+        "section_width": "stretch_width",
+        "color_scheme": "scheme-accf3b11-ba40-4a3e-bafb-243ece6683ec",
+        "subheading": "Vous avez une Question ?",
+        "heading": "Aide",
+        "description": "<p>Si vous avez un problème ou une question qui nécessite une assistance immédiate, vous pouvez cliquer sur le bouton ci-dessous pour discuter avec un représentant du service client.</p>",
+        "image_size": 100,
+        "description_2": "<p>Équipe de support client de : 8h à 19h30 tous les jours. Réponse sous 24H</p>",
+        "first_button_label": "Contactez-nous",
+        "first_button_link": "shopify://pages/contact",
+        "first_button_type": "primary",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    }
+  },
+  "order": [
+    "slideshow_8KKtNU",
+    "collection_list_yBqLBG",
+    "products_carousel_AdKeFt",
+    "slideshow_BfkhTM",
+    "scrolling_text_JarbtD",
+    "divider_XRaTWf",
+    "rich_text_zfaFjz",
+    "mc_piece_3d",
+    "lookbook_image_7m3gB6",
+    "products_carousel_gqRtYy",
+    "image_with_text_overlay_WQthym",
+    "help_center_AawQfF"
+  ]
+}

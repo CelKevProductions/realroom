@@ -69,6 +69,8 @@ Connexion : comptes clients Shopify (Customer Account API, OAuth 2.0 / OpenID Co
    - URL de déconnexion : `https://<domaine>/fr/maison-corleone`
 3. Copier l'identifiant client et le secret dans Vercel : `MC_CLIENT_ID`, `MC_CLIENT_SECRET` (sensible), puis redéployer.
 
+Section pour la boutique : `shopify/mc-piece-3d.liquid` (« Pièce en 3D (Chez vous) » dans l'éditeur de thème). Le plan d'une pièce se dessine, passe en 3D puis se meuble, une fois, quand il arrive à l'écran : SVG et CSS, sans librairie (environ 13 Ko compressés), dessin fixe si les animations sont réduites. Réglages : textes, produits liés aux étiquettes (prix, lien vers la fiche), lien du bouton (vide : `/fr/maison-corleone`, ou `/en/` si la boutique s'affiche en anglais), ambiance expresso ou crème. Pour modifier le dessin : `shopify/outils/scene.py`, puis `python3 shopify/outils/construire.py`. Installation dans un thème : *Modifier le code* → `sections` → ajouter `mc-piece-3d.liquid`, puis *Personnaliser* → *Ajouter une section*.
+
 Sans `MC_CLIENT_ID`, la page indique que la connexion ouvre bientôt et propose la démo (en local, la connexion est simulée). Réglages facultatifs : `MC_BOUTIQUE` (`maisoncorleone.com`), `MC_RENDUS_OFFERTS` (2), `MC_ANALYSES_MAX` (6 pièces analysées au total par client), `MC_NOUVEAUX_PAR_JOUR` (300 nouveaux clients servis en rendus offerts par jour). Les liens vers les fiches produits portent `utm_source=chez-vous`.
 
 ## Coûts par opération (ordres de grandeur)
