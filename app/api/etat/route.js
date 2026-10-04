@@ -4,6 +4,7 @@ import { paiementActif, paiementSimule } from '@/lib/paiement.js';
 import { adresseBase } from '@/lib/db.js';
 import { fichiersEnLigne } from '@/lib/stockage.js';
 import { maisonConfiguree } from '@/lib/maison.js';
+import { iaDisponible } from '@/lib/claude.js';
 
 // services branchés (sans révéler les clés) : l'interface adapte ses boutons, et c'est la page à
 // ouvrir pour vérifier une mise en ligne (base, fichiers, session, IA, connexion Maison Corleone)
@@ -12,7 +13,7 @@ export const GET = route(async () => json({
   base: !!adresseBase() || !process.env.VERCEL,
   fichiers: fichiersEnLigne() || !process.env.VERCEL,
   session: (process.env.SESSION_SECRET || '').length >= 32 || !process.env.VERCEL,
-  analyse: SIMULATION || !!process.env.ANTHROPIC_API_KEY,
+  analyse: SIMULATION || iaDisponible(),
   rendu: SIMULATION || !!process.env.FAL_KEY,
   monde: SIMULATION || !!process.env.WLT_API_KEY,
   paiement: paiementActif() || paiementSimule(),

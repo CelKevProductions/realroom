@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { iaDisponible } from '@/lib/claude.js';
 import Piece from '@/components/Piece.js';
 import { connecteOuConnexion } from '@/lib/session.js';
 import { piece, publique, rendusDe, renduPublic } from '@/lib/projets.js';
@@ -12,7 +13,7 @@ export default async function PagePiece({ params }) {
   try { p = await piece(u.id, id); } catch (e) { if (e && e.statut === 404) notFound(); throw e; }
   const rendus = (await rendusDe(u.id, id)).map(renduPublic);
   const services = {
-    analyse: SIMULATION || !!process.env.ANTHROPIC_API_KEY,
+    analyse: SIMULATION || iaDisponible(),
     rendu: SIMULATION || !!process.env.FAL_KEY,
     monde: SIMULATION || !!process.env.WLT_API_KEY,
     simulation: SIMULATION
