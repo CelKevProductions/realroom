@@ -104,9 +104,8 @@ html:has(.mc-fixe) { overflow: hidden; }
    Préchargement (repris de la visite privée)
    ================================================================= */
 .mc-pre { position: fixed; inset: 0; z-index: 100; color: var(--creme); }
-/* pas de défilement sous le préchargement ; la gouttière garde la largeur de la page (sinon la 3D
-   serait redimensionnée au moment où la barre de défilement revient) */
-html:has(.mc-pre) { overflow: hidden; scrollbar-gutter: stable; }
+/* pas de défilement sous le préchargement */
+html:has(.mc-pre) { overflow: hidden; }
 .mc-pre__rideau { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .mc-pre__forme { fill: var(--expresso); }
 .mc-pre__filigrane { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -52%) rotate(-8deg); font-family: var(--script); font-size: clamp(7rem, 24vw, 26rem); line-height: 1; white-space: nowrap; color: var(--creme); opacity: .05; pointer-events: none; }
@@ -124,15 +123,17 @@ html:has(.mc-pre) { overflow: hidden; scrollbar-gutter: stable; }
 .mc-pre__ligne > span { position: absolute; inset: 0; background: var(--laiton-clair); transform-origin: top; transform: scaleY(0); transition: transform .7s var(--ease-out); }
 .mc-pre__pct { position: absolute; left: 50%; top: calc(50% + clamp(70px, 10.5vh, 116px) + clamp(48px, 9vh, 88px) + 14px); transform: translateX(-50%); font-family: var(--mono); font-size: .625rem; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; color: var(--sur-sombre); opacity: 0; transition: opacity .6s var(--ease-out); }
 .mc-pre__pct b { font-weight: 500; color: var(--creme); }
+.mc-pre__pct { opacity: 1; }
 .mc-pre__pied { position: absolute; left: 50%; bottom: calc(var(--bas) + 5vh); transform: translateX(-50%); text-align: center; white-space: nowrap; font-weight: 500; font-size: .5625rem; letter-spacing: .16em; text-transform: uppercase; line-height: 1.9; }
 /* 2. attente : le compteur paraît, la fleur tourne, une lueur descend le filet */
 .mc-pre.is-attente .mc-pre__pct { opacity: 1; }
 .mc-pre.is-attente .mc-pre__ligne::after { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 34%; background: linear-gradient(transparent, var(--creme), transparent); opacity: 0; }
 @media (prefers-reduced-motion: no-preference) {
   /* 1. entrée : dès le premier affichage, transformations et opacité seulement */
-  .mc-pre__caps .mc-l { animation: mc-pre-caps 1.1s var(--ease-out) var(--d) both; }
+  .mc-pre__caps .mc-l { animation: mc-pre-caps 1.1s cubic-bezier(.215, .61, .355, 1) var(--d) both; }
   .mc-pre__script .mc-l { animation: mc-pre-script .9s cubic-bezier(.33, 1, .68, 1) var(--d) both; }
-  .mc-pre__cote .mc-l { animation: mc-pre-fondu .6s ease-out var(--d) both; }
+  .mc-pre__cote .mc-l { animation: mc-pre-cote .6s ease-out var(--d) both; }
+  .mc-pre__pct { animation: mc-pre-fondu 1s ease-out .8s both; }
   .mc-pre__fleur { animation: mc-pre-fondu 1s ease-out both; }
   .mc-pre__fleur svg { animation: mc-pre-fleur 1.8s var(--ease-out) both; }
   .mc-pre__ligne { animation: mc-pre-ligne 1s var(--ease-out) .8s both; }
@@ -145,16 +146,18 @@ html:has(.mc-pre) { overflow: hidden; scrollbar-gutter: stable; }
   .mc-pre.is-sortie .mc-pre__ligne, .mc-pre.is-sortie .mc-pre__pied, .mc-pre.is-sortie .mc-pre__pct { animation: mc-pre-efface .45s ease-in both; }
   .mc-pre.is-sortie .mc-pre__filigrane { animation: mc-pre-efface-filigrane .9s ease-out both; }
   .mc-pre.is-sortie .mc-pre__fleur { animation: mc-pre-efface .6s ease-in 1.1s both; }
-  .mc-pre.is-sortie .mc-pre__cote .mc-l { animation: mc-pre-efface .45s ease-in calc(1.55s + var(--i) * 15ms) both; }
+  .mc-pre.is-sortie .mc-pre__cote .mc-l { animation: mc-pre-cote-sortie .45s ease-in calc(1.55s + var(--i) * 15ms) both; }
 }
-@keyframes mc-pre-caps { from { opacity: 0; transform: translateY(16%) scaleY(1.25); } to { opacity: 1; transform: none; } }
-@keyframes mc-pre-script { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+@keyframes mc-pre-caps { from { opacity: 0; filter: blur(12px); transform: translateY(14%); } to { opacity: 1; filter: blur(0); transform: none; } }
+@keyframes mc-pre-script { from { opacity: 0; filter: blur(8px); transform: translateX(-10px); } to { opacity: 1; filter: blur(0); transform: none; } }
+@keyframes mc-pre-cote { from { opacity: 0; filter: blur(6px); } to { opacity: 1; filter: blur(0); } }
 @keyframes mc-pre-fondu { from { opacity: 0; } to { opacity: 1; } }
 @keyframes mc-pre-fleur { from { transform: rotate(-60deg) scale(.6); } to { transform: none; } }
 @keyframes mc-pre-ligne { from { transform: scaleY(0); } to { transform: none; } }
 @keyframes mc-pre-filigrane { from { opacity: 0; } to { opacity: .05; } }
 @keyframes mc-pre-lueur { 0% { transform: translateY(-100%); opacity: 0; } 25% { opacity: .9; } 100% { transform: translateY(300%); opacity: 0; } }
-@keyframes mc-pre-sortie { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-16%); } }
+@keyframes mc-pre-sortie { from { opacity: 1; filter: blur(0); transform: none; } to { opacity: 0; filter: blur(10px); transform: translateY(-16%); } }
+@keyframes mc-pre-cote-sortie { from { opacity: 1; filter: blur(0); } to { opacity: 0; filter: blur(6px); } }
 @keyframes mc-pre-efface { from { opacity: 1; } to { opacity: 0; } }
 @keyframes mc-pre-efface-filigrane { from { opacity: .05; } to { opacity: 0; } }
 @media (max-width: 699px) {
@@ -168,8 +171,9 @@ html:has(.mc-pre) { overflow: hidden; scrollbar-gutter: stable; }
 /* =================================================================
    Intro 3D (défilement)
    ================================================================= */
-.mc-intro { position: relative; height: 720svh; background: var(--nuit); }
-@media (max-width: 759px) { .mc-intro { height: 620svh; } }
+/* une seule hauteur d'écran : on ne défile pas, chaque geste mène à l'étape suivante */
+.mc-intro { position: relative; height: 100svh; background: var(--nuit); touch-action: none; }
+html:has(.mc-intro) { overscroll-behavior: none; }
 .mc-intro__scene { position: sticky; top: 0; height: 100svh; overflow: hidden; }
 .mc-intro__scene canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .mc-intro__secours { position: absolute; inset: 0; background: center / cover no-repeat; }

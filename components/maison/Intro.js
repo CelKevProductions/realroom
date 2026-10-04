@@ -1,27 +1,31 @@
 'use client';
-// Intro 3D dirigée par le défilement (esprit Igloo) : la maquette se construit, les vieux meubles
-// s'en vont, les pièces Maison Corleone se posent, le soir tombe. Un texte par moment, des
-// étiquettes qui se déchiffrent sur les meubles, une barre de progression ; « Commencer » à la fin.
-// Pendant le défilement, rien ne passe par React : les textes sont découpés en lettres une seule
-// fois, et chaque changement de moment est une animation GSAP (transformations et opacité seulement,
-// pas de flou : la 3D garde toute la place).
+// Intro 3D guidée (esprit Igloo) : la maquette se construit, les vieux meubles s'en vont, les pièces
+// Maison Corleone se posent, le soir tombe. Six étapes, un texte chacune : un coup de molette (ou un
+// glissé du doigt, ou une flèche du clavier) et la caméra voyage d'elle-même jusqu'à l'étape
+// suivante, le texte change à l'arrivée. Pas de défilement libre : chaque geste mène quelque part.
+// Rien ne passe par React pendant le voyage : les textes sont découpés en lettres une seule fois, et
+// chaque changement est une animation GSAP (transformations et opacité seulement).
 // La scène se construit quand le préchargement a joué son entrée (charger), et ne s'anime qu'une
 // fois son arche ouverte (actif).
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import Lenis from 'lenis';
 import { chargerCatalogue } from '@/components/catalogueClient.js';
 import { initGsap, gsap, SplitText, dechiffrer, reduit } from '@/components/maison/anim.js';
 import { prix } from '@/lib/i18n.js';
 
-// moments du récit (part du défilement) : accueil, quatre temps, fin
-const MOMENTS = [
-  { de: 0, a: .085, cote: 'hero' },
-  { de: .1, a: .29, cote: 'g' },
-  { de: .3, a: .46, cote: 'd' },
-  { de: .47, a: .655, cote: 'g' },
-  { de: .67, a: .88, cote: 'd' },
-  { de: .9, a: 1.01, cote: 'hero' }
+// étapes du récit : la progression de la scène 3D (p) où la caméra s'arrête, et le côté du texte.
+// Chaque arrêt montre un état au repos : la pièce montée avec les meubles d'avant, la pièce vide,
+// les pièces Maison Corleone posées (de jour), le soir, puis la vue d'ensemble.
+const ETAPES = [
+  { p: 0, cote: 'hero' },
+  { p: .3, cote: 'g' },
+  { p: .455, cote: 'd' },
+  { p: .655, cote: 'g' },
+  { p: .85, cote: 'd' },
+  { p: 1, cote: 'hero' }
 ];
+// un geste de molette est fini quand plus rien n'arrive pendant ce temps (inertie du pavé tactile comprise)
+const CALME = 220;
+const doux = k => (k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);   // départ et arrivée en douceur
 const pad2 = n => String(n).padStart(2, '0');
 
 export default function Intro({ t, lang, charger, actif, onAvance, onPret, onFini }) {
@@ -124,25 +128,23 @@ export default function Intro({ t, lang, charger, actif, onAvance, onPret, onFin
     else gsap.to(b, { autoAlpha: 0, duration: .3, ease: 'power1.out', overwrite: true });
   }
 
-  // défilement : progression, moment du récit, étiquettes ; une fois l'arche du préchargement ouverte.
-  // Une seule boucle par image : celle du moteur 3D, qui appelle « image » avant de dessiner (la
-  // pièce, les étiquettes et les textes montrent toujours le même instant)
+  // étapes guidées : un geste → l'étape suivante (ou précédente), une fois l'arche du préchargement
+  // ouverte. Une seule boucle par image : celle du moteur 3D, qui appelle « image » avant de dessiner
+  // (la pièce, les étiquettes et les textes montrent toujours le même instant)
   useEffect(() => {
     if (!actif) return;
     initGsap();
     window.scrollTo(0, 0);
     const R = reduit();
-    const lenis = R ? null : new Lenis({ lerp: .1, smoothWheel: true, wheelMultiplier: .9 });
     const m = moteur.current;
     const s = section.current;
-    let haut = 0, course = 1;
-    const mesurer = () => { haut = s.offsetTop; course = Math.max(1, s.offsetHeight - innerHeight); };
-    mesurer();
-    let raf = 0, dernierP = -1, dernierMoment = -1, dernierSoir = null, dernierDefiler = null;
+    const N = ETAPES.length;
+    // voyage en cours : de → vers, entre t0 et t0 + duree ; le texte de l'étape paraît à mi-chemin
+    const st = { etape: 0, p: 0, de: 0, vers: 0, t0: 0, duree: 0, enCours: false, montre: true, texte: -1 };
+    let raf = 0, dernierP = -1, dernierSoir = null, dernierDefiler = null;
     const vues = new Set();
-    // étiquettes des meubles : recalculées seulement quand la caméra bouge (défilement, taille),
-    // et un style n'est écrit que s'il change
-    // largeur de chaque étiquette, lue une fois : près du bord droit, elle passe à gauche de son point
+    // étiquettes des meubles : recalculées seulement quand la caméra bouge, un style n'est écrit que
+    // s'il change ; largeur lue une fois : près du bord droit, l'étiquette passe à gauche de son point
     const largeurs = {};
     const majEtiquettes = () => {
       if (!m) return;
@@ -165,34 +167,86 @@ export default function Intro({ t, lang, charger, actif, onAvance, onPret, onFin
         } else if (e.visible === 0 && vues.has(e.id)) vues.delete(e.id);
       }
     };
-    const surTaille = () => { mesurer(); majEtiquettes(); };
+    const surTaille = () => majEtiquettes();
     addEventListener('resize', surTaille);
+    // le texte d'une étape (et le repère du bas)
+    const afficher = i => {
+      if (st.texte === i) return;
+      if (st.texte >= 0) cacher(st.texte);
+      st.texte = i;
+      if (i < 0) return;
+      montrer(i);
+      if (hudNom.current) hudNom.current.textContent = i > 0 && i < N - 1 ? pad2(i) + ' — ' + recits[i].label : t.marque;
+      if (hudNum.current) hudNum.current.textContent = `${pad2(i)} / ${pad2(N - 1)}`;
+    };
+    afficher(0);
+    // vers l'étape voisine : le texte s'efface, la caméra voyage (durée selon la distance)
+    const aller = sens => {
+      const cible = st.etape + sens;
+      if (st.enCours || cible < 0 || cible >= N) return;
+      st.etape = cible;
+      st.de = st.p; st.vers = ETAPES[cible].p;
+      st.duree = R ? 0 : Math.min(2300, Math.max(1300, 1100 + 2600 * Math.abs(st.vers - st.de)));
+      st.t0 = performance.now(); st.enCours = true; st.montre = false;
+      afficher(-1);
+    };
     const image = temps => {
-      if (lenis) lenis.raf(temps);
-      const p = Math.min(1, Math.max(0, (scrollY - haut) / course));
-      if (Math.abs(p - dernierP) > 1e-5) {
+      if (st.enCours) {
+        const k = st.duree ? Math.min(1, Math.max(0, (temps - st.t0) / st.duree)) : 1;
+        st.p = st.de + (st.vers - st.de) * doux(k);
+        if (!st.montre && k >= .55) { st.montre = true; afficher(st.etape); }
+        if (k >= 1) st.enCours = false;
+      }
+      // « Faites défiler » : à chaque arrêt, sauf le dernier
+      const df = !st.enCours && st.etape < N - 1;
+      if (df !== dernierDefiler) { dernierDefiler = df; if (defiler.current) defiler.current.style.opacity = df ? '1' : '0'; }
+      const p = st.p;
+      if (Math.abs(p - dernierP) > 1e-5 || dernierP < 0) {
         dernierP = p;
         if (m) m.regler(p);
         if (barre.current) barre.current.style.transform = `scaleX(${p.toFixed(4)})`;
-        const i = MOMENTS.findIndex(x => p >= x.de && p < x.a);
-        if (i !== dernierMoment) {
-          if (dernierMoment >= 0) cacher(dernierMoment);
-          if (i >= 0) montrer(i);
-          dernierMoment = i;
-          if (i >= 0) {
-            if (hudNom.current) hudNom.current.textContent = i > 0 && i < MOMENTS.length - 1 ? pad2(i) + ' — ' + recits[i].label : t.marque;
-            if (hudNum.current) hudNum.current.textContent = `${pad2(i)} / ${pad2(MOMENTS.length - 1)}`;
-          }
-        }
-        // texte clair seulement pour la fin (la caméra recule, le fond est sombre) ; avant, la vue
-        // intérieure du soir montre des murs éclairés : le texte reste foncé
+        // texte clair seulement pour la fin (la caméra recule, le fond est sombre)
         const so = p > .88;
         if (so !== dernierSoir) { dernierSoir = so; s.classList.toggle('is-soir', so); }
-        const df = p < .015;
-        if (df !== dernierDefiler) { dernierDefiler = df; if (defiler.current) defiler.current.style.opacity = df ? '1' : '0'; }
         majEtiquettes();
       }
     };
+
+    // les gestes. Molette ou pavé tactile : un geste (inertie comprise) = une étape ; un geste commencé
+    // pendant un voyage est ignoré en entier, pour que son inertie ne saute pas l'étape d'après.
+    let derniereMolette = 0, cumul = 0, servi = false;
+    const surMolette = e => {
+      e.preventDefault();
+      const maintenant = performance.now();
+      if (maintenant - derniereMolette > CALME) { cumul = 0; servi = false; }
+      derniereMolette = maintenant;
+      if (servi) return;
+      if (st.enCours) { servi = true; return; }
+      cumul += e.deltaMode === 1 ? e.deltaY * 16 : e.deltaMode === 2 ? e.deltaY * innerHeight : e.deltaY;
+      if (Math.abs(cumul) > 24) { servi = true; aller(cumul > 0 ? 1 : -1); }
+    };
+    // doigt : un glissé vertical d'au moins 40 px
+    let y0 = null;
+    const surDebut = e => { y0 = e.touches && e.touches.length === 1 ? e.touches[0].clientY : null; };
+    const surGlisse = e => { if (y0 !== null) e.preventDefault(); };
+    const surFin = e => {
+      if (y0 === null) return;
+      const dy = y0 - e.changedTouches[0].clientY;
+      y0 = null;
+      if (Math.abs(dy) > 40) aller(dy > 0 ? 1 : -1);
+    };
+    // clavier : flèches, pages, espace (sauf sur un bouton)
+    const surTouche = e => {
+      if (e.target && e.target.closest && e.target.closest('button, a, input, textarea, select')) return;
+      if (['ArrowDown', 'PageDown', ' ', 'Spacebar'].includes(e.key)) { e.preventDefault(); aller(1); }
+      else if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); aller(-1); }
+    };
+    addEventListener('wheel', surMolette, { passive: false });
+    s.addEventListener('touchstart', surDebut, { passive: true });
+    s.addEventListener('touchmove', surGlisse, { passive: false });
+    s.addEventListener('touchend', surFin);
+    addEventListener('keydown', surTouche);
+
     if (m) m.demarrer({ trace: !R, image });
     else {
       // sans 3D (image de secours) : une boucle à nous
@@ -202,7 +256,11 @@ export default function Intro({ t, lang, charger, actif, onAvance, onPret, onFin
     return () => {
       cancelAnimationFrame(raf);
       removeEventListener('resize', surTaille);
-      if (lenis) lenis.destroy();
+      removeEventListener('wheel', surMolette);
+      s.removeEventListener('touchstart', surDebut);
+      s.removeEventListener('touchmove', surGlisse);
+      s.removeEventListener('touchend', surFin);
+      removeEventListener('keydown', surTouche);
       if (moteur.current) moteur.current.arreter();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -223,7 +281,7 @@ export default function Intro({ t, lang, charger, actif, onAvance, onPret, onFin
         </div>
         <div className="mc-recit">
           {recits.map((r, i) => {
-            const m = MOMENTS[i];
+            const m = ETAPES[i];
             const fin = i === recits.length - 1;
             return (
               <div key={i} ref={el => { blocs.current[i] = el; }} className={`mc-recit__bloc mc-recit__bloc--${m.cote}`} aria-hidden="true">
@@ -248,7 +306,7 @@ export default function Intro({ t, lang, charger, actif, onAvance, onPret, onFin
         <div className="mc-hud mc-hud--bas mc-mono">
           <span ref={hudNom}>{t.marque}</span>
           <span className="mc-hud__barre"><span ref={barre} /></span>
-          <span ref={hudNum}>00 / {pad2(MOMENTS.length - 1)}</span>
+          <span ref={hudNum}>00 / {pad2(ETAPES.length - 1)}</span>
         </div>
       </div>
     </section>

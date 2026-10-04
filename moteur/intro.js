@@ -54,19 +54,20 @@ export const TEMPS = {
   nouveaux: [.46, .65], soir: [.66, .77], fin: .9
 };
 
-// pièces Maison Corleone posées (produits réels du catalogue) ; arrivee : part du défilement
+// pièces Maison Corleone posées (produits réels du catalogue) ; arrivee : part de la progression.
+// Toutes posées (étiquettes comprises) avant l'arrêt de l'étape « sélection » (p = .655), de jour
 export const PIECES = [
   { id: 'tapis', type: 'tapis', x: -1.0, z: .15, rot: Math.PI / 2, dim: [2.7, 1.9], arrivee: .465 },
-  { id: 'canape', sku: 'com-600', x: -2.12, z: .15, rot: Math.PI / 2, arrivee: .49 },
-  { id: 'table', sku: 'nordic-table-basse', x: -1.0, z: .15, rot: 0, arrivee: .515 },
-  { id: 'fauteuil1', sku: 'terracotta', x: .35, z: -.9, rot: -2.15, arrivee: .54 },
-  { id: 'fauteuil2', sku: 'abbraccio', x: .5, z: 1.1, rot: -.95, arrivee: .565 },
-  { id: 'lampadaire', sku: 'fpf-lamp-7705', x: -2.42, z: -1.92, rot: .6, arrivee: .59 },
-  { id: 'buffet', sku: 'ha-650', x: 1.78, z: -P / 2 + .23, rot: 0, arrivee: .61 },
-  { id: 'suspension', sku: 'sus-lnb-34', x: -1.0, z: .15, rot: 0, arrivee: .63, suspendu: true },
-  { id: 'applique1', sku: 'wom-wall-2414', x: -L / 2, y: 1.62, z: -1.05, rot: Math.PI / 2, arrivee: .64, mural: true },
-  { id: 'applique2', sku: 'wom-wall-2414', x: -L / 2, y: 1.62, z: 1.35, rot: Math.PI / 2, arrivee: .645, mural: true },
-  { id: 'plante', type: 'plante', x: 2.4, z: -1.75, rot: 0, dim: [.62, .62, 1.45], arrivee: .62 }
+  { id: 'canape', sku: 'com-600', x: -2.12, z: .15, rot: Math.PI / 2, arrivee: .478 },
+  { id: 'table', sku: 'nordic-table-basse', x: -1.0, z: .15, rot: 0, arrivee: .491 },
+  { id: 'fauteuil1', sku: 'terracotta', x: .35, z: -.9, rot: -2.15, arrivee: .504 },
+  { id: 'fauteuil2', sku: 'abbraccio', x: .5, z: 1.1, rot: -.95, arrivee: .517 },
+  { id: 'lampadaire', sku: 'fpf-lamp-7705', x: -2.42, z: -1.92, rot: .6, arrivee: .53 },
+  { id: 'buffet', sku: 'ha-650', x: 1.78, z: -P / 2 + .23, rot: 0, arrivee: .543 },
+  { id: 'plante', type: 'plante', x: 2.4, z: -1.75, rot: 0, dim: [.62, .62, 1.45], arrivee: .556 },
+  { id: 'suspension', sku: 'sus-lnb-34', x: -1.0, z: .15, rot: 0, arrivee: .569, suspendu: true },
+  { id: 'applique1', sku: 'wom-wall-2414', x: -L / 2, y: 1.62, z: -1.05, rot: Math.PI / 2, arrivee: .582, mural: true },
+  { id: 'applique2', sku: 'wom-wall-2414', x: -L / 2, y: 1.62, z: 1.35, rot: Math.PI / 2, arrivee: .595, mural: true }
 ];
 // lumières du soir : où brillent les luminaires
 const FEUX = [

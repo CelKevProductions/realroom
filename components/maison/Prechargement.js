@@ -64,9 +64,13 @@ export default function Prechargement({ t, avancement, pret, onEntreeFinie, onFi
     }
 
     // 2 : compteur de la construction (le filet suit, en transition CSS)
+    // pendant l'entrée, le compteur avance avec le temps (jusqu'à 18 %) ; ensuite il suit la construction
+    const debut = performance.now();
     const tick = () => {
-      if (s.sortie || !s.entree) return;
-      const cible = Math.min(1, (avancement && avancement.current) || 0) * 100;
+      if (s.sortie) return;
+      const cible = s.entree
+        ? 18 + 82 * Math.min(1, (avancement && avancement.current) || 0)
+        : 18 * Math.min(1, (performance.now() - debut) / 2200);
       s.compteur += (cible - s.compteur) * .12;
       if (cible - s.compteur < .5) s.compteur = cible;
       const n = Math.floor(s.compteur);
@@ -76,7 +80,7 @@ export default function Prechargement({ t, avancement, pret, onEntreeFinie, onFi
         if (ligne.current) ligne.current.style.transform = `scaleY(${(s.compteur / 100).toFixed(3)})`;
         if (etape.current) etape.current.textContent = n < 70 ? t.pre.etapes[0] : n < 99 ? t.pre.etapes[1] : t.pre.etapes[2];
       }
-      if (pretRef.current && s.compteur >= 99.5) sortir();
+      if (s.entree && pretRef.current && s.compteur >= 99.5) sortir();
     };
     gsap.ticker.add(tick);
 
