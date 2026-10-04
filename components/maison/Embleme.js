@@ -1,5 +1,5 @@
-// La fleur de la visite privée (préchargement) et la marque en haut à gauche : le logo MC de la
-// boutique, qui y ramène
+// La fleur de la visite privée (préchargement) et la marque en haut à gauche : le monogramme MC,
+// qui ramène à la boutique
 import Logo from '@/components/maison/Logo.js';
 
 export function Fleur({ className }) {
@@ -18,7 +18,7 @@ export function Fleur({ className }) {
 export default function Marque({ label, href = 'https://maisoncorleone.com' }) {
   return (
     <a className="mc-marque" href={href} aria-label={label}>
-      <Logo largeur={240} />
+      <Logo />
     </a>
   );
 }

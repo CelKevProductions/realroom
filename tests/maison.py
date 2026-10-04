@@ -18,7 +18,6 @@ OUT.mkdir(exist_ok=True)
 PORT = int(os.environ.get('PORT', '3129'))
 BASE = f'http://127.0.0.1:{PORT}'
 PHOTO = RACINE / 'tests' / 'fixtures' / 'salon-entree.jpg'
-LOGO = RACINE / 'tests' / 'fixtures' / 'logo-essai.png'
 MODE = next((a for a in sys.argv[1:] if not a.startswith('--')), 'demo-desktop')
 MOUVEMENT = '--mouvement' in sys.argv
 MOBILE = MODE.endswith('mobile')
@@ -173,8 +172,6 @@ async def main():
             vp = {'width': 390, 'height': 844} if MOBILE else {'width': 1440, 'height': 900}
             ctx = await b.new_context(viewport=vp, locale='fr-FR', is_mobile=MOBILE, has_touch=MOBILE, reduced_motion='no-preference' if MOUVEMENT else 'reduce')
             await ctx.route('https://cdn.shopify.com/**', lambda r: r.fulfill(path=str(PHOTO), content_type='image/jpeg'))
-            # le logo MC : une image de remplacement transparente (la vraie est sur le CDN Shopify)
-            await ctx.route('**/Maison_Corleone_Logo.png*', lambda r: r.fulfill(path=str(LOGO), content_type='image/png'))
             page = await ctx.new_page()
             page.on('pageerror', lambda e: erreurs.append(f'pageerror {e}'))
             page.on('console', lambda m: erreurs.append(m.text) if m.type == 'error' else None)

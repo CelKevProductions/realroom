@@ -219,13 +219,13 @@ export default function Experience({ lang, demo = false, profil: profilServeur =
         <Scene key={piece.id} t={t} lang={lang} demo={demo} piece={piece} rendus={rendus} credits={credits} setCredits={setCredits} profil={profil}
           nbPieces={nbPieces} onNouvelle={nouvelle} onMesPieces={mesPieces} onDeconnexion={deconnexion} />
       )}
-      {phase === 'ouverture' && <div className="mc-ouverture mc-fixe" aria-busy="true"><Logo largeur={480} /></div>}
+      {phase === 'ouverture' && <div className="mc-ouverture mc-fixe" aria-busy="true"><Logo /></div>}
       {pre && (
         <Prechargement t={t} avancement={avancement} pret={introPrete}
           onEntreeFinie={() => setCharger3D(true)}
           onFini={() => { setIntroActive(true); setPre(false); }} />
       )}
-      <div className="mc-rideau" ref={rideau} aria-hidden="true"><span className="mc-rideau__logo"><Logo largeur={480} /></span></div>
+      <div className="mc-rideau" ref={rideau} aria-hidden="true"><span className="mc-rideau__logo"><Logo /></span></div>
     </div>
   );
 }

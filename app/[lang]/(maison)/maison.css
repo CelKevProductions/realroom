@@ -83,18 +83,22 @@ html:has(.mc-fixe) { overflow: hidden; }
 .mc-pill { display: inline-flex; align-items: center; gap: .6em; padding: .55em 1em .5em; border: 1px solid currentColor; border-radius: 999px; font-family: var(--mono); font-size: .625rem; letter-spacing: .06em; text-transform: uppercase; line-height: 1; }
 .mc-pill i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
-/* ---------- logo MC de la boutique ----------
-   L'image est poussée hors de sa boîte et son ombre portée, de la couleur du texte, revient à sa
-   place : le logo prend la teinte de l'écran (espresso sur papier, crème sur fond sombre). */
-.mc-logo { display: inline-block; height: 100%; aspect-ratio: 1024 / 303; overflow: hidden; line-height: 0; vertical-align: middle; }
-.mc-logo img { display: block; width: 100%; height: 100%; max-width: none; transform: translateX(-1200px); filter: drop-shadow(1200px 0 0 currentColor); -webkit-user-drag: none; user-select: none; }
-.mc-logo.is-panne { aspect-ratio: auto; overflow: visible; display: inline-grid; align-items: center; }
-.mc-logo__mc { font-family: var(--serif); font-size: 1em; line-height: 1; letter-spacing: .06em; }
+/* ---------- logo : le monogramme MC (SVG en currentColor : il prend la teinte de l'écran) ---------- */
+.mc-logo { display: inline-block; height: 100%; aspect-ratio: 418.75 / 194.5; line-height: 0; vertical-align: middle; }
+.mc-logo svg { display: block; width: 100%; height: 100%; fill: currentColor; overflow: visible; }
 @keyframes mc-tourne { to { transform: rotate(360deg); } }
 /* en haut à gauche : retour à la boutique */
-.mc-marque { position: fixed; z-index: 40; left: var(--pad); top: calc(var(--haut) + 34px); height: 30px; font-size: 30px; display: inline-flex; align-items: center; color: inherit; transition: opacity .3s; }
+.mc-marque { position: fixed; z-index: 40; left: var(--pad); top: calc(var(--haut) + 34px); height: 30px; display: inline-flex; align-items: center; color: inherit; transition: opacity .3s; }
 .mc-marque:hover { opacity: .62; }
-@media (max-width: 699px) { .mc-marque { top: calc(var(--haut) + 22px); height: 24px; font-size: 24px; } }
+@media (max-width: 699px) { .mc-marque { top: calc(var(--haut) + 22px); height: 24px; } }
+/* centré sur la ligne de l'en-tête des écrans guidés, aligné sur le titre de la pièce en 3D */
+.mc-guide .mc-marque { top: calc(var(--haut) + 51px); }
+.mc-piece .mc-marque { top: calc(var(--haut) + 28px); }
+@media (max-width: 899px) {
+  .mc-guide .mc-marque { top: calc(var(--haut) + 36px); }
+  .mc-piece .mc-marque { top: calc(var(--haut) + 16px); }
+}
+@media (max-width: 699px) { .mc-guide .mc-marque { top: calc(var(--haut) + 39px); } }
 
 /* =================================================================
    Préchargement (repris de la visite privée)
@@ -233,7 +237,7 @@ html:has(.mc-pre) { overflow: hidden; scrollbar-gutter: stable; }
    ================================================================= */
 .mc-fixe { position: fixed; inset: 0; z-index: 10; overflow: hidden; }
 .mc-guide { background: var(--papier); color: var(--encre); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
-.mc-guide__tete { display: flex; justify-content: flex-end; align-items: center; gap: 20px; padding: calc(var(--haut) + 34px) var(--pad) 0 calc(var(--pad) + 130px); min-height: 98px; }
+.mc-guide__tete { display: flex; justify-content: flex-end; align-items: center; gap: 20px; padding: calc(var(--haut) + 34px) var(--pad) 0 calc(var(--pad) + 100px); min-height: 98px; }
 .mc-guide__compte { color: var(--gris); }
 .mc-guide__corps { position: relative; overflow-y: auto; overscroll-behavior: contain; padding: clamp(10px, 3vh, 40px) var(--pad) 28px; }
 .mc-etape { position: relative; z-index: 1; min-height: 100%; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 28px clamp(32px, 5vw, 90px); align-items: center; }
@@ -253,7 +257,7 @@ html:has(.mc-pre) { overflow: hidden; scrollbar-gutter: stable; }
 .mc-retour:hover { color: var(--encre); }
 .mc-retour svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.4; }
 @media (max-width: 899px) {
-  .mc-guide__tete { padding: calc(var(--haut) + 22px) var(--pad) 0 calc(var(--pad) + 100px); min-height: 80px; }
+  .mc-guide__tete { padding: calc(var(--haut) + 22px) var(--pad) 0 calc(var(--pad) + 80px); min-height: 80px; }
   .mc-guide__corps { padding-top: 8px; }
   .mc-etape { grid-template-columns: 1fr; align-content: start; gap: 26px; min-height: 0; }
   .mc-question__titre { font-size: clamp(2.6rem, 12vw, 4rem); }
@@ -537,7 +541,7 @@ html:has(.mc-pre) { overflow: hidden; scrollbar-gutter: stable; }
 /* rideau entre deux temps, ouverture d'une pièce */
 .mc-rideau { position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; background: var(--expresso); color: var(--creme); transform: translateY(100%); pointer-events: none; will-change: transform; }
 /* le logo MC au centre du rideau (et de l'écran d'ouverture d'une pièce) */
-.mc-rideau__logo, .mc-ouverture .mc-logo { height: clamp(44px, 6.2vw, 74px); font-size: clamp(44px, 6.2vw, 74px); }
+.mc-rideau__logo, .mc-ouverture .mc-logo { height: clamp(40px, 5.4vw, 64px); }
 .mc-rideau__logo { display: block; opacity: 0; }
 .mc-ouverture { display: grid; place-items: center; background: var(--expresso); color: var(--creme); }
 .mc-ouverture .mc-logo { animation: mc-respire 2.4s var(--ease) infinite alternate; }
