@@ -1,8 +1,9 @@
 import { origine } from '@/lib/http.js';
 import { ouvrirSession } from '@/lib/session.js';
-import { finirConnexion, compteMaison, suiteSure, raisonErreur } from '@/lib/maison.js';
+import { finirConnexion, compteMaison, suiteSure, raisonErreur, marquer } from '@/lib/maison.js';
 
-// GET /api/mc/retour?code=…&state=… : retour de la page de connexion de la boutique
+// GET /api/mc/retour?code=…&state=… : retour de la page de connexion de la boutique.
+// En cas d'échec, la référence (étape-précision) part dans l'adresse : elle s'affiche sous le message.
 export async function GET(request) {
   const u = new URL(request.url);
   const base = origine(request);
@@ -11,9 +12,9 @@ export async function GET(request) {
     return Response.redirect(base + '/fr/maison-corleone?mc=annule', 302);
   }
   try {
-    const r = await finirConnexion({ origine: base, code: u.searchParams.get('code'), etat: u.searchParams.get('state') });
-    const compte = await compteMaison({ sub: r.sub, email: r.email, prenom: r.prenom, langue: r.lang });
-    await ouvrirSession(compte.id);
+    const r = await finirConnexion({ origine: base, code: u.searchParams.get('code'), etat: u.searchParams.get('state') }).catch(e => { throw marquer(e, 'retour'); });
+    const compte = await compteMaison({ sub: r.sub, email: r.email, prenom: r.prenom, langue: r.lang }).catch(e => { throw marquer(e, 'compte'); });
+    await ouvrirSession(compte.id).catch(e => { throw marquer(e, 'session'); });
     const suite = suiteSure(r.suite, r.lang);
     return Response.redirect(base + suite + (suite.includes('?') ? '&' : '?') + 'bienvenue=1', 302);
   } catch (e) {
