@@ -1,8 +1,8 @@
 {%- comment -%}
   Maison Corleone · « Chez vous » : la pièce en 3D, meublée avec les pièces de la boutique.
-  Section légère : dessin SVG et transitions CSS, sans librairie ni image (environ 13 Ko compressés).
-  Le plan se dessine, passe en 3D, puis les meubles se posent ; l'animation se joue une fois,
-  quand le dessin arrive à l'écran. Dessin fixe si le visiteur a réduit les animations.
+  Section légère, sans librairie ni image : le script (en bas) dessine la pièce en SVG, le CSS l'anime.
+  Le plan se dessine, passe en 3D, puis les meubles se posent. L'animation se joue une fois, quand le
+  dessin arrive à l'écran ; le dessin reste fixe si le visiteur a réduit les animations.
 {%- endcomment -%}
 {%- liquid
   assign st = section.settings
@@ -19,8 +19,10 @@
   if st.reset_spacing
     assign espacement = ' remove_spacing'
   endif
+  assign cles = 'canape,table,fauteuil,lampe' | split: ','
 -%}
-<style>.mcv{--mcv-fond:#332817;--mcv-encre:#eee4d3;--mcv-laiton:#c9a46a;--mcv-doux:#bdb3a2;--mcv-filet:#584e3d;--mcv-sol:#403524;--mcv-mur-a:#3a2f1e;--mcv-mur-b:#463b2a;--mcv-cote:#493f2e;--mcv-dessus:#5c5140;--mcv-tapis:#544329;--mcv-vitre:#514635;--mcv-survol:#f4ede2;--mcv-ease:cubic-bezier(.65,0,.35,1)}
+<style>
+.mcv{--mcv-fond:#332817;--mcv-encre:#eee4d3;--mcv-laiton:#c9a46a;--mcv-doux:#bdb3a2;--mcv-filet:#584e3d;--mcv-sol:#403524;--mcv-mur-a:#3a2f1e;--mcv-mur-b:#463b2a;--mcv-cote:#493f2e;--mcv-dessus:#5c5140;--mcv-tapis:#544329;--mcv-vitre:#514635;--mcv-survol:#f4ede2;--mcv-ease:cubic-bezier(.65,0,.35,1)}
 .mcv--creme{--mcv-fond:#eee4d3;--mcv-encre:#332817;--mcv-laiton:#8a6534;--mcv-doux:#645948;--mcv-filet:#c9bead;--mcv-sol:#e1d7c6;--mcv-mur-a:#e7ddcc;--mcv-mur-b:#dbd1c0;--mcv-cote:#ddd3c2;--mcv-dessus:#f7f3eb;--mcv-tapis:#d8c8b0;--mcv-vitre:#f8f4ed;--mcv-survol:#261e11}
 .mcv__bande{background:var(--mcv-fond);color:var(--mcv-encre);border-radius:16px;padding:clamp(40px,6vw,84px) clamp(20px,5vw,76px);overflow:hidden}
 .mcv__bande--plein{border-radius:0}
@@ -40,9 +42,9 @@
 .mcv .mcv__bouton:focus-visible,.mcv .mcv__etiq:focus-visible,.mcv .mcv__rejouer:focus-visible{outline:2px solid var(--mcv-laiton);outline-offset:3px}
 .mcv .mcv__note{margin:0;font:13px/1.55 var(--body-font,Georgia,serif);color:var(--mcv-doux);max-width:30ch}
 .mcv .mcv__dessin{margin:0;min-width:0}
+.mcv:not(.mcv--pret) .mcv__dessin{display:none}
 .mcv__scene{position:relative;aspect-ratio:530/444;container-type:inline-size}
-.mcv .mcv__svg{display:block;width:100%;height:100%;overflow:visible}
-.mcv .mcv__svg{--mcv-k:1}
+.mcv .mcv__svg{--mcv-k:1;display:block;width:100%;height:100%;overflow:visible}
 .mcv__svg path,.mcv__svg circle{stroke-linejoin:round;stroke-linecap:round}
 .mcv__l{fill:none;stroke:var(--mcv-encre);stroke-width:calc(1.25px * var(--mcv-k))}
 .mcv__lf{fill:none;stroke:var(--mcv-encre);stroke-width:calc(.8px * var(--mcv-k));stroke-opacity:.5}
@@ -75,15 +77,18 @@
 @container (max-width:600px){.mcv .mcv__svg{--mcv-k:1.25}.mcv__cote-texte{font-size:16px}}
 @container (max-width:440px){.mcv .mcv__svg{--mcv-k:1.6}.mcv__cote-texte{font-size:19px}}
 @media (min-width:990px){
-.mcv__grille{grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-rows:1fr auto auto auto 1fr;column-gap:clamp(40px,5vw,88px);row-gap:30px;grid-template-areas:". dessin" "tete dessin" "etapes dessin" "action dessin" ". dessin"}
+.mcv__grille{grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-rows:1fr auto auto auto 1fr;column-gap:clamp(40px,5vw,88px);grid-template-areas:". dessin" "tete dessin" "etapes dessin" "action dessin" ". dessin"}
 .mcv--gauche .mcv__grille{grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-areas:"dessin ." "dessin tete" "dessin etapes" "dessin action" "dessin ."}
 .mcv__tete{grid-area:tete}.mcv .mcv__dessin{grid-area:dessin}.mcv .mcv__etapes{grid-area:etapes}.mcv__action{grid-area:action}
 }
+/* animation : classes posées par le script, une phase après l'autre */
 .mcv--anime .mcv__t{stroke-dasharray:1 1;stroke-dashoffset:1}
-.mcv--anime .mcv__f,.mcv--anime .mcv__cote-texte,.mcv--anime .mcv__point{opacity:0}
-.mcv--anime .mcv__plan{transform:translateY(-12px) rotate(-45deg) scale(0.78,1.56)}
+.mcv--anime .mcv__f,.mcv--anime .mcv__cote-texte,.mcv--anime .mcv__point,.mcv--anime .mcv__deco{opacity:0}
+.mcv--anime .mcv__plan{transform:translateY(-12px) rotate(-45deg) scale(.78,1.56)}
+.mcv--anime .mcv__mur{opacity:0}
+.mcv--anime .mcv__mur--g{transform:skewY(-26.565deg) scaleY(.002)}
+.mcv--anime .mcv__mur--d{transform:skewY(26.565deg) scaleY(.002)}
 .mcv--anime .mcv__meuble{opacity:0;transform:translateY(-22px)}
-.mcv--anime .mcv__deco{opacity:0}
 .mcv--anime .mcv__etiq{opacity:0;translate:0 6px}
 .mcv--anime .mcv__etape{opacity:.38}
 .mcv--anime.is-p1 .mcv__plan .mcv__t{stroke-dashoffset:0;transition:stroke-dashoffset .9s var(--mcv-ease) var(--d,0ms)}
@@ -92,9 +97,6 @@
 .mcv--anime.is-p2 .mcv__plan{transform:none;transition:transform 1.15s var(--mcv-ease)}
 .mcv--anime.is-p2 .mcv__cotes-plan .mcv__cote-texte{opacity:0;transition:opacity .2s ease}
 .mcv--anime.is-p2 .mcv__cotes-iso .mcv__cote-texte{opacity:1;transition:opacity .5s ease 1.05s}
-.mcv--anime .mcv__mur{opacity:0}
-.mcv--anime .mcv__mur--g{transform:skewY(-26.565deg) scaleY(.002)}
-.mcv--anime .mcv__mur--d{transform:skewY(26.565deg) scaleY(.002)}
 .mcv--anime.is-p2 .mcv__mur{opacity:1;transform:none;transition:opacity .15s ease 1s,transform .95s cubic-bezier(.22,.8,.3,1) 1s}
 .mcv--anime.is-p2 .mcv__mur--g{transition-delay:1.15s}
 .mcv--anime.is-p3 .mcv__meuble{opacity:1;transform:none;transition:opacity .4s ease var(--d,0ms),transform .7s cubic-bezier(.3,1.35,.55,1) var(--d,0ms)}
@@ -105,11 +107,14 @@
 .mcv--anime[data-etape="1"] .mcv__etape:nth-child(1),.mcv--anime[data-etape="2"] .mcv__etape:nth-child(-n+2),.mcv--anime[data-etape="3"] .mcv__etape,.mcv--anime[data-etape="fin"] .mcv__etape{opacity:1}
 .mcv--anime[data-etape="1"] .mcv__etape:nth-child(1) .mcv__num,.mcv--anime[data-etape="2"] .mcv__etape:nth-child(2) .mcv__num,.mcv--anime[data-etape="3"] .mcv__etape:nth-child(3) .mcv__num{background:var(--mcv-laiton);color:var(--mcv-fond)}
 .mcv--anime.is-fin .mcv__rejouer{display:inline-flex;animation:mcv-apparait .5s ease both}
-@keyframes mcv-apparait{from{opacity:0}to{opacity:1}}</style>
+@keyframes mcv-apparait{from{opacity:0}to{opacity:1}}
+</style>
 <div
   class="section{% if st.padding_top < 30 %} pt-min{% endif %}{% if st.padding_bottom < 30 %} pb-min{% endif %} mcv mcv--{{ st.ambiance }} mcv--{{ st.position }}{{ espacement }}"
   style="--section-pt: {{ st.padding_top }}; --section-pb: {{ st.padding_bottom }};"
   data-mcv
+  data-largeur="{{ st.largeur | escape }}"
+  data-longueur="{{ st.longueur | escape }}"
 >
   <div class="{{ st.section_width }}">
     <div class="mcv__bande{% if st.section_width == 'full_width' %} mcv__bande--plein{% endif %}">
@@ -120,71 +125,25 @@
         </div>
         <figure class="mcv__dessin">
           <div class="mcv__scene">
-            <svg class="mcv__svg" viewBox="25 -60 530 444" aria-hidden="true" focusable="false"><g transform="translate(282.9 231.4)"><g class="mcv__plan"><g transform="translate(-282.9 -231.4)"><path class="mcv__sol mcv__f" d="M300 120L60 240L265.7 342.9L505.7 222.9Z"/><path class="mcv__poche mcv__f" style="--d:300ms" d="M300 112.8L52.8 236.4L60 240L300 120L505.7 222.9L512.9 219.3Z"/><path class="mcv__baie mcv__f" style="--d:300ms" d="M379.7 152.2L371.5 156.2L443.5 192.2L451.7 188.2Z"/><path class="mcv__lf mcv__f" style="--d:450ms" d="M375.6 154.2L447.6 190.2"/><path class="mcv__l mcv__t" pathLength="1" d="M300 120L60 240L265.7 342.9L505.7 222.9Z" style="--d:0ms"/><path class="mcv__lf mcv__lame mcv__t" pathLength="1" d="M324.8 133.3L86.7 252.4" style="--d:220ms"/><path class="mcv__lf mcv__lame mcv__t" pathLength="1" d="M350.5 146.2L112.4 265.2" style="--d:280ms"/><path class="mcv__lf mcv__lame mcv__t" pathLength="1" d="M376.2 159.1L138.1 278.1" style="--d:340ms"/><path class="mcv__lf mcv__lame mcv__t" pathLength="1" d="M401.9 171.9L163.8 290.9" style="--d:400ms"/><path class="mcv__lf mcv__lame mcv__t" pathLength="1" d="M427.6 184.8L189.5 303.8" style="--d:460ms"/><path class="mcv__lf mcv__lame mcv__t" pathLength="1" d="M453.3 197.6L215.2 316.7" style="--d:520ms"/><path class="mcv__lf mcv__lame mcv__t" pathLength="1" d="M479 210.5L241 329.5" style="--d:580ms"/><path class="mcv__lf mcv__cote mcv__t" pathLength="1" d="M42 249L247.7 351.9" style="--d:650ms"/><path class="mcv__lf mcv__cote mcv__t" pathLength="1" d="M523.7 231.9L283.7 351.9" style="--d:650ms"/><path class="mcv__lf mcv__cote mcv__t" pathLength="1" d="M57.1 241.4L36.7 251.6" style="--d:600ms"/><path class="mcv__lf mcv__cote mcv__t" pathLength="1" d="M262.8 344.3L242.4 354.5" style="--d:600ms"/><path class="mcv__lf mcv__cote mcv__t" pathLength="1" d="M508.6 224.3L529 234.5" style="--d:600ms"/><path class="mcv__lf mcv__cote mcv__t" pathLength="1" d="M268.6 344.3L289 354.5" style="--d:600ms"/><path class="mcv__l mcv__cote mcv__t" pathLength="1" d="M48.7 249L35.3 249" style="--d:800ms"/><path class="mcv__l mcv__cote mcv__t" pathLength="1" d="M254.4 351.9L241 351.9" style="--d:800ms"/><path class="mcv__l mcv__cote mcv__t" pathLength="1" d="M530.4 231.9L517 231.9" style="--d:800ms"/><path class="mcv__l mcv__cote mcv__t" pathLength="1" d="M290.4 351.9L277 351.9" style="--d:800ms"/></g></g></g><g class="mcv__cotes-plan"><text class="mcv__cote-texte" x="282.9" y="390.2" transform="rotate(0 282.9 390.2)">{{ st.largeur | escape }}</text><text class="mcv__cote-texte" x="438.7" y="219.4" transform="rotate(-90 438.7 219.4)">{{ st.longueur | escape }}</text></g><g class="mcv__murs"><g transform="translate(402.9 171.4)"><g class="mcv__mur mcv__mur--d"><g transform="translate(-402.9 -171.4)"><path class="mcv__mur-b" d="M300 120L505.7 222.9L505.7 92.9L300 -10Z"/><path class="mcv__lf" d="M300 114L505.7 216.9"/><path class="mcv__vitre mcv__l" d="M372 114L444 150L444 80L372 44Z"/><path class="mcv__lf" d="M375.8 110.9L440.2 143.1L440.2 83.1L375.8 50.9ZM408 127L408 67"/><path class="mcv__c" d="M361.9 116.2L439.7 155L446.9 151.4L446.9 155.4L439.7 159L361.9 120.2ZM439.7 155L439.7 159"/><path class="mcv__d" d="M439.7 155L446.9 151.4L369.1 112.6L361.9 116.2Z"/><path class="mcv__poche" d="M300 -10L300 -17.2L512.9 89.3L505.7 92.9ZM505.7 222.9L505.7 92.9L512.9 89.3L512.9 219.3Z"/><path class="mcv__l" d="M505.7 222.9L505.7 92.9M300 -10L505.7 92.9"/></g></g></g><g transform="translate(180 180)"><g class="mcv__mur mcv__mur--g"><g transform="translate(-180 -180)"><path class="mcv__mur-a" d="M300 120L60 240L60 110L300 -10Z"/><path class="mcv__lf" d="M300 114L60 234"/><path class="mcv__poche" d="M300 -10L60 110L52.8 106.4L300 -17.2ZM60 240L60 110L52.8 106.4L52.8 236.4Z"/><path class="mcv__l" d="M300 120L300 -10M60 240L60 110M300 -10L60 110"/></g></g></g></g><g class="mcv__cotes-iso"><text class="mcv__cote-texte" x="98" y="290.9" transform="rotate(26.6 98 290.9)">{{ st.largeur | escape }}</text><text class="mcv__cote-texte" x="477.6" y="268.8" transform="rotate(-26.6 477.6 268.8)">{{ st.longueur | escape }}</text></g><g class="mcv__meubles"><g class="mcv__deco" style="--d:400ms"><path class="mcv__d" d="M205 108.5L142.6 139.7L142.6 87.7L205 56.5Z"/><path class="mcv__lf mcv__feuille" d="M172.3 77.6L173.9 77.2L175.5 78.1L176.9 80.3L177.7 83.3L178 86.8L177.6 90.1L176.6 92.9L175.2 94.6L173.6 95L172 94.1L170.7 91.9L169.8 88.8L169.5 85.4L169.9 82L170.9 79.3L172.3 77.6ZM194.5 82.7L194.8 84.2L194.1 86.7L192.5 89.8L190.2 93.1L187.6 96.1L185.1 98.3L183 99.3L181.8 99.1L181.5 97.6L182.2 95.1L183.8 91.9L186.1 88.6L188.7 85.7L191.2 83.5L193.3 82.5L194.5 82.7ZM152.6 106.3L153.8 104.7L155.8 103.5L158.4 102.9L161.2 102.9L163.6 103.6L165.4 104.9L166.3 106.5L166.1 108.3L164.9 109.9L162.9 111.1L160.3 111.7L157.6 111.6L155.1 110.9L153.3 109.7L152.4 108L152.6 106.3ZM184 101.2L184.7 101.9L184.9 103.6L184.4 106L183.5 108.8L182.1 111.6L180.6 113.9L179.2 115.4L178 115.8L177.2 115.1L177.1 113.4L177.5 110.9L178.4 108.1L179.8 105.3L181.3 103.1L182.8 101.6L184 101.2ZM160.7 114.1L161.9 113.2L163.4 113.1L165 113.6L166.5 114.8L167.7 116.5L168.3 118.4L168.3 120.2L167.6 121.6L166.4 122.5L164.9 122.7L163.3 122.1L161.8 120.9L160.6 119.3L160 117.4L160.1 115.6L160.7 114.1Z"/><path class="mcv__lf" d="M173.8 120.1L173.8 92.1"/></g><g class="mcv__meuble mcv__meuble--tapis" style="--d:0ms"><path class="mcv__tapis" d="M289.2 281.4L290.3 281.8L291.5 282.1L292.8 282.1L294.1 282.1L295.3 281.8L296.4 281.4L385.2 237L386 236.5L386.5 235.9L386.7 235.2L386.5 234.5L386 233.9L385.2 233.4L301.2 191.4L300.1 191L298.9 190.7L297.6 190.7L296.3 190.7L295.1 191L294 191.4L205.2 235.8L204.4 236.3L203.9 236.9L203.7 237.6L203.9 238.3L204.4 238.9L205.2 239.4Z"/><path class="mcv__lf" d="M290.4 276L291.1 276.3L291.9 276.4L292.8 276.5L293.7 276.4L294.5 276.3L295.2 276L374.4 236.4L374.9 236L375.3 235.6L375.4 235.2L375.3 234.8L374.9 234.4L374.4 234L300 196.8L299.3 196.5L298.5 196.4L297.6 196.3L296.7 196.4L295.9 196.5L295.2 196.8L216 236.4L215.5 236.8L215.1 237.2L215 237.6L215.1 238L215.5 238.4L216 238.8Z"/></g><g class="mcv__meuble mcv__meuble--lampe" style="--d:960ms"><path class="mcv__c" d="M287.8 144.8L287.9 145.6L288.2 146.4L288.7 147.1L289.4 147.9L290.3 148.5L291.4 149.1L292.6 149.6L293.9 150.1L295.3 150.4L296.8 150.7L298.4 150.9L300 150.9L301.6 150.9L303.2 150.7L304.7 150.4L306.1 150.1L307.4 149.6L308.6 149.1L309.7 148.5L310.6 147.9L311.3 147.1L311.8 146.4L312.1 145.6L312.2 144.8L312.2 148.8L312.1 149.6L311.8 150.4L311.3 151.1L310.6 151.9L309.7 152.5L308.6 153.1L307.4 153.6L306.1 154.1L304.7 154.4L303.2 154.7L301.6 154.9L300 154.9L298.4 154.9L296.8 154.7L295.3 154.4L293.9 154.1L292.6 153.6L291.4 153.1L290.3 152.5L289.4 151.9L288.7 151.1L288.2 150.4L287.9 149.6L287.8 148.8Z"/><path class="mcv__d" d="M291.4 149.1L292.6 149.6L293.9 150.1L295.3 150.4L296.8 150.7L298.4 150.9L300 150.9L301.6 150.9L303.2 150.7L304.7 150.4L306.1 150.1L307.4 149.6L308.6 149.1L309.7 148.5L310.6 147.9L311.3 147.1L311.8 146.4L312.1 145.6L312.2 144.8L312.1 144L311.8 143.2L311.3 142.5L310.6 141.7L309.7 141.1L308.6 140.5L307.4 140L306.1 139.5L304.7 139.2L303.2 138.9L301.6 138.7L300 138.7L298.4 138.7L296.8 138.9L295.3 139.2L293.9 139.5L292.6 140L291.4 140.5L290.3 141.1L289.4 141.7L288.7 142.5L288.2 143.2L287.9 144L287.8 144.8L287.9 145.6L288.2 146.4L288.7 147.1L289.4 147.9L290.3 148.5L291.4 149.1Z"/><path class="mcv__l" d="M300 144.8L300 50.8"/><path class="mcv__d" d="M300 50.8L298.3 47.9L297.4 45.6L296.8 43.8L296.7 42.5L296.9 41.7L297.6 41.5L298.7 41.8L300.2 42.6L302.1 43.9L304.4 45.7L307.2 48.1L308.4 50.7L308.1 48.2L309.5 46.3L310.4 44.8L310.9 43.8L311 43.2L310.7 43L310 43.3L308.9 43.9L307.3 45L305.4 46.5L303.1 48.5L300 50.8Z"/><path class="mcv__lf" d="M300 50.8L300.7 48.2L301.4 46.1L302.1 44.4L302.8 43.2L303.5 42.5L304.2 42.3L304.9 42.5L305.6 43.2L306.3 44.4L307 46L307.7 48.1L308.4 50.7"/><path class="mcv__d" d="M300 50.8L296.8 49.2L294.2 47.9L292 47L290.2 46.5L288.7 46.4L287.6 46.6L286.9 47.2L286.6 48.2L286.7 49.6L287.1 51.3L288 53.4L287.3 56.3L288.7 53.2L291.8 50.1L294.3 47.6L296.4 45.7L298.2 44.3L299.7 43.5L300.7 43.3L301.4 43.7L301.6 44.6L301.6 46.1L301.1 48.1L300 50.8Z"/><path class="mcv__lf" d="M300 50.8L298.9 48.7L297.9 47L296.8 45.8L295.8 45.1L294.7 44.8L293.7 45.1L292.6 45.8L291.5 46.9L290.5 48.6L289.4 50.7L288.4 53.3L287.3 56.3"/><path class="mcv__d" d="M300 50.8L300.9 47.8L302.2 45.7L303.8 44.1L305.6 43.2L307.7 42.9L310 43.3L312.6 44.3L315.5 46L318.5 48.3L321.9 51.2L325.6 54.8L328.2 58.2L326.1 55.1L325.1 53.3L323.7 51.7L322.1 50.4L320.2 49.4L318.1 48.7L315.8 48.3L313.2 48.2L310.3 48.4L307.2 49L303.8 49.8L300 50.8Z"/><path class="mcv__lf" d="M300 50.8L302.3 48.8L304.7 47.3L307 46.3L309.4 45.7L311.7 45.6L314.1 46L316.4 46.8L318.8 48.2L321.1 50L323.5 52.2L325.8 55L328.2 58.2"/><path class="mcv__d" d="M300 50.8L296.9 50.4L294 50L291.3 50L288.8 50.3L286.5 50.8L284.3 51.6L282.2 52.7L280.4 54.1L278.7 55.7L277.1 57.7L275.8 59.8L273.8 63.2L276.1 59.4L279.2 55.2L282 51.8L284.7 49L287.2 46.9L289.5 45.4L291.7 44.6L293.7 44.5L295.6 45.1L297.2 46.3L298.8 48.1L300 50.8Z"/><path class="mcv__lf" d="M300 50.8L297.8 49.2L295.6 48.2L293.4 47.5L291.3 47.4L289.1 47.7L286.9 48.5L284.7 49.8L282.5 51.5L280.3 53.8L278.2 56.4L276 59.6L273.8 63.2"/><path class="mcv__d" d="M300 50.8L302.3 48.5L304.6 47.1L306.9 46.4L309.2 46.3L311.4 47L313.6 48.3L315.8 50.3L318 53L320.1 56.3L322.3 60.3L324.4 65.1L326.6 69.5L324.3 65.6L322 63L319.7 60.6L317.4 58.5L315.2 56.6L312.9 55L310.7 53.7L308.5 52.6L306.4 51.8L304.2 51.3L302.1 51L300 50.8Z"/><path class="mcv__lf" d="M300 50.8L302.2 49.8L304.4 49.2L306.6 49.1L308.9 49.5L311.1 50.3L313.3 51.6L315.5 53.4L317.7 55.7L319.9 58.4L322.1 61.7L324.3 65.3L326.6 69.5"/><path class="mcv__d" d="M300 50.8L297.7 51.3L295.2 52L292.6 52.9L289.9 54.1L287 55.5L284 57.3L280.9 59.3L277.7 61.5L274.4 64.1L270.9 66.9L267.3 69.9L264.1 74.3L267 69.5L269.3 64.4L271.9 60L274.5 56.3L277.2 53.2L280.1 50.8L283.1 49.1L286.2 48.1L289.5 47.7L292.8 48L296.3 49L300 50.8Z"/><path class="mcv__lf" d="M300 50.8L297 50.2L294 50L291 50.3L288 51.1L285.1 52.3L282.1 54L279.1 56.2L276.1 58.9L273.1 62L270.1 65.6L267.1 69.7L264.1 74.3"/><path class="mcv__d" d="M300 50.8L303.5 49.7L306.6 49.3L309.3 49.6L311.8 50.4L313.9 51.9L315.8 54.1L317.4 56.8L318.7 60.2L319.8 64.2L320.5 68.8L320.9 74.1L322.4 79.3L320.3 74.4L316.9 70.8L313.9 67.3L311.2 64.2L308.8 61.5L306.6 59L304.8 56.9L303.2 55L301.9 53.5L300.9 52.3L300.2 51.5L300 50.8Z"/><path class="mcv__lf" d="M300 50.8L301.9 50.6L303.7 50.8L305.6 51.5L307.5 52.7L309.4 54.4L311.2 56.5L313.1 59.1L315 62.2L316.8 65.8L318.7 69.8L320.6 74.3L322.4 79.3"/><path class="mcv__d" d="M300 50.8L300.6 51.5L300.5 52.5L300.1 53.8L299.4 55.5L298.3 57.5L296.9 59.9L295.1 62.6L292.9 65.8L290.4 69.2L287.6 73.1L284.3 77.2L282.4 82.3L283.5 77L283.1 71.6L283.2 66.9L283.7 62.8L284.4 59.2L285.6 56.2L287 53.8L288.9 52L291.1 50.8L293.6 50.2L296.5 50.2L300 50.8Z"/><path class="mcv__lf" d="M300 50.8L298.5 50.8L297.1 51.3L295.6 52.3L294.1 53.8L292.7 55.7L291.2 58.1L289.8 60.9L288.3 64.3L286.8 68.1L285.4 72.3L283.9 77.1L282.4 82.3"/><path class="mcv__d" d="M300 50.8L302.8 51.1L304.9 52L306.5 53.3L307.8 55.2L308.6 57.5L309 60.4L309 63.7L308.6 67.6L307.8 71.9L306.5 76.8L304.7 82.1L304.7 87.8L303.9 82.2L301.3 77.1L299.3 72.4L297.6 68.3L296.4 64.5L295.6 61.2L295.3 58.4L295.3 56L295.8 54L296.7 52.5L298 51.4L300 50.8Z"/><path class="mcv__lf" d="M300 50.8L300.4 51.3L300.8 52.2L301.2 53.7L301.6 55.6L301.9 58L302.3 60.8L302.7 64.1L303.1 67.9L303.5 72.2L303.9 76.9L304.3 82.1L304.7 87.8"/></g><g class="mcv__meuble mcv__meuble--canape" style="--d:150ms"><path class="mcv__c" d="M101.5 203.6L101.7 204.6L102.5 205.5L103.7 206.2L147.1 228L148.7 228.6L150.5 228.9L152.4 229.1L154.3 228.9L156.1 228.6L157.7 228L291.1 161.2L292.3 160.5L293.1 159.6L293.3 158.6L293.3 180.6L293.1 181.6L292.3 182.5L291.1 183.2L157.7 250L156.1 250.6L154.3 250.9L152.4 251.1L150.5 250.9L148.7 250.6L147.1 250L103.7 228.2L102.5 227.5L101.7 226.6L101.5 225.6Z"/><path class="mcv__d" d="M147.1 228L148.7 228.6L150.5 228.9L152.4 229.1L154.3 228.9L156.1 228.6L157.7 228L291.1 161.2L292.3 160.5L293.1 159.6L293.3 158.6L293.1 157.6L292.3 156.7L291.1 156L247.7 134.2L246.1 133.6L244.3 133.3L242.4 133.1L240.5 133.3L238.7 133.6L237.1 134.2L103.7 201L102.5 201.7L101.7 202.6L101.5 203.6L101.7 204.6L102.5 205.5L103.7 206.2Z"/><path class="mcv__c" d="M101.2 180.6L101.4 181.5L102.1 182.3L103.2 183L106.8 184.8L108.2 185.3L109.8 185.7L111.6 185.8L113.4 185.7L115 185.3L116.4 184.8L250.8 117.6L251.9 116.9L252.6 116.1L252.8 115.2L252.8 138.2L252.6 139.1L251.9 139.9L250.8 140.6L116.4 207.8L115 208.3L113.4 208.7L111.6 208.8L109.8 208.7L108.2 208.3L106.8 207.8L103.2 206L102.1 205.3L101.4 204.5L101.2 203.6Z"/><path class="mcv__d" d="M106.8 184.8L108.2 185.3L109.8 185.7L111.6 185.8L113.4 185.7L115 185.3L116.4 184.8L250.8 117.6L251.9 116.9L252.6 116.1L252.8 115.2L252.6 114.3L251.9 113.5L250.8 112.8L247.2 111L245.8 110.5L244.2 110.1L242.4 110L240.6 110.1L239 110.5L237.6 111L103.2 178.2L102.1 178.9L101.4 179.7L101.2 180.6L101.4 181.5L102.1 182.3L103.2 183Z"/><path class="mcv__c" d="M209.5 143.6L209.7 144.6L210.5 145.5L211.7 146.2L214.3 147.6L215.9 148.2L217.7 148.5L219.6 148.7L221.5 148.5L223.3 148.2L224.9 147.6L258.7 130.6L259.9 129.9L260.7 129L260.9 128L260.9 146L260.7 147L259.9 147.9L258.7 148.6L224.9 165.6L223.3 166.2L221.5 166.5L219.6 166.7L217.7 166.5L215.9 166.2L214.3 165.6L211.7 164.2L210.5 163.5L209.7 162.6L209.5 161.6Z"/><path class="mcv__d" d="M214.3 147.6L215.9 148.2L217.7 148.5L219.6 148.7L221.5 148.5L223.3 148.2L224.9 147.6L258.7 130.6L259.9 129.9L260.7 129L260.9 128L260.7 127L259.9 126.1L258.7 125.4L256.1 124L254.5 123.4L252.7 123.1L250.8 122.9L248.9 123.1L247.1 123.4L245.5 124L211.7 141L210.5 141.7L209.7 142.6L209.5 143.6L209.7 144.6L210.5 145.5L211.7 146.2Z"/><path class="mcv__c" d="M162.7 167L162.9 168L163.7 168.9L164.9 169.6L167.5 171L169.1 171.6L170.9 171.9L172.8 172.1L174.7 171.9L176.5 171.6L178.1 171L211.9 154L213.1 153.3L213.9 152.4L214.1 151.4L214.1 169.4L213.9 170.4L213.1 171.3L211.9 172L178.1 189L176.5 189.6L174.7 189.9L172.8 190.1L170.9 189.9L169.1 189.6L167.5 189L164.9 187.6L163.7 186.9L162.9 186L162.7 185Z"/><path class="mcv__d" d="M167.5 171L169.1 171.6L170.9 171.9L172.8 172.1L174.7 171.9L176.5 171.6L178.1 171L211.9 154L213.1 153.3L213.9 152.4L214.1 151.4L213.9 150.4L213.1 149.5L211.9 148.8L209.3 147.4L207.7 146.8L205.9 146.5L204 146.3L202.1 146.5L200.3 146.8L198.7 147.4L164.9 164.4L163.7 165.1L162.9 166L162.7 167L162.9 168L163.7 168.9L164.9 169.6Z"/><path class="mcv__c" d="M115.9 190.4L116.1 191.4L116.9 192.3L118.1 193L120.7 194.4L122.3 195L124.1 195.3L126 195.5L127.9 195.3L129.7 195L131.3 194.4L165.1 177.4L166.3 176.7L167.1 175.8L167.3 174.8L167.3 192.8L167.1 193.8L166.3 194.7L165.1 195.4L131.3 212.4L129.7 213L127.9 213.3L126 213.5L124.1 213.3L122.3 213L120.7 212.4L118.1 211L116.9 210.3L116.1 209.4L115.9 208.4Z"/><path class="mcv__d" d="M120.7 194.4L122.3 195L124.1 195.3L126 195.5L127.9 195.3L129.7 195L131.3 194.4L165.1 177.4L166.3 176.7L167.1 175.8L167.3 174.8L167.1 173.8L166.3 172.9L165.1 172.2L162.5 170.8L160.9 170.2L159.1 169.9L157.2 169.7L155.3 169.9L153.5 170.2L151.9 170.8L118.1 187.8L116.9 188.5L116.1 189.4L115.9 190.4L116.1 191.4L116.9 192.3L118.1 193Z"/><path class="mcv__c" d="M244.9 131.8L245.1 132.6L245.7 133.3L246.7 134L278.9 150L280.1 150.5L281.6 150.8L283.2 150.9L284.8 150.8L286.3 150.5L287.5 150L292.1 147.8L293.1 147.1L293.7 146.4L293.9 145.6L293.9 158.6L293.7 159.4L293.1 160.1L292.1 160.8L287.5 163L286.3 163.5L284.8 163.8L283.2 163.9L281.6 163.8L280.1 163.5L278.9 163L246.7 147L245.7 146.3L245.1 145.6L244.9 144.8Z"/><path class="mcv__d" d="M278.9 150L280.1 150.5L281.6 150.8L283.2 150.9L284.8 150.8L286.3 150.5L287.5 150L292.1 147.8L293.1 147.1L293.7 146.4L293.9 145.6L293.7 144.8L293.1 144.1L292.1 143.4L259.9 127.4L258.7 126.9L257.2 126.6L255.6 126.5L254 126.6L252.5 126.9L251.3 127.4L246.7 129.6L245.7 130.3L245.1 131L244.9 131.8L245.1 132.6L245.7 133.3L246.7 134Z"/><path class="mcv__lf" d="M208.8 162.8L247.9 182.4"/><path class="mcv__c" d="M155.5 230.6L155.7 231.6L156.5 232.5L157.7 233.2L202.3 255.6L203.9 256.2L205.7 256.5L207.6 256.7L209.5 256.5L211.3 256.2L212.9 255.6L256.3 233.8L257.5 233.1L258.3 232.2L258.5 231.2L258.5 253.2L258.3 254.2L257.5 255.1L256.3 255.8L212.9 277.6L211.3 278.2L209.5 278.5L207.6 278.7L205.7 278.5L203.9 278.2L202.3 277.6L157.7 255.2L156.5 254.5L155.7 253.6L155.5 252.6Z"/><path class="mcv__d" d="M202.3 255.6L203.9 256.2L205.7 256.5L207.6 256.7L209.5 256.5L211.3 256.2L212.9 255.6L256.3 233.8L257.5 233.1L258.3 232.2L258.5 231.2L258.3 230.2L257.5 229.3L256.3 228.6L211.7 206.2L210.1 205.6L208.3 205.3L206.4 205.1L204.5 205.3L202.7 205.6L201.1 206.2L157.7 228L156.5 228.7L155.7 229.6L155.5 230.6L155.7 231.6L156.5 232.5L157.7 233.2Z"/><path class="mcv__lf" d="M202.8 205.4L156 228.8"/><path class="mcv__lf" d="M101.5 217.6L101.7 218.6L102.5 219.5L103.7 220.2L147.1 242L148.7 242.6L150.5 242.9L152.4 243.1L154.3 242.9L156.1 242.6L157.7 242L291.1 175.2L292.3 174.5L293.1 173.6L293.3 172.6"/><path class="mcv__lf" d="M155.5 244.6L155.7 245.6L156.5 246.5L157.7 247.2L202.3 269.6L203.9 270.2L205.7 270.5L207.6 270.7L209.5 270.5L211.3 270.2L212.9 269.6L256.3 247.8L257.5 247.1L258.3 246.2L258.5 245.2"/></g><g class="mcv__meuble mcv__meuble--fauteuil" style="--d:690ms"><path class="mcv__c" d="M375.6 193.6L376.3 196.2L378.4 198.7L381.6 200.8L400.8 210.4L405 212L409.9 213L415.2 213.4L420.5 213L425.4 212L429.6 210.4L450 200.2L453.2 198.1L455.3 195.6L456 193L456 213L455.3 215.6L453.2 218.1L450 220.2L429.6 230.4L425.4 232L420.5 233L415.2 233.4L409.9 233L405 232L400.8 230.4L381.6 220.8L378.4 218.7L376.3 216.2L375.6 213.6Z"/><path class="mcv__d" d="M400.8 210.4L405 212L409.9 213L415.2 213.4L420.5 213L425.4 212L429.6 210.4L450 200.2L453.2 198.1L455.3 195.6L456 193L455.3 190.4L453.2 187.9L450 185.8L430.8 176.2L426.6 174.6L421.7 173.6L416.4 173.2L411.1 173.6L406.2 174.6L402 176.2L381.6 186.4L378.4 188.5L376.3 191L375.6 193.6L376.3 196.2L378.4 198.7L381.6 200.8Z"/><path class="mcv__lf" d="M375.6 203.6L376.3 206.2L378.4 208.7L381.6 210.8L400.8 220.4L405 222L409.9 223L415.2 223.4L420.5 223L425.4 222L429.6 220.4L450 210.2L453.2 208.1L455.3 205.6L456 203"/><path class="mcv__c" d="M408.9 154L409.3 155.4L410.4 156.7L412.1 157.8L444.7 174.2L447 175L449.6 175.6L452.4 175.8L455.2 175.6L457.8 175L460.1 174.2L460.3 174L462 172.9L463.1 171.6L463.5 170.2L463.5 191.2L463.1 192.6L462 193.9L460.3 195L460.1 195.2L457.8 196L455.2 196.6L452.4 196.8L449.6 196.6L447 196L444.7 195.2L412.1 178.8L410.4 177.7L409.3 176.4L408.9 175Z"/><path class="mcv__d" d="M444.7 174.2L447 175L449.6 175.6L452.4 175.8L455.2 175.6L457.8 175L460.1 174.2L460.3 174L462 172.9L463.1 171.6L463.5 170.2L463.1 168.8L462 167.5L460.3 166.4L427.7 150L425.4 149.2L422.8 148.6L420 148.4L417.2 148.6L414.6 149.2L412.3 150L412.1 150.2L410.4 151.3L409.3 152.6L408.9 154L409.3 155.4L410.4 156.7L412.1 157.8Z"/><path class="mcv__c" d="M370.6 182.6L370.9 183.7L371.7 184.6L373 185.5L374.6 186.1L376.6 186.5L378.7 186.7L380.8 186.5L382.8 186.1L384.5 185.5L410.2 172.6L411.5 171.8L412.3 170.8L412.5 169.8L412.5 180.8L412.3 181.8L411.5 182.8L410.2 183.6L384.5 196.5L382.8 197.1L380.8 197.5L378.7 197.7L376.6 197.5L374.6 197.1L373 196.5L371.7 195.6L370.9 194.7L370.6 193.6Z"/><path class="mcv__d" d="M373 185.5L374.6 186.1L376.6 186.5L378.7 186.7L380.8 186.5L382.8 186.1L384.5 185.5L410.2 172.6L411.5 171.8L412.3 170.8L412.5 169.8L412.3 168.7L411.5 167.7L410.2 166.9L408.5 166.2L406.5 165.8L404.4 165.7L402.3 165.8L400.3 166.2L398.6 166.9L373 179.7L371.7 180.6L370.9 181.5L370.6 182.6L370.9 183.7L371.7 184.6L373 185.5Z"/><path class="mcv__c" d="M407.1 200.8L407.3 201.9L408.1 202.9L409.4 203.7L411.1 204.4L413.1 204.8L415.2 204.9L417.3 204.8L419.3 204.4L421 203.7L446.6 190.9L447.9 190L448.7 189.1L449 188L449 199L448.7 200.1L447.9 201L446.6 201.9L421 214.7L419.3 215.4L417.3 215.8L415.2 215.9L413.1 215.8L411.1 215.4L409.4 214.7L408.1 213.9L407.3 212.9L407.1 211.8Z"/><path class="mcv__d" d="M409.4 203.7L411.1 204.4L413.1 204.8L415.2 204.9L417.3 204.8L419.3 204.4L421 203.7L446.6 190.9L447.9 190L448.7 189.1L449 188L448.7 186.9L447.9 186L446.6 185.1L445 184.5L443 184.1L440.9 183.9L438.8 184.1L436.8 184.5L435.1 185.1L409.4 198L408.1 198.8L407.3 199.8L407.1 200.8L407.3 201.9L408.1 202.9L409.4 203.7Z"/></g><g class="mcv__meuble mcv__meuble--table" style="--d:420ms"><path class="mcv__c" d="M278.2 227.4L278.4 228.5L278.8 229.6L279.5 230.6L280.5 231.6L281.7 232.6L283.2 233.4L284.9 234.1L286.7 234.7L288.7 235.2L290.8 235.6L293 235.8L295.2 235.9L297.4 235.8L299.6 235.6L301.7 235.2L303.7 234.7L305.5 234.1L307.2 233.4L308.7 232.6L309.9 231.6L310.9 230.6L311.6 229.6L312 228.5L312.2 227.4L312.2 230.4L312 231.5L311.6 232.6L310.9 233.6L309.9 234.6L308.7 235.6L307.2 236.4L305.5 237.1L303.7 237.7L301.7 238.2L299.6 238.6L297.4 238.8L295.2 238.9L293 238.8L290.8 238.6L288.7 238.2L286.7 237.7L284.9 237.1L283.2 236.4L281.7 235.6L280.5 234.6L279.5 233.6L278.8 232.6L278.4 231.5L278.2 230.4Z"/><path class="mcv__d" d="M283.2 233.4L284.9 234.1L286.7 234.7L288.7 235.2L290.8 235.6L293 235.8L295.2 235.9L297.4 235.8L299.6 235.6L301.7 235.2L303.7 234.7L305.5 234.1L307.2 233.4L308.7 232.6L309.9 231.6L310.9 230.6L311.6 229.6L312 228.5L312.2 227.4L312 226.3L311.6 225.2L310.9 224.2L309.9 223.2L308.7 222.2L307.2 221.4L305.5 220.7L303.7 220.1L301.7 219.6L299.6 219.2L297.4 219L295.2 218.9L293 219L290.8 219.2L288.7 219.6L286.7 220.1L284.9 220.7L283.2 221.4L281.7 222.2L280.5 223.2L279.5 224.2L278.8 225.2L278.4 226.3L278.2 227.4L278.4 228.5L278.8 229.6L279.5 230.6L280.5 231.6L281.7 232.6L283.2 233.4Z"/><path class="mcv__c" d="M286.4 206.4L286.5 207L286.7 207.5L287 208.1L287.6 208.6L288.2 209.1L289 209.5L289.8 209.9L290.8 210.2L291.8 210.5L292.9 210.7L294 210.8L295.2 210.8L296.4 210.8L297.5 210.7L298.6 210.5L299.6 210.2L300.6 209.9L301.4 209.5L302.2 209.1L302.8 208.6L303.4 208.1L303.7 207.5L303.9 207L304 206.4L304 227.4L303.9 228L303.7 228.5L303.4 229.1L302.8 229.6L302.2 230.1L301.4 230.5L300.6 230.9L299.6 231.2L298.6 231.5L297.5 231.7L296.4 231.8L295.2 231.8L294 231.8L292.9 231.7L291.8 231.5L290.8 231.2L289.8 230.9L289 230.5L288.2 230.1L287.6 229.6L287 229.1L286.7 228.5L286.5 228L286.4 227.4Z"/><path class="mcv__d" d="M289 209.5L289.8 209.9L290.8 210.2L291.8 210.5L292.9 210.7L294 210.8L295.2 210.8L296.4 210.8L297.5 210.7L298.6 210.5L299.6 210.2L300.6 209.9L301.4 209.5L302.2 209.1L302.8 208.6L303.4 208.1L303.7 207.5L303.9 207L304 206.4L303.9 205.8L303.7 205.3L303.4 204.7L302.8 204.2L302.2 203.7L301.4 203.3L300.6 202.9L299.6 202.6L298.6 202.3L297.5 202.1L296.4 202L295.2 202L294 202L292.9 202.1L291.8 202.3L290.8 202.6L289.8 202.9L289 203.3L288.2 203.7L287.6 204.2L287 204.7L286.7 205.3L286.5 205.8L286.4 206.4L286.5 207L286.7 207.5L287 208.1L287.6 208.6L288.2 209.1L289 209.5Z"/><path class="mcv__c" d="M267.4 199.4L267.6 201.2L268.3 203L269.5 204.7L271.1 206.4L273.1 207.9L275.5 209.2L278.3 210.4L281.3 211.5L284.5 212.3L288 212.8L291.6 213.2L295.2 213.3L298.8 213.2L302.4 212.8L305.9 212.3L309.1 211.5L312.1 210.4L314.9 209.2L317.3 207.9L319.3 206.4L320.9 204.7L322.1 203L322.8 201.2L323 199.4L323 206.4L322.8 208.2L322.1 210L320.9 211.7L319.3 213.4L317.3 214.9L314.9 216.2L312.1 217.4L309.1 218.5L305.9 219.3L302.4 219.8L298.8 220.2L295.2 220.3L291.6 220.2L288 219.8L284.5 219.3L281.3 218.5L278.3 217.4L275.5 216.2L273.1 214.9L271.1 213.4L269.5 211.7L268.3 210L267.6 208.2L267.4 206.4Z"/><path class="mcv__d" d="M275.5 209.2L278.3 210.4L281.3 211.5L284.5 212.3L288 212.8L291.6 213.2L295.2 213.3L298.8 213.2L302.4 212.8L305.9 212.3L309.1 211.5L312.1 210.4L314.9 209.2L317.3 207.9L319.3 206.4L320.9 204.7L322.1 203L322.8 201.2L323 199.4L322.8 197.6L322.1 195.8L320.9 194.1L319.3 192.4L317.3 190.9L314.9 189.6L312.1 188.4L309.1 187.3L305.9 186.5L302.4 186L298.8 185.6L295.2 185.5L291.6 185.6L288 186L284.5 186.5L281.3 187.3L278.3 188.4L275.5 189.6L273.1 190.9L271.1 192.4L269.5 194.1L268.3 195.8L267.6 197.6L267.4 199.4L267.6 201.2L268.3 203L269.5 204.7L271.1 206.4L273.1 207.9L275.5 209.2Z"/><path class="mcv__lf" d="M267.4 202.9L268.3 206.5L271.1 209.9L275.5 212.7L281.3 215L288 216.3L295.2 216.8L302.4 216.3L309.1 215L314.9 212.7L319.3 209.9L322.1 206.5L323 202.9"/></g></g><g class="mcv__reperes"><g class="mcv__repere" style="--d:600ms"><path class="mcv__fil mcv__t" pathLength="1" d="M204 242L178 342L162 342"/><circle class="mcv__point" cx="204" cy="242" r="3.2"/></g><g class="mcv__repere" style="--d:870ms"><path class="mcv__fil mcv__t" pathLength="1" d="M295.2 199.4L428 342L444 342"/><circle class="mcv__point" cx="295.2" cy="199.4" r="3.2"/></g><g class="mcv__repere" style="--d:1140ms"><path class="mcv__fil mcv__t" pathLength="1" d="M453.6 170.2L500 -22L484 -22"/><circle class="mcv__point" cx="453.6" cy="170.2" r="3.2"/></g><g class="mcv__repere" style="--d:1410ms"><path class="mcv__fil mcv__t" pathLength="1" d="M297.6 32L232 -22L216 -22"/><circle class="mcv__point" cx="297.6" cy="32" r="3.2"/></g></g></svg>
-            {%- liquid
-  assign produit = st.produit_canape
-  assign nom = st.nom_canape
-  if nom == blank and produit != blank
-    assign nom = produit.title
-  endif
--%}
-{%- if nom != blank -%}
-  {%- if produit != blank -%}<a href="{{ produit.url }}"{%- else -%}<span{%- endif %} class="mcv__etiq mcv__etiq--g" style="left:24.91%;top:90.54%;--d:600ms">
-    <span class="mcv__nom">{{ nom | escape }}</span>
-    {%- if produit != blank and st.prix -%}
-      <span class="mcv__prix">{% if produit.price_varies %}{{ st.des | escape }} {% endif %}{{ produit.price | money }}</span>
-    {%- endif -%}
-  {%- if produit != blank -%}</a>{%- else -%}</span>{%- endif -%}
-{%- endif -%}
-
-{%- liquid
-  assign produit = st.produit_table
-  assign nom = st.nom_table
-  if nom == blank and produit != blank
-    assign nom = produit.title
-  endif
--%}
-{%- if nom != blank -%}
-  {%- if produit != blank -%}<a href="{{ produit.url }}"{%- else -%}<span{%- endif %} class="mcv__etiq mcv__etiq--d" style="left:80%;top:90.54%;--d:870ms">
-    <span class="mcv__nom">{{ nom | escape }}</span>
-    {%- if produit != blank and st.prix -%}
-      <span class="mcv__prix">{% if produit.price_varies %}{{ st.des | escape }} {% endif %}{{ produit.price | money }}</span>
-    {%- endif -%}
-  {%- if produit != blank -%}</a>{%- else -%}</span>{%- endif -%}
-{%- endif -%}
-
-{%- liquid
-  assign produit = st.produit_fauteuil
-  assign nom = st.nom_fauteuil
-  if nom == blank and produit != blank
-    assign nom = produit.title
-  endif
--%}
-{%- if nom != blank -%}
-  {%- if produit != blank -%}<a href="{{ produit.url }}"{%- else -%}<span{%- endif %} class="mcv__etiq mcv__etiq--g" style="left:85.66%;top:8.56%;--d:1140ms">
-    <span class="mcv__nom">{{ nom | escape }}</span>
-    {%- if produit != blank and st.prix -%}
-      <span class="mcv__prix">{% if produit.price_varies %}{{ st.des | escape }} {% endif %}{{ produit.price | money }}</span>
-    {%- endif -%}
-  {%- if produit != blank -%}</a>{%- else -%}</span>{%- endif -%}
-{%- endif -%}
-
-{%- liquid
-  assign produit = st.produit_lampe
-  assign nom = st.nom_lampe
-  if nom == blank and produit != blank
-    assign nom = produit.title
-  endif
--%}
-{%- if nom != blank -%}
-  {%- if produit != blank -%}<a href="{{ produit.url }}"{%- else -%}<span{%- endif %} class="mcv__etiq mcv__etiq--g" style="left:35.09%;top:8.56%;--d:1410ms">
-    <span class="mcv__nom">{{ nom | escape }}</span>
-    {%- if produit != blank and st.prix -%}
-      <span class="mcv__prix">{% if produit.price_varies %}{{ st.des | escape }} {% endif %}{{ produit.price | money }}</span>
-    {%- endif -%}
-  {%- if produit != blank -%}</a>{%- else -%}</span>{%- endif -%}
-{%- endif -%}
-
+            {%- for cle in cles -%}
+              {%- liquid
+                assign cle_produit = 'produit_' | append: cle
+                assign cle_nom = 'nom_' | append: cle
+                assign produit = st[cle_produit]
+                assign nom = st[cle_nom]
+                if nom == blank and produit != blank
+                  assign nom = produit.title
+                endif
+              -%}
+              {%- if nom != blank -%}
+                {%- if produit != blank -%}<a href="{{ produit.url }}"{%- else -%}<span{%- endif %} class="mcv__etiq" data-etiq="{{ cle }}">
+                  <span class="mcv__nom">{{ nom | escape }}</span>
+                  {%- if produit != blank and st.prix -%}
+                    <span class="mcv__prix">{% if produit.price_varies %}{{ st.des | escape }} {% endif %}{{ produit.price | money }}</span>
+                  {%- endif -%}
+                {%- if produit != blank -%}</a>{%- else -%}</span>{%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
           </div>
           <figcaption class="mcv__masque">{{ st.description | escape }}</figcaption>
           <div class="mcv__pied">
@@ -214,8 +173,176 @@
     </div>
   </div>
 </div>
-<script>(function () {
+<script>
+(function () {
   if (window.mcvChezVous) { window.mcvChezVous(); return; }
+
+  // Axonométrie de la pièce : u le long du mur de gauche (4,20 m = 1), v le long du mur de droite, h la hauteur.
+  var K = 240, H = 130, VM = 3.6 / 4.2, EP = .03, D = .075, VB = [25, -60, 530, 444];
+  function P(u, v, h) { return [300 - K * u + K * v, 120 + K / 2 * (u + v) - (h || 0)]; }
+  function nb(x) { var s = String(Math.round(x * 10) / 10); return s === '-0' ? '0' : s; }
+  function poly(pts, ouvert) {
+    var out = [];
+    pts.forEach(function (p) {
+      var q = out[out.length - 1];
+      if (!q || Math.abs(q[0] - p[0]) > .05 || Math.abs(q[1] - p[1]) > .05) out.push(p);
+    });
+    return 'M' + out.map(function (p) { return nb(p[0]) + ' ' + nb(p[1]); }).join('L') + (ouvert ? '' : 'Z');
+  }
+  function chemin(cls, d, style) { return '<path class="' + cls + '"' + (style ? ' style="' + style + '"' : '') + ' d="' + d + '"/>'; }
+  function trace(d, cls, delai) { return '<path class="' + cls + ' mcv__t" pathLength="1" d="' + d + '" style="--d:' + delai + 'ms"/>'; }
+
+  // rectangle arrondi au sol : [angle de la normale (°), u, v], de 0 à 360°
+  function contour(u0, u1, v0, v1, r, pas) {
+    pas = pas || 6; r = Math.min(r || 0, (u1 - u0) / 2, (v1 - v0) / 2);
+    var coins = [[u1 - r, v1 - r], [u0 + r, v1 - r], [u0 + r, v0 + r], [u1 - r, v0 + r]], pts = [];
+    coins.forEach(function (c, k) {
+      for (var i = 0; i <= pas; i++) {
+        var a = k * 90 + i * 90 / pas, t = a * Math.PI / 180;
+        pts.push([a, c[0] + r * Math.cos(t), c[1] + r * Math.sin(t)]);
+      }
+    });
+    return pts;
+  }
+  // côtés tournés vers l'observateur : normales de -45° à 135°
+  function visibles(pts) {
+    return pts.filter(function (p) { return p[0] >= 315; }).concat(pts.filter(function (p) { return p[0] <= 135; }));
+  }
+  function aHauteur(pts, h) { return pts.map(function (p) { return P(p[1], p[2], h); }); }
+  // volume : côtés visibles puis dessus
+  function bloc(u0, u1, v0, v1, h0, h1, r, pas) {
+    var pts = contour(u0, u1, v0, v1, r, pas), vis = visibles(pts);
+    var cote = poly(aHauteur(vis, h1).concat(aHauteur(vis, h0).reverse()));
+    if (!r) cote += poly([P(u1, v1, h1), P(u1, v1, h0)], 1);
+    return chemin('mcv__c', cote) + chemin('mcv__d', poly(aHauteur(pts, h1)));
+  }
+  function couture(u0, u1, v0, v1, h, r) { return chemin('mcv__lf', poly(aHauteur(visibles(contour(u0, u1, v0, v1, r)), h), 1)); }
+  function cyl(cu, cv, r, h0, h1) { return bloc(cu - r, cu + r, cv - r, cv + r, h0, h1, r, 12); }
+
+  // le plan : sol, murs en coupe, fenêtre, parquet, cotes
+  function plan() {
+    var a = 1 + D, b = VM + D, sol = poly([P(0, 0), P(1, 0), P(1, VM), P(0, VM)]), o = '', k;
+    o += chemin('mcv__sol mcv__f', sol);
+    o += chemin('mcv__poche mcv__f', poly([P(-EP, -EP), P(1, -EP), P(1, 0), P(0, 0), P(0, VM), P(-EP, VM)]), '--d:300ms');
+    o += chemin('mcv__baie mcv__f', poly([P(-EP - .002, .3), P(.002, .3), P(.002, .6), P(-EP - .002, .6)]), '--d:300ms');
+    o += chemin('mcv__lf mcv__f', poly([P(-EP / 2, .3), P(-EP / 2, .6)], 1), '--d:450ms');
+    o += trace(sol, 'mcv__l', 0);
+    for (k = 1; k < 8; k++) o += trace(poly([P(.004, k * VM / 8), P(.996, k * VM / 8)], 1), 'mcv__lf mcv__lame', 160 + k * 60);
+    o += trace(poly([P(a, 0), P(a, VM)], 1), 'mcv__lf mcv__cote', 650) + trace(poly([P(0, b), P(1, b)], 1), 'mcv__lf mcv__cote', 650);
+    [[P(1.012, 0), P(a + .022, 0)], [P(1.012, VM), P(a + .022, VM)], [P(0, VM + .012), P(0, b + .022)], [P(1, VM + .012), P(1, b + .022)]].forEach(function (l) {
+      o += trace(poly(l, 1), 'mcv__lf mcv__cote', 600);
+    });
+    [[a, 0], [a, VM], [0, b], [1, b]].forEach(function (c) {      // barres obliques des cotes, comme sur un plan
+      o += trace(poly([P(c[0] - .014, c[1] + .014), P(c[0] + .014, c[1] - .014)], 1), 'mcv__l mcv__cote', 800);
+    });
+    return o;
+  }
+  // vue de dessus : même transformation que le CSS (rotation de -45°, étirement vertical), autour du centre du sol
+  var C = P(.5, VM / 2);
+  function versPlan(p) {
+    var x = (p[0] - C[0]) * .78, y = (p[1] - C[1]) * 1.56;
+    return [C[0] + (x + y) * Math.SQRT1_2, C[1] + (y - x) * Math.SQRT1_2 - 12];
+  }
+  function texte(p, r, txt) {
+    var x = nb(p[0]), y = nb(p[1]);
+    return '<text class="mcv__cote-texte" x="' + x + '" y="' + y + '" transform="rotate(' + r + ' ' + x + ' ' + y + ')">' + txt + '</text>';
+  }
+
+  // un mur se dresse depuis sa ligne de sol : origine de la transformation au milieu de sa base
+  function mur(cls, b0, b1, contenu) {
+    var x = nb((b0[0] + b1[0]) / 2), y = nb((b0[1] + b1[1]) / 2);
+    return '<g transform="translate(' + x + ' ' + y + ')"><g class="mcv__mur ' + cls + '"><g transform="translate(-' + x + ' -' + y + ')">' + contenu + '</g></g></g>';
+  }
+  function murs() {
+    var v0 = .3, v1 = .6, b = 42, t = 112;
+    var gauche = chemin('mcv__mur-a', poly([P(0, 0, 0), P(1, 0, 0), P(1, 0, H), P(0, 0, H)]))
+      + chemin('mcv__lf', poly([P(0, 0, 6), P(1, 0, 6)], 1))
+      + chemin('mcv__poche', poly([P(0, 0, H), P(1, 0, H), P(1, -EP, H), P(-EP, -EP, H)]) + poly([P(1, 0, 0), P(1, 0, H), P(1, -EP, H), P(1, -EP, 0)]))
+      + chemin('mcv__l', poly([P(0, 0, 0), P(0, 0, H)], 1) + poly([P(1, 0, 0), P(1, 0, H)], 1) + poly([P(0, 0, H), P(1, 0, H)], 1));
+    var droite = chemin('mcv__mur-b', poly([P(0, 0, 0), P(0, VM, 0), P(0, VM, H), P(0, 0, H)]))
+      + chemin('mcv__lf', poly([P(0, 0, 6), P(0, VM, 6)], 1))
+      + chemin('mcv__vitre mcv__l', poly([P(0, v0, b), P(0, v1, b), P(0, v1, t), P(0, v0, t)]))
+      + chemin('mcv__lf', poly([P(0, v0 + .016, b + 5), P(0, v1 - .016, b + 5), P(0, v1 - .016, t - 5), P(0, v0 + .016, t - 5)]) + poly([P(0, .45, b + 5), P(0, .45, t - 5)], 1))
+      + bloc(0, .03, v0 - .012, v1 + .012, b - 4, b)
+      + chemin('mcv__poche', poly([P(0, 0, H), P(-EP, -EP, H), P(-EP, VM, H), P(0, VM, H)]) + poly([P(0, VM, 0), P(0, VM, H), P(-EP, VM, H), P(-EP, VM, 0)]))
+      + chemin('mcv__l', poly([P(0, VM, 0), P(0, VM, H)], 1) + poly([P(0, 0, H), P(0, VM, H)], 1));
+    return mur('mcv__mur--d', P(0, 0), P(0, VM), droite) + mur('mcv__mur--g', P(1, 0), P(0, 0), gauche);
+  }
+
+  // les meubles
+  function tapisserie() {          // tapisserie murale au-dessus du canapé
+    function w(x, h) { return P(x, .004, h); }
+    var f = '';
+    [[.53, 98, 80, .07, 9], [.47, 86, 145, .065, 8], [.59, 84, 30, .065, 8], [.5, 72, 120, .05, 6.5], [.57, 71, 55, .05, 6.5]].forEach(function (e) {
+      var pts = [], ca = Math.cos(e[2] * Math.PI / 180), sa = Math.sin(e[2] * Math.PI / 180);
+      for (var i = 0; i <= 16; i++) {
+        var x = e[3] / 2 * Math.cos(i * Math.PI / 8) * 268, y = e[4] / 2 * Math.sin(i * Math.PI / 8);
+        pts.push(w(e[0] + (x * ca - y * sa) / 268, e[1] + x * sa + y * ca));
+      }
+      f += poly(pts);
+    });
+    return chemin('mcv__d', poly([w(.4, 60), w(.66, 60), w(.66, 112), w(.4, 112)])) + chemin('mcv__lf', f) + chemin('mcv__lf', poly([w(.53, 64), w(.53, 92)], 1));
+  }
+  function tapis() {
+    return chemin('mcv__tapis', poly(aHauteur(contour(.3, .7, .29, .67, .015), 1.2))) + chemin('mcv__lf', poly(aHauteur(contour(.325, .675, .315, .645, .01), 1.2)));
+  }
+  function canape() {              // canapé d'angle bouclé, méridienne côté pièce
+    var o = bloc(.26, .86, .02, .245, 0, 22, .022) + bloc(.26, .86, .02, .075, 22, 45, .02);
+    [[.275, .46], [.47, .655], [.665, .85]].forEach(function (c) { o += bloc(c[0], c[1], .07, .125, 22, 40, .022); });
+    return o + bloc(.26, .315, .075, .245, 22, 35, .018) + chemin('mcv__lf', poly([P(.46, .08, 22), P(.46, .243, 22)], 1))
+      + bloc(.635, .86, .245, .475, 0, 22, .022) + chemin('mcv__lf', poly([P(.65, .245, 22), P(.845, .245, 22)], 1))
+      + couture(.26, .86, .02, .245, 8, .022) + couture(.635, .86, .245, .475, 8, .022);
+  }
+  function table() {               // table d'appoint champignon
+    return cyl(.47, .45, .05, 0, 3) + cyl(.47, .45, .026, 3, 24) + cyl(.47, .45, .082, 24, 31) + couture(.388, .552, .368, .532, 27.5, .082);
+  }
+  function fauteuil() {            // fauteuil lounge à bourrelets, dos à la fenêtre
+    return bloc(.045, .25, .53, .73, 0, 20, .06) + couture(.045, .25, .53, .73, 10, .06)
+      + bloc(.03, .095, .53, .73, 20, 41, .032) + bloc(.095, .25, .53, .578, 20, 31, .024) + bloc(.095, .25, .682, .73, 20, 31, .024);
+  }
+  function lampadaire() {          // pied doré, plumes en palme (celles de devant dessinées en dernier)
+    var cu = .12, cv = .12, haut = 98, plumes = [];
+    for (var k = 0; k < 9; k++) {
+      var phi = (k * 40 + 12) * Math.PI / 180, L = .095 + .018 * Math.sin(k * 1.7), nu = -Math.sin(phi), nv = Math.cos(phi), mil = [], g = [], d = [];
+      for (var i = 0; i <= 12; i++) {
+        var t = i / 12, u = cu + t * L * Math.cos(phi), v = cv + t * L * Math.sin(phi), h = haut + 16 * t - 34 * t * t;
+        var w = .02 * Math.pow(Math.sin(Math.PI * Math.min(t * 1.08, 1)), .8);
+        mil.push(P(u, v, h)); g.push(P(u + w * nu, v + w * nv, h)); d.push(P(u - w * nu, v - w * nv, h));
+      }
+      plumes.push([Math.cos(phi) + Math.sin(phi), chemin('mcv__d', poly(g.concat(d.reverse()))) + chemin('mcv__lf', poly(mil, 1))]);
+    }
+    plumes.sort(function (a, b) { return a[0] - b[0]; });
+    return cyl(cu, cv, .036, 0, 4) + chemin('mcv__l', poly([P(cu, cv, 4), P(cu, cv, haut)], 1)) + plumes.map(function (p) { return p[1]; }).join('');
+  }
+
+  // étiquettes : ancre sur le meuble, coude du fil, côté du texte (-1 : à gauche), délai du fil (ms)
+  var ETIQ = {
+    canape: [P(.8, .4, 22), [178, 342], -1, 600],
+    table: [P(.47, .45, 31), [428, 342], 1, 870],
+    fauteuil: [P(.06, .7, 41), [500, -22], -1, 1140],
+    lampe: [P(.105, .095, 112), [232, -22], -1, 1410]
+  };
+  function reperes(cles) {
+    return cles.map(function (cle) {
+      var e = ETIQ[cle], a = e[0], c = e[1];
+      return '<g class="mcv__repere" style="--d:' + e[3] + 'ms"><path class="mcv__fil mcv__t" pathLength="1" d="' + poly([a, c, [c[0] + 16 * e[2], c[1]]], 1)
+        + '"/><circle class="mcv__point" cx="' + nb(a[0]) + '" cy="' + nb(a[1]) + '" r="3.2"/></g>';
+    }).join('');
+  }
+  function dessin(largeur, longueur, cles) {
+    var cx = nb(C[0]), cy = nb(C[1]), ang = nb(Math.atan(.5) * 180 / Math.PI), meubles = [['tapis', tapis(), 0], ['lampe', lampadaire(), 960], ['canape', canape(), 150], ['fauteuil', fauteuil(), 690], ['table', table(), 420]];
+    return '<svg class="mcv__svg" viewBox="' + VB.join(' ') + '" aria-hidden="true" focusable="false">'
+      + '<g transform="translate(' + cx + ' ' + cy + ')"><g class="mcv__plan"><g transform="translate(-' + cx + ' -' + cy + ')">' + plan() + '</g></g></g>'
+      + '<g class="mcv__cotes-plan">' + texte(versPlan(P(1 + D + .07, VM / 2)), 0, largeur) + texte(versPlan(P(.5, VM + D + .085)), -90, longueur) + '</g>'
+      + '<g class="mcv__murs">' + murs() + '</g>'
+      + '<g class="mcv__cotes-iso">' + texte(P(1 + D + .058, VM * .34), ang, largeur) + texte(P(.25, VM + D + .058), '-' + ang, longueur) + '</g>'
+      + '<g class="mcv__meubles"><g class="mcv__deco" style="--d:400ms">' + tapisserie() + '</g>'
+      + meubles.map(function (m) { return '<g class="mcv__meuble mcv__meuble--' + m[0] + '" style="--d:' + m[2] + 'ms">' + m[1] + '</g>'; }).join('')
+      + '</g><g class="mcv__reperes">' + reperes(cles) + '</g></svg>';
+  }
+  function echapper(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  // animation : trois phases (le plan, les murs, les meubles), synchronisées avec les étapes du texte
   var PHASES = [['p1', 0, '1'], ['p2', 1800, '2'], ['p3', 3500, '3'], ['fin', 5800, 'fin']];
   function jouer(el) {
     (el.mcvMinuteurs || []).forEach(clearTimeout);
@@ -227,28 +354,40 @@
     });
   }
   function preparer(el) {
-    if (el.mcvPret) return;
-    el.mcvPret = true;
-    var reduit = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var scene = el.querySelector('.mcv__scene');
-    if (reduit || !scene || !('IntersectionObserver' in window)) return;
+    if (el.mcvPret || !scene) return;
+    el.mcvPret = true;
+    var etiquettes = [].slice.call(scene.querySelectorAll('[data-etiq]')).filter(function (a) { return ETIQ[a.getAttribute('data-etiq')]; });
+    etiquettes.forEach(function (a) {
+      var e = ETIQ[a.getAttribute('data-etiq')];
+      a.style.left = ((e[1][0] + 21 * e[2] - VB[0]) / VB[2] * 100).toFixed(2) + '%';
+      a.style.top = ((e[1][1] - VB[1]) / VB[3] * 100).toFixed(2) + '%';
+      a.style.setProperty('--d', e[3] + 'ms');
+      if (e[2] < 0) a.classList.add('mcv__etiq--g');
+    });
+    scene.insertAdjacentHTML('afterbegin', dessin(echapper(el.getAttribute('data-largeur')), echapper(el.getAttribute('data-longueur')),
+      etiquettes.map(function (a) { return a.getAttribute('data-etiq'); })));
+    el.classList.add('mcv--pret');
+    var reduit = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduit || !('IntersectionObserver' in window)) return;
     el.classList.add('mcv--anime');
     el.mcvJouer = function () { jouer(el); };
     var io = new IntersectionObserver(function (entrees) {
       if (entrees.some(function (e) { return e.isIntersecting; })) { io.disconnect(); jouer(el); }
-    }, { threshold: 0.45 });
+    }, { threshold: .45 });
     io.observe(scene);
-    var b = el.querySelector('.mcv__rejouer');
-    if (b) b.addEventListener('click', el.mcvJouer);
+    var bouton = el.querySelector('.mcv__rejouer');
+    if (bouton) bouton.addEventListener('click', el.mcvJouer);
   }
-  window.mcvChezVous = function () { document.querySelectorAll('[data-mcv]').forEach(preparer); };
+  window.mcvChezVous = function () { [].forEach.call(document.querySelectorAll('[data-mcv]'), preparer); };
   window.mcvChezVous();
   document.addEventListener('shopify:section:load', window.mcvChezVous);
   document.addEventListener('shopify:section:select', function (e) {
     var el = e.target && e.target.querySelector && e.target.querySelector('[data-mcv]');
     if (el && el.mcvJouer) el.mcvJouer();
   });
-})();</script>
+})();
+</script>
 
 {% schema %}
 {
