@@ -29,3 +29,18 @@ test('une base de la version 1 est migrée : codes par empreinte, profils Maison
   // version 3 : profils des clients Maison Corleone (édition gratuite)
   assert.ok((await une("SELECT to_regclass('public.profils_mc') AS t")).t);
 });
+
+// En ligne (Neon), le schéma part requête par requête : chaque morceau doit être une requête valide
+// (un « ; » dans un commentaire avait coupé la création de profils_mc et bloqué la migration)
+test('le schéma découpé comme pour Neon : chaque requête passe seule', async () => {
+  const { SCHEMA, decouperSQL } = await import('../../lib/db.js');
+  const requetes = decouperSQL(SCHEMA);
+  assert.ok(requetes.length >= 10);
+  const pg = new PGlite();
+  for (const r of requetes) {
+    assert.match(r, /^CREATE (TABLE|INDEX|UNIQUE INDEX)/, 'morceau inattendu : ' + r.slice(0, 60));
+    await pg.query(r);
+  }
+  assert.ok((await pg.query("SELECT to_regclass('public.profils_mc') AS t")).rows[0].t);
+  await pg.close();
+});
