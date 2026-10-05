@@ -122,6 +122,18 @@ const PLUS = {
     else bloc(g, w, h, Math.max(.04, d), M('noir'), 0, 0, 0, .01);
     return g;
   },
+  'tv-murale'(p) {
+    const g = groupe('tv-murale'), [w, d, h] = p.dim;
+    bloc(g, w, h, Math.max(.04, d), M('noir'), 0, -h / 2, d / 2, .01);
+    return g;
+  },
+  radiateur(p) {
+    const g = groupe('radiateur'), [w, d, h] = p.dim, m = mCouleur(p, 0, .5);
+    bloc(g, w, h * .9, d, m, 0, h * .1, 0, .015);
+    const n = Math.max(4, Math.round(w / .055));
+    for (let i = 1; i < n; i++) bloc(g, .007, h * .8, .006, std('#C9C7C3', .8), -w / 2 + i * w / n, h * .15, d / 2);
+    return g;
+  },
   etagere(p) {
     const g = groupe('etagere'), [w, d, h] = p.dim, m = mCouleur(p, 0, .7);
     [-1, 1].forEach(k => bloc(g, .03, h, d, m, k * (w / 2 - .015), 0, 0));
@@ -137,6 +149,7 @@ const PLUS = {
 };
 PLUS.bibliotheque = PLUS.etagere;
 PLUS.console = PLUS.commode;
+PLUS.chevet = PLUS.commode;
 PLUS.buffet = PLUS.commode;
 // le tapis du catalogue était un panneau mural : ici il est posé au sol
 CAT_GENERIQUE.tapis = PLUS.tapis;

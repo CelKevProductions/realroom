@@ -573,6 +573,10 @@ html:has(.mc-intro) { overscroll-behavior: none; }
 .mc-photo-mini.is-pleine { border-style: solid; border-color: var(--expresso); }
 .mc-photo-mini span:not(.mc-envoi) { position: relative; z-index: 1; padding: 0 8px; text-align: center; }
 .mc-photos__aide { font-size: .8125rem; color: var(--gris); }
+.mc-photo-notes { display: grid; gap: 8px; padding-top: 14px; }
+.mc-photo-notes > span { font-size: .65rem; }
+.mc-photo-notes textarea { min-height: 90px; resize: vertical; line-height: 1.5; }
+.mc-photo-notes textarea:focus-visible { outline: 1px solid var(--encre); outline-offset: 4px; }
 .mc-photo-vide .mc-btn { pointer-events: none; }
 .mc-guide .mc-pill { color: var(--gris); }
 

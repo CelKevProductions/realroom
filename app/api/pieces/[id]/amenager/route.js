@@ -28,7 +28,7 @@ export const POST = route(async (request, { params }) => {
   const prep = preparerAmenagement(p.agencement || [], b);
   const cands = candidats({ dims: p.modele.dims, fonction: p.fonction, envies: prep.envies, budget: prep.budget });
   const { proposition } = await proposerAmenagement({
-    piece: versClaude(p.modele, prep.base, PRODUITS), fonction: p.fonction, mode: prep.mode, envies: prep.envies, budget: prep.budget,
+    piece: { ...versClaude(p.modele, prep.base, PRODUITS), notes_client: p.notes || '' }, fonction: p.fonction, mode: prep.mode, envies: prep.envies, budget: prep.budget,
     garder: prep.garder, aRemplacer: prep.aRemplacer, candidats: cands, langue: b.langue === 'en' ? 'en' : 'fr'
   });
   const { agencement, proposition: prop } = appliquerProposition({ modele: p.modele, prep, proposition, produits: PRODUITS });

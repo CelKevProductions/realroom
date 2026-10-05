@@ -7,7 +7,7 @@ La proposition de mobilier passe maintenant par deux contrôles complémentaires
 - Relier les portes et les zones d’usage par un passage visant 90 cm. Une grille d’environ 18 cm teste les chemins en élargissant les obstacles ; éviter la porte seule ne suffit plus.
 - Conserver du recul devant les rangements et bureaux, les côtés d’un lit double, le pied du lit et les chaises.
 - Rapprocher la table basse du canapé et orienter les fauteuils vers le coin conversation.
-- Écarter les meubles hauts des fenêtres, tout en autorisant les meubles sous l’allège.
+- Écarter les meubles hauts et les lits des fenêtres, même si une tête de lit basse passe sous l’allège. Conserver un dégagement indicatif devant les radiateurs ; les distances du fabricant restent à confirmer.
 - Faire suivre les objets posés sur leur support, ainsi que les tapis et suspensions de leur zone d’usage.
 - Ne jamais déplacer les éléments fixes ou choisis « à garder ». Garder prévaut sur une demande contradictoire de remplacement, y compris pour un produit catalogue en mode « tout ».
 
@@ -25,4 +25,19 @@ Les distances sont des repères d’usage sur une maquette rectangulaire, pas un
 
 `npm test` couvre notamment les passages coupés malgré deux portes dégagées, les accès au lit et au rangement, les fenêtres, les objets sur leur support, les éléments fixes, les limites du budget et l’absence de mutation des données d’entrée. `npm run build` vérifie l’intégration Next.js. Le parcours `python3 tests/maison.py demo-desktop` (ou `demo-mobile`) inclut le panneau et vérifie qu’optimiser ne consomme pas de crédit.
 
-La génération de photo IA, ses modèles, ses routes et son système de crédits sont inchangés. Seules les consignes de proposition d’aménagement ont été enrichies dans `lib/claude.js`.
+La génération de photo IA, ses modèles, ses routes et son système de crédits sont inchangés. Les consignes de relevé et de proposition d’aménagement sont enrichies dans `lib/claude.js`.
+
+## Correction du cas de la chambre (5 octobre 2026)
+
+Le retour utilisateur montrait un lit devant une fenêtre, la disparition du radiateur et des fonctions de rangement/coiffeuse, ainsi qu'un éclairage trop ornemental pour une demande « épuré ».
+
+- Le relevé conserve désormais ses observations : le solveur ne déplace ni ne supprime les meubles détectés pour forcer une maquette sans collision. Les erreurs restent à confirmer, et ne sont pas transformées en faits.
+- Les radiateurs, cuisines intégrées et cheminées sont des installations fixes. Les anciens radiateurs classés `autre` restent reconnus par leur nom. La TV murale a une famille et une hauteur de pose distinctes.
+- Les murs non vus sont identifiés ; une consigne de prise de vue n'est plus une preuve de présence d'une porte. Les remarques et les incertitudes de relevé sont transmises à la proposition et présentées dans le panneau.
+- La sélection « épuré » utilise les descriptions visuelles et pénalise les volumes chargés ; elle exclut les ornements manifestes. Cette règle éditoriale est une amélioration du filtre textuel, pas un classement visuel appris. Les briefs mixtes (par exemple épuré et classique) ne subissent pas cette exclusion stricte.
+- Les lits candidats doivent laisser une marge d'usage. Les fonctions existantes de couchage, rangement, vêtements, travail/coiffeuse et TV sont conservées si aucun remplacement adapté n'est retenu, sauf suppression explicitement demandée. Un chevet ne remplace pas une commode.
+- Les vues complémentaires portent leur rôle réel. Le client peut préciser les contraintes et les usages à préserver ; les notes sont enregistrées avant l'analyse.
+
+`tests/fixtures/chambre-fenetre.js` est une annotation manuelle inspirée du cas, avec des **dimensions fictives de test**. Les tests contrôlent la conservation des installations et usages, l'absence de lit devant la fenêtre, les meubles trop grands et le filtre de style. Ils ne mesurent pas la qualité de détection du modèle IA sur la photo réelle. La photo de l'utilisateur n'est pas ajoutée au dépôt.
+
+Pour valider la qualité réelle, comparer sur plusieurs pièces : photos de plusieurs côtés, largeur/profondeur mesurées, dimensions d'un meuble de référence, inventaire corrigé et deux ou trois inspirations de style. Une porte hors champ ou une cote inconnue doit rester explicitement incertaine. L'appellation « épuré » seule ne définit pas toutes les préférences esthétiques.
