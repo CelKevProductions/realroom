@@ -133,6 +133,15 @@ async def piece(page):
     assert nb >= 2, f'proposition trop courte ({nb} pièces)'
     await expect(page.locator('.mc-station__pill')).to_contain_text(f'{nb} pièces')
     await expect(page.locator('.mc-rendu-btn')).to_contain_text('2 offerts')
+    confort = page.get_by_role('region', name='La pièce au quotidien')
+    await expect(confort).to_be_visible()
+    await confort.get_by_role('button', name='Optimiser la disposition').click()
+    await page.wait_for_function("() => document.querySelector('[role=status]')?.textContent.length > 0")
+    await expect(page.locator('.mc-rendu-btn')).to_contain_text('2 offerts')
+    await page.locator('.mc-station__titre').scroll_into_view_if_needed()
+    titre = await page.locator('.mc-station__titre').bounding_box()
+    station = await page.locator('.mc-station').bounding_box()
+    assert titre['y'] >= station['y'] - 2, 'titre inaccessible en haut du panneau'
     await capture(page, 'piece-3d', 2500)
     nom = (await lignes.first.locator('b').inner_text()).strip()
     await clic(page, '.mc-ligne-piece >> nth=0')
