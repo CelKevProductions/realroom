@@ -46,7 +46,8 @@
 .mc3 .mc3__bouton:focus-visible,.mc3 .mc3__etiq-c:focus-visible,.mc3 .mc3__rejouer:focus-visible{outline:2px solid var(--mc3-brun-clair);outline-offset:3px}
 .mc3 .mc3__note{margin:0;font:13px/1.5 var(--body-font,Georgia,serif);color:var(--mc3-sourd);max-width:34ch}
 .mc3 .mc3__dessin{position:relative;margin:0 -8px;min-width:0;container-type:inline-size}
-.mc3__scene{position:relative;aspect-ratio:8/7;font-size:6px;font-size:calc(100cqi / 52);perspective:160em;perspective-origin:50% 20%;touch-action:pan-y;-webkit-user-select:none;user-select:none}
+.mc3__scene{position:relative;aspect-ratio:8/7;font-size:6px;font-size:calc(100cqi / 52);touch-action:pan-y;-webkit-user-select:none;user-select:none}
+.mc3__maquette{position:absolute;inset:0;perspective:160em;perspective-origin:50% 20%;pointer-events:none}
 .mc3__scene::before{content:"";position:absolute;inset:12% 0 2%;background:radial-gradient(48% 40% at 50% 56%,rgba(185,131,79,.32),rgba(185,131,79,0));pointer-events:none}
 .mc3--attente .mc3__tilt,.mc3--attente .mc3__etiquettes,.mc3--attente .mc3__photo{visibility:hidden}
 .mc3:not(.mc3--pret) .mc3__etiquettes,.mc3--photo .mc3__tilt{visibility:hidden}
@@ -95,7 +96,7 @@
 .mc3__badge--d{right:12px;background:var(--mc3-blanc);color:var(--mc3-noir)}
 .mc3__curseur{position:absolute!important;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0)}
 .mc3__photo:has(.mc3__curseur:focus-visible){outline:2px solid var(--mc3-brun-clair);outline-offset:3px}
-.mc3__flash{position:absolute;inset:0;z-index:1;background:#fff;opacity:0;pointer-events:none}
+.mc3__flash{position:absolute;left:0;right:0;top:50%;z-index:1;aspect-ratio:3/2;border-radius:12px;background:#fff;opacity:0;transform:translateY(-50%);pointer-events:none}
 /* étiquettes */
 .mc3__etiquettes{position:absolute;inset:0;pointer-events:none;z-index:2}
 .mc3__etiq{position:absolute;left:0;top:0;will-change:transform}
@@ -105,6 +106,11 @@
 .mc3__nom{font:italic 13px/1.15 var(--heading-font,Georgia,serif)}
 .mc3__prix{font:11.5px/1.2 var(--body-font,Georgia,serif);color:var(--mc3-brun);font-variant-numeric:tabular-nums}
 .mc3 a.mc3__etiq-c:hover .mc3__nom{text-decoration:underline;text-underline-offset:2px}
+/* étiquettes réduites à leur point : quand elles se chevauchent sur la maquette, et pendant l'entrée dans la pièce */
+.mc3 .mc3__etiq-c{transition:background-color .3s ease,box-shadow .3s ease}
+.mc3__etiq-c>span,.mc3__etiq-c::before{transition:opacity .3s ease}
+.mc3.mc3--points .mc3__etiq-c{background:transparent;box-shadow:none}
+.mc3--points .mc3__etiq-c>span,.mc3--points .mc3__etiq-c::before{opacity:0}
 .mc3 .mc3__rejouer{position:absolute;right:8px;bottom:4px;z-index:3;display:none;align-items:center;gap:6px;width:auto;min-height:0;margin:0;padding:6px 8px;border:0;border-radius:999px;box-shadow:none;background:none;text-transform:none;letter-spacing:0;color:var(--mc3-sourd);font:12.5px/1 var(--body-font,Georgia,serif);cursor:pointer}
 .mc3 .mc3__rejouer:hover{color:var(--mc3-blanc)}
 .mc3__rejouer svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.4}
@@ -235,10 +241,12 @@
 
   function construire(inst) {
     var scene = inst.scene;
-    var tilt = document.createElement('div');
-    tilt.className = 'mc3__tilt';
-    tilt.setAttribute('aria-hidden', 'true');
-    scene.insertBefore(tilt, inst.photo.parentNode);
+    // cadre de la maquette : il porte la perspective et se resserre sur la photo quand on entre dans la pièce
+    var cadre = document.createElement('div');
+    cadre.className = 'mc3__maquette';
+    cadre.setAttribute('aria-hidden', 'true');
+    scene.insertBefore(cadre, inst.photo.parentNode);
+    var tilt = div(cadre, 'mc3__tilt');
     var spin = div(tilt, 'mc3__spin'), piece = div(spin, 'mc3__piece'), groupes = [];
     // le sol : moquette sur un socle
     var sol = boite(piece, 0, 0, W, D, .8, ['', '#3a2b20', '#2e2219'], -.8);
@@ -311,24 +319,45 @@
     ancre(g, 'suspension', 1.6, 6.5, 8.6);
     // applique Wood Orb Duo (fixée au mur du fond)
     ancre(piece, 'applique', 24, .2, 8.2);
-    inst.tilt = tilt; inst.spin = spin; inst.cotes = [cx, cy]; inst.traces = traces;
+    inst.cadre = cadre; inst.tilt = tilt; inst.spin = spin; inst.cotes = [cx, cy]; inst.traces = traces;
     inst.murs = [murA, murB]; inst.groupes = groupes;
   }
 
   // étiquettes : sur la maquette (k = 0) puis sur la photo (k = 1) ; recalculées à chaque image tant que ça bouge
   function placer(inst) {
-    var r = inst.scene.getBoundingClientRect(), f = inst.photo.getBoundingClientRect(), k = inst.k;
+    var r = inst.scene.getBoundingClientRect(), f = inst.photo.getBoundingClientRect(), k = inst.k, boites = [];
     inst.etiquettes.forEach(function (e) {
       var cle = e.getAttribute('data-etiq'), a = inst.ancres[cle], s = SUR_PHOTO[cle];
       if (!s) return;
       var px = f.left - r.left + f.width * s[0] / 100, py = f.top - r.top + f.height * s[1] / 100, x = px, y = py;
       if (k < 1 && a) {
-        var p = a.getBoundingClientRect();
-        x = (p.left - r.left) * (1 - k) + px * k;
-        y = (p.top - r.top) * (1 - k) + py * k;
+        var p = a.getBoundingClientRect(), mx = p.left - r.left, my = p.top - r.top;
+        // quand on entre dans la pièce, les étiquettes restent dans le cadre de la photo
+        if (inst.borne > 0) {
+          var c = e.mc3c || (e.mc3c = e.querySelector('.mc3__etiq-c')), ph = inst.photo, dl = c.offsetWidth / 2 + 6;
+          var bx = Math.min(Math.max(mx, ph.offsetLeft + dl), ph.offsetLeft + ph.offsetWidth - dl);
+          var by = Math.min(Math.max(my, ph.offsetTop + c.offsetHeight + 22), ph.offsetTop + ph.offsetHeight - 6);
+          mx += (bx - mx) * inst.borne;
+          my += (by - my) * inst.borne;
+        }
+        x = mx * (1 - k) + px * k;
+        y = my * (1 - k) + py * k;
       }
       e.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)';
+      if (inst.verifier) {
+        // la bulle, puis sa tige et son point
+        var b = e.mc3c || (e.mc3c = e.querySelector('.mc3__etiq-c')), dw = b.offsetWidth / 2 + 1;
+        boites.push([[x - dw, y - 17 - b.offsetHeight, x + dw, y - 15], [x - 5, y - 16, x + 5, y + 5]]);
+      }
     });
+    // sur la maquette, des étiquettes qui se chevauchent (petit écran, noms longs) se réduisent à leur point
+    function touche(p, q) { return p[0] < q[2] && q[0] < p[2] && p[1] < q[3] && q[1] < p[3]; }
+    if (inst.verifier && boites.some(function (b, i) {
+      return boites.some(function (o, j) { return j > i && (touche(b[0], o[0]) || touche(b[0], o[1]) || touche(b[1], o[0])); });
+    })) {
+      inst.verifier = false;
+      inst.el.classList.add('mc3--points');
+    }
   }
 
   function chargerGsap() {
@@ -351,12 +380,20 @@
     if (inst.tl) inst.tl.kill();
     if (inst.tlBarre) inst.tlBarre.kill();
     var el = inst.el, etapes = inst.etapes, a = inst.etiquettes.map(function (e) { return e.firstChild; });
-    el.classList.remove('mc3--fin', 'mc3--attente', 'mc3--photo');
+    el.classList.remove('mc3--fin', 'mc3--attente', 'mc3--photo', 'mc3--points');
+    inst.verifier = false;
     g.set(inst.photo, { clearProps: 'opacity,visibility,scale' });
     function etape(n) {
       return function () { etapes.forEach(function (li, i) { li.classList.toggle('is-actif', i < n || n > 4); }); };
     }
-    inst.k = 0; inst.suivre(true);
+    // cadre de la photo dans la scène (sans transformation), élargi de « marge » × la largeur
+    function cadrePhoto(marge) {
+      var p = inst.photo, w = inst.scene.clientWidth, h = inst.scene.clientHeight, m = marge * w;
+      return 'inset(' + [p.offsetTop + m, w - p.offsetLeft - p.offsetWidth + m, h - p.offsetTop - p.offsetHeight + m, p.offsetLeft + m]
+        .map(function (v) { return v.toFixed(1) + 'px'; }).join(' ') + ' round 12px)';
+    }
+    inst.k = 0; inst.borne = 0; inst.suivre(true);
+    inst.cadre.style.clipPath = '';
     g.set(inst.tilt, { rotationX: 0, visibility: 'visible' });
     g.set(inst.spin, { rotationZ: 0, scale: .82, x: 4 * em, y: 3.5 * em, opacity: 0 });
     g.set(inst.murs[0], { rotationX: 0 });
@@ -367,6 +404,7 @@
     g.set(a, { opacity: 0, y: 10 });
     inst.photo.style.setProperty('--x', '100%');
     var tl = inst.tl = g.timeline({ defaults: { ease: 'power3.inOut' }, onComplete: function () {
+      el.classList.remove('mc3--points');
       el.classList.add('mc3--photo', 'mc3--fin');
       g.set(inst.photo, { clearProps: 'opacity,visibility,scale' });
       inst.suivre(false);
@@ -387,18 +425,24 @@
       tl.set(groupe, { visibility: 'visible' }, t).to(groupe, { z: 0, duration: .9, ease: 'bounce.out' }, t);
     });
     tl.to(inst.traces, { opacity: 0, duration: .4, ease: 'power1.out' }, 3.6)
+      .call(function () { inst.verifier = true; }, null, 4.4)
       .to(a, { opacity: 1, y: 0, duration: .5, stagger: .12, ease: 'back.out(2)' }, 4.5)
       .to(inst.spin, { rotationZ: 50, duration: 1.4, ease: 'sine.inOut' }, 4.6)
-      // on entre dans la pièce, flash, et la photo réaliste apparaît à la place de la maquette
+      // on entre dans la pièce (étiquettes réduites à leur point), flash, et la photo réaliste remplace la maquette
+      .call(function () { inst.verifier = false; el.classList.add('mc3--points'); }, null, 6.1)
       .call(etape(4), null, 6.2)
       .to(inst.spin, { scale: 2.5, rotationZ: 38, duration: 1.1, ease: 'power2.in' }, 6.1)
       .to(inst.tilt, { rotationX: 72, duration: 1.1, ease: 'power2.in' }, 6.1)
+      .fromTo(inst.cadre, { clipPath: function () { return cadrePhoto(-.14); } },
+        { clipPath: function () { return cadrePhoto(0); }, duration: .8, ease: 'power2.inOut', immediateRender: false }, 6.12)
+      .to(inst, { borne: 1, duration: .4, ease: 'power1.inOut' }, 6.1)
       .set(inst.photo, { visibility: 'visible' }, 6.9)
       .fromTo(inst.flash, { opacity: 0 }, { opacity: .85, duration: .12, ease: 'power1.out' }, 6.95)
       .to(inst.flash, { opacity: 0, duration: .55, ease: 'power1.in' }, 7.07)
       .fromTo(inst.photo, { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: .7, ease: 'power2.out' }, 6.95)
       .set([inst.tilt].concat(inst.groupes), { visibility: 'hidden' }, 7.3)
       .to(inst, { k: 1, duration: .8, ease: 'power2.inOut' }, 7.05)
+      .call(function () { el.classList.remove('mc3--points'); }, null, 7.65)
       .to(inst.photo, { '--x': '0%', duration: 1.4, ease: 'power2.inOut' }, 7.6)
       .to(inst.photo, { '--x': '50%', duration: .9, ease: 'power2.inOut' }, 9.3)
       .call(etape(5), null, 10.2);
