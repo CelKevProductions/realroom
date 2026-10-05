@@ -77,9 +77,15 @@ export default function Parcours({
     : etape === 'priorite' ? choix.priorites.length > 0
       : etape === 'photos' ? !!photo('entree') && !Object.values(envoi).some(Boolean)
         : true;
-  function continuer() {
+  async function continuer() {
     if (!peutContinuer) return;
-    if (etape === 'photos') { onLancer(dims); return; }
+    if (etape === 'photos') {
+      setErreurPhoto(''); setEnvoi(e => ({ ...e, precisions: true }));
+      try { if (await onLancer(dims, choix.notes ?? piece?.notes ?? '') === false) setErreurPhoto(t.photos.erreurDetails); }
+      catch (_) { setErreurPhoto(t.photos.erreurDetails); }
+      finally { setEnvoi(e => ({ ...e, precisions: false })); }
+      return;
+    }
     aller(ETAPES[num + 1]);
   }
 
@@ -317,13 +323,14 @@ export default function Parcours({
                 const p = photo(role);
                 return (
                   <label key={role} className={'mc-photo-mini' + (p ? ' is-pleine' : '')}>
-                    {p ? <img src={p.url} alt="" /> : <span>+ {t.photos.autre}</span>}
-                    <input type="file" accept="image/*" aria-label={t.photos.autre} onChange={e => envoyer(role, e.target.files[0])} />
+                    {p ? <img src={p.url} alt={t.photos.angles[role]} /> : <span>+ {t.photos.angles[role]}</span>}
+                    <input type="file" accept="image/*" aria-label={t.photos.angles[role]} onChange={e => envoyer(role, e.target.files[0])} />
                     {envoi[role] && <span className="mc-envoi"><i /></span>}
                   </label>
                 );
               })}
             </div>
+            <p className="mc-photos__aide">{t.photos.precision}</p>
             <details className="mc-dims">
               <summary className="mc-mono">{t.photos.dims}</summary>
               <div className="mc-dims__champs">
@@ -333,7 +340,12 @@ export default function Parcours({
                   </label>
                 ))}
               </div>
+              <p className="mc-photos__aide">{t.photos.repereDims}</p>
             </details>
+            <label className="mc-photo-notes"><span className="mc-mono">{t.photos.notes}</span>
+              <textarea className="mc-champ-libre" maxLength={1000} rows={3} value={choix.notes ?? piece?.notes ?? ''}
+                placeholder={t.photos.notesAide} onChange={e => setChoix(c => ({ ...c, notes: e.target.value }))} />
+            </label>
             {erreurPhoto && <p className="mc-avis" role="alert">{erreurPhoto}</p>}
             {!p0 && !envoi.entree && <p className="mc-photos__aide">{t.photos.manque}</p>}
           </div>

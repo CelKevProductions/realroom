@@ -38,7 +38,7 @@ export const POST = route(async (request, { params }) => {
     const images = [];
     for (const f of photos) { const d = await enDataUri(f); if (d) images.push({ role: f.role, dataUri: d }); }
     const { analyse } = await analyserPiece({ photos: images, dims: p.dims, fonction: p.fonction, notes: p.notes, langue: b.langue === 'en' ? 'en' : 'fr' });
-    // les meubles relevés gardent leur place, on écarte seulement ceux qui se chevauchent
+    // Le relevé conserve les observations, même incertaines ; le solveur intervient à l'aménagement.
     const { modele, agencement } = pieceDepuisAnalyse(analyse, p.dims, PRODUITS);
     const n = await majPiece(u.id, id, { etat: 'prete', modele, agencement, proposition: null, erreur: null });
     return json({ piece: publique(n) });

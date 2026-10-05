@@ -53,9 +53,14 @@ const fr = {
   },
   photos: {
     label: 'Vos photos', lignes: ['Votre pièce', 'en photo'], script: 'en un instant',
-    texte: 'Placez-vous à l’entrée, téléphone à l’horizontale, et photographiez toute la pièce. D’autres angles aident, sans être obligatoires.',
+    texte: 'Prenez une vue large depuis l’entrée, sans panorama. Montrez autant que possible le sol, les angles des murs et les ouvertures.',
     principale: 'Depuis l’entrée', repere: 'Photo du rendu', prendre: 'Prendre la photo', remplacer: 'Remplacer', autre: 'Autre angle',
     dims: 'Vous connaissez ses dimensions ? (facultatif)', largeur: 'Largeur (m)', profondeur: 'Profondeur (m)',
+    angles: { fond: 'Du fond vers l’entrée', gauche: 'Le mur de gauche', droite: 'Le mur de droite' },
+    precision: 'Une seule photo donne une estimation. La vue opposée aide à retrouver la porte et les meubles cachés. Gardez le même rangement entre les prises.',
+    repereDims: 'Depuis la photo principale : largeur de gauche à droite ; profondeur jusqu’au mur du fond. Ces mesures servent à vérifier les proportions.',
+    notes: 'Contraintes et usages à préserver (facultatif)', notesAide: 'Ex. : radiateur sous la fenêtre, porte derrière moi à gauche, lit de 160 cm, conserver un espace coiffeuse.',
+    erreurDetails: 'Vos précisions n’ont pas pu être enregistrées. Réessayez avant de lancer l’aménagement.',
     lancer: 'Lancer l’aménagement', manque: 'Ajoutez au moins la photo prise depuis l’entrée.', erreur: 'La photo n’a pas pu être envoyée. Réessayez.'
   },
   chargement: {
@@ -142,9 +147,14 @@ const en = {
   },
   photos: {
     label: 'Your photos', lignes: ['Your room', 'in a photo'], script: 'in a moment',
-    texte: 'Stand in the doorway, phone held horizontally, and photograph the whole room. Other angles help but are optional.',
+    texte: 'Take a wide view from the entrance, without panorama mode. Show the floor, wall corners and openings where possible.',
     principale: 'From the doorway', repere: 'Render photo', prendre: 'Take the photo', remplacer: 'Replace', autre: 'Other angle',
     dims: 'Do you know its size? (optional)', largeur: 'Width (m)', profondeur: 'Depth (m)',
+    angles: { fond: 'From the far end to the entrance', gauche: 'The left wall', droite: 'The right wall' },
+    precision: 'One photo gives an estimate. The opposite view helps locate the door and hidden furniture. Keep the room arranged the same way between photos.',
+    repereDims: 'From the main photo: width is left to right; depth runs to the far wall. These measurements help check proportions.',
+    notes: 'Constraints and uses to preserve (optional)', notesAide: 'E.g. radiator below the window, door behind me on the left, 160 cm bed, keep a dressing area.',
+    erreurDetails: 'Your notes could not be saved. Please try again before starting the design.',
     lancer: 'Design my room', manque: 'Add at least the photo taken from the doorway.', erreur: 'The photo could not be sent. Try again.'
   },
   chargement: {

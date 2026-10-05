@@ -6,6 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { api } from '@/components/api.js';
 import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
+import Confort from '@/components/piece/Confort.js';
 import Resultat from '@/components/piece/Resultat.js';
 import Tuto from '@/components/Tuto.js';
 import { apparaitre, deplier, animer } from '@/components/Mouvement.js';
@@ -292,6 +293,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const meubles = (
     <>
       <div className="panneau__corps" role="tabpanel">
+        <Confort modele={piece.modele} items={items} produits={produits} lang={lang} garder={prop?.garder} onAppliquer={liste => modifier(() => liste)} />
         {prop && prop.concept && (
           <div className="concept">
             <b>{tp.concept}</b>

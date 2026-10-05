@@ -1,0 +1,23 @@
+.carte{margin:22px 0;padding:18px 0;border-block:1px solid currentColor;color:inherit;font-family:inherit}
+.titre{margin:0 0 15px;font:inherit;font-size:14px;font-weight:500;letter-spacing:.025em}
+.releve{margin:0 0 16px;padding:10px 12px;border-left:2px solid #956336;background:rgb(149 99 54 / 7%);font-size:11px;line-height:1.6;max-width:55ch}
+.reperes{display:flex;flex-wrap:wrap;gap:14px 20px;margin:0;padding:0;list-style:none}
+.reperes li{display:flex;align-items:flex-start;gap:7px;font-size:11px;line-height:1.45}
+.reperes li>span:first-child{display:grid;place-items:center;border:1px solid currentColor;border-radius:50%;width:16px;height:16px;flex:none;color:#4d6556;font-size:10px}
+.reperes li[data-etat=attention]>span:first-child{color:#956336}
+.reperes small{display:block;font-size:10px;opacity:.7}
+.details{margin-top:15px;font-size:11px;line-height:1.6}
+.details summary{cursor:pointer;width:fit-content;text-underline-offset:3px}
+.details summary:hover{text-decoration:underline}
+.details p{margin:10px 0 0;max-width:55ch;opacity:.8}
+.details ul{padding-left:17px;margin:10px 0}
+.details li{margin-bottom:6px}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:15px}
+.actions button{appearance:none;background:transparent;color:inherit;border:1px solid currentColor;border-radius:0;padding:10px 13px;font:inherit;font-size:11px;line-height:1.4;cursor:pointer;transition:background .2s}
+.actions button:hover{background:rgb(128 112 83 / 9%)}
+.actions button:disabled{opacity:.5;cursor:default}
+.actions .annuler{border:0;padding:10px 0;text-decoration:underline;text-underline-offset:3px}
+.actions button:focus-visible,.details summary:focus-visible{outline:2px solid currentColor;outline-offset:4px}
+.note,.message{font-size:10px;line-height:1.6;margin:10px 0 0;opacity:.7}
+.message:empty{display:none}
+@media(prefers-reduced-motion:reduce){.actions button{transition:none}}
