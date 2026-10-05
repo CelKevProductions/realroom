@@ -1,8 +1,9 @@
 {%- comment -%}
-  Maison Corleone · « Chez vous » : la pièce en 3D, meublée avec les pièces de la boutique.
-  Section légère, sans librairie ni image : le script (en bas) dessine la pièce en SVG, le CSS l'anime.
-  Le plan se dessine, passe en 3D, puis les meubles se posent. L'animation se joue une fois, quand le
-  dessin arrive à l'écran ; le dessin reste fixe si le visiteur a réduit les animations.
+  Maison Corleone · « Chez vous » : votre pièce en 3D, meublée avec nos pièces, puis en vraie photo réaliste.
+  La maquette est en CSS 3D, animée avec GSAP (chargé seulement à l'approche de la section) : le plan se
+  déplie, les murs se dressent, les meubles tombent en place, puis on « entre » dans la pièce et la vraie
+  photo réaliste apparaît, avec un curseur pour comparer maquette et photo. Sans animation (réglage du
+  visiteur, ou script indisponible) : la comparaison maquette / photo s'affiche directement.
 {%- endcomment -%}
 {%- liquid
   assign st = section.settings
@@ -19,155 +20,180 @@
   if st.reset_spacing
     assign espacement = ' remove_spacing'
   endif
-  assign cles = 'canape,table,fauteuil,lampe' | split: ','
+  assign cles = 'lit,fauteuil,suspension,applique' | split: ','
+  assign img_photo = images['chez-vous-photo.jpg']
+  assign img_maquette = images['chez-vous-maquette.jpg']
+  assign source = 'https://realroom-sepia.vercel.app/images/'
 -%}
+{%- capture srcset_photo -%}
+  {%- if img_photo != blank -%}{{ img_photo | image_url: width: 800 }} 800w, {{ img_photo | image_url: width: 1400 }} 1400w, {{ img_photo | image_url: width: 2000 }} 2000w
+  {%- else -%}{{ source }}chambre-rendu-1200.jpg 1200w, {{ source }}chambre-rendu-2048.jpg 2048w{%- endif -%}
+{%- endcapture -%}
+{%- capture srcset_maquette -%}
+  {%- if img_maquette != blank -%}{{ img_maquette | image_url: width: 800 }} 800w, {{ img_maquette | image_url: width: 1400 }} 1400w, {{ img_maquette | image_url: width: 2000 }} 2000w
+  {%- else -%}{{ source }}chambre-maquette-1200.jpg 1200w, {{ source }}chambre-maquette-2048.jpg 2048w{%- endif -%}
+{%- endcapture -%}
 <style>
-.mcv{--mcv-fond:#332817;--mcv-encre:#eee4d3;--mcv-laiton:#c9a46a;--mcv-doux:#bdb3a2;--mcv-filet:#584e3d;--mcv-sol:#403524;--mcv-mur-a:#3a2f1e;--mcv-mur-b:#463b2a;--mcv-cote:#493f2e;--mcv-dessus:#5c5140;--mcv-tapis:#544329;--mcv-vitre:#514635;--mcv-survol:#f4ede2;--mcv-ease:cubic-bezier(.65,0,.35,1)}
-.mcv--creme{--mcv-fond:#eee4d3;--mcv-encre:#332817;--mcv-laiton:#8a6534;--mcv-doux:#645948;--mcv-filet:#c9bead;--mcv-sol:#e1d7c6;--mcv-mur-a:#e7ddcc;--mcv-mur-b:#dbd1c0;--mcv-cote:#ddd3c2;--mcv-dessus:#f7f3eb;--mcv-tapis:#d8c8b0;--mcv-vitre:#f8f4ed;--mcv-survol:#261e11}
-.mcv__bande{background:var(--mcv-fond);color:var(--mcv-encre);border-radius:16px;padding:clamp(40px,6vw,84px) clamp(20px,5vw,76px);overflow:hidden}
-.mcv__bande--plein{border-radius:0}
-.mcv__grille{display:grid;row-gap:30px;align-items:center}
-.mcv .mcv__titre{font-family:var(--heading-font,Georgia,serif);font-weight:400;font-size:clamp(30px,3vw,44px);line-height:1.14;letter-spacing:-.015em;color:var(--mcv-encre);text-transform:none;margin:0 0 18px;max-width:20ch}
-.mcv__intro{font-family:var(--body-font,Georgia,serif);font-size:15px;line-height:1.75;color:var(--mcv-doux);max-width:44ch}
-.mcv__intro p{margin:0}
-.mcv .mcv__etapes{list-style:none;margin:0;padding:0;max-width:440px}
-.mcv .mcv__etape{display:grid;grid-template-columns:28px 1fr;column-gap:16px;margin:0;padding:15px 0;border-top:1px solid var(--mcv-filet);transition:opacity .5s ease}
-.mcv__etape:last-child{border-bottom:1px solid var(--mcv-filet)}
-.mcv__num{width:26px;height:26px;border-radius:50%;border:1px solid var(--mcv-laiton);color:var(--mcv-laiton);display:grid;place-items:center;font:12px/1 var(--body-font,Georgia,serif);transition:background-color .4s ease,color .4s ease}
-.mcv .mcv__etape-titre{margin:2px 0 0;font:400 16px/1.35 var(--heading-font,Georgia,serif);color:var(--mcv-encre)}
-.mcv .mcv__etape-texte{margin:4px 0 0;font:13.5px/1.6 var(--body-font,Georgia,serif);color:var(--mcv-doux)}
-.mcv__action{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px}
-.mcv .mcv__bouton{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:14px 30px;border-radius:999px;background:var(--mcv-encre);color:var(--mcv-fond);font:15px/1.2 var(--btn-font,var(--body-font,Georgia,serif));text-decoration:none;transition:transform .25s ease,background-color .25s ease}
-.mcv .mcv__bouton:hover{transform:translateY(-2px);background:var(--mcv-survol);color:var(--mcv-fond)}
-.mcv .mcv__bouton:focus-visible,.mcv .mcv__etiq:focus-visible,.mcv .mcv__rejouer:focus-visible{outline:2px solid var(--mcv-laiton);outline-offset:3px}
-.mcv .mcv__note{margin:0;font:13px/1.55 var(--body-font,Georgia,serif);color:var(--mcv-doux);max-width:30ch}
-.mcv .mcv__dessin{margin:0;min-width:0}
-.mcv:not(.mcv--pret) .mcv__dessin{display:none}
-.mcv__scene{position:relative;aspect-ratio:530/444;container-type:inline-size}
-.mcv .mcv__svg{--mcv-k:1;display:block;width:100%;height:100%;overflow:visible}
-.mcv__svg path,.mcv__svg circle{stroke-linejoin:round;stroke-linecap:round}
-.mcv__l{fill:none;stroke:var(--mcv-encre);stroke-width:calc(1.25px * var(--mcv-k))}
-.mcv__lf{fill:none;stroke:var(--mcv-encre);stroke-width:calc(.8px * var(--mcv-k));stroke-opacity:.5}
-.mcv__lame{stroke-opacity:.22}
-.mcv__svg .mcv__cote{stroke:var(--mcv-laiton);stroke-opacity:1}
-.mcv__sol{fill:var(--mcv-sol)}
-.mcv__mur-a{fill:var(--mcv-mur-a)}
-.mcv__mur-b{fill:var(--mcv-mur-b)}
-.mcv__poche{fill:var(--mcv-encre)}
-.mcv__baie{fill:var(--mcv-fond)}
-.mcv__vitre{fill:var(--mcv-vitre)}
-.mcv__c{fill:var(--mcv-cote);stroke:var(--mcv-encre);stroke-width:calc(1.05px * var(--mcv-k))}
-.mcv__d{fill:var(--mcv-dessus);stroke:var(--mcv-encre);stroke-width:calc(1.05px * var(--mcv-k))}
-.mcv__tapis{fill:var(--mcv-tapis);stroke:var(--mcv-encre);stroke-width:calc(.8px * var(--mcv-k));stroke-opacity:.55}
-.mcv__fil{fill:none;stroke:var(--mcv-laiton);stroke-width:calc(.9px * var(--mcv-k))}
-.mcv__point{fill:var(--mcv-laiton)}
-.mcv__cotes-plan .mcv__cote-texte{opacity:0}
-.mcv__cote-texte{fill:var(--mcv-laiton);font-family:var(--body-font,Georgia,serif);font-size:12px;letter-spacing:.05em;text-anchor:middle;dominant-baseline:middle}
-.mcv__etiq{position:absolute;display:flex;flex-direction:column;gap:2px;padding:3px 6px;border-radius:4px;background:var(--mcv-fond);color:var(--mcv-encre);text-decoration:none;white-space:nowrap;line-height:1.2;font-size:clamp(11px,2.3cqi,14px);transform:translate(0,-50%)}
-.mcv__etiq--g{transform:translate(-100%,-50%);text-align:right;align-items:flex-end}
-.mcv__nom{font-family:var(--heading-font,Georgia,serif);font-style:italic}
-.mcv__prix{font-family:var(--body-font,Georgia,serif);font-size:max(10px,.84em);color:var(--mcv-doux);font-variant-numeric:tabular-nums}
-.mcv a.mcv__etiq{color:var(--mcv-encre)}
-.mcv a.mcv__etiq:hover .mcv__nom{text-decoration:underline;text-underline-offset:3px}
-.mcv__pied{display:flex;justify-content:flex-end;min-height:32px}
-.mcv .mcv__rejouer{display:none;align-items:center;gap:7px;width:auto;min-height:0;margin:0;padding:6px 4px;border:0;border-radius:0;box-shadow:none;background:none;text-transform:none;letter-spacing:0;color:var(--mcv-doux);font:12.5px/1 var(--body-font,Georgia,serif);cursor:pointer}
-.mcv .mcv__rejouer:hover{color:var(--mcv-encre)}
-.mcv__rejouer svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.4}
-.mcv__masque{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-@container (max-width:600px){.mcv .mcv__svg{--mcv-k:1.25}.mcv__cote-texte{font-size:16px}}
-@container (max-width:440px){.mcv .mcv__svg{--mcv-k:1.6}.mcv__cote-texte{font-size:19px}}
+.mc3{--mc3-noir:#0b0907;--mc3-blanc:#f4efe7;--mc3-brun:#8a5a35;--mc3-brun-clair:#b9834f;--mc3-gris:#a3968a;--mc3-sourd:#6e6358;--mc3-filet:#2b241e}
+.mc3__bande{position:relative;background:var(--mc3-noir);color:var(--mc3-blanc);border-radius:16px;padding:clamp(34px,5vw,76px) clamp(18px,4.5vw,68px);overflow:hidden}
+.mc3__bande--plein{border-radius:0}
+.mc3__grille{display:grid;row-gap:22px;align-items:center}
+.mc3 .mc3__titre{font-family:var(--heading-font,Georgia,serif);font-weight:400;font-size:clamp(34px,3.7vw,54px);line-height:1.06;letter-spacing:-.02em;color:var(--mc3-blanc);text-transform:none;margin:0 0 14px;max-width:16ch}
+.mc3 .mc3__texte{margin:0;font:16px/1.6 var(--body-font,Georgia,serif);color:var(--mc3-gris);max-width:34ch}
+.mc3__action{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px}
+.mc3 .mc3__bouton{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:15px 32px;border-radius:999px;background:var(--mc3-brun);color:var(--mc3-blanc);font:15px/1.2 var(--btn-font,var(--body-font,Georgia,serif));text-decoration:none;transition:background-color .25s ease,transform .25s ease}
+.mc3 .mc3__bouton:hover{background:var(--mc3-brun-clair);color:var(--mc3-blanc);transform:translateY(-2px)}
+.mc3 .mc3__bouton:focus-visible,.mc3 .mc3__etiq-c:focus-visible,.mc3 .mc3__rejouer:focus-visible{outline:2px solid var(--mc3-brun-clair);outline-offset:3px}
+.mc3 .mc3__note{margin:0;font:13px/1.5 var(--body-font,Georgia,serif);color:var(--mc3-sourd);max-width:34ch}
+.mc3 .mc3__dessin{position:relative;margin:0 -8px;min-width:0;container-type:inline-size}
+.mc3__scene{position:relative;aspect-ratio:8/7;font-size:6px;font-size:calc(100cqi / 52);perspective:160em;perspective-origin:50% 20%;touch-action:pan-y;-webkit-user-select:none;user-select:none}
+.mc3__scene::before{content:"";position:absolute;inset:12% 0 2%;background:radial-gradient(48% 40% at 50% 56%,rgba(185,131,79,.32),rgba(185,131,79,0));pointer-events:none}
+.mc3--attente .mc3__tilt,.mc3--attente .mc3__etiquettes,.mc3--attente .mc3__photo{visibility:hidden}
+.mc3:not(.mc3--pret) .mc3__etiquettes,.mc3--photo .mc3__tilt{visibility:hidden}
+/* maquette */
+.mc3__tilt,.mc3__spin,.mc3__piece,.mc3__piece div{transform-style:preserve-3d}
+.mc3__tilt{position:absolute;left:50%;top:55%;transform:rotateX(56deg)}
+.mc3__spin{position:absolute;left:0;top:0;transform:rotateZ(40deg) scale(1.08)}
+.mc3__piece{position:absolute;left:-13em;top:-14em;width:26em;height:28em}
+:where(.mc3__piece) div{position:absolute;left:0;top:0;display:block}
+.mc3__moquette{background:#5b4636 radial-gradient(rgba(255,240,220,.07) 18%,transparent 20%) 0 0/.7em .7em}
+.mc3__mur{background:#efe9df}
+.mc3__mur--a{left:-.6em;top:-11em;width:26.6em;height:11em;transform-origin:50% 100%;transform:rotateX(-90deg)}
+.mc3__mur--b{left:-11em;width:11em;height:28em;transform-origin:100% 50%;transform:rotateY(90deg);background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 110 280' preserveAspectRatio='none'%3E%3Cpath d='M47 0C36 60 58 105 44 150S36 230 50 280' fill='none' stroke='%23ffcf8f' stroke-opacity='.35' stroke-width='5'/%3E%3Cpath d='M47 0C36 60 58 105 44 150S36 230 50 280' fill='none' stroke='%23ffe2b8' stroke-width='1.4'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat,repeating-linear-gradient(180deg,#c99561 0 .85em,#93633a .85em 1em)}
+.mc3__cap{background:#cbc1b2}
+.mc3__plinthe{background:#ddd5c8}
+.mc3__baie{background:linear-gradient(180deg,#e7ebec,#cfd5d6 60%,#bfc6c7);border:.3em solid #17130f;transform:translateZ(.04em)}
+.mc3__baie::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:.22em;margin-left:-.11em;background:#17130f}
+.mc3__baie::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(90deg,#b8c0c2 0 8%,transparent 8% 14%,#aeb7b9 14% 22%,transparent 22% 31%,#b3bbbd 31% 38%,transparent 38% 55%,#a9b2b4 55% 63%,transparent 63% 72%,#b5bdbf 72% 84%,transparent 84%);opacity:.8}
+.mc3__cadre{background:#efe6da;border:.28em solid #17130f;transform:translateZ(.04em);overflow:hidden}
+.mc3__cadre::before{content:"";position:absolute;left:18%;top:20%;width:42%;height:56%;background:#a8462c;transform:skewX(-12deg)}
+.mc3__cadre::after{content:"";position:absolute;left:46%;top:38%;width:30%;height:44%;background:#17130f}
+.mc3__applique{background:#5a3920;border-radius:.3em;transform:translateZ(.04em)}
+.mc3__globe{border-radius:50%;background:radial-gradient(circle at 35% 35%,#fffaf0,#e9dfcf 70%);box-shadow:0 0 1.2em .3em rgba(255,214,150,.45);transform:translateZ(.7em)}
+.mc3__disque{border-radius:50%}
+.mc3__trace{border:1px dashed rgba(244,239,231,.6);border-radius:.3em;transform:translateZ(.03em)}
+.mc3__cote{opacity:0;border:1px solid var(--mc3-brun-clair);color:var(--mc3-brun-clair);font:1.3em/1 var(--body-font,Georgia,serif);letter-spacing:.04em}
+.mc3__cote--x{height:.9em;border-top:0}
+.mc3__cote--y{width:.9em;border-left:0}
+.mc3__cote::after{content:attr(data-texte);position:absolute;white-space:nowrap}
+.mc3__cote--x::after{left:50%;top:100%;transform:translate(-50%,.45em)}
+.mc3__cote--y::after{left:100%;top:50%;transform:translate(.35em,-50%) rotate(90deg) translateY(-50%);transform-origin:0 50%}
+.mc3__ancre{width:1px;height:1px}
+/* photo réaliste, comparée à la maquette */
+.mc3__vue{position:absolute;inset:0;display:flex;align-items:center;pointer-events:none}
+.mc3__photo{--x:50%;position:relative;width:100%;aspect-ratio:3/2;border-radius:12px;overflow:hidden;background:#1a1612;cursor:ew-resize;touch-action:pan-y;pointer-events:auto}
+.mc3--anime:not(.mc3--photo) .mc3__photo{opacity:0;visibility:hidden}
+.mc3 .mc3__img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;margin:0;border-radius:0;pointer-events:none;-webkit-user-drag:none}
+.mc3__avant{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--x)) 0 0)}
+.mc3__poignee{position:absolute;top:0;bottom:0;left:var(--x);width:2px;margin-left:-1px;background:var(--mc3-blanc);pointer-events:none}
+.mc3__poignee i{position:absolute;left:50%;top:50%;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;background:var(--mc3-blanc);box-shadow:0 4px 18px rgba(0,0,0,.35)}
+.mc3__poignee i::before,.mc3__poignee i::after{content:"";position:absolute;top:50%;width:7px;height:7px;margin-top:-4px;border:solid var(--mc3-noir);border-width:0 0 2px 2px}
+.mc3__poignee i::before{left:10px;transform:rotate(45deg)}
+.mc3__poignee i::after{right:10px;transform:rotate(-135deg)}
+.mc3__badge{position:absolute;bottom:12px;padding:6px 11px;border-radius:999px;background:rgba(11,9,7,.72);color:var(--mc3-blanc);font:12px/1 var(--body-font,Georgia,serif);letter-spacing:.02em;pointer-events:none;white-space:nowrap}
+.mc3__badge--g{left:12px}
+.mc3__badge--d{right:12px;background:var(--mc3-blanc);color:var(--mc3-noir)}
+.mc3__curseur{position:absolute!important;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0)}
+.mc3__photo:has(.mc3__curseur:focus-visible){outline:2px solid var(--mc3-brun-clair);outline-offset:3px}
+.mc3__flash{position:absolute;inset:0;z-index:1;background:#fff;opacity:0;pointer-events:none}
+/* étiquettes */
+.mc3__etiquettes{position:absolute;inset:0;pointer-events:none;z-index:2}
+.mc3__etiq{position:absolute;left:0;top:0;will-change:transform}
+.mc3 .mc3__etiq-c{position:absolute;left:0;bottom:16px;transform:translateX(-50%);pointer-events:auto;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 11px 7px;border-radius:9px;background:var(--mc3-blanc);color:var(--mc3-noir);text-decoration:none;white-space:nowrap;line-height:1.15;box-shadow:0 6px 18px rgba(0,0,0,.28)}
+.mc3__etiq-c::before{content:"";position:absolute;left:50%;top:100%;width:1px;height:12px;background:var(--mc3-blanc)}
+.mc3__etiq-c::after{content:"";position:absolute;left:50%;top:calc(100% + 11px);width:7px;height:7px;margin-left:-3px;border-radius:50%;background:var(--mc3-blanc);box-shadow:0 0 0 2px var(--mc3-brun)}
+.mc3__nom{font:italic 13px/1.15 var(--heading-font,Georgia,serif)}
+.mc3__prix{font:11.5px/1.2 var(--body-font,Georgia,serif);color:var(--mc3-brun);font-variant-numeric:tabular-nums}
+.mc3 a.mc3__etiq-c:hover .mc3__nom{text-decoration:underline;text-underline-offset:2px}
+.mc3 .mc3__rejouer{position:absolute;right:8px;bottom:4px;z-index:3;display:none;align-items:center;gap:6px;width:auto;min-height:0;margin:0;padding:6px 8px;border:0;border-radius:999px;box-shadow:none;background:none;text-transform:none;letter-spacing:0;color:var(--mc3-sourd);font:12.5px/1 var(--body-font,Georgia,serif);cursor:pointer}
+.mc3 .mc3__rejouer:hover{color:var(--mc3-blanc)}
+.mc3__rejouer svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.4}
+.mc3--fin .mc3__rejouer{display:inline-flex}
+/* étapes */
+.mc3 .mc3__etapes{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:10px clamp(12px,3.4cqi,30px);margin:6px 0 0;padding:0}
+.mc3 .mc3__etape{display:flex;align-items:center;gap:7px;margin:0;font:13.5px/1.2 var(--body-font,Georgia,serif);color:var(--mc3-blanc);transition:color .4s ease}
+.mc3__etape b{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;border:1px solid currentColor;font-weight:400;font-size:11.5px;transition:background-color .4s ease,border-color .4s ease}
+.mc3--anime .mc3__etape{color:var(--mc3-sourd)}
+.mc3--anime .mc3__etape.is-actif{color:var(--mc3-blanc)}
+.mc3 .mc3__etape.is-actif b{background:var(--mc3-brun);border-color:var(--mc3-brun)}
+.mc3__barre{display:block;height:2px;width:min(380px,84%);margin:14px auto 0;background:var(--mc3-filet);border-radius:2px;overflow:hidden}
+.mc3__barre i{display:block;height:100%;background:var(--mc3-brun-clair);transform-origin:0 50%}
+.mc3__masque{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:480px){.mc3 .mc3__nom{font-size:12px}.mc3 .mc3__prix{font-size:10.5px}.mc3 .mc3__etiq-c{padding:5px 9px 6px}.mc3 .mc3__etapes{gap:6px 9px}.mc3 .mc3__etape{font-size:11.5px;gap:4px}.mc3__etape b{width:18px;height:18px;font-size:10px}.mc3__badge{bottom:8px;font-size:11px;padding:5px 9px}.mc3__badge--g{left:8px}.mc3__badge--d{right:8px}}
+@media (max-width:360px){.mc3 .mc3__prix{display:none}}
 @media (min-width:990px){
-.mcv__grille{grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-rows:1fr auto auto auto 1fr;column-gap:clamp(40px,5vw,88px);grid-template-areas:". dessin" "tete dessin" "etapes dessin" "action dessin" ". dessin"}
-.mcv--gauche .mcv__grille{grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-areas:"dessin ." "dessin tete" "dessin etapes" "dessin action" "dessin ."}
-.mcv__tete{grid-area:tete}.mcv .mcv__dessin{grid-area:dessin}.mcv .mcv__etapes{grid-area:etapes}.mcv__action{grid-area:action}
+.mc3__grille{grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-areas:"tete dessin" "action dessin";column-gap:clamp(28px,4vw,64px);row-gap:34px}
+.mc3--gauche .mc3__grille{grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-areas:"dessin tete" "dessin action"}
+.mc3__tete{grid-area:tete;align-self:end}.mc3 .mc3__dessin{grid-area:dessin;margin:0}.mc3__action{grid-area:action;align-self:start}
+.mc3__scene{aspect-ratio:7/6}
 }
-/* animation : classes posées par le script, une phase après l'autre */
-.mcv--anime .mcv__t{stroke-dasharray:1 1;stroke-dashoffset:1}
-.mcv--anime .mcv__f,.mcv--anime .mcv__cote-texte,.mcv--anime .mcv__point,.mcv--anime .mcv__deco{opacity:0}
-.mcv--anime .mcv__plan{transform:translateY(-12px) rotate(-45deg) scale(.78,1.56)}
-.mcv--anime .mcv__mur{opacity:0}
-.mcv--anime .mcv__mur--g{transform:skewY(-26.565deg) scaleY(.002)}
-.mcv--anime .mcv__mur--d{transform:skewY(26.565deg) scaleY(.002)}
-.mcv--anime .mcv__meuble{opacity:0;transform:translateY(-22px)}
-.mcv--anime .mcv__etiq{opacity:0;translate:0 6px}
-.mcv--anime .mcv__etape{opacity:.38}
-.mcv--anime.is-p1 .mcv__plan .mcv__t{stroke-dashoffset:0;transition:stroke-dashoffset .9s var(--mcv-ease) var(--d,0ms)}
-.mcv--anime.is-p1 .mcv__plan .mcv__f{opacity:1;transition:opacity .6s ease var(--d,0ms)}
-.mcv--anime.is-p1 .mcv__cotes-plan .mcv__cote-texte{opacity:1;transition:opacity .5s ease .95s}
-.mcv--anime.is-p2 .mcv__plan{transform:none;transition:transform 1.15s var(--mcv-ease)}
-.mcv--anime.is-p2 .mcv__cotes-plan .mcv__cote-texte{opacity:0;transition:opacity .2s ease}
-.mcv--anime.is-p2 .mcv__cotes-iso .mcv__cote-texte{opacity:1;transition:opacity .5s ease 1.05s}
-.mcv--anime.is-p2 .mcv__mur{opacity:1;transform:none;transition:opacity .15s ease 1s,transform .95s cubic-bezier(.22,.8,.3,1) 1s}
-.mcv--anime.is-p2 .mcv__mur--g{transition-delay:1.15s}
-.mcv--anime.is-p3 .mcv__meuble{opacity:1;transform:none;transition:opacity .4s ease var(--d,0ms),transform .7s cubic-bezier(.3,1.35,.55,1) var(--d,0ms)}
-.mcv--anime.is-p3 .mcv__deco{opacity:1;transition:opacity .7s ease var(--d,0ms)}
-.mcv--anime.is-p3 .mcv__repere .mcv__t{stroke-dashoffset:0;transition:stroke-dashoffset .5s var(--mcv-ease) var(--d,0ms)}
-.mcv--anime.is-p3 .mcv__point{opacity:1;transition:opacity .3s ease var(--d,0ms)}
-.mcv--anime.is-p3 .mcv__etiq{opacity:1;translate:0 0;transition:opacity .4s ease calc(var(--d,0ms) + 350ms),translate .4s ease calc(var(--d,0ms) + 350ms)}
-.mcv--anime[data-etape="1"] .mcv__etape:nth-child(1),.mcv--anime[data-etape="2"] .mcv__etape:nth-child(-n+2),.mcv--anime[data-etape="3"] .mcv__etape,.mcv--anime[data-etape="fin"] .mcv__etape{opacity:1}
-.mcv--anime[data-etape="1"] .mcv__etape:nth-child(1) .mcv__num,.mcv--anime[data-etape="2"] .mcv__etape:nth-child(2) .mcv__num,.mcv--anime[data-etape="3"] .mcv__etape:nth-child(3) .mcv__num{background:var(--mcv-laiton);color:var(--mcv-fond)}
-.mcv--anime.is-fin .mcv__rejouer{display:inline-flex;animation:mcv-apparait .5s ease both}
-@keyframes mcv-apparait{from{opacity:0}to{opacity:1}}
 </style>
 <div
-  class="section{% if st.padding_top < 30 %} pt-min{% endif %}{% if st.padding_bottom < 30 %} pb-min{% endif %} mcv mcv--{{ st.ambiance }} mcv--{{ st.position }}{{ espacement }}"
+  class="section{% if st.padding_top < 30 %} pt-min{% endif %}{% if st.padding_bottom < 30 %} pb-min{% endif %} mc3 mc3--{{ st.position }}{{ espacement }}"
   style="--section-pt: {{ st.padding_top }}; --section-pb: {{ st.padding_bottom }};"
-  data-mcv
+  data-mc3
   data-largeur="{{ st.largeur | escape }}"
   data-longueur="{{ st.longueur | escape }}"
 >
   <div class="{{ st.section_width }}">
-    <div class="mcv__bande{% if st.section_width == 'full_width' %} mcv__bande--plein{% endif %}">
-      <div class="mcv__grille">
-        <div class="mcv__tete">
-          {%- if st.titre != blank -%}<h2 class="mcv__titre">{{ st.titre | escape }}</h2>{%- endif -%}
-          {%- if st.texte != blank -%}<div class="mcv__intro">{{ st.texte }}</div>{%- endif -%}
+    <div class="mc3__bande{% if st.section_width == 'full_width' %} mc3__bande--plein{% endif %}">
+      <div class="mc3__grille">
+        <div class="mc3__tete">
+          {%- if st.titre != blank -%}<h2 class="mc3__titre">{{ st.titre | escape }}</h2>{%- endif -%}
+          {%- if st.texte != blank -%}<p class="mc3__texte">{{ st.texte | escape }}</p>{%- endif -%}
         </div>
-        <figure class="mcv__dessin">
-          <div class="mcv__scene">
-            {%- for cle in cles -%}
-              {%- liquid
-                assign cle_produit = 'produit_' | append: cle
-                assign cle_nom = 'nom_' | append: cle
-                assign produit = st[cle_produit]
-                assign nom = st[cle_nom]
-                if nom == blank and produit != blank
-                  assign nom = produit.title
-                endif
-              -%}
-              {%- if nom != blank -%}
-                {%- if produit != blank -%}<a href="{{ produit.url }}"{%- else -%}<span{%- endif %} class="mcv__etiq" data-etiq="{{ cle }}">
-                  <span class="mcv__nom">{{ nom | escape }}</span>
-                  {%- if produit != blank and st.prix -%}
-                    <span class="mcv__prix">{% if produit.price_varies %}{{ st.des | escape }} {% endif %}{{ produit.price | money }}</span>
-                  {%- endif -%}
-                {%- if produit != blank -%}</a>{%- else -%}</span>{%- endif -%}
-              {%- endif -%}
-            {%- endfor -%}
-          </div>
-          <figcaption class="mcv__masque">{{ st.description | escape }}</figcaption>
-          <div class="mcv__pied">
-            <button type="button" class="mcv__rejouer"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.7-4M2.5 2.5v3h3"/></svg>{{ st.rejouer | escape }}</button>
-          </div>
-        </figure>
-        <ol class="mcv__etapes">
-          {%- for i in (1..3) -%}
-            {%- liquid
-              assign cle_titre = 'etape_' | append: i
-              assign cle_texte = 'etape_' | append: i | append: '_texte'
-            -%}
-            <li class="mcv__etape">
-              <span class="mcv__num" aria-hidden="true">{{ i }}</span>
-              <div>
-                <p class="mcv__etape-titre">{{ st[cle_titre] | escape }}</p>
-                {%- if st[cle_texte] != blank -%}<p class="mcv__etape-texte">{{ st[cle_texte] | escape }}</p>{%- endif -%}
+        <figure class="mc3__dessin">
+          <div class="mc3__scene">
+            <div class="mc3__vue">
+              <div class="mc3__photo">
+                <img class="mc3__img" src="{{ srcset_photo | split: ' ' | first }}" srcset="{{ srcset_photo }}" sizes="(min-width: 990px) 56vw, 96vw" width="1200" height="800" loading="lazy" decoding="async" alt="{{ st.alt_photo | escape }}">
+                <div class="mc3__avant" aria-hidden="true">
+                  <img class="mc3__img" src="{{ srcset_maquette | split: ' ' | first }}" srcset="{{ srcset_maquette }}" sizes="(min-width: 990px) 56vw, 96vw" width="1200" height="800" loading="lazy" decoding="async" alt="">
+                </div>
+                <span class="mc3__badge mc3__badge--g">{{ st.badge_maquette | escape }}</span>
+                <span class="mc3__badge mc3__badge--d">{{ st.badge_photo | escape }}</span>
+                <span class="mc3__poignee" aria-hidden="true"><i></i></span>
+                <input class="mc3__curseur" type="range" min="0" max="100" value="50" aria-label="{{ st.curseur | escape }}">
               </div>
-            </li>
-          {%- endfor -%}
-        </ol>
-        <div class="mcv__action">
-          {%- if st.bouton != blank -%}<a class="mcv__bouton" href="{{ lien }}">{{ st.bouton | escape }}</a>{%- endif -%}
-          {%- if st.note != blank -%}<p class="mcv__note">{{ st.note | escape }}</p>{%- endif -%}
+            </div>
+            <span class="mc3__flash" aria-hidden="true"></span>
+            <div class="mc3__etiquettes">
+              {%- for cle in cles -%}
+                {%- liquid
+                  assign cle_produit = 'produit_' | append: cle
+                  assign cle_nom = 'nom_' | append: cle
+                  assign produit = st[cle_produit]
+                  assign nom = st[cle_nom]
+                  if nom == blank and produit != blank
+                    assign nom = produit.title
+                  endif
+                -%}
+                {%- if nom != blank -%}
+                  <div class="mc3__etiq" data-etiq="{{ cle }}"><div class="mc3__etiq-a">
+                    {%- if produit != blank -%}<a class="mc3__etiq-c" href="{{ produit.url }}">{%- else -%}<span class="mc3__etiq-c">{%- endif -%}
+                      <span class="mc3__nom">{{ nom | escape }}</span>
+                      {%- if produit != blank and st.prix -%}
+                        <span class="mc3__prix">{% if produit.price_varies %}{{ st.des | escape }} {% endif %}{{ produit.price | money }}</span>
+                      {%- endif -%}
+                    {%- if produit != blank -%}</a>{%- else -%}</span>{%- endif -%}
+                  </div></div>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+            <button type="button" class="mc3__rejouer"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.7-4M2.5 2.5v3h3"/></svg>{{ st.rejouer | escape }}</button>
+          </div>
+          <figcaption class="mc3__masque">{{ st.description | escape }}</figcaption>
+          <ol class="mc3__etapes">
+            {%- for i in (1..4) -%}
+              {%- assign cle_etape = 'etape_' | append: i -%}
+              <li class="mc3__etape"><b aria-hidden="true">{{ i }}</b>{{ st[cle_etape] | escape }}</li>
+            {%- endfor -%}
+          </ol>
+          <span class="mc3__barre" aria-hidden="true"><i></i></span>
+        </figure>
+        <div class="mc3__action">
+          {%- if st.bouton != blank -%}<a class="mc3__bouton" href="{{ lien }}">{{ st.bouton | escape }}</a>{%- endif -%}
+          {%- if st.note != blank -%}<p class="mc3__note">{{ st.note | escape }}</p>{%- endif -%}
         </div>
       </div>
     </div>
@@ -175,216 +201,281 @@
 </div>
 <script>
 (function () {
-  if (window.mcvChezVous) { window.mcvChezVous(); return; }
+  if (window.mc3ChezVous) { window.mc3ChezVous(); return; }
+  var GSAP = 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js';
 
-  // Axonométrie de la pièce : u le long du mur de gauche (4,20 m = 1), v le long du mur de droite, h la hauteur.
-  var K = 240, H = 130, VM = 3.6 / 4.2, EP = .03, D = .075, VB = [25, -60, 530, 444];
-  function P(u, v, h) { return [300 - K * u + K * v, 120 + K / 2 * (u + v) - (h || 0)]; }
-  function nb(x) { var s = String(Math.round(x * 10) / 10); return s === '-0' ? '0' : s; }
-  function poly(pts, ouvert) {
-    var out = [];
-    pts.forEach(function (p) {
-      var q = out[out.length - 1];
-      if (!q || Math.abs(q[0] - p[0]) > .05 || Math.abs(q[1] - p[1]) > .05) out.push(p);
-    });
-    return 'M' + out.map(function (p) { return nb(p[0]) + ' ' + nb(p[1]); }).join('L') + (ouvert ? '' : 'Z');
+  // Maquette en CSS 3D, en em (la taille suit la largeur du dessin) : sol de 26 × 28, murs de 11 de haut.
+  // x le long du mur du fond (mur A, la baie), y le long du mur de gauche (mur B, les lattes), z vers le haut.
+  var W = 26, D = 28, EP = .6;
+  // matières : dessus, face avant (+y), face de côté (+x)
+  var BOUCLE = ['#efe9df', '#d9d1c4', '#c9c0b1'], DRAP = ['#faf8f4', '#e6e1d8', '#d8d2c8'], BEIGE = ['#e2d3b8', '#cbbb9e', '#b9a98b'],
+    TERRA = ['#b4633f', '#924f30', '#7c4328'], NOYER = ['#6b4528', '#56371f', '#472d19'], NOIR = ['#1d1a17', '#141210', '#0e0d0c'],
+    LAQUE = ['#ece7de', '#d7d1c6', '#c7c0b4'], RIDEAU = ['#ebe3d5', 'linear-gradient(0deg,#b65a36 0 15%,#e6ddce 15%)', 'linear-gradient(90deg,#9d4c2d 0 15%,#d8cebd 15%)'],
+    VERT = ['#56663f', '#46553a', '#3a4730'];
+  // photo réaliste : position des étiquettes, en % de l'image
+  var SUR_PHOTO = { lit: [27, 61], fauteuil: [66.5, 57.5], suspension: [32.1, 40.5], applique: [79.3, 27.4] };
+  function div(parent, cls, css) {
+    var e = document.createElement('div');
+    if (cls) e.className = cls;
+    if (css) e.style.cssText = css;
+    parent.appendChild(e);
+    return e;
   }
-  function chemin(cls, d, style) { return '<path class="' + cls + '"' + (style ? ' style="' + style + '"' : '') + ' d="' + d + '"/>'; }
-  function trace(d, cls, delai) { return '<path class="' + cls + ' mcv__t" pathLength="1" d="' + d + '" style="--d:' + delai + 'ms"/>'; }
+  // un volume : dessus à la hauteur h, faces avant et de côté qui se dressent depuis le sol (z au pied)
+  function boite(p, x, y, w, d, h, c, z, rayon) {
+    var b = div(p, '', 'left:' + x + 'em;top:' + y + 'em;width:' + w + 'em;height:' + d + 'em' + (z ? ';transform:translateZ(' + z + 'em)' : ''));
+    div(b, '', 'width:' + w + 'em;height:' + d + 'em;background:' + c[0] + ';transform:translateZ(' + h + 'em)' + (rayon ? ';border-radius:' + rayon : ''));
+    div(b, '', 'top:' + (d - h) + 'em;width:' + w + 'em;height:' + h + 'em;background:' + c[1] + ';transform-origin:50% 100%;transform:rotateX(-90deg)');
+    div(b, '', 'left:' + w + 'em;width:' + h + 'em;height:' + d + 'em;background:' + c[2] + ';transform-origin:0 50%;transform:rotateY(-90deg)');
+    return b;
+  }
+  function disque(p, cx, cy, r, z, couleur) {
+    return div(p, 'mc3__disque', 'left:' + (cx - r) + 'em;top:' + (cy - r) + 'em;width:' + 2 * r + 'em;height:' + 2 * r + 'em;background:' + couleur + ';transform:translateZ(' + z + 'em)');
+  }
 
-  // rectangle arrondi au sol : [angle de la normale (°), u, v], de 0 à 360°
-  function contour(u0, u1, v0, v1, r, pas) {
-    pas = pas || 6; r = Math.min(r || 0, (u1 - u0) / 2, (v1 - v0) / 2);
-    var coins = [[u1 - r, v1 - r], [u0 + r, v1 - r], [u0 + r, v0 + r], [u1 - r, v0 + r]], pts = [];
-    coins.forEach(function (c, k) {
-      for (var i = 0; i <= pas; i++) {
-        var a = k * 90 + i * 90 / pas, t = a * Math.PI / 180;
-        pts.push([a, c[0] + r * Math.cos(t), c[1] + r * Math.sin(t)]);
+  function construire(inst) {
+    var scene = inst.scene;
+    var tilt = document.createElement('div');
+    tilt.className = 'mc3__tilt';
+    tilt.setAttribute('aria-hidden', 'true');
+    scene.insertBefore(tilt, inst.photo.parentNode);
+    var spin = div(tilt, 'mc3__spin'), piece = div(spin, 'mc3__piece'), groupes = [];
+    // le sol : moquette sur un socle
+    var sol = boite(piece, 0, 0, W, D, .8, ['', '#3a2b20', '#2e2219'], -.8);
+    sol.firstChild.className = 'mc3__moquette';
+    // le plan : cotes et emprise des meubles, au sol
+    var cx = div(piece, 'mc3__cote mc3__cote--x', 'top:' + (D + 1.4) + 'em;width:' + W + 'em');
+    var cy = div(piece, 'mc3__cote mc3__cote--y', 'left:' + (W + 1.4) + 'em;height:' + D + 'em');
+    cx.setAttribute('data-texte', inst.el.getAttribute('data-longueur') || '');
+    cy.setAttribute('data-texte', inst.el.getAttribute('data-largeur') || '');
+    var traces = [[.3, 8, 13.9, 11.6], [.4, 5.3, 2.3, 2.3], [15.8, 4.1, 4.4, 4.3], [20.8, 1.2, 4.6, 2.8], [22.6, 13, 3, 13]].map(function (t) {
+      return div(piece, 'mc3__trace', 'left:' + t[0] + 'em;top:' + t[1] + 'em;width:' + t[2] + 'em;height:' + t[3] + 'em');
+    });
+    // les murs, à plat autour du sol (le plan déplié), qui se replient à la verticale
+    var murA = div(piece, 'mc3__mur mc3__mur--a'), murB = div(piece, 'mc3__mur mc3__mur--b');
+    div(murA, 'mc3__plinthe', 'top:10.55em;width:100%;height:.45em');
+    div(murA, 'mc3__baie', 'left:' + (EP + 8.6) + 'em;top:.7em;width:8.8em;height:10em');
+    div(murA, 'mc3__cadre', 'left:' + (EP + 20.2) + 'em;top:2.2em;width:2.6em;height:3.4em');
+    var applique = div(murA, 'mc3__applique', 'left:' + (EP + 23.6) + 'em;top:2.3em;width:.8em;height:1.5em');
+    div(applique, 'mc3__globe', 'left:-.35em;top:.1em;width:1.5em;height:1.5em');
+    div(murA, 'mc3__cap', 'width:100%;height:' + EP + 'em;transform-origin:50% 0;transform:rotateX(-90deg)');
+    div(murA, 'mc3__cap', 'left:100%;width:' + EP + 'em;height:100%;transform-origin:0 50%;transform:rotateY(90deg)');
+    div(murB, 'mc3__cap', 'width:' + EP + 'em;height:100%;transform-origin:0 50%;transform:rotateY(90deg)');
+    div(murB, 'mc3__cap', 'top:100%;width:100%;height:' + EP + 'em;transform-origin:50% 0;transform:rotateX(-90deg)');
+    function groupe() { var g = div(piece, ''); groupes.push(g); return g; }
+    function ancre(g, cle, x, y, z) { inst.ancres[cle] = div(g, 'mc3__ancre', 'left:' + x + 'em;top:' + y + 'em;transform:translateZ(' + z + 'em)'); }
+    // lit Cloud Bubble : tête de lit en bulles, cadre bouclé, matelas, coussins, chemin de lit
+    var g = groupe();
+    for (var k = 0; k < 6; k++) boite(g, .3, 8.1 + k * 1.92, 1, 1.8, 5.4, BOUCLE, 0, '50%');
+    boite(g, 1.2, 8, 13, 11.6, 1.7, BOUCLE, 0, '.9em');
+    boite(g, 1.5, 8.35, 12.4, 10.9, 1.5, DRAP, 1.7, '.5em');
+    boite(g, 1.6, 8.9, 1.8, 4.6, 1.2, DRAP, 3.2, '.6em');
+    boite(g, 1.6, 13.9, 1.8, 4.6, 1.2, DRAP, 3.2, '.6em');
+    boite(g, 9.6, 8.25, 1.9, 11.1, .25, BEIGE, 3.2);
+    ancre(g, 'lit', 8.2, 13.8, 3.6);
+    // table de chevet et sa plante
+    g = groupe();
+    boite(g, .4, 5.3, 2.3, 2.3, 2.6, NOYER);
+    disque(g, 1.55, 6.45, .7, 2.65, VERT[2]);
+    disque(g, 1.45, 6.35, .62, 3.4, VERT[0]);
+    // fauteuil Terra devant la baie
+    g = groupe();
+    boite(g, 15.8, 4.1, 4.4, 4.3, 1.9, TERRA, 0, '.4em');
+    boite(g, 15.8, 4.1, 4.4, 1.2, 2.4, TERRA, 1.9, '.4em');
+    boite(g, 15.8, 5.3, 1, 3.1, 1.1, TERRA, 1.9, '.4em');
+    boite(g, 19.2, 5.3, 1, 3.1, 1.1, TERRA, 1.9, '.4em');
+    ancre(g, 'fauteuil', 18, 5.4, 4.4);
+    // rideaux de part et d'autre de la baie
+    g = groupe();
+    boite(g, 6.6, .25, 2.2, .9, 10.6, RIDEAU);
+    boite(g, 17.6, .25, 2.2, .9, 10.6, RIDEAU);
+    // bureau, lampe et plante
+    g = groupe();
+    boite(g, 20.8, 1.2, 4.6, 2.8, .3, NOYER, 4.1);
+    [[20.9, 1.3], [25.1, 1.3], [20.9, 3.7], [25.1, 3.7]].forEach(function (p) { boite(g, p[0], p[1], .2, .2, 4.1, NOIR); });
+    boite(g, 24.3, 1.8, .2, .2, 1.6, NOIR, 4.4);
+    disque(g, 24.4, 1.9, .75, 6, NOIR[0]);
+    disque(g, 21.8, 2.4, .6, 4.45, VERT[1]);
+    // console basse et téléviseur
+    g = groupe();
+    boite(g, 22.6, 13, 3, 13, 2.4, LAQUE);
+    boite(g, 24.6, 14.6, .4, 9.8, 5.8, NOIR, 2.4);
+    boite(g, 23.2, 24, .9, .9, .9, NOIR, 2.4);
+    // suspension Luna Stack : trois diffuseurs d'albâtre empilés
+    g = groupe();
+    boite(g, 1.55, 6.45, .1, .1, 3.4, NOIR, 8.6);
+    [[6.3, .7], [7.15, .62], [7.95, .52]].forEach(function (s) {
+      disque(g, 1.6, 6.5, s[1], s[0] - .35, '#d8cdbc');
+      disque(g, 1.6, 6.5, s[1], s[0], '#f7f2e9');
+    });
+    ancre(g, 'suspension', 1.6, 6.5, 8.6);
+    // applique Wood Orb Duo (fixée au mur du fond)
+    ancre(piece, 'applique', 24, .2, 8.2);
+    inst.tilt = tilt; inst.spin = spin; inst.cotes = [cx, cy]; inst.traces = traces;
+    inst.murs = [murA, murB]; inst.groupes = groupes;
+  }
+
+  // étiquettes : sur la maquette (k = 0) puis sur la photo (k = 1) ; recalculées à chaque image tant que ça bouge
+  function placer(inst) {
+    var r = inst.scene.getBoundingClientRect(), f = inst.photo.getBoundingClientRect(), k = inst.k;
+    inst.etiquettes.forEach(function (e) {
+      var cle = e.getAttribute('data-etiq'), a = inst.ancres[cle], s = SUR_PHOTO[cle];
+      if (!s) return;
+      var px = f.left - r.left + f.width * s[0] / 100, py = f.top - r.top + f.height * s[1] / 100, x = px, y = py;
+      if (k < 1 && a) {
+        var p = a.getBoundingClientRect();
+        x = (p.left - r.left) * (1 - k) + px * k;
+        y = (p.top - r.top) * (1 - k) + py * k;
       }
+      e.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)';
     });
-    return pts;
-  }
-  // côtés tournés vers l'observateur : normales de -45° à 135°
-  function visibles(pts) {
-    return pts.filter(function (p) { return p[0] >= 315; }).concat(pts.filter(function (p) { return p[0] <= 135; }));
-  }
-  function aHauteur(pts, h) { return pts.map(function (p) { return P(p[1], p[2], h); }); }
-  // volume : côtés visibles puis dessus
-  function bloc(u0, u1, v0, v1, h0, h1, r, pas) {
-    var pts = contour(u0, u1, v0, v1, r, pas), vis = visibles(pts);
-    var cote = poly(aHauteur(vis, h1).concat(aHauteur(vis, h0).reverse()));
-    if (!r) cote += poly([P(u1, v1, h1), P(u1, v1, h0)], 1);
-    return chemin('mcv__c', cote) + chemin('mcv__d', poly(aHauteur(pts, h1)));
-  }
-  function couture(u0, u1, v0, v1, h, r) { return chemin('mcv__lf', poly(aHauteur(visibles(contour(u0, u1, v0, v1, r)), h), 1)); }
-  function cyl(cu, cv, r, h0, h1) { return bloc(cu - r, cu + r, cv - r, cv + r, h0, h1, r, 12); }
-
-  // le plan : sol, murs en coupe, fenêtre, parquet, cotes
-  function plan() {
-    var a = 1 + D, b = VM + D, sol = poly([P(0, 0), P(1, 0), P(1, VM), P(0, VM)]), o = '', k;
-    o += chemin('mcv__sol mcv__f', sol);
-    o += chemin('mcv__poche mcv__f', poly([P(-EP, -EP), P(1, -EP), P(1, 0), P(0, 0), P(0, VM), P(-EP, VM)]), '--d:300ms');
-    o += chemin('mcv__baie mcv__f', poly([P(-EP - .002, .3), P(.002, .3), P(.002, .6), P(-EP - .002, .6)]), '--d:300ms');
-    o += chemin('mcv__lf mcv__f', poly([P(-EP / 2, .3), P(-EP / 2, .6)], 1), '--d:450ms');
-    o += trace(sol, 'mcv__l', 0);
-    for (k = 1; k < 8; k++) o += trace(poly([P(.004, k * VM / 8), P(.996, k * VM / 8)], 1), 'mcv__lf mcv__lame', 160 + k * 60);
-    o += trace(poly([P(a, 0), P(a, VM)], 1), 'mcv__lf mcv__cote', 650) + trace(poly([P(0, b), P(1, b)], 1), 'mcv__lf mcv__cote', 650);
-    [[P(1.012, 0), P(a + .022, 0)], [P(1.012, VM), P(a + .022, VM)], [P(0, VM + .012), P(0, b + .022)], [P(1, VM + .012), P(1, b + .022)]].forEach(function (l) {
-      o += trace(poly(l, 1), 'mcv__lf mcv__cote', 600);
-    });
-    [[a, 0], [a, VM], [0, b], [1, b]].forEach(function (c) {      // barres obliques des cotes, comme sur un plan
-      o += trace(poly([P(c[0] - .014, c[1] + .014), P(c[0] + .014, c[1] - .014)], 1), 'mcv__l mcv__cote', 800);
-    });
-    return o;
-  }
-  // vue de dessus : même transformation que le CSS (rotation de -45°, étirement vertical), autour du centre du sol
-  var C = P(.5, VM / 2);
-  function versPlan(p) {
-    var x = (p[0] - C[0]) * .78, y = (p[1] - C[1]) * 1.56;
-    return [C[0] + (x + y) * Math.SQRT1_2, C[1] + (y - x) * Math.SQRT1_2 - 12];
-  }
-  function texte(p, r, txt) {
-    var x = nb(p[0]), y = nb(p[1]);
-    return '<text class="mcv__cote-texte" x="' + x + '" y="' + y + '" transform="rotate(' + r + ' ' + x + ' ' + y + ')">' + txt + '</text>';
   }
 
-  // un mur se dresse depuis sa ligne de sol : origine de la transformation au milieu de sa base
-  function mur(cls, b0, b1, contenu) {
-    var x = nb((b0[0] + b1[0]) / 2), y = nb((b0[1] + b1[1]) / 2);
-    return '<g transform="translate(' + x + ' ' + y + ')"><g class="mcv__mur ' + cls + '"><g transform="translate(-' + x + ' -' + y + ')">' + contenu + '</g></g></g>';
-  }
-  function murs() {
-    var v0 = .3, v1 = .6, b = 42, t = 112;
-    var gauche = chemin('mcv__mur-a', poly([P(0, 0, 0), P(1, 0, 0), P(1, 0, H), P(0, 0, H)]))
-      + chemin('mcv__lf', poly([P(0, 0, 6), P(1, 0, 6)], 1))
-      + chemin('mcv__poche', poly([P(0, 0, H), P(1, 0, H), P(1, -EP, H), P(-EP, -EP, H)]) + poly([P(1, 0, 0), P(1, 0, H), P(1, -EP, H), P(1, -EP, 0)]))
-      + chemin('mcv__l', poly([P(0, 0, 0), P(0, 0, H)], 1) + poly([P(1, 0, 0), P(1, 0, H)], 1) + poly([P(0, 0, H), P(1, 0, H)], 1));
-    var droite = chemin('mcv__mur-b', poly([P(0, 0, 0), P(0, VM, 0), P(0, VM, H), P(0, 0, H)]))
-      + chemin('mcv__lf', poly([P(0, 0, 6), P(0, VM, 6)], 1))
-      + chemin('mcv__vitre mcv__l', poly([P(0, v0, b), P(0, v1, b), P(0, v1, t), P(0, v0, t)]))
-      + chemin('mcv__lf', poly([P(0, v0 + .016, b + 5), P(0, v1 - .016, b + 5), P(0, v1 - .016, t - 5), P(0, v0 + .016, t - 5)]) + poly([P(0, .45, b + 5), P(0, .45, t - 5)], 1))
-      + bloc(0, .03, v0 - .012, v1 + .012, b - 4, b)
-      + chemin('mcv__poche', poly([P(0, 0, H), P(-EP, -EP, H), P(-EP, VM, H), P(0, VM, H)]) + poly([P(0, VM, 0), P(0, VM, H), P(-EP, VM, H), P(-EP, VM, 0)]))
-      + chemin('mcv__l', poly([P(0, VM, 0), P(0, VM, H)], 1) + poly([P(0, 0, H), P(0, VM, H)], 1));
-    return mur('mcv__mur--d', P(0, 0), P(0, VM), droite) + mur('mcv__mur--g', P(1, 0), P(0, 0), gauche);
-  }
-
-  // les meubles
-  function tapisserie() {          // tapisserie murale au-dessus du canapé
-    function w(x, h) { return P(x, .004, h); }
-    var f = '';
-    [[.53, 98, 80, .07, 9], [.47, 86, 145, .065, 8], [.59, 84, 30, .065, 8], [.5, 72, 120, .05, 6.5], [.57, 71, 55, .05, 6.5]].forEach(function (e) {
-      var pts = [], ca = Math.cos(e[2] * Math.PI / 180), sa = Math.sin(e[2] * Math.PI / 180);
-      for (var i = 0; i <= 16; i++) {
-        var x = e[3] / 2 * Math.cos(i * Math.PI / 8) * 268, y = e[4] / 2 * Math.sin(i * Math.PI / 8);
-        pts.push(w(e[0] + (x * ca - y * sa) / 268, e[1] + x * sa + y * ca));
-      }
-      f += poly(pts);
-    });
-    return chemin('mcv__d', poly([w(.4, 60), w(.66, 60), w(.66, 112), w(.4, 112)])) + chemin('mcv__lf', f) + chemin('mcv__lf', poly([w(.53, 64), w(.53, 92)], 1));
-  }
-  function tapis() {
-    return chemin('mcv__tapis', poly(aHauteur(contour(.3, .7, .29, .67, .015), 1.2))) + chemin('mcv__lf', poly(aHauteur(contour(.325, .675, .315, .645, .01), 1.2)));
-  }
-  function canape() {              // canapé d'angle bouclé, méridienne côté pièce
-    var o = bloc(.26, .86, .02, .245, 0, 22, .022) + bloc(.26, .86, .02, .075, 22, 45, .02);
-    [[.275, .46], [.47, .655], [.665, .85]].forEach(function (c) { o += bloc(c[0], c[1], .07, .125, 22, 40, .022); });
-    return o + bloc(.26, .315, .075, .245, 22, 35, .018) + chemin('mcv__lf', poly([P(.46, .08, 22), P(.46, .243, 22)], 1))
-      + bloc(.635, .86, .245, .475, 0, 22, .022) + chemin('mcv__lf', poly([P(.65, .245, 22), P(.845, .245, 22)], 1))
-      + couture(.26, .86, .02, .245, 8, .022) + couture(.635, .86, .245, .475, 8, .022);
-  }
-  function table() {               // table d'appoint champignon
-    return cyl(.47, .45, .05, 0, 3) + cyl(.47, .45, .026, 3, 24) + cyl(.47, .45, .082, 24, 31) + couture(.388, .552, .368, .532, 27.5, .082);
-  }
-  function fauteuil() {            // fauteuil lounge à bourrelets, dos à la fenêtre
-    return bloc(.045, .25, .53, .73, 0, 20, .06) + couture(.045, .25, .53, .73, 10, .06)
-      + bloc(.03, .095, .53, .73, 20, 41, .032) + bloc(.095, .25, .53, .578, 20, 31, .024) + bloc(.095, .25, .682, .73, 20, 31, .024);
-  }
-  function lampadaire() {          // pied doré, plumes en palme (celles de devant dessinées en dernier)
-    var cu = .12, cv = .12, haut = 98, plumes = [];
-    for (var k = 0; k < 9; k++) {
-      var phi = (k * 40 + 12) * Math.PI / 180, L = .095 + .018 * Math.sin(k * 1.7), nu = -Math.sin(phi), nv = Math.cos(phi), mil = [], g = [], d = [];
-      for (var i = 0; i <= 12; i++) {
-        var t = i / 12, u = cu + t * L * Math.cos(phi), v = cv + t * L * Math.sin(phi), h = haut + 16 * t - 34 * t * t;
-        var w = .02 * Math.pow(Math.sin(Math.PI * Math.min(t * 1.08, 1)), .8);
-        mil.push(P(u, v, h)); g.push(P(u + w * nu, v + w * nv, h)); d.push(P(u - w * nu, v - w * nv, h));
-      }
-      plumes.push([Math.cos(phi) + Math.sin(phi), chemin('mcv__d', poly(g.concat(d.reverse()))) + chemin('mcv__lf', poly(mil, 1))]);
+  function chargerGsap() {
+    if (window.gsap) return Promise.resolve(window.gsap);
+    if (!window.mc3Gsap) {
+      window.mc3Gsap = new Promise(function (ok, ko) {
+        var s = document.createElement('script');
+        s.src = GSAP; s.async = true;
+        s.onload = function () { window.gsap ? ok(window.gsap) : ko(); };
+        s.onerror = ko;
+        document.head.appendChild(s);
+      });
     }
-    plumes.sort(function (a, b) { return a[0] - b[0]; });
-    return cyl(cu, cv, .036, 0, 4) + chemin('mcv__l', poly([P(cu, cv, 4), P(cu, cv, haut)], 1)) + plumes.map(function (p) { return p[1]; }).join('');
+    return window.mc3Gsap;
   }
 
-  // étiquettes : ancre sur le meuble, coude du fil, côté du texte (-1 : à gauche), délai du fil (ms)
-  var ETIQ = {
-    canape: [P(.8, .4, 22), [178, 342], -1, 600],
-    table: [P(.47, .45, 31), [428, 342], 1, 870],
-    fauteuil: [P(.06, .7, 41), [500, -22], -1, 1140],
-    lampe: [P(.105, .095, 112), [232, -22], -1, 1410]
-  };
-  function reperes(cles) {
-    return cles.map(function (cle) {
-      var e = ETIQ[cle], a = e[0], c = e[1];
-      return '<g class="mcv__repere" style="--d:' + e[3] + 'ms"><path class="mcv__fil mcv__t" pathLength="1" d="' + poly([a, c, [c[0] + 16 * e[2], c[1]]], 1)
-        + '"/><circle class="mcv__point" cx="' + nb(a[0]) + '" cy="' + nb(a[1]) + '" r="3.2"/></g>';
-    }).join('');
-  }
-  function dessin(largeur, longueur, cles) {
-    var cx = nb(C[0]), cy = nb(C[1]), ang = nb(Math.atan(.5) * 180 / Math.PI), meubles = [['tapis', tapis(), 0], ['lampe', lampadaire(), 960], ['canape', canape(), 150], ['fauteuil', fauteuil(), 690], ['table', table(), 420]];
-    return '<svg class="mcv__svg" viewBox="' + VB.join(' ') + '" aria-hidden="true" focusable="false">'
-      + '<g transform="translate(' + cx + ' ' + cy + ')"><g class="mcv__plan"><g transform="translate(-' + cx + ' -' + cy + ')">' + plan() + '</g></g></g>'
-      + '<g class="mcv__cotes-plan">' + texte(versPlan(P(1 + D + .07, VM / 2)), 0, largeur) + texte(versPlan(P(.5, VM + D + .085)), -90, longueur) + '</g>'
-      + '<g class="mcv__murs">' + murs() + '</g>'
-      + '<g class="mcv__cotes-iso">' + texte(P(1 + D + .058, VM * .34), ang, largeur) + texte(P(.25, VM + D + .058), '-' + ang, longueur) + '</g>'
-      + '<g class="mcv__meubles"><g class="mcv__deco" style="--d:400ms">' + tapisserie() + '</g>'
-      + meubles.map(function (m) { return '<g class="mcv__meuble mcv__meuble--' + m[0] + '" style="--d:' + m[2] + 'ms">' + m[1] + '</g>'; }).join('')
-      + '</g><g class="mcv__reperes">' + reperes(cles) + '</g></svg>';
-  }
-  function echapper(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-
-  // animation : trois phases (le plan, les murs, les meubles), synchronisées avec les étapes du texte
-  var PHASES = [['p1', 0, '1'], ['p2', 1800, '2'], ['p3', 3500, '3'], ['fin', 5800, 'fin']];
-  function jouer(el) {
-    (el.mcvMinuteurs || []).forEach(clearTimeout);
-    el.classList.remove('is-p1', 'is-p2', 'is-p3', 'is-fin');
-    el.removeAttribute('data-etape');
-    void el.offsetWidth;
-    el.mcvMinuteurs = PHASES.map(function (p) {
-      return setTimeout(function () { el.classList.add('is-' + p[0]); el.setAttribute('data-etape', p[2]); }, p[1]);
+  // l'animation : le plan, la 3D (la maquette bascule, les murs se dressent), les meubles, puis la photo
+  function jouer(inst) {
+    var g = window.gsap, em = parseFloat(getComputedStyle(inst.scene).fontSize) || 6;
+    if (inst.tl) inst.tl.kill();
+    if (inst.tlBarre) inst.tlBarre.kill();
+    var el = inst.el, etapes = inst.etapes, a = inst.etiquettes.map(function (e) { return e.firstChild; });
+    el.classList.remove('mc3--fin', 'mc3--attente', 'mc3--photo');
+    g.set(inst.photo, { clearProps: 'opacity,visibility,scale' });
+    function etape(n) {
+      return function () { etapes.forEach(function (li, i) { li.classList.toggle('is-actif', i < n || n > 4); }); };
+    }
+    inst.k = 0; inst.suivre(true);
+    g.set(inst.tilt, { rotationX: 0, visibility: 'visible' });
+    g.set(inst.spin, { rotationZ: 0, scale: .82, x: 4 * em, y: 3.5 * em, opacity: 0 });
+    g.set(inst.murs[0], { rotationX: 0 });
+    g.set(inst.murs[1], { rotationY: 0 });
+    g.set(inst.cotes, { opacity: 1 });
+    g.set(inst.traces, { opacity: 0, scale: .6 });
+    g.set(inst.groupes, { visibility: 'hidden', z: 16 * em });
+    g.set(a, { opacity: 0, y: 10 });
+    inst.photo.style.setProperty('--x', '100%');
+    var tl = inst.tl = g.timeline({ defaults: { ease: 'power3.inOut' }, onComplete: function () {
+      el.classList.add('mc3--photo', 'mc3--fin');
+      g.set(inst.photo, { clearProps: 'opacity,visibility,scale' });
+      inst.suivre(false);
+    } });
+    tl.call(etape(1), null, 0)
+      .to(inst.spin, { opacity: 1, scale: .88, duration: .6, ease: 'power2.out' }, 0)
+      .to(inst.traces, { opacity: 1, scale: 1, duration: .5, stagger: .08, ease: 'back.out(1.7)' }, .25)
+      .fromTo(inst.cotes, { scale: 0 }, { scale: 1, duration: .6, stagger: .12, ease: 'back.out(1.6)' }, .5)
+      .call(etape(2), null, 1.5)
+      .to(inst.spin, { x: 0, y: 0, rotationZ: 40, scale: 1.08, duration: 1.5 }, 1.5)
+      .to(inst.tilt, { rotationX: 56, duration: 1.5 }, 1.5)
+      .to(inst.cotes, { opacity: 0, duration: .35, ease: 'power1.out' }, 1.75)
+      .to(inst.murs[1], { rotationY: 90, duration: 1, ease: 'back.out(1.5)' }, 2.05)
+      .to(inst.murs[0], { rotationX: -90, duration: 1, ease: 'back.out(1.5)' }, 2.2)
+      .call(etape(3), null, 3.1);
+    inst.groupes.forEach(function (groupe, i) {
+      var t = 3.15 + i * .15;
+      tl.set(groupe, { visibility: 'visible' }, t).to(groupe, { z: 0, duration: .9, ease: 'bounce.out' }, t);
     });
+    tl.to(inst.traces, { opacity: 0, duration: .4, ease: 'power1.out' }, 3.6)
+      .to(a, { opacity: 1, y: 0, duration: .5, stagger: .12, ease: 'back.out(2)' }, 4.5)
+      .to(inst.spin, { rotationZ: 50, duration: 1.4, ease: 'sine.inOut' }, 4.6)
+      // on entre dans la pièce, flash, et la photo réaliste apparaît à la place de la maquette
+      .call(etape(4), null, 6.2)
+      .to(inst.spin, { scale: 2.5, rotationZ: 38, duration: 1.1, ease: 'power2.in' }, 6.1)
+      .to(inst.tilt, { rotationX: 72, duration: 1.1, ease: 'power2.in' }, 6.1)
+      .set(inst.photo, { visibility: 'visible' }, 6.9)
+      .fromTo(inst.flash, { opacity: 0 }, { opacity: .85, duration: .12, ease: 'power1.out' }, 6.95)
+      .to(inst.flash, { opacity: 0, duration: .55, ease: 'power1.in' }, 7.07)
+      .fromTo(inst.photo, { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: .7, ease: 'power2.out' }, 6.95)
+      .set([inst.tilt].concat(inst.groupes), { visibility: 'hidden' }, 7.3)
+      .to(inst, { k: 1, duration: .8, ease: 'power2.inOut' }, 7.05)
+      .to(inst.photo, { '--x': '0%', duration: 1.4, ease: 'power2.inOut' }, 7.6)
+      .to(inst.photo, { '--x': '50%', duration: .9, ease: 'power2.inOut' }, 9.3)
+      .call(etape(5), null, 10.2);
+    inst.tlBarre = g.fromTo(inst.barre, { scaleX: 0 }, { scaleX: 1, duration: tl.duration(), ease: 'none' });
   }
+
   function preparer(el) {
-    var scene = el.querySelector('.mcv__scene');
-    if (el.mcvPret || !scene) return;
-    el.mcvPret = true;
-    var etiquettes = [].slice.call(scene.querySelectorAll('[data-etiq]')).filter(function (a) { return ETIQ[a.getAttribute('data-etiq')]; });
-    etiquettes.forEach(function (a) {
-      var e = ETIQ[a.getAttribute('data-etiq')];
-      a.style.left = ((e[1][0] + 21 * e[2] - VB[0]) / VB[2] * 100).toFixed(2) + '%';
-      a.style.top = ((e[1][1] - VB[1]) / VB[3] * 100).toFixed(2) + '%';
-      a.style.setProperty('--d', e[3] + 'ms');
-      if (e[2] < 0) a.classList.add('mcv__etiq--g');
-    });
-    scene.insertAdjacentHTML('afterbegin', dessin(echapper(el.getAttribute('data-largeur')), echapper(el.getAttribute('data-longueur')),
-      etiquettes.map(function (a) { return a.getAttribute('data-etiq'); })));
-    el.classList.add('mcv--pret');
+    var scene = el.querySelector('.mc3__scene');
+    if (el.mc3 || !scene) return;
+    var inst = el.mc3 = { el: el, scene: scene, ancres: {}, k: 1, photo: el.querySelector('.mc3__photo'), flash: el.querySelector('.mc3__flash'),
+      etapes: [].slice.call(el.querySelectorAll('.mc3__etape')), etiquettes: [].slice.call(el.querySelectorAll('[data-etiq]')), barre: el.querySelector('.mc3__barre i') };
+    construire(inst);
+    // comparaison maquette / photo : glisser n'importe où sur l'image, ou les flèches du clavier
+    var curseur = el.querySelector('.mc3__curseur'), glisse = false;
+    function poser(v) {
+      v = Math.round(Math.max(0, Math.min(100, v)) * 10) / 10;
+      if (window.gsap && inst.tl && inst.tl.isActive()) return;
+      inst.photo.style.setProperty('--x', v + '%');
+      curseur.value = Math.round(v);
+    }
+    function depuis(e) { var r = inst.photo.getBoundingClientRect(); poser((e.clientX - r.left) / r.width * 100); }
+    inst.photo.addEventListener('pointerdown', function (e) { glisse = true; depuis(e); });
+    window.addEventListener('pointermove', function (e) { if (glisse) depuis(e); });
+    window.addEventListener('pointerup', function () { glisse = false; });
+    window.addEventListener('pointercancel', function () { glisse = false; });
+    curseur.addEventListener('input', function () { poser(+curseur.value); });
+    // suivi des étiquettes, à chaque image pendant l'animation
+    function image() { placer(inst); }
+    inst.suivre = function (oui) {
+      if (!window.gsap) return;
+      window.gsap.ticker.remove(image);
+      if (oui) window.gsap.ticker.add(image);
+    };
+    window.addEventListener('resize', function () { placer(inst); });
+    el.classList.add('mc3--pret', 'mc3--photo');
+    function fixe() {
+      el.classList.remove('mc3--anime', 'mc3--attente');
+      el.classList.add('mc3--photo');
+      placer(inst);
+      setTimeout(function () { placer(inst); }, 400);
+    }
     var reduit = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduit || !('IntersectionObserver' in window)) return;
-    el.classList.add('mcv--anime');
-    el.mcvJouer = function () { jouer(el); };
-    var io = new IntersectionObserver(function (entrees) {
-      if (entrees.some(function (e) { return e.isIntersecting; })) { io.disconnect(); jouer(el); }
-    }, { threshold: .45 });
-    io.observe(scene);
-    var bouton = el.querySelector('.mcv__rejouer');
-    if (bouton) bouton.addEventListener('click', el.mcvJouer);
+    if (reduit || !('IntersectionObserver' in window)) { fixe(); return; }
+    el.classList.remove('mc3--photo');
+    el.classList.add('mc3--anime', 'mc3--attente');
+    // GSAP n'est chargé qu'à l'approche de la section ; l'animation part quand le dessin est bien visible
+    var abandon;
+    function lancer() {
+      abandon = setTimeout(function () { if (!inst.tl) fixe(); }, 8000);
+      chargerGsap().then(function () {
+        clearTimeout(abandon);
+        var io = new IntersectionObserver(function (entrees) {
+          var e = entrees[0];
+          if (e.isIntersecting && e.intersectionRatio >= .4 && !inst.tl) jouer(inst);
+        }, { threshold: [0, .4] });
+        io.observe(scene);
+        inst.io = io;
+      }, function () { clearTimeout(abandon); fixe(); });
+    }
+    var pres = new IntersectionObserver(function (entrees) {
+      if (entrees[0].isIntersecting) { pres.disconnect(); lancer(); }
+    }, { rootMargin: '600px 0px' });
+    pres.observe(scene);
+    var bouton = el.querySelector('.mc3__rejouer');
+    if (bouton) bouton.addEventListener('click', function () { if (window.gsap) jouer(inst); });
   }
-  window.mcvChezVous = function () { [].forEach.call(document.querySelectorAll('[data-mcv]'), preparer); };
-  window.mcvChezVous();
-  document.addEventListener('shopify:section:load', window.mcvChezVous);
+
+  window.mc3ChezVous = function () { [].forEach.call(document.querySelectorAll('[data-mc3]'), preparer); };
+  window.mc3ChezVous();
+  document.addEventListener('shopify:section:load', window.mc3ChezVous);
   document.addEventListener('shopify:section:select', function (e) {
-    var el = e.target && e.target.querySelector && e.target.querySelector('[data-mcv]');
-    if (el && el.mcvJouer) el.mcvJouer();
+    var el = e.target && e.target.querySelector && e.target.querySelector('[data-mc3]');
+    if (el && el.mc3 && window.gsap && el.classList.contains('mc3--anime')) jouer(el.mc3);
+  });
+  document.addEventListener('shopify:section:unload', function (e) {
+    var el = e.target && e.target.querySelector && e.target.querySelector('[data-mc3]');
+    if (el && el.mc3) { if (el.mc3.suivre) el.mc3.suivre(false); if (el.mc3.tl) el.mc3.tl.kill(); if (el.mc3.io) el.mc3.io.disconnect(); }
   });
 })();
 </script>
@@ -393,46 +484,42 @@
 {
   "name": "Pièce en 3D (Chez vous)",
   "tag": "section",
-  "class": "mcv-section",
+  "class": "mc3-section",
   "disabled_on": { "groups": ["header", "footer", "custom.overlay"] },
   "settings": [
     { "type": "header", "content": "Textes" },
-    { "type": "text", "id": "titre", "label": "Titre", "default": "Essayez nos meubles chez vous, en 3D" },
-    { "type": "richtext", "id": "texte", "label": "Texte", "default": "<p>Photographiez une pièce de votre intérieur : nous la reconstruisons en 3D, à ses vraies dimensions, et la meublons avec les pièces Maison Corleone.</p>" },
-    { "type": "text", "id": "etape_1", "label": "Étape 1", "default": "Le plan de votre pièce" },
-    { "type": "text", "id": "etape_1_texte", "label": "Étape 1 : détail", "default": "Quelques photos suffisent : murs, fenêtres et dimensions sont relevés." },
-    { "type": "text", "id": "etape_2", "label": "Étape 2", "default": "Votre pièce en 3D" },
-    { "type": "text", "id": "etape_2_texte", "label": "Étape 2 : détail", "default": "Elle prend forme à ses vraies mesures. Tournez autour, de jour comme de nuit." },
-    { "type": "text", "id": "etape_3", "label": "Étape 3", "default": "Meublée Maison Corleone" },
-    { "type": "text", "id": "etape_3_texte", "label": "Étape 3 : détail", "default": "Nos pièces s’y installent : déplacez-les, échangez-les, puis voyez le rendu en photo réaliste." },
+    { "type": "text", "id": "titre", "label": "Titre", "default": "Voyez nos meubles chez vous, en vraie photo" },
+    { "type": "text", "id": "texte", "label": "Phrase sous le titre", "default": "Une photo de votre pièce suffit : elle est modélisée en 3D, meublée avec nos pièces, puis rendue en photo réaliste." },
+    { "type": "text", "id": "etape_1", "label": "Étape 1", "default": "Le plan" },
+    { "type": "text", "id": "etape_2", "label": "Étape 2", "default": "La 3D" },
+    { "type": "text", "id": "etape_3", "label": "Étape 3", "default": "Vos meubles" },
+    { "type": "text", "id": "etape_4", "label": "Étape 4", "default": "La photo" },
     { "type": "text", "id": "bouton", "label": "Bouton", "default": "Modéliser ma pièce" },
     { "type": "url", "id": "lien", "label": "Lien du bouton", "info": "Laissez vide pour ouvrir « Chez vous » (en français, ou en anglais si la boutique est affichée en anglais)." },
-    { "type": "text", "id": "note", "label": "Note sous le bouton", "default": "Offert avec votre compte client, deux rendus photo réalistes compris." },
-    { "type": "header", "content": "Pièces du dessin", "info": "Choisissez un produit pour afficher son prix et ouvrir sa fiche au clic." },
-    { "type": "product", "id": "produit_canape", "label": "Canapé" },
-    { "type": "text", "id": "nom_canape", "label": "Nom du canapé", "default": "Bouclé Noyer" },
-    { "type": "product", "id": "produit_table", "label": "Table" },
-    { "type": "text", "id": "nom_table", "label": "Nom de la table", "default": "Nordic" },
+    { "type": "text", "id": "note", "label": "Note sous le bouton", "default": "Gratuit avec votre compte client, deux photos réalistes offertes." },
+    { "type": "header", "content": "Photo réaliste", "info": "Photo d’exemple : une vraie maquette RealRoom et sa photo réaliste. Pour la remplacer, déposez « chez-vous-maquette.jpg » et « chez-vous-photo.jpg » dans Contenu → Fichiers (même cadrage, 3:2)." },
+    { "type": "text", "id": "badge_maquette", "label": "Libellé de la maquette", "default": "Maquette 3D" },
+    { "type": "text", "id": "badge_photo", "label": "Libellé de la photo", "default": "Photo réaliste (IA)" },
+    { "type": "text", "id": "alt_photo", "label": "Description de la photo", "default": "Photo réaliste d’une chambre meublée avec le lit Cloud Bubble, le fauteuil Terra, la suspension Luna Stack et l’applique Wood Orb Duo." },
+    { "type": "text", "id": "curseur", "label": "Curseur de comparaison (lecteurs d’écran)", "default": "Comparer la maquette 3D et la photo réaliste" },
+    { "type": "header", "content": "Pièces Maison Corleone", "info": "Choisissez un produit pour afficher son prix et ouvrir sa fiche au clic." },
+    { "type": "product", "id": "produit_lit", "label": "Lit" },
+    { "type": "text", "id": "nom_lit", "label": "Nom du lit", "default": "Cloud Bubble" },
     { "type": "product", "id": "produit_fauteuil", "label": "Fauteuil" },
-    { "type": "text", "id": "nom_fauteuil", "label": "Nom du fauteuil", "default": "Terracotta" },
-    { "type": "product", "id": "produit_lampe", "label": "Lampadaire" },
-    { "type": "text", "id": "nom_lampe", "label": "Nom du lampadaire", "default": "Feather Palm" },
+    { "type": "text", "id": "nom_fauteuil", "label": "Nom du fauteuil", "default": "Terra" },
+    { "type": "product", "id": "produit_suspension", "label": "Suspension" },
+    { "type": "text", "id": "nom_suspension", "label": "Nom de la suspension", "default": "Luna Stack" },
+    { "type": "product", "id": "produit_applique", "label": "Applique" },
+    { "type": "text", "id": "nom_applique", "label": "Nom de l’applique", "default": "Wood Orb Duo" },
     { "type": "checkbox", "id": "prix", "label": "Afficher les prix", "default": true },
     { "type": "text", "id": "des", "label": "Devant un prix « à partir de »", "default": "dès" },
     { "type": "text", "id": "longueur", "label": "Cote : longueur", "default": "4,20 m" },
-    { "type": "text", "id": "largeur", "label": "Cote : largeur", "default": "3,60 m" },
-    { "type": "text", "id": "description", "label": "Description du dessin (lecteurs d’écran)", "default": "Le plan d’une pièce se dessine, passe en 3D, puis se meuble : canapé d’angle, table d’appoint, fauteuil et lampadaire Maison Corleone." },
+    { "type": "text", "id": "largeur", "label": "Cote : largeur", "default": "4,50 m" },
+    { "type": "text", "id": "description", "label": "Description de l’animation (lecteurs d’écran)", "default": "Le plan d’une chambre se déplie en 3D, se meuble avec des pièces Maison Corleone, puis devient une photo réaliste." },
     { "type": "text", "id": "rejouer", "label": "Bouton pour rejouer l’animation", "default": "Rejouer" },
     { "type": "header", "content": "Mise en page" },
     {
-      "type": "select", "id": "ambiance", "label": "Ambiance", "default": "expresso",
-      "options": [
-        { "value": "expresso", "label": "Expresso (fond sombre)" },
-        { "value": "creme", "label": "Crème (fond clair)" }
-      ]
-    },
-    {
-      "type": "select", "id": "position", "label": "Dessin", "default": "droite",
+      "type": "select", "id": "position", "label": "Maquette", "default": "droite",
       "options": [
         { "value": "droite", "label": "À droite du texte" },
         { "value": "gauche", "label": "À gauche du texte" }
