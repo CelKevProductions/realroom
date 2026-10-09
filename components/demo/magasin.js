@@ -98,8 +98,8 @@ export function listeProjets() {
   const e = lire();
   return e.projets.slice().sort((a, b) => (a.maj_le < b.maj_le ? 1 : -1)).map(p => {
     const pieces = e.pieces.filter(x => x.projet_id === p.id);
-    const apercu = pieces.find(x => x.photos.length);
-    return { id: p.id, nom: p.nom, nb: pieces.length, apercu: apercu ? apercu.photos[0].url : null };
+    const apercu = pieces.flatMap(x => x.photos).find(photo => photo.role !== 'inspiration');
+    return { id: p.id, nom: p.nom, nb: pieces.length, apercu: apercu?.url || null };
   });
 }
 

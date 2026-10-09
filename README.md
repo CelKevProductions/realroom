@@ -24,7 +24,8 @@ Le client photographie une pièce (ou tout un logement) et donne des mesures app
 | `lib` | Serveur : base, sessions, stockage, crédits, Claude, fal.ai / Marble, Stripe, catalogue, agencement |
 | `lib/agencement.js` | Repère de la pièce, empreintes au sol, solveur (dans la pièce, sans chevauchement, portes libres). Il tourne aussi dans le navigateur. |
 | `lib/geometrie.js`, `components/piece/PlanPiece.js` | Plan 2D corrigeable : mesures confirmées, ouvertures et tailles des meubles existants, enregistrement commun à l’API et à la démo. |
-| `lib/confort.js` | Comparaison de compositions par groupes, accès et circulation ; jusqu’à trois dispositions distinctes aux mêmes produits et prix. |
+| `lib/confort.js` | Score expliqué, recuit simulé reproductible, accès et circulation ; jusqu’à trois dispositions aux mêmes produits et prix. |
+| `lib/references.js` | Sources, préférences de composition et inspirations, séparées du relevé métrique. |
 | `moteur` | Moteur 3D du navigateur |
 | `components` | Interface React |
 | `outils`, `scripts` | Catalogue (export Shopify, familles et dimensions), assemblage des maquettes |
@@ -107,7 +108,7 @@ Les pièces choisies à la main (`outils/sources/produits.js`) gardent leur maqu
 
 ```bash
 npm test                                   # solveur d'agencement, crédits (base PGlite temporaire)
-npm run build && node tests/plan.mjs        # plan : API, base, rechargement et démo desktop/mobile (Playwright)
+npm run build && node tests/plan.mjs        # plan, inspirations et score : API, base, rechargement, desktop/mobile (Playwright)
 npm run build && npm run test:api          # cas limites de l'API : envois simultanés, crédits offerts, codes faux…
 python3 tests/e2e.py                       # parcours complet, services simulés (aussi : mobile)
 python3 tests/maison.py compte             # édition Maison Corleone : connexion simulée, parcours guidé, pièce 3D, rendu

@@ -10,6 +10,7 @@ import { versClaude, dimsValides } from '@/lib/piece.js';
 import { verifier } from '@/lib/agencement.js';
 import { corrigerPiece, mesuresConfirmees } from '@/lib/geometrie.js';
 import { CREDITS, PACKS, FONCTIONS, ROLES_PHOTO, LIMITES } from '@/lib/config.js';
+import { placePhoto } from '@/lib/references.js';
 
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const maintenant = () => new Date().toISOString();
@@ -157,10 +158,11 @@ async function photos(p, method, u, formulaire) {
   const fichier = formulaire && formulaire.get('photo');
   if (!fichier || typeof fichier.arrayBuffer !== 'function') throw erreur(400, 'photo');
   const role = ROLES_PHOTO.includes(formulaire.get('role')) ? formulaire.get('role') : 'detail';
-  const i = role !== 'detail' ? p.photos.findIndex(f => f.role === role) : -1;
-  if (i < 0 && p.photos.length >= LIMITES.photosParPiece) throw erreur(409, 'limite-photos');
+  if (!placePhoto(p.photos, role, LIMITES).possible) throw erreur(409, 'limite-photos');
   const photo = { url: await lireFichier(fichier), role, largeur: Math.round(+formulaire.get('largeur')) || null, hauteur: Math.round(+formulaire.get('hauteur')) || null };
   ecrire(() => {
+    const { remplace: i, possible } = placePhoto(p.photos, role, LIMITES);
+    if (!possible) throw erreur(409, 'limite-photos');
     if (i >= 0) p.photos[i] = photo; else p.photos.push(photo);
     p.photos.sort((a, b) => ROLES_PHOTO.indexOf(a.role) - ROLES_PHOTO.indexOf(b.role));
     toucher(p);

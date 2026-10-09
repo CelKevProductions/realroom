@@ -44,9 +44,26 @@ try {
   await ctx.addCookies([{ name: 'rr_session', value: session, url: base, httpOnly: true, sameSite: 'Lax' }]);
   const projet = (await json(await ctx.request.post(base + '/api/projets', { data: { nom: 'Plan de chambre' } }))).projet;
   const p = (await json(await ctx.request.post(`${base}/api/projets/${projet.id}/pieces`, { data: { fonction: 'chambre', nom: 'Chambre' } }))).piece;
+  const fichier = fs.readFileSync(path.join(racine, 'tests/fixtures/salon-entree.jpg'));
+  const posterPhoto = role => ctx.request.post(`${base}/api/pieces/${p.id}/photos`, { multipart: {
+    photo: { name: 'photo.jpg', mimeType: 'image/jpeg', buffer: fichier }, role, largeur: '1200', hauteur: '800'
+  } });
+  await json(await posterPhoto('inspiration'));
+  const paralleles = await Promise.all([posterPhoto('inspiration'), posterPhoto('inspiration'), posterPhoto('inspiration')]);
+  assert.deepEqual(paralleles.map(r => r.status()).sort(), [200, 200, 409], 'quota atomique de trois inspirations');
+  assert.equal((await ctx.request.post(`${base}/api/pieces/${p.id}/analyse`, { data: { langue: 'fr' } })).status(), 400, 'une inspiration ne remplace pas la photo de la pièce');
+  const refs = (await json(await ctx.request.get(`${base}/api/pieces/${p.id}`))).piece.photos;
+  assert.equal(refs.length, 3);
+  const projets = (await json(await ctx.request.get(`${base}/api/projets`))).projets;
+  assert.equal(projets.find(pr => pr.id === projet.id).apercu, null, 'une inspiration ne devient pas la photo de la pièce');
+  await json(await ctx.request.delete(`${base}/api/pieces/${p.id}/photos?url=${encodeURIComponent(refs[2].url)}`));
   await json(await ctx.request.post(`${base}/api/pieces/${p.id}/photos`, { multipart: {
     photo: { name: 'photo.jpg', mimeType: 'image/jpeg', buffer: fs.readFileSync(path.join(racine, 'tests/fixtures/salon-entree.jpg')) }, role: 'entree', largeur: '1200', hauteur: '800'
   } }));
+  for (let i = 0; i < 7; i++) await json(await posterPhoto('detail'));
+  assert.equal((await posterPhoto('detail')).status(), 409);
+  await json(await posterPhoto('entree')); // remplacement toujours permis lorsque les quotas sont pleins
+  console.log('API inspirations : quota concurrent, suppression, huit vues distinctes et photo de pièce obligatoire validés.');
   const analyse = (await json(await ctx.request.post(`${base}/api/pieces/${p.id}/analyse`, { data: { langue: 'fr' } }))).piece;
   const lit = analyse.agencement.find(it => it.p.fam === 'lit');
   assert.ok(lit);
@@ -75,6 +92,18 @@ try {
   await page.getByRole('button', { name: 'Vérifier le plan et les mesures' }).click();
   assert.equal(await page.getByRole('dialog').getByLabel('Largeur (m)', { exact: true }).first().inputValue(), '4.6');
   await page.getByRole('dialog').getByRole('button', { name: 'Fermer', exact: true }).last().click();
+  await verifierInspiration(page, racine, 3);
+  await page.locator('.panneau__corps textarea').first().fill('Une chambre classique, avec une composition symétrique');
+  await page.getByRole('button', { name: 'Proposer un aménagement', exact: true }).click();
+  await page.locator('.concept').waitFor({ timeout: 30000 });
+  const proposee = (await json(await ctx.request.get(`${base}/api/pieces/${p.id}`))).piece;
+  assert.equal(proposee.proposition.preferences.style, 'classique');
+  assert.equal(proposee.proposition.preferences.composition, 'symetrie');
+  assert.equal(proposee.proposition.confort.score.criteres.length, 9);
+  await verifierScore(page);
+  await page.reload();
+  await verifierScore(page);
+  assert.equal((await json(await ctx.request.get(`${base}/api/pieces/${p.id}`))).piece.photos.filter(p => p.role === 'inspiration').length, 3);
   assert.deepEqual(erreurs, []);
   console.log('Interface → API → base → rechargement : plan corrigé retrouvé.');
   await ctx.close();
@@ -91,8 +120,10 @@ try {
     const e = await pg.evaluate(() => JSON.parse(sessionStorage.getItem('realroom-demo-1')).pieces.find(p => p.id === 'r_demo_salon'));
     assert.equal(e.modele.dims.largeur, 4.4);
     assert.ok(e.modele.murs.droite.ouvertures.some(o => o.type === 'fenetre'));
+    await verifierInspiration(pg, racine, 1);
     await pg.getByRole('button', { name: 'Proposer un aménagement', exact: true }).click();
     await pg.locator('.concept').waitFor({ timeout: 30000 });
+    await verifierScore(pg);
     await pg.getByRole('button', { name: 'Comparer les dispositions', exact: true }).click();
     await pg.getByRole('button', { name: /^Disposition \d+$/ }).first().waitFor({ timeout: 30000 });
     await pg.screenshot({ path: path.join(racine, `.essais/plan-${mobile ? 'mobile' : 'desktop'}-comparaison.png`) });
@@ -112,6 +143,7 @@ try {
     });
     await pg.goto(`${base}/fr/maison-corleone/demo?piece=r_demo_salon`);
     await pg.locator('.mc-piece canvas').waitFor({ timeout: 30000 });
+    await verifierScore(pg);
     await verifierPlan(pg, mobile ? 'maison-mobile' : 'maison-desktop', '4.7');
     const maison = await pg.evaluate(() => JSON.parse(sessionStorage.getItem('mc-demo-1')).pieces.find(p => p.id === 'r_demo_salon'));
     assert.equal(maison.modele.dims.largeur, 4.7);
@@ -125,6 +157,21 @@ try {
     assert.deepEqual(fautes, []);
     assert.ok(await pg.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
     console.log(`Maison Corleone ${mobile ? 'mobile' : 'desktop'} : plan, scène et rechargement validés.`);
+    // Nouveau parcours : l'inspiration peut être ajoutée avant les photos de la vraie pièce.
+    await pg.getByRole('button', { name: 'Nouvelle pièce', exact: true }).click();
+    await pg.locator('.mc-etape--piece').waitFor({ timeout: 20000 });
+    await pg.locator('.mc-choix__btn').filter({ has: pg.getByText('Salon', { exact: true }) }).click();
+    await pg.locator('.mc-etape--budget').waitFor({ timeout: 20000 });
+    await pg.getByRole('button', { name: 'Continuer', exact: true }).click();
+    await pg.locator('.mc-etape--style').waitFor({ timeout: 20000 });
+    await verifierInspiration(pg, racine, 1);
+    await pg.screenshot({ path: path.join(racine, `.essais/inspirations-maison-${mobile ? 'mobile' : 'desktop'}.png`) });
+    await pg.getByRole('button', { name: 'Continuer', exact: true }).click();
+    await pg.locator('.mc-etape--priorite').waitFor({ timeout: 20000 });
+    const preparatif = await pg.evaluate(() => JSON.parse(sessionStorage.getItem('mc-demo-1')).pieces.find(p => p.photos.some(f => f.role === 'inspiration') && !p.modele));
+    assert.equal(preparatif.photos.filter(p => p.role === 'inspiration').length, 1);
+    assert.ok(!preparatif.photos.some(p => p.role === 'entree'));
+    assert.deepEqual(fautes, []);
     await c.close();
   }
 } catch (e) {
@@ -134,6 +181,23 @@ try {
   if (browser) await browser.close();
   try { process.kill(-serveur.pid, 'SIGTERM'); } catch (_) {}
   serveur.kill('SIGTERM');
+}
+
+async function verifierInspiration(page, racine, nombre) {
+  const zone = page.getByRole('region', { name: 'Photos d’inspiration', exact: true });
+  await zone.getByLabel('Ajouter une inspiration', { exact: true }).setInputFiles(path.join(racine, 'tests/fixtures/salon-entree.jpg'));
+  await zone.getByRole('button', { name: `Retirer l’inspiration ${nombre}`, exact: true }).waitFor({ timeout: 20000 });
+  await page.waitForFunction(n => Array.from(document.querySelectorAll('section[aria-label="Photos d’inspiration"] button')).length === n
+    && Array.from(document.querySelectorAll('section[aria-label="Photos d’inspiration"] button')).every(b => !b.disabled), nombre);
+  assert.equal(await zone.locator('img').count(), nombre);
+}
+
+async function verifierScore(page) {
+  const score = page.locator('details').filter({ has: page.locator('summary').filter({ hasText: 'Score de disposition' }) });
+  await score.locator('summary').waitFor({ timeout: 20000 });
+  if (!await score.evaluate(el => el.open)) await score.locator('summary').click();
+  assert.equal(await score.locator('dt').count(), 9);
+  assert.ok((await score.innerText()).includes('Chemins depuis les portes'));
 }
 
 async function verifierPlan(page, nom, largeur) {

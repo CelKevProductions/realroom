@@ -8,6 +8,7 @@ import { analyserPiece } from '@/lib/claude.js';
 import { pieceDepuisAnalyse } from '@/lib/amenagement.js';
 import { PRODUITS } from '@/lib/catalogue.js';
 import { analyseMaisonPermise, compterAnalyseMaison } from '@/lib/maison.js';
+import { photosPiece } from '@/lib/references.js';
 
 export const maxDuration = 300;
 
@@ -17,7 +18,7 @@ export const POST = route(async (request, { params }) => {
   const { id } = await params;
   const b = await lireJSON(request, 2000);
   const p = await piece(u.id, id);
-  const photos = (p.photos || []).slice(0, 6);
+  const photos = photosPiece(p.photos).slice(0, 6);
   if (!photos.some(f => f.role === 'entree')) throw new ErreurHTTP(400, 'photo-entree');
   // plafonds par jour : par compte (plus bas pour un compte d'essai) et, pour les comptes d'essai, global.
   // On vérifie d'abord, on compte seulement une analyse réellement lancée.

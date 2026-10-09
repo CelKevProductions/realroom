@@ -304,7 +304,7 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
           <li>{remplir(ts.maquette, { l: String(piece.modele.dims.largeur).replace('.', lang === 'fr' ? ',' : '.'), p: String(piece.modele.dims.profondeur).replace('.', lang === 'fr' ? ',' : '.') })}</li>
           {existants.length > 0 && <li>{remplir(ts.gardes, { n: gardes })}</li>}
         </ul>
-        <Confort modele={piece.modele} items={items} produits={produits} lang={lang} garder={prop?.garder} avis={prop?.alertes} mode={prop?.mode} envies={prop?.envies} onAppliquer={liste => modifier(() => liste)} onCorriger={corrigerPlan} />
+        <Confort modele={piece.modele} items={items} produits={produits} lang={lang} garder={prop?.garder} avis={prop?.alertes} mode={prop?.mode} envies={prop?.envies} preferences={prop?.preferences} onAppliquer={liste => modifier(() => liste)} onCorriger={corrigerPlan} />
         <p className="mc-station__total"><small className="mc-mono">{ts.total}</small>{prix(total * 100, lang)}</p>
         <div className="mc-station__actions">
           <button type="button" className="mc-rendu-btn" onClick={ouvrirRendu} disabled={!credits && !renduEnCours && !finis.length}>

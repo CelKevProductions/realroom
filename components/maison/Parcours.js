@@ -6,6 +6,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { api } from '@/components/api.js';
 import { reduireImage } from '@/components/piece/image.js';
+import Inspirations from '@/components/piece/Inspirations.js';
 import { prix } from '@/lib/i18n.js';
 import Marque from '@/components/maison/Embleme.js';
 import { Fleche } from '@/components/maison/icones.js';
@@ -73,10 +74,10 @@ export default function Parcours({
   useEffect(() => { if (!avisStyle) return; const h = setTimeout(() => setAvisStyle(''), 2600); return () => clearTimeout(h); }, [avisStyle]);
 
   const precedente = etape === 'piece' ? (connecte ? (pieces.length ? 'reprise' : null) : 'compte') : num > 0 ? ETAPES[num - 1] : null;
-  const peutContinuer = etape === 'piece' ? !!choix.fonction
+  const peutContinuer = !Object.values(envoi).some(Boolean) && (etape === 'piece' ? !!choix.fonction
     : etape === 'priorite' ? choix.priorites.length > 0
       : etape === 'photos' ? !!photo('entree') && !Object.values(envoi).some(Boolean)
-        : true;
+        : true);
   async function continuer() {
     if (!peutContinuer) return;
     if (etape === 'photos') {
@@ -253,6 +254,7 @@ export default function Parcours({
             <input className="mc-champ-libre" type="text" maxLength={300} placeholder={t.style.champ} aria-label={t.style.champ} value={choix.texte}
               onChange={e => setChoix(c => ({ ...c, texte: e.target.value }))} />
           </div>
+          <Inspirations piece={piece} setPiece={setPiece} assurerPiece={assurerPiece} lang={lang} demo={demo} onOccupe={v => setEnvoi(e => ({ ...e, inspiration: v }))} />
           {suggestions.length > 0 && (
             <div className="mc-suggestions">
               <p className="mc-suggestions__tete"><span className="mc-mono">{t.style.suggestions}</span><small>{t.style.coupsAide}</small></p>

@@ -12,7 +12,7 @@ export default function Photos({ t, piece, setPiece, analyser, attente }) {
   const [erreur, setErreur] = useState('');
   const [dims, setDims] = useState(() => ({ largeur: piece.dims?.largeur ?? '', profondeur: piece.dims?.profondeur ?? '', hauteur: piece.dims?.hauteur ?? '' }));
   const [notes, setNotes] = useState(piece.notes || '');
-  const photos = piece.photos || [];
+  const photos = (piece.photos || []).filter(p => p.role !== 'inspiration');
   const photo = role => photos.find(p => p.role === role);
   const details = photos.filter(p => p.role === 'detail');
 

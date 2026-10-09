@@ -7,6 +7,7 @@ import { api } from '@/components/api.js';
 import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
 import Confort from '@/components/piece/Confort.js';
+import Inspirations from '@/components/piece/Inspirations.js';
 import Resultat from '@/components/piece/Resultat.js';
 import Tuto from '@/components/Tuto.js';
 import { apparaitre, deplier, animer } from '@/components/Mouvement.js';
@@ -39,6 +40,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const [cat, setCat] = useState({ ouvert: false, famille: '', remplace: null });
   const [opacite, setOpacite] = useState(0);
   const [attente, setAttente] = useState(false);
+  const [inspirationOccupe, setInspirationOccupe] = useState(false);
   const [toast, setToast] = useState(null);
   const [mode, setMode] = useState((piece.proposition && piece.proposition.mode) || 'tout');
   const [envies, setEnvies] = useState((piece.proposition && piece.proposition.envies) || '');
@@ -172,6 +174,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     if (vue === 'dessus') aCadrer.current = id;
   }
   async function proposer() {
+    if (inspirationOccupe || attente) return;
     setAttente(true);
     const r = await api(`/api/pieces/${piece.id}/amenager`, { method: 'POST', corps: { mode, envies, budget: +budget || 0, garder: [...garder], aRemplacer: [...aRemplacer], langue: lang } });
     setAttente(false);
@@ -272,6 +275,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         <label className="champ"><span>{tp.budget}</span>
           <span className="unite" data-unite="€"><input className="saisie" inputMode="numeric" value={budget} onChange={e => setBudget(e.target.value.replace(/\D/g, ''))} /></span>
         </label>
+        <Inspirations piece={piece} setPiece={setPiece} lang={lang} demo={services.simulation} onOccupe={setInspirationOccupe} />
         <details className="corriger">
           <summary>{tp.corriger}</summary>
           <div className="corriger__corps">
@@ -290,7 +294,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         </details>
       </div>
       <div className="panneau__pied">
-        <button className="btn btn--plein btn--large btn--bloc" onClick={proposer} disabled={attente || !services.analyse}>
+        <button className="btn btn--plein btn--large btn--bloc" onClick={proposer} disabled={attente || inspirationOccupe || !services.analyse}>
           {attente ? <><span className="rouage rouage--petit" /> {tp.proposition}</> : tp.proposer}
         </button>
       </div>
@@ -301,7 +305,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const meubles = (
     <>
       <div className="panneau__corps" role="tabpanel">
-        <Confort modele={piece.modele} items={items} produits={produits} lang={lang} garder={prop?.garder} mode={prop?.mode} envies={prop?.envies} onAppliquer={liste => modifier(() => liste)} onCorriger={corrigerPlan} />
+        <Confort modele={piece.modele} items={items} produits={produits} lang={lang} garder={prop?.garder} mode={prop?.mode} envies={prop?.envies} preferences={prop?.preferences} onAppliquer={liste => modifier(() => liste)} onCorriger={corrigerPlan} />
         {prop && prop.concept && (
           <div className="concept">
             <b>{tp.concept}</b>

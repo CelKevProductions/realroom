@@ -11,7 +11,15 @@ La proposition de mobilier passe maintenant par deux contrôles complémentaires
 - Faire suivre les objets posés sur leur support, ainsi que les tapis et suspensions de leur zone d’usage.
 - Ne jamais déplacer les éléments fixes ou choisis « à garder ». Garder prévaut sur une demande contradictoire de remplacement, y compris pour un produit catalogue en mode « tout ».
 
-La recherche est déterministe : deux passes de positions candidates, classement local puis vérification des chemins. Une pénalité limite les déplacements inutiles. Une amélioration ne peut pas ajouter de chevauchement, d’obstruction de porte ou de dépassement de la pièce. Les contraintes impossibles avec les éléments imposés sont signalées.
+La recherche utilise des départs par groupes, deux passes locales et un recuit simulé à graine stable, puis une vérification des chemins. Des états intermédiaires moins bons sont acceptés pour élargir la recherche ; ils ne sont pas proposés sans revalidation. Chaque catégorie de conflit ou de difficulté d'accès doit rester au plus au niveau du départ. Une pénalité limite les déplacements inutiles. Une amélioration ne peut pas ajouter de chevauchement, d’obstruction de porte ou de dépassement de la pièce. Les contraintes impossibles avec les éléments imposés sont signalées.
+
+## Score et inspirations
+
+Le score décompose neuf critères : encombrement/ouvertures, circulation, usage, groupes de meubles, orientation/vue, conversation, équilibre visuel, alignement et symétrie. Les pondérations visuelles sont définies dans `lib/references.js` et la version est enregistrée. Une conversation privilégie la proximité et l'orientation mutuelle des sièges ; une composition symétrique augmente le poids de la symétrie des chevets. L'équilibre utilise une approximation du centre des empreintes, avec un poids faible. Les contraintes et accès sont contrôlés avant de départager les préférences.
+
+La note de chaque critère visuel est `100 / (1 + pénalité / 150)`, arrondie. Les critères non applicables sont omis de la moyenne pondérée. Les conflits géométriques plafonnent le total à 49 ; une difficulté de chemin le plafonne à 69. Sans entrée identifiée, la note est partielle. Sans mobilier au sol, aucun total n'est attribué. Ce score RealRoom n'est pas une mesure objective de beauté.
+
+Les photos de rôle `inspiration` sont séparées des vues du relevé : quota de trois, aucune utilisation lors de l'analyse des murs et mesures. Leurs images accompagnent l'appel de proposition existant, avec un schéma sémantique borné (style, composition, palette, matières, résumé). Les envies explicites prévalent. Les sources scientifiques et les limites de l'adaptation sont décrites dans [le plan Mistral](plan-mistral-realroom.md).
 
 ## Budget et interface
 
