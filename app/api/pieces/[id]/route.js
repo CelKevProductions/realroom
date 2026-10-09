@@ -2,7 +2,8 @@ import { route, json, exiger, lireJSON, ErreurHTTP } from '@/lib/http.js';
 import { piece, majPiece, supprimerPiece, publique, rendusDe, renduPublic } from '@/lib/projets.js';
 import { dimsValides } from '@/lib/piece.js';
 import { FONCTIONS } from '@/lib/config.js';
-import { resoudre, verifier } from '@/lib/agencement.js';
+import { verifier } from '@/lib/agencement.js';
+import { corrigerPiece, mesuresConfirmees } from '@/lib/geometrie.js';
 import { PRODUITS } from '@/lib/catalogue.js';
 
 export const GET = route(async (request, { params }) => {
@@ -24,16 +25,16 @@ export const PATCH = route(async (request, { params }) => {
   if (FONCTIONS.includes(b.fonction)) champs.fonction = b.fonction;
   if (typeof b.notes === 'string') champs.notes = b.notes.slice(0, 1000);
   if (b.dims) champs.dims = dimsValides(b.dims);
-  // dimensions corrigées dans l'atelier : le modèle suit, les meubles restent dans la pièce
-  if (b.dims && p.modele) {
-    const d = dimsValides(b.dims);
-    const m = { ...p.modele, dims: { ...p.modele.dims, ...Object.fromEntries(Object.entries(d).filter(([, v]) => v)) } };
-    champs.modele = m;
-    champs.agencement = resoudre(m, p.agencement || [], PRODUITS, { jeu: 0 }).items;
+  // Le plan corrigé remplace la géométrie ; le relevé reste visible, même s'il faut l'ajuster.
+  if ((b.dims || b.geometrie) && p.modele) {
+    const correction = b.geometrie && typeof b.geometrie === 'object' ? b.geometrie : { dims: b.dims };
+    Object.assign(champs, corrigerPiece(p.modele, Array.isArray(b.agencement) ? nettoyer(b.agencement) : p.agencement || [], correction, PRODUITS));
+    champs.dims = mesuresConfirmees(champs.modele);
+    champs.proposition = p.proposition ? { ...p.proposition, confort: null } : null;
   }
   if (Array.isArray(b.agencement)) {
     if (!p.modele) throw new ErreurHTTP(409, 'pas-de-modele');
-    champs.agencement = nettoyer(b.agencement);
+    if (!b.dims && !b.geometrie) champs.agencement = nettoyer(b.agencement);
   }
   if (b.vue && p.modele) champs.modele = { ...(champs.modele || p.modele), vue: { ...p.modele.vue, ...pick(b.vue, ['x', 'y', 'z', 'cx', 'cy', 'cz', 'fov']) } };
   const n = await majPiece(u.id, id, champs);
@@ -64,6 +65,7 @@ function nettoyer(liste) {
       const q = it.p || {};
       if (!Array.isArray(q.dim) || q.dim.length !== 3 || !q.dim.every(v => typeof v === 'number' && v > 0 && v < 8)) return null;
       base.p = { nom: String(q.nom || '').slice(0, 80), fam: String(q.fam || 'autre').slice(0, 20), st: String(q.st || '').slice(0, 40), dim: q.dim, cols: (Array.isArray(q.cols) ? q.cols : []).filter(c => /^#[0-9a-f]{6}$/i.test(c)).slice(0, 3), mat: String(q.mat || 'tissu').slice(0, 20), metal: 'noir', bois: String(q.bois || '').slice(0, 20) };
+      if (q.dimsLues === true) base.p.dimsLues = true;
       if (typeof it.confiance === 'number') base.confiance = it.confiance;
     }
     return base;

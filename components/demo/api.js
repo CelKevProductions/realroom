@@ -7,7 +7,8 @@ import { simulerAnalyse, simulerAmenagement } from '@/lib/simulation.js';
 import { pieceDepuisAnalyse, preparerAmenagement, appliquerProposition } from '@/lib/amenagement.js';
 import { choisirCandidats } from '@/lib/selection.js';
 import { versClaude, dimsValides } from '@/lib/piece.js';
-import { resoudre, verifier } from '@/lib/agencement.js';
+import { verifier } from '@/lib/agencement.js';
+import { corrigerPiece, mesuresConfirmees } from '@/lib/geometrie.js';
 import { CREDITS, PACKS, FONCTIONS, ROLES_PHOTO, LIMITES } from '@/lib/config.js';
 
 const pause = ms => new Promise(r => setTimeout(r, ms));
@@ -132,12 +133,13 @@ async function modifier(p, b) {
     if (b.dims) {
       const d = dimsValides(b.dims);
       p.dims = d;
-      if (p.modele) {
-        p.modele = { ...p.modele, dims: { ...p.modele.dims, ...Object.fromEntries(Object.entries(d).filter(([, v]) => v)) } };
-        p.agencement = resoudre(p.modele, p.agencement || [], produits, { jeu: 0 }).items;
-      }
     }
-    if (Array.isArray(b.agencement) && p.modele) p.agencement = b.agencement.slice(0, 80);
+    if ((b.dims || b.geometrie) && p.modele) {
+      Object.assign(p, corrigerPiece(p.modele, Array.isArray(b.agencement) ? b.agencement.slice(0, 80) : p.agencement || [], b.geometrie || { dims: b.dims }, produits));
+      p.dims = mesuresConfirmees(p.modele);
+      if (p.proposition) p.proposition = { ...p.proposition, confort: null };
+    }
+    if (Array.isArray(b.agencement) && p.modele && !b.dims && !b.geometrie) p.agencement = b.agencement.slice(0, 80);
     if (b.vue && p.modele) p.modele = { ...p.modele, vue: { ...p.modele.vue, ...b.vue } };
     toucher(p);
     if (p.modele) alertes = verifier(p.modele, p.agencement || [], produits);

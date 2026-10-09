@@ -6,6 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { api } from '@/components/api.js';
 import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
+import Confort from '@/components/piece/Confort.js';
 import Resultat from '@/components/piece/Resultat.js';
 import Tuto from '@/components/Tuto.js';
 import { apparaitre, deplier, animer } from '@/components/Mouvement.js';
@@ -185,6 +186,13 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { dims } });
     if (r.ok) setPiece(r.piece); else dire(t.erreurs.generique, true);
   }
+  async function corrigerPlan(geometrie) {
+    clearTimeout(sauvegarde.current);
+    const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { geometrie, agencement: items } });
+    if (!r.ok) return false;
+    setPiece(r.piece); setDims(r.piece.modele.dims); setSelection(null);
+    return true;
+  }
 
   const existants = items.filter(it => it.origine === 'existant');
   const nouveaux = items.filter(it => it.origine === 'catalogue');
@@ -230,6 +238,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const amenager = (
     <>
       <div className="panneau__corps" role="tabpanel">
+        <Confort modele={piece.modele} items={items} produits={produits} lang={lang} onCorriger={corrigerPlan} />
         <fieldset className="champ champ--groupe">
           <legend>{tp.modeTitre}</legend>
           <div className="choix-fonction choix-fonction--liste">
@@ -292,6 +301,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const meubles = (
     <>
       <div className="panneau__corps" role="tabpanel">
+        <Confort modele={piece.modele} items={items} produits={produits} lang={lang} garder={prop?.garder} mode={prop?.mode} envies={prop?.envies} onAppliquer={liste => modifier(() => liste)} onCorriger={corrigerPlan} />
         {prop && prop.concept && (
           <div className="concept">
             <b>{tp.concept}</b>

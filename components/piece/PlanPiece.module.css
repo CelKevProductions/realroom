@@ -1,0 +1,32 @@
+.dialogue{color:#392D23;background:#F2EDE3;border:1px solid #B8A58D;border-radius:3px;padding:24px;width:min(940px,calc(100vw - 24px));max-width:none;max-height:calc(100dvh - 32px);overflow:auto;font:14px/1.5 system-ui,sans-serif}
+.dialogue::backdrop{background:rgb(28 21 14 / 55%)}
+.dialogue *{box-sizing:border-box}
+.entete{display:flex;align-items:start;justify-content:space-between;gap:16px}
+.entete h2{font-family:inherit;font-size:22px;font-weight:500;line-height:1.25;margin:0}
+.dialogue .entete button{border:0;background:transparent;font-size:26px;line-height:1;padding:0 6px;min-width:38px;min-height:38px}
+.intro{font-size:12px;opacity:.8;max-width:75ch}
+.dimensions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+.champ{display:grid;gap:5px;font-size:12px;margin:10px 0}
+.champ input,.dialogue select{color:inherit;font:inherit;font-size:14px;background:#FFFDF6;border:1px solid #B8A58D;border-radius:2px;padding:9px 10px;width:100%;min-width:0}
+.confirmer{display:flex;align-items:center;gap:5px;font-size:11px}
+.confirmer input{accent-color:#806746}
+.corps{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;align-items:start}
+.visuel{position:sticky;top:0}
+.plan{display:block;width:100%;height:auto;max-height:400px}
+.visuel p{font-size:11px;opacity:.75}
+.ouverture{cursor:grab;touch-action:none}
+.ouverture:active{cursor:grabbing}
+.reglages h3{font-size:14px;margin:18px 0 6px}
+.ouvertureChamps{border:1px solid #C8BAA5;margin:14px 0;padding:8px 12px 14px}
+.ouvertureChamps legend{padding:0 5px;font-size:12px}
+.paire{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.inconnu{font-size:11px;color:#806746}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.dialogue button{color:inherit;font:inherit;font-size:12px;cursor:pointer}
+.actions button,.ouvertureChamps button,.pied button{background:transparent;border:1px solid #806746;padding:9px 13px;min-height:38px}
+.pied{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end;align-items:center;border-top:1px solid #C8BAA5;padding-top:18px;margin-top:18px}
+.pied p{margin:0;flex:1;color:#913B20;font-size:12px}
+.pied button:last-child{background:#392D23;color:#FFFDF6}
+.dialogue button:disabled{opacity:.5;cursor:default}
+.dialogue :focus-visible{outline:2px solid #806746;outline-offset:3px}
+@media(max-width:650px){.dialogue{padding:16px}.corps{grid-template-columns:1fr;gap:8px}.visuel{position:static}.plan{max-height:250px}.dimensions{gap:8px}.champ{font-size:11px}.pied p{flex-basis:100%}}

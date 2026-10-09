@@ -154,16 +154,15 @@ export default function Experience({ lang, demo = false, profil: profilServeur =
 
   // ---------- les temps du parcours ----------
   const commencer = () => transition(() => { setEtapeDepart(null); setPhase('parcours'); });
-  async function lancer(dims) {
+  async function lancer(dims, notes = '') {
     let p = piece;
     try { p = await assurerPiece(); } catch (_) { /* la pièce existe déjà : on continue */ }
-    if (!p) return;
+    if (!p) return false;
     const num = v => { const n = parseFloat(String(v || '').replace(',', '.')); return n > .8 && n < 30 ? Math.round(n * 100) / 100 : null; };
     const d = { largeur: num(dims && dims.largeur), profondeur: num(dims && dims.profondeur) };
-    if (d.largeur || d.profondeur) {
-      const r = await api(`/api/pieces/${p.id}`, { method: 'PATCH', corps: { dims: { ...(p.dims || {}), ...d } } });
-      if (r.ok) setPiece(r.piece);
-    }
+    const r = await api(`/api/pieces/${p.id}`, { method: 'PATCH', corps: { notes: String(notes).slice(0, 1000), ...(d.largeur || d.profondeur ? { dims: { ...(p.dims || {}), ...d } } : {}) } });
+    if (r.ok) setPiece(r.piece);
+    else return false; // Ne pas lancer une analyse qui ignorerait les précisions saisies.
     transition(() => setPhase('chargement'));
   }
   function finChargement(p) {
