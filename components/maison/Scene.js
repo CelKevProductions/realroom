@@ -21,7 +21,7 @@ const pad2 = n => String(n).padStart(2, '0');
 const cm = v => Math.round(v * 100);
 const DECALAGE = .17;   // la pièce se range à droite de la station (écrans larges)
 
-export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusInitiaux, credits, setCredits, profil, nbPieces, onNouvelle, onMesPieces, onDeconnexion }) {
+export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusInitiaux, credits, setCredits, profil, nbPieces, onNouvelle, onMesPieces, onDeconnexion, onPhotos }) {
   const ts = t.scene;
   const tr = useMemo(() => texteRealRoom(lang), [lang]);
   const [piece, setPiece] = useState(initiale);
@@ -389,7 +389,7 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
       )}
       {rendu && (
         <Rendu key={rendu.n} t={t} piece={{ ...piece, agencement: items }} rendus={rendus} setRendus={setRendus} credits={credits} setCredits={setCredits}
-          capturer={capturer} avant={vider} demarrer={rendu.demarrer} fermer={fermerRendu} />
+          capturer={capturer} avant={vider} demarrer={rendu.demarrer} fermer={fermerRendu} onPhotos={quitter(onPhotos)} />
       )}
       {toast && <div key={toast.n} className="mc-toast" role="status">{toast.texte}</div>}
     </div>

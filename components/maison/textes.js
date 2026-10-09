@@ -6,9 +6,9 @@ const fr = {
   pre: { gauche: 'Votre pièce', droite: 'Réinventée', etapes: ['Préparation de l’atelier', 'Mise en lumière', 'Ouverture'], pied: ['Maison Corleone · Nanterre', 'Le design s’invite chez vous.'] },
   intro: {
     passer: 'Passer l’intro', defiler: 'Faites défiler', sur: 'sur',
-    hero: { label: 'Maison Corleone présente', lignes: ['Votre pièce,', 'réinventée'], script: 'chez vous', texte: 'Photographiez une pièce de votre intérieur : nous la reconstruisons en 3D et la meublons avec les pièces Maison Corleone.' },
+    hero: { label: 'Maison Corleone présente', lignes: ['Votre pièce,', 'réinventée'], script: 'chez vous', texte: 'Relevez votre intérieur par photos ou scan métrique, vérifiez son plan, puis découvrez les pièces Maison Corleone chez vous.' },
     recits: [
-      { label: 'Votre pièce', lignes: ['Tout commence', 'par votre pièce'], script: 'telle qu’elle est', texte: 'Quelques photos suffisent : murs, fenêtres et meubles actuels sont reconstitués en 3D, à leurs vraies dimensions.' },
+      { label: 'Votre pièce', lignes: ['Tout commence', 'par votre pièce'], script: 'telle qu’elle est', texte: 'Photos guidées, relevé AR Android ou import Apple LiDAR : un plan 3D corrigible, dont vous vérifiez les dimensions et les ouvertures.' },
       { label: 'Le tri', lignes: ['Ce qui ne vous', 'ressemble plus'], script: 'laisse la place', texte: 'Gardez ce que vous aimez. Le reste s’efface, sans rien déplacer chez vous.' },
       { label: 'La sélection', lignes: ['Les pièces', 'Maison Corleone'], script: 'prennent place', texte: 'De vrais meubles de la boutique, à leurs vraies dimensions, choisis pour votre style et votre budget.' },
       { label: 'Le soir venu', lignes: ['Vivez-la avant', 'de la meubler'], script: 'du matin au soir', texte: 'Déplacez chaque meuble, tournez autour, puis voyez votre pièce en photo réaliste.' }
@@ -52,8 +52,8 @@ const fr = {
     }
   },
   photos: {
-    label: 'Vos photos', lignes: ['Votre pièce', 'en photo'], script: 'en un instant',
-    texte: 'Prenez une vue large depuis l’entrée, sans panorama. Montrez autant que possible le sol, les angles des murs et les ouvertures.',
+    label: 'Votre relevé', lignes: ['Votre pièce', 'prend forme'], script: 'à votre mesure',
+    texte: 'Choisissez les photos guidées ou un relevé métrique. Après un scan, la photo d’entrée ne sert qu’au rendu photo final.',
     principale: 'Depuis l’entrée', repere: 'Photo du rendu', prendre: 'Prendre la photo', remplacer: 'Remplacer', autre: 'Autre angle',
     dims: 'Vous connaissez ses dimensions ? (facultatif)', largeur: 'Largeur (m)', profondeur: 'Profondeur (m)',
     angles: { fond: 'Du fond vers l’entrée', gauche: 'Le mur de gauche', droite: 'Le mur de droite' },
@@ -66,6 +66,7 @@ const fr = {
   chargement: {
     lignes: ['Votre pièce', 'prend forme'], script: 'un instant',
     etapes: ['Lecture de vos photos', 'Murs, fenêtres et dimensions', 'Repérage de vos meubles', 'Sélection Maison Corleone', 'Placement dans votre pièce'],
+    etapesScan: ['Relevé métrique reçu', 'Validation des cotes importées', 'Préparation de la maquette', 'Sélection Maison Corleone', 'Placement dans votre pièce'],
     duree: 'Environ deux minutes. Laissez cette page ouverte, nous préparons tout.',
     erreur: 'L’analyse n’a pas abouti.', reessayer: 'Réessayer', photos: 'Reprendre les photos',
     limite: 'Vous avez aménagé toutes les pièces offertes avec votre compte.', limiteJour: 'Vous avez atteint la limite du jour. Réessayez demain.', service: 'Le service est momentanément indisponible. Réessayez plus tard.'
@@ -87,6 +88,7 @@ const fr = {
   rendu: {
     titre: 'Rendu réaliste', attente: 'Votre photo se réinvente', duree: 'Environ une minute.', avant: 'Avant', apres: 'Après',
     telecharger: 'Télécharger', fermer: 'Fermer', restants: 'Rendus offerts restants : {n}',
+    manquePhoto: 'Le plan métrique est conservé. Ajoutez une photo depuis l’entrée pour votre rendu photo final.', ajouterPhoto: 'Ajouter la photo du rendu',
     avertissement: 'Image générée par IA à partir de votre photo, de la maquette et des photos des produits : elle peut contenir des erreurs (proportions, couleurs, détails). Elle n’est pas contractuelle ; seules les fiches produits font foi.',
     epuise: 'Vous avez utilisé vos deux rendus offerts.', erreur: 'Le rendu n’a pas abouti : votre rendu offert vous est rendu.'
   },
@@ -100,9 +102,9 @@ const en = {
   pre: { gauche: 'Your room', droite: 'Reimagined', etapes: ['Preparing the studio', 'Setting the light', 'Opening'], pied: ['Maison Corleone · Nanterre', 'Design comes home.'] },
   intro: {
     passer: 'Skip intro', defiler: 'Scroll', sur: 'of',
-    hero: { label: 'Maison Corleone presents', lignes: ['Your room,', 'reimagined'], script: 'at home', texte: 'Photograph a room in your home: we rebuild it in 3D and furnish it with Maison Corleone pieces.' },
+    hero: { label: 'Maison Corleone presents', lignes: ['Your room,', 'reimagined'], script: 'at home', texte: 'Survey your home with photos or a metric scan, check the plan, then discover Maison Corleone pieces in your room.' },
     recits: [
-      { label: 'Your room', lignes: ['It all starts', 'with your room'], script: 'as it is', texte: 'A few photos are enough: walls, windows and your current furniture are rebuilt in 3D, at their real size.' },
+      { label: 'Your room', lignes: ['It all starts', 'with your room'], script: 'as it is', texte: 'Guided photos, Android AR survey or Apple LiDAR import: an editable 3D plan whose dimensions and openings you can check.' },
       { label: 'The edit', lignes: ['What no longer', 'feels like you'], script: 'makes way', texte: 'Keep what you love. The rest fades away, without moving a thing at home.' },
       { label: 'The selection', lignes: ['Maison Corleone', 'pieces'], script: 'take their place', texte: 'Real furniture from the shop, at its real size, chosen for your style and budget.' },
       { label: 'Evening falls', lignes: ['Live in it', 'before you buy'], script: 'from dawn to dusk', texte: 'Move every piece, walk around it, then see your room as a realistic photo.' }
@@ -146,8 +148,8 @@ const en = {
     }
   },
   photos: {
-    label: 'Your photos', lignes: ['Your room', 'in a photo'], script: 'in a moment',
-    texte: 'Take a wide view from the entrance, without panorama mode. Show the floor, wall corners and openings where possible.',
+    label: 'Your survey', lignes: ['Your room', 'takes shape'], script: 'to your measure',
+    texte: 'Choose guided photos or a metric survey. After a scan, the entrance photo is only needed for the final photo render.',
     principale: 'From the doorway', repere: 'Render photo', prendre: 'Take the photo', remplacer: 'Replace', autre: 'Other angle',
     dims: 'Do you know its size? (optional)', largeur: 'Width (m)', profondeur: 'Depth (m)',
     angles: { fond: 'From the far end to the entrance', gauche: 'The left wall', droite: 'The right wall' },
@@ -160,6 +162,7 @@ const en = {
   chargement: {
     lignes: ['Your room', 'takes shape'], script: 'one moment',
     etapes: ['Reading your photos', 'Walls, windows and size', 'Finding your furniture', 'Maison Corleone selection', 'Placing it in your room'],
+    etapesScan: ['Metric survey received', 'Imported dimensions validated', 'Preparing the room model', 'Maison Corleone selection', 'Placing it in your room'],
     duree: 'About two minutes. Keep this page open, we are preparing everything.',
     erreur: 'The analysis did not go through.', reessayer: 'Try again', photos: 'Retake the photos',
     limite: 'You have designed every room included with your account.', limiteJour: 'You have reached today’s limit. Try again tomorrow.', service: 'The service is temporarily unavailable. Try again later.'
@@ -181,6 +184,7 @@ const en = {
   rendu: {
     titre: 'Realistic render', attente: 'Your photo is being reimagined', duree: 'About a minute.', avant: 'Before', apres: 'After',
     telecharger: 'Download', fermer: 'Close', restants: 'Free renders left: {n}',
+    manquePhoto: 'Your metric plan is kept. Add an entrance photo for the final photo render.', ajouterPhoto: 'Add the render photo',
     avertissement: 'AI-generated image based on your photo, the model and the product photos: it can contain errors (proportions, colours, details). It is not contractual; only the product pages are binding.',
     epuise: 'You have used your two free renders.', erreur: 'The render did not go through: your free render has been returned.'
   },

@@ -7,7 +7,7 @@ import { api } from '@/components/api.js';
 import { remplir } from '@/components/maison/textes.js';
 import { initGsap, gsap, lettres, entreeTitre, reduit } from '@/components/maison/anim.js';
 
-export default function Rendu({ t, piece, rendus, setRendus, credits, setCredits, capturer, avant, demarrer, fermer }) {
+export default function Rendu({ t, piece, rendus, setRendus, credits, setCredits, capturer, avant, demarrer, fermer, onPhotos }) {
   const tr = t.rendu;
   const racine = useRef(null);
   const photo = (piece.photos || []).find(p => p.role === 'entree');
@@ -40,6 +40,7 @@ export default function Rendu({ t, piece, rendus, setRendus, credits, setCredits
     if (!demarrer || depart.current) return;
     depart.current = true;
     (async () => {
+      if (!photo) { setErreur(tr.manquePhoto); return; }
       if (credits < 1) { setErreur(tr.epuise); return; }
       const largeur = ratio >= 1 ? 1536 : Math.round(1536 * ratio), hauteur = ratio >= 1 ? Math.round(1536 / ratio) : 1536;
       const capture = rappels.current.capturer({ largeur, hauteur });
@@ -125,6 +126,7 @@ export default function Rendu({ t, piece, rendus, setRendus, credits, setCredits
       <div className="mc-rendu__pied">
         <p className="mc-rendu__note">{erreur && actuel ? erreur + ' ' : ''}{tr.avertissement}</p>
         <div className="mc-rendu__actions">
+          {!photo && <button type="button" className="mc-btn mc-btn--creme" onClick={() => { fermer(); onPhotos?.(); }}>{tr.ajouterPhoto}</button>}
           {finis.length > 1 && (
             <div className="mc-rendu__vignettes">
               {finis.map(r => <button key={r.id} type="button" aria-pressed={actuel && actuel.id === r.id} onClick={() => setChoisi(r.id)}><img src={r.resultat.image} alt="" /></button>)}

@@ -11,6 +11,7 @@ import { verifier } from '@/lib/agencement.js';
 import { corrigerPiece, mesuresConfirmees } from '@/lib/geometrie.js';
 import { CREDITS, PACKS, FONCTIONS, ROLES_PHOTO, LIMITES } from '@/lib/config.js';
 import { placePhoto } from '@/lib/references.js';
+import { champsDepuisScan, ErreurScan } from '@/lib/scan.js';
 
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const maintenant = () => new Date().toISOString();
@@ -107,6 +108,16 @@ export async function repondre(url, { method = 'GET', corps, formulaire } = {}) 
         if (method === 'PATCH') return ok(await modifier(p, corps || {}));
       }
       if (sous === 'photos') return ok({ piece: publique(await photos(p, method, u, formulaire)) });
+      if (sous === 'scan' && method === 'POST') {
+        if (p.etat === 'analyse') return non('en-cours', 409);
+        if (p.modele && corps?.remplacer !== true) return non('scan-remplacement', 409);
+        if (p.modele && corps?.revision !== p.maj_le) return non('scan-conflit', 409);
+        let champs;
+        try { champs = champsDepuisScan(corps?.scan); }
+        catch (e) { if (e instanceof ErreurScan) return non(e.code, 400); throw e; }
+        ecrire(() => { Object.assign(p, champs); toucher(p); });
+        return ok({ piece: publique(p) });
+      }
       if (sous === 'analyse') return analyser(p, langue);
       if (sous === 'amenager') return amenager(p, corps || {}, langue);
       if (sous === 'rendus') {

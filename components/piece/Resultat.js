@@ -9,7 +9,7 @@ import AvantApres from '@/components/piece/AvantApres.js';
 import Croquis from '@/components/Croquis.js';
 import { remplir } from '@/lib/i18n.js';
 
-export default function Resultat({ lang, t, piece, rendus, setRendus, solde, setSolde, couts, services, capturer }) {
+export default function Resultat({ lang, t, piece, rendus, setRendus, solde, setSolde, couts, services, capturer, onPhoto }) {
   const tp = t.piece;
   const racine = useRacine(lang);
   const images = rendus.filter(r => r.type === 'image');
@@ -79,6 +79,8 @@ export default function Resultat({ lang, t, piece, rendus, setRendus, solde, set
       <div className="panneau__corps" role="tabpanel">
         <div className="bloc__tete"><h3>{tp.renduTitre}</h3><p>{tp.renduTexte}</p></div>
         {!services.rendu && <p className="avis">{tp.renduIndispo}</p>}
+        {!photo && <div className="avis"><p>{lang === 'en' ? 'Your metric plan is ready. Add an entrance photo for the final photo render; your scan will be kept.' : 'Votre plan métrique est prêt. Ajoutez une photo d’entrée pour le rendu photo final ; votre scan sera conservé.'}</p>
+          <button type="button" className="btn btn--clair btn--petit" onClick={onPhoto}>{lang === 'en' ? 'Add the render photo' : 'Ajouter la photo du rendu'}</button></div>}
         {erreur && erreur.de === 'image' && avisErreur}
         {imageEnCours && (
           <div className="rendu-attente">
@@ -126,7 +128,7 @@ export default function Resultat({ lang, t, piece, rendus, setRendus, solde, set
         )}
       </div>
       <div className="panneau__pied">
-        <button className="btn btn--plein btn--large btn--bloc" onClick={() => generer('image')} disabled={!services.rendu || !!imageEnCours}>
+        <button className="btn btn--plein btn--large btn--bloc" onClick={() => generer('image')} disabled={!services.rendu || !!imageEnCours || !photo}>
           {imageEnCours ? <><span className="rouage rouage--petit" /> {tp.renduEnCours}</> : <>{tp.generer} <span className="cout">{cout(couts.rendu)}</span></>}
         </button>
       </div>

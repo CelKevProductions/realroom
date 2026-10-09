@@ -1,6 +1,6 @@
 # RealRoom · un service KPW
 
-Le client photographie une pièce (ou tout un logement) et donne des mesures approximatives. RealRoom la reproduit en maquette 3D avec ses meubles actuels (Claude lit les photos). Il propose ensuite un aménagement avec de vrais meubles du catalogue Maison Corleone : automatiquement selon la fonction de la pièce, ou d'après les envies du client. Enfin, il en tire un rendu photo réaliste de la vraie pièce (fal.ai, Nano Banana Pro) et une visite 3D (World Labs, Marble). Les générations se paient en crédits (Stripe).
+Le client relève une pièce par photos guidées, par quatre coins au sol avec WebXR/ARCore sur Android compatible, ou par import métrique du compagnon natif Apple RoomPlan/LiDAR. RealRoom affiche un plan à vérifier et une maquette 3D avec les meubles existants. Il propose ensuite un aménagement avec de vrais meubles du catalogue Maison Corleone : selon la fonction, le style et le budget, avec patrons paramétriques et recherche géométrique. Enfin, une photo d’entrée sert au rendu photo réaliste (fal.ai, Nano Banana Pro), puis à la visite 3D (World Labs, Marble). Les générations se paient en crédits (Stripe). Le compagnon iOS est fourni en source, non compilé ni distribué dans cette session ; les captures matérielles restent à valider sur appareil.
 
 ## Pile
 
@@ -26,6 +26,9 @@ Le client photographie une pièce (ou tout un logement) et donne des mesures app
 | `lib/geometrie.js`, `components/piece/PlanPiece.js` | Plan 2D corrigeable : mesures confirmées, ouvertures et tailles des meubles existants, enregistrement commun à l’API et à la démo. |
 | `lib/confort.js` | Score expliqué, recuit simulé reproductible, accès et circulation ; jusqu’à trois dispositions aux mêmes produits et prix. |
 | `lib/references.js` | Sources, préférences de composition et inspirations, séparées du relevé métrique. |
+| `lib/scan.js`, `components/piece/Acquisition.js`, `moteur/releveAR.js` | Contrat métrique validé, aperçu/import commun aux deux éditions, coins au sol WebXR/ARCore. Android ne reconnaît pas automatiquement mobilier et ouvertures. |
+| `native/ios` | Compagnon RoomPlan Swift/Xcode : murs, ouvertures et objets ; export JSON sans vidéo, images ni maillage. Construction/signature et essais LiDAR à faire sur Mac/appareil. |
+| `lib/patrons.js`, `lib/budget.js` | Neuf départs paramétriques par usage et sélection sous budget par sac à dos/Pareto, sur les produits déjà proposés compatibles. |
 | `moteur` | Moteur 3D du navigateur |
 | `components` | Interface React |
 | `outils`, `scripts` | Catalogue (export Shopify, familles et dimensions), assemblage des maquettes |
@@ -61,7 +64,7 @@ En local seulement (jamais sur Vercel) : sans `RESEND_API_KEY`, le code de conne
 
 ## Édition Maison Corleone (« Chez vous »)
 
-`/fr/maison-corleone` : l'aménagement offert aux clients de maisoncorleone.com, avec leur compte client de la boutique. Préchargement (celui de la visite privée, aux couleurs de la boutique), intro 3D dirigée par le défilement (`moteur/intro.js`), parcours guidé (pièce, budget, style, priorité, photos), chargement 3D (`moteur/chargeur.js`), puis la pièce en 3D avec l'éditeur de RealRoom. Deux rendus photo réalistes offerts par client, une seule fois. Démo sans compte : `/fr/maison-corleone/demo` (tout dans le navigateur, analyse et rendus simulés). Code : `components/maison`, `lib/maison.js`, `app/api/mc`.
+`/fr/maison-corleone` : l'aménagement offert aux clients de maisoncorleone.com, avec leur compte client de la boutique. Préchargement (celui de la visite privée, aux couleurs de la boutique), intro 3D dirigée par le défilement (`moteur/intro.js`), parcours guidé (pièce, budget, style, priorité, photos ou relevé métrique), chargement 3D (`moteur/chargeur.js`), puis la pièce en 3D avec l'éditeur de RealRoom. Les scans passent par le même plan correctif, le score et le moteur de disposition. Avec un scan, la photo d’entrée peut être ajoutée seulement au moment du rendu, sans refaire la proposition. Deux rendus photo réalistes offerts par client, une seule fois. Démo sans compte : `/fr/maison-corleone/demo` (tout dans le navigateur, analyse et rendus simulés). Code : `components/maison`, `lib/maison.js`, `app/api/mc`.
 
 Connexion : comptes clients Shopify (Customer Account API, OAuth 2.0 / OpenID Connect).
 
@@ -108,7 +111,7 @@ Les pièces choisies à la main (`outils/sources/produits.js`) gardent leur maqu
 
 ```bash
 npm test                                   # solveur d'agencement, crédits (base PGlite temporaire)
-npm run build && node tests/plan.mjs        # plan, inspirations et score : API, base, rechargement, desktop/mobile (Playwright)
+npm run build && node tests/plan.mjs        # plan, scans, inspirations, score, reprise du rendu : API/base/UI, desktop/mobile
 npm run build && npm run test:api          # cas limites de l'API : envois simultanés, crédits offerts, codes faux…
 python3 tests/e2e.py                       # parcours complet, services simulés (aussi : mobile)
 python3 tests/maison.py compte             # édition Maison Corleone : connexion simulée, parcours guidé, pièce 3D, rendu
@@ -117,3 +120,5 @@ python3 tests/harnais/essai-editeur.py     # moteur 3D seul (après : npx esbuil
 ```
 
 Plan d’amélioration du relevé et du placement : [docs/plan-mistral-realroom.md](docs/plan-mistral-realroom.md).
+
+Construction et limites du compagnon Apple : [native/ios/README.md](native/ios/README.md). Les fixtures de scan des tests sont synthétiques : elles ne valident ni la précision ARCore/LiDAR ni la compilation Swift.

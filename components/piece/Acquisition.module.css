@@ -1,0 +1,30 @@
+.acquisition { color: inherit; padding: 1.4rem; border: 1px solid currentColor; border-color: color-mix(in srgb, currentColor 20%, transparent); border-radius: .5rem; margin: 1rem 0 2rem; }
+.acquisition h2 { font: inherit; font-size: 1.25rem; font-weight: 600; margin: 0 0 .65rem; }
+.acquisition h3 { font: inherit; font-weight: 600; margin: 0 0 .5rem; }
+.acquisition p { margin: .65rem 0; line-height: 1.55; }
+.modes, .actions { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1rem 0; }
+.acquisition button, .importer { font: inherit; color: inherit; border: 1px solid color-mix(in srgb, currentColor 35%, transparent); background: transparent; border-radius: .25rem; padding: .7rem .95rem; cursor: pointer; line-height: 1.3; }
+.acquisition button:disabled { cursor: not-allowed; opacity: .45; }
+.acquisition button[aria-pressed="true"], .acquisition .plein { background: #C9A66B; border-color: #C9A66B; color: #251C16; }
+.acquisition button:focus-visible, .importer:focus-within, .champ input:focus-visible { outline: 2px solid #C9A66B; outline-offset: 3px; }
+.options { max-width: 48rem; }
+.note, .options small { font-size: .83rem; opacity: .8; }
+.champ { display: grid; gap: .45rem; margin: 1rem 0 .3rem; }
+.champ input { font: inherit; color: inherit; background: transparent; border: 1px solid color-mix(in srgb, currentColor 30%, transparent); padding: .7rem; border-radius: .2rem; max-width: 11rem; }
+.options > button { display: block; margin-top: 1rem; }
+.importer { position: relative; display: inline-block; margin: 1rem 0 .3rem; }
+.importer input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.apercu { border-top: 1px solid color-mix(in srgb, currentColor 20%, transparent); padding-top: 1.2rem; margin-top: 1.2rem; }
+.apercu svg { display: block; max-height: 20rem; margin: 1rem auto; }
+.confirmer { display: flex; align-items: flex-start; gap: .7rem; font-size: .9rem; line-height: 1.5; margin: 1rem 0; }
+.confirmer input { flex: none; margin-top: .3rem; width: 1.1rem; height: 1.1rem; }
+.erreur { color: #A23C2E; background: #FFF4E9; padding: .7rem; border-radius: .25rem; }
+.succes { border-left: 3px solid #C9A66B; padding-left: .75rem; }
+.ar { position: fixed; inset: 0; z-index: 10000; color: #FFF5E7; }
+.ar[hidden] { display: none; }
+.ar > canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.commandes { position: absolute; bottom: max(1rem, env(safe-area-inset-bottom)); left: 1rem; right: 1rem; padding: 1rem; background: rgba(30, 23, 18, .94); border-radius: .5rem; }
+.commandes strong { font-size: 1rem; }
+.commandes .actions { margin-bottom: 0; }
+.commandes button { font-size: .85rem; }
+@media (max-width: 600px) { .acquisition { padding: 1rem; } .modes { gap: .4rem; } .modes button { flex: 1 1 40%; font-size: .85rem; padding: .7rem .45rem; } .actions button { flex: 1 1 40%; } }

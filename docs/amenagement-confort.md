@@ -15,6 +15,8 @@ La recherche utilise des départs par groupes, deux passes locales et un recuit 
 
 ## Score et inspirations
 
+Neuf patrons paramétriques de `lib/patrons.js` fournissent aussi des départs à la recherche : trois chambres, trois salons, deux coins repas et un bureau. Ils ne créent ni produits ni objets fictifs, et n’écrasent pas les meubles verrouillés. Les mêmes contrôles d’accès, de chemins et de collisions filtrent leurs candidats avant choix. Ce sont des heuristiques RealRoom, pas neuf compositions déjà validées par un décorateur.
+
 Le score décompose neuf critères : encombrement/ouvertures, circulation, usage, groupes de meubles, orientation/vue, conversation, équilibre visuel, alignement et symétrie. Les pondérations visuelles sont définies dans `lib/references.js` et la version est enregistrée. Une conversation privilégie la proximité et l'orientation mutuelle des sièges ; une composition symétrique augmente le poids de la symétrie des chevets. L'équilibre utilise une approximation du centre des empreintes, avec un poids faible. Les contraintes et accès sont contrôlés avant de départager les préférences.
 
 La note de chaque critère visuel est `100 / (1 + pénalité / 150)`, arrondie. Les critères non applicables sont omis de la moyenne pondérée. Les conflits géométriques plafonnent le total à 49 ; une difficulté de chemin le plafonne à 69. Sans entrée identifiée, la note est partielle. Sans mobilier au sol, aucun total n'est attribué. Ce score RealRoom n'est pas une mesure objective de beauté.
@@ -23,11 +25,15 @@ Les photos de rôle `inspiration` sont séparées des vues du relevé : quota de
 
 ## Budget et interface
 
-Le total du mobilier catalogue conservé est déduit du budget. Les ajouts essentiels sont prioritaires sur la décoration, les doublons non prévus sont écartés, et les prix inconnus sont signalés. Les pièces conservées ne sont jamais supprimées pour faire rentrer artificiellement le total dans le budget.
+Le total du mobilier catalogue conservé est déduit du budget. `lib/budget.js` compare les combinaisons de produits déjà proposés et compatibles via un sac à dos avec frontières de Pareto : couvrir d’abord les usages, puis ajouter les compléments et la décoration, en centimes et quantités réelles. Les usages déjà conservés sont pris en compte. Au plus 80 candidats et 24 ajouts sont considérés ; au-delà de 12 000 états, une borne limite le temps et le diagnostic indique l’approximation. Il ne s’agit pas d’une recherche exhaustive sur tout le catalogue. Les doublons non prévus sont écartés, les prix inconnus sont signalés et les pièces conservées ne sont jamais supprimées pour faire rentrer artificiellement le total dans le budget.
 
 Le panneau « La pièce au quotidien » est présent dans les deux éditeurs. Il recalcule les repères après un déplacement. « Optimiser la disposition » ajuste le mobilier catalogue ; « Annuler l’ajustement » restaure la version précédente. Une modification manuelle ultérieure invalide cette annulation pour éviter d’effacer le travail du client.
 
+Si un couchage est conservé, un nouveau lit proposé est écarté avec un avertissement, sauf demande explicite d’ajouter un deuxième lit. Cela évite un achat et une disposition redondants malgré une sortie contradictoire du modèle ; « lit double » n’est pas une demande de lit supplémentaire.
+
 ## Limites et vérification
+
+Le même moteur reçoit désormais les imports RoomPlan et les quatre coins métriques WebXR/ARCore dans RealRoom et Maison Corleone. Les cotes de capteur restent de source `scan`, et non `mesure` humaine. Sans hauteur saisie sur Android, 2,50 m reste une estimation. Le plan permet d’ajouter les meubles et ouvertures non détectés ; un meuble existant saisi ne devient pas un produit du catalogue. Les formes non rectangulaires sont refusées à l’import, jamais agrandies artificiellement. La photo d’entrée peut être ajoutée ultérieurement pour le rendu, sans relancer l’analyse ni effacer le relevé.
 
 Les distances sont des repères d’usage sur une maquette rectangulaire, pas une certification d’accessibilité. Les formes sont approchées par des empreintes rectangulaires ; une photo ne fournit pas des mesures garanties. Sans porte reconnue, le panneau demande de vérifier la circulation au lieu de la déclarer dégagée. Les erreurs de dimensions ou d’ouvertures nécessitent une correction de la maquette.
 

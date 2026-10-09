@@ -5,6 +5,7 @@ import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
+import { verifierCaptures } from './captures.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(require.resolve('playwright', { paths: [process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES || '.', process.cwd()] }));
@@ -42,6 +43,11 @@ try {
   const session = connexion.headers()['set-cookie']?.match(/rr_session=([^;]+)/)?.[1];
   assert.ok(session, 'Cookie de session absent');
   await ctx.addCookies([{ name: 'rr_session', value: session, url: base, httpOnly: true, sameSite: 'Lax' }]);
+  if (process.env.CAPTURES_SEULES === '1') {
+    await verifierCaptures({ browser, ctx, base, racine });
+    await ctx.close();
+  } else {
+  if (process.env.PLAN_DEPUIS !== 'demo') {
   const projet = (await json(await ctx.request.post(base + '/api/projets', { data: { nom: 'Plan de chambre' } }))).projet;
   const p = (await json(await ctx.request.post(`${base}/api/projets/${projet.id}/pieces`, { data: { fonction: 'chambre', nom: 'Chambre' } }))).piece;
   const fichier = fs.readFileSync(path.join(racine, 'tests/fixtures/salon-entree.jpg'));
@@ -106,6 +112,8 @@ try {
   assert.equal((await json(await ctx.request.get(`${base}/api/pieces/${p.id}`))).piece.photos.filter(p => p.role === 'inspiration').length, 3);
   assert.deepEqual(erreurs, []);
   console.log('Interface → API → base → rechargement : plan corrigé retrouvé.');
+  await verifierCaptures({ browser, ctx, base, racine });
+  }
   await ctx.close();
 
   for (const mobile of [false, true]) {
@@ -174,7 +182,14 @@ try {
     assert.deepEqual(fautes, []);
     await c.close();
   }
+  }
 } catch (e) {
+  if (browser) for (const c of browser.contexts()) for (const p of c.pages()) {
+    try {
+      console.error('Écran au premier échec :', p.url(), (await p.locator('body').innerText()).slice(-5000));
+      await p.screenshot({ path: path.join(racine, '.essais/plan-premier-echec.png'), fullPage: true });
+    } catch (_) {}
+  }
   console.error(logs);
   throw e;
 } finally {

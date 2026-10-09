@@ -7,6 +7,8 @@ import s from './PlanPiece.module.css';
 const textes = {
   fr: { titre: 'Vérifier le plan de la pièce', intro: 'Mesurez une longueur réelle pour corriger l’échelle. Les autres dimensions restent estimées tant que vous ne les confirmez pas.',
     dims: ['Largeur', 'Profondeur', 'Hauteur'], mesure: 'Mesure vérifiée', estime: 'Estimée', murs: { fond: 'Mur du fond', entree: 'Mur d’entrée', gauche: 'Mur gauche', droite: 'Mur droit' },
+    scan: 'Cote du scan, à vérifier', ajout: 'Noter un meuble existant', nom: 'Nom', famille: 'Type de meuble', face: 'Face vers', depuisGauche: 'Centre depuis le mur gauche', depuisEntree: 'Centre depuis le mur d’entrée',
+    ajoutsNote: 'Notez les dimensions réelles et la position des meubles non détectés. Le relevé Android ne fait pas de reconnaissance du mobilier.', annulerAjout: 'Annuler l’ajout', validerAjout: 'Ajouter au relevé',
     types: { porte: 'Porte', fenetre: 'Fenêtre', baie: 'Baie', passage: 'Passage' },
     ouvertures: 'Portes et fenêtres', ajouter: 'Ajouter une ouverture', aucune: 'Ce mur est sans ouverture', inconnu: 'Mur à vérifier sur place',
     position: 'Centre depuis le début du mur', largeur: 'Largeur', hauteur: 'Hauteur', allege: 'Hauteur d’allège', type: 'Type', retirer: 'Retirer',
@@ -17,6 +19,8 @@ const textes = {
     note: 'Le plan représente une pièce rectangulaire. Les renfoncements et murs obliques ne sont pas encore pris en charge.' },
   en: { titre: 'Check your room plan', intro: 'Measure a real length to correct the scale. Other dimensions remain estimates until you confirm them.',
     dims: ['Width', 'Depth', 'Height'], mesure: 'Verified measurement', estime: 'Estimated', murs: { fond: 'Far wall', entree: 'Entrance wall', gauche: 'Left wall', droite: 'Right wall' },
+    scan: 'Scan dimension, check on site', ajout: 'Record existing furniture', nom: 'Name', famille: 'Furniture type', face: 'Facing', depuisGauche: 'Centre from left wall', depuisEntree: 'Centre from entrance wall',
+    ajoutsNote: 'Record real dimensions and position of undetected furniture. The Android survey does not recognise furniture.', annulerAjout: 'Cancel item', validerAjout: 'Add to survey',
     types: { porte: 'Door', fenetre: 'Window', baie: 'Glass opening', passage: 'Passage' },
     ouvertures: 'Doors and windows', ajouter: 'Add an opening', aucune: 'This wall has no openings', inconnu: 'Check this wall on site',
     position: 'Centre from the start of the wall', largeur: 'Width', hauteur: 'Height', allege: 'Sill height', type: 'Type', retirer: 'Remove',
@@ -29,6 +33,10 @@ const textes = {
 const clesDims = ['largeur', 'profondeur', 'hauteur'];
 const valeur = v => Number(String(v).replace(',', '.'));
 const rond = v => Math.round(v * 100) / 100;
+const famillesManuelles = {
+  fr: { lit: 'Lit', canape: 'Canapé', fauteuil: 'Fauteuil', chaise: 'Chaise', table: 'Table', bureau: 'Bureau', armoire: 'Armoire', commode: 'Commode', meuble: 'Meuble', chevet: 'Chevet', tv: 'Télévision', radiateur: 'Radiateur', cuisine: 'Cuisine / équipement fixe', autre: 'Autre' },
+  en: { lit: 'Bed', canape: 'Sofa', fauteuil: 'Armchair', chaise: 'Chair', table: 'Table', bureau: 'Desk', armoire: 'Wardrobe', commode: 'Chest of drawers', meuble: 'Storage', chevet: 'Bedside table', tv: 'Television', radiateur: 'Radiator', cuisine: 'Kitchen / fixed appliance', autre: 'Other' }
+};
 
 // Petit plan exact de la maquette, utilisé aussi pour comparer les dispositions.
 export function ApercuPlan({ modele, items = [], produits = {}, label, ouvertures, selection, surPointer, surChoisir }) {
@@ -71,16 +79,18 @@ export default function PlanPiece({ modele, items, produits, lang = 'fr', onSauv
   const [touches, setTouches] = useState(() => new Set());
   const [mur, setMur] = useState('entree'), [selection, setSelection] = useState(null);
   const [meuble, setMeuble] = useState(''), [releve, setReleve] = useState({});
+  const [ajouts, setAjouts] = useState([]), [ajout, setAjout] = useState(null);
   const [attente, setAttente] = useState(false), [erreur, setErreur] = useState('');
   useEffect(() => { const d = dialogue.current; d.showModal(); return () => d.close(); }, []);
   const valides = clesDims.every((k, i) => { const n = valeur(dims[k]); return Number.isFinite(n) && n >= (i === 2 ? 1.9 : 1.2) && n <= (i === 2 ? 8 : 30); });
+  const source = k => mesures[k] ? 'mesure' : valeur(dims[k]) === modele.dims[k] && modele.dims.sources?.[k] === 'scan' ? 'scan' : modele.dims.sources?.[k] === 'estimation' ? 'estimation' : 'photo';
   const correction = { dims: valides ? Object.fromEntries(clesDims.map(k => [k, valeur(dims[k])])) : {},
-    sources: Object.fromEntries(clesDims.map(k => [k, mesures[k] ? 'mesure' : 'photo'])),
+    sources: Object.fromEntries(clesDims.map(k => [k, source(k)])), ajouts,
     murs: Object.fromEntries([...touches].map(m => [m, { ouvertures: murs[m]?.ouvertures || [] }])),
     meubles: Object.entries(releve).map(([id, dim]) => ({ id, dim: dim.map(valeur) })) };
   const preview = corrigerPiece(modele, items, correction, produits), modelePlan = preview.modele;
   const long = longueurMur(modelePlan.dims, mur);
-  const existants = items.filter(it => it.origine === 'existant' && it.garde !== false && it.p?.dim);
+  const existants = preview.agencement.filter(it => it.origine === 'existant' && it.garde !== false && it.p?.dim);
   const choisi = existants.find(it => it.id === meuble);
 
   function changerMur(m, ouvertures) {
@@ -114,8 +124,9 @@ export default function PlanPiece({ modele, items, produits, lang = 'fr', onSauv
     setAttente(true);
     try {
       const ok = await onSauver({ dims: Object.fromEntries(clesDims.map(k => [k, valeur(dims[k])])),
-        sources: Object.fromEntries(clesDims.map(k => [k, mesures[k] ? 'mesure' : 'photo'])),
-        murs: Object.fromEntries([...touches].map(m => [m, { ouvertures: modelePlan.murs[m].ouvertures }])), meubles });
+        sources: Object.fromEntries(clesDims.map(k => [k, source(k)])),
+        murs: Object.fromEntries([...touches].map(m => [m, { ouvertures: modelePlan.murs[m].ouvertures }])), meubles,
+        ajouts: ajouts.map(m => ({ ...m, dim: meubles.find(e => e.id === m.id)?.dim || m.dim })) });
       if (ok !== false) onFermer(); else setErreur(t.erreur);
     } catch (_) { setErreur(t.erreur); }
     setAttente(false);
@@ -127,7 +138,7 @@ export default function PlanPiece({ modele, items, produits, lang = 'fr', onSauv
       <p className={s.intro}>{t.intro}</p>
       <div className={s.dimensions}>{clesDims.map((k, i) => <div key={k}>
         {champ(t.dims[i], dims[k], v => { setDims(d => ({ ...d, [k]: v })); setMesures(d => ({ ...d, [k]: true })); }, i === 2 ? 1.9 : 1.2, i === 2 ? 8 : 30)}
-        <label className={s.confirmer}><input type="checkbox" checked={mesures[k]} onChange={e => setMesures(d => ({ ...d, [k]: e.target.checked }))} />{mesures[k] ? t.mesure : t.estime}</label>
+        <label className={s.confirmer}><input type="checkbox" checked={mesures[k]} onChange={e => setMesures(d => ({ ...d, [k]: e.target.checked }))} />{mesures[k] ? t.mesure : source(k) === 'scan' ? t.scan : t.estime}</label>
       </div>)}</div>
       <div className={s.corps}>
         <div className={s.visuel}><ApercuPlan modele={modelePlan} items={preview.agencement} produits={produits} label={t.titre} selection={selection} surPointer={glisser} surChoisir={(m, i) => { setMur(m); setSelection({ mur: m, i }); }} /><p>{t.aide}</p><p>{t.note}</p></div>
@@ -147,6 +158,22 @@ export default function PlanPiece({ modele, items, produits, lang = 'fr', onSauv
           {existants.length > 0 && <><h3>{t.meubles}</h3><select aria-label={t.meubles} value={meuble} onChange={e => setMeuble(e.target.value)}><option value="">{t.choisir}</option>{existants.map(it => <option key={it.id} value={it.id}>{it.p.nom}</option>)}</select>
             {choisi && <div className={s.dimensions}>{clesDims.map((k, i) => <div key={k}>{champ(t.dims[i], (releve[meuble] || choisi.p.dim)[i], v => setReleve(l => ({ ...l, [meuble]: (l[meuble] || choisi.p.dim).map((d, j) => j === i ? v : d) })), .01, 6)}</div>)}</div>}
             <p className={s.intro}>{t.meublesNote}</p></>}
+          <h3>{t.ajout}</h3><p className={s.intro}>{t.ajoutsNote}</p>
+          {!ajout ? <button type="button" disabled={existants.length >= 40} onClick={() => setAjout({ fam: 'lit', nom: '', dim: ['', '', ''], x: modelePlan.dims.largeur / 2, p: modelePlan.dims.profondeur / 2, rot: 0 })}>{t.ajout}</button>
+            : <fieldset className={s.ouvertureChamps}><legend>{t.ajout}</legend>
+              <label className={s.champ}><span>{t.famille}</span><select value={ajout.fam} onChange={e => setAjout(a => ({ ...a, fam: e.target.value }))}>{Object.entries(famillesManuelles[lang] || famillesManuelles.fr).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></label>
+              <label className={s.champ}><span>{t.nom}</span><input maxLength={80} value={ajout.nom} onChange={e => setAjout(a => ({ ...a, nom: e.target.value }))} /></label>
+              <div className={s.dimensions}>{clesDims.map((k, i) => <div key={k}>{champ(t.dims[i], ajout.dim[i], v => setAjout(a => ({ ...a, dim: a.dim.map((d, j) => j === i ? v : d) })), .01, 6)}</div>)}</div>
+              {champ(t.depuisGauche, ajout.x, v => setAjout(a => ({ ...a, x: v })), 0, modelePlan.dims.largeur)}
+              {champ(t.depuisEntree, ajout.p, v => setAjout(a => ({ ...a, p: v })), 0, modelePlan.dims.profondeur)}
+              <label className={s.champ}><span>{t.face}</span><select value={ajout.rot} onChange={e => setAjout(a => ({ ...a, rot: Number(e.target.value) }))}>{[['entree', 0], ['droite', Math.PI / 2], ['fond', Math.PI], ['gauche', -Math.PI / 2]].map(([m, v]) => <option key={m} value={v}>{t.murs[m]}</option>)}</select></label>
+              <div className={s.actions}><button type="button" onClick={() => setAjout(null)}>{t.annulerAjout}</button><button type="button" disabled={!ajout.dim.every(v => valeur(v) >= .01 && valeur(v) <= 6) || !valides} onClick={() => {
+                const id = 'm_' + Date.now().toString(36) + '_' + ajouts.length;
+                setAjouts(l => [...l, { id, fam: ajout.fam, nom: ajout.nom || (famillesManuelles[lang] || famillesManuelles.fr)[ajout.fam], dim: ajout.dim.map(valeur),
+                  x: rond(valeur(ajout.x) - modelePlan.dims.largeur / 2), z: rond(modelePlan.dims.profondeur / 2 - valeur(ajout.p)), rot: ajout.rot }]);
+                setAjout(null); setMeuble(id);
+              }}>{t.validerAjout}</button></div>
+            </fieldset>}
         </div>
       </div>
       <footer className={s.pied}><p role="alert">{erreur}</p><button type="button" disabled={attente} onClick={onFermer}>{t.fermer}</button><button type="submit" disabled={attente || !valides}>{attente ? t.attente : t.sauver}</button></footer>

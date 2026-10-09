@@ -79,6 +79,12 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [piece.id]);
   const modifier = useCallback(f => setItems(l => { const n = f(l); enregistrer(n); return n; }), [enregistrer]);
+  async function ouvrirPhotos() {
+    clearTimeout(sauvegarde.current);
+    const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { agencement: items } });
+    if (!r.ok) { dire(t.erreurs.generique, true); return; }
+    setPiece(r.piece); retourPhotos();
+  }
 
   // barre d'outils qui suit le meuble choisi à l'écran
   useEffect(() => {
@@ -288,7 +294,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
             </div>
             <div className="rangee">
               <button className="btn btn--clair btn--petit" onClick={appliquerDims}>{tp.appliquer}</button>
-              <button className="btn btn--lien btn--petit" onClick={retourPhotos}>{tp.relancer}</button>
+              <button className="btn btn--lien btn--petit" onClick={ouvrirPhotos}>{tp.relancer}</button>
             </div>
           </div>
         </details>
@@ -378,7 +384,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         {onglet === 'meubles' && meubles}
         {onglet === 'resultat' && (
           <Resultat lang={lang} t={t} piece={{ ...piece, agencement: items }} rendus={rendus} setRendus={setRendus} solde={solde} setSolde={setSolde} couts={couts} services={services}
-            capturer={o => editeur.current && editeur.current.capture(o)} />
+            capturer={o => editeur.current && editeur.current.capture(o)} onPhoto={ouvrirPhotos} />
         )}
       </aside>
 

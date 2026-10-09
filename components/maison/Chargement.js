@@ -145,7 +145,7 @@ export default function Chargement({ t, lang, demo, piece, choix, aDesPieces, on
           </div>
         ) : (
           <ol className="mc-charge__etapes mc-mono" aria-live="polite">
-            {tc.etapes.map((e, i) => <li key={e} className={i < etape ? 'is-fait' : i === etape ? 'is-en-cours' : undefined}><i />{e}</li>)}
+            {(piece.modele?.capture ? tc.etapesScan : tc.etapes).map((e, i) => <li key={e} className={i < etape ? 'is-fait' : i === etape ? 'is-en-cours' : undefined}><i />{e}</li>)}
           </ol>
         )}
         {!erreur && <p className="mc-charge__duree">{demo ? t.nav.demo : tc.duree}</p>}
