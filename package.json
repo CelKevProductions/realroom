@@ -11,6 +11,7 @@
     "build": "next build",
     "start": "next start",
     "catalogue": "node scripts/catalogue.mjs",
+    "styles:catalogue": "python3 scripts/styles_catalogue.py",
     "moteur": "node scripts/moteur.mjs",
     "test": "node --test tests/unitaires/*.test.js",
     "e2e": "python3 tests/e2e.py",

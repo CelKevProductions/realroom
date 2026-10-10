@@ -87,6 +87,6 @@ test('les préférences d’une inspiration sont enregistrées sans modifier les
     inspiration: { style: 'epure', composition: 'equilibre', palette: ['vert'], matieres: ['bois'], resume: 'Lignes simples.', largeur: 100 }
   } });
   assert.deepEqual(m, copie); assert.deepEqual(r.proposition.preferences.palette, ['vert']);
-  assert.equal(r.proposition.preferences.style, 'epure'); assert.equal(r.proposition.confort.score.version, 'realroom-2026-10-v2');
+  assert.equal(r.proposition.preferences.style, 'epure'); assert.equal(r.proposition.confort.score.version, 'realroom-2026-10-v3');
   assert.ok(!r.agencement.some(i => i.sku === 'ornee')); assert.ok(r.agencement.reduce((s, i) => s + produits[i.sku].prix, 0) <= 120);
 });

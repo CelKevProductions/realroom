@@ -1,0 +1,16 @@
+{
+  "version": "realroom-styles-v1",
+  "styles": {
+    "epure": ["minimalist furniture with simple clean lines", "understated furniture in a minimal interior"],
+    "chaleureux": ["warm cozy furniture with soft textures", "comfortable furniture in a warm inviting interior"],
+    "classique": ["elegant traditional classic furniture", "classic refined furniture in a traditional interior"],
+    "boheme": ["bohemian furniture with natural woven materials", "relaxed boho furniture with rattan and linen"],
+    "artdeco": ["art deco furniture with geometric forms and brass", "elegant art deco furniture with velvet and sculptural details"],
+    "japandi": ["japandi furniture with restrained natural wood forms", "Japanese Scandinavian furniture with quiet simple shapes"],
+    "audacieux": ["bold colorful sculptural statement furniture", "expressive maximalist furniture with unusual shapes"],
+    "mediterraneen": ["Mediterranean furniture with earthy colors and natural textures", "relaxed Mediterranean furniture in stone linen and warm wood"],
+    "scandinave": ["Scandinavian furniture with light wood and simple functional forms", "Nordic furniture with soft neutral colors and clean lines"],
+    "industriel": ["industrial furniture with steel dark metal and leather", "loft style furniture with raw wood and metal frames"],
+    "contemporain": ["contemporary designer furniture with smooth modern shapes", "modern furniture with curved clean silhouettes"]
+  }
+}

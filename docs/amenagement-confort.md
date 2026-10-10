@@ -1,6 +1,6 @@
 # Aménagement et confort d’usage
 
-La proposition de mobilier passe maintenant par deux contrôles complémentaires : le solveur géométrique existant, puis `optimiserAmenagement` dans `lib/confort.js`. Le second recherche une disposition plus pratique avec les mêmes produits. Il ne fait aucun appel réseau et ne consomme aucun crédit.
+Le modèle choisit les usages, les produits et leurs alternatives, sans fournir de coordonnées. `lib/composition.js` crée les départs paramétriques ; le solveur géométrique puis `optimiserAmenagement` dans `lib/confort.js` cherchent une disposition plus pratique avec les produits retenus. Cette recherche ne fait aucun appel réseau et ne consomme aucun crédit.
 
 ## Critères
 
@@ -17,7 +17,9 @@ La recherche utilise des départs par groupes, deux passes locales et un recuit 
 
 Neuf patrons paramétriques de `lib/patrons.js` fournissent aussi des départs à la recherche : trois chambres, trois salons, deux coins repas et un bureau. Ils ne créent ni produits ni objets fictifs, et n’écrasent pas les meubles verrouillés. Les mêmes contrôles d’accès, de chemins et de collisions filtrent leurs candidats avant choix. Ce sont des heuristiques RealRoom, pas neuf compositions déjà validées par un décorateur.
 
-Le score décompose neuf critères : encombrement/ouvertures, circulation, usage, groupes de meubles, orientation/vue, conversation, équilibre visuel, alignement et symétrie. Les pondérations visuelles sont définies dans `lib/references.js` et la version est enregistrée. Une conversation privilégie la proximité et l'orientation mutuelle des sièges ; une composition symétrique augmente le poids de la symétrie des chevets. L'équilibre utilise une approximation du centre des empreintes, avec un poids faible. Les contraintes et accès sont contrôlés avant de départager les préférences.
+Le score décompose dix critères : encombrement/ouvertures, circulation, usage, groupes de meubles, orientation/vue, conversation, équilibre visuel, alignement, symétrie et tapis/éclairage. Les pondérations visuelles sont définies dans `lib/references.js` et la version est enregistrée. Une conversation privilégie la proximité et l'orientation mutuelle des sièges ; une composition symétrique augmente le poids de la symétrie des chevets. L'équilibre utilise une approximation du centre des empreintes, avec un poids faible. Les contraintes et accès sont contrôlés avant de départager les préférences.
+
+Les onze styles et le profil neutre partagent les règles géométriques. `lib/profils.js` définit leurs préférences éditoriales, les compléments utiles et l'ordre des patrons ; un brief peut mélanger trois styles. Ces réglages ne sont pas un modèle entraîné ni une validation par un décorateur. Les indices visuels OpenCLIP du catalogue apportent un bonus limité, avec repli textuel pour les images non indexées : voir [les styles visuels](styles-visuels.md).
 
 La note de chaque critère visuel est `100 / (1 + pénalité / 150)`, arrondie. Les critères non applicables sont omis de la moyenne pondérée. Les conflits géométriques plafonnent le total à 49 ; une difficulté de chemin le plafonne à 69. Sans entrée identifiée, la note est partielle. Sans mobilier au sol, aucun total n'est attribué. Ce score RealRoom n'est pas une mesure objective de beauté.
 
@@ -25,7 +27,7 @@ Les photos de rôle `inspiration` sont séparées des vues du relevé : quota de
 
 ## Budget et interface
 
-Le total du mobilier catalogue conservé est déduit du budget. `lib/budget.js` compare les combinaisons de produits déjà proposés et compatibles via un sac à dos avec frontières de Pareto : couvrir d’abord les usages, puis ajouter les compléments et la décoration, en centimes et quantités réelles. Les usages déjà conservés sont pris en compte. Au plus 80 candidats et 24 ajouts sont considérés ; au-delà de 12 000 états, une borne limite le temps et le diagnostic indique l’approximation. Il ne s’agit pas d’une recherche exhaustive sur tout le catalogue. Les doublons non prévus sont écartés, les prix inconnus sont signalés et les pièces conservées ne sont jamais supprimées pour faire rentrer artificiellement le total dans le budget.
+Le total du mobilier catalogue conservé est déduit du budget. `lib/budget.js` compare au plus 24 emplacements et huit options par emplacement : produit proposé, alternatives du modèle et produits éligibles du même usage. Le sac à dos couvre d'abord les fonctions, puis départage style et compléments, en centimes et quantités réelles. Les usages conservés sont pris en compte. Au-delà de 4 096 états, une borne limite le temps et le diagnostic indique l'approximation. Il ne s'agit pas d'une recherche exhaustive sur tout le catalogue. Les alternatives trop grandes ou incompatibles sont exclues. Les doublons non prévus sont écartés, les prix inconnus sont signalés et les pièces conservées ne sont jamais supprimées pour faire rentrer artificiellement le total dans le budget. Un remplacement abandonné restaure la fonction existante, sauf suppression explicitement demandée. Le diagnostic expose les substitutions retenues.
 
 Le panneau « La pièce au quotidien » est présent dans les deux éditeurs. Il recalcule les repères après un déplacement. « Optimiser la disposition » ajuste le mobilier catalogue ; « Annuler l’ajustement » restaure la version précédente. Une modification manuelle ultérieure invalide cette annulation pour éviter d’effacer le travail du client.
 

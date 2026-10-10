@@ -23,9 +23,9 @@ const textes = {
     plan: 'Vérifier le plan et les mesures', comparer: 'Comparer les dispositions', disposition: 'Disposition',
     aucune: 'Aucune autre disposition améliorant l’usage n’a été trouvée avec ces meubles.', choix: 'Choisissez le plan qui vous convient. Les meubles et leur prix restent identiques.',
     score: 'Score de disposition', partiel: 'Partiel', scoreNote: 'Indice indicatif pour comparer ces meubles dans cette pièce. Il ne mesure pas la beauté du projet. Les collisions, les ouvertures et les accès passent avant le style.',
-    criteres: { geometrie: 'Encombrement et ouvertures', circulation: 'Chemins depuis les portes', usage: 'Recul pour utiliser les meubles', relations: 'Groupes de meubles', orientation: 'Orientation et vue', conversation: 'Conversation', equilibre: 'Équilibre visuel', alignement: 'Alignement', symetrie: 'Symétrie' },
+    criteres: { geometrie: 'Encombrement et ouvertures', circulation: 'Chemins depuis les portes', usage: 'Recul pour utiliser les meubles', relations: 'Groupes de meubles', orientation: 'Orientation et vue', conversation: 'Conversation', equilibre: 'Équilibre visuel', alignement: 'Alignement', symetrie: 'Symétrie', tapisLumiere: 'Tapis et lumière près des usages' },
     sans: 'Non applicable', recherche: 'Principes de composition', sources: 'Règles inspirées de ces travaux, adaptées à RealRoom.',
-    profil: 'Préférences', styles: { neutre: 'Libre', epure: 'Épuré', chaleureux: 'Chaleureux', classique: 'Classique' }, compositions: { equilibre: 'Équilibre', conversation: 'Conversation', symetrie: 'Symétrie' }
+    profil: 'Préférences', styles: { neutre: 'Libre', epure: 'Épuré', chaleureux: 'Chaleureux', classique: 'Classique', boheme: 'Bohème', artdeco: 'Art déco', japandi: 'Japandi', audacieux: 'Audacieux', mediterraneen: 'Méditerranéen', scandinave: 'Scandinave', industriel: 'Industriel', contemporain: 'Contemporain' }, compositions: { equilibre: 'Équilibre', conversation: 'Conversation', symetrie: 'Symétrie' }
   },
   en: {
     titre: 'Designed for everyday living', passages: 'Walkways', acces: 'Furniture access', ouvertures: 'Doors & windows',
@@ -43,9 +43,9 @@ const textes = {
     plan: 'Check the plan and measurements', comparer: 'Compare arrangements', disposition: 'Arrangement',
     aucune: 'No other arrangement improving everyday use was found with these pieces.', choix: 'Choose the plan you prefer. The furniture and prices stay the same.',
     score: 'Layout score', partiel: 'Partial', scoreNote: 'An indicative index to compare these pieces in this room. It does not measure beauty. Collisions, openings and access take priority over style.',
-    criteres: { geometrie: 'Footprints and openings', circulation: 'Routes from doorways', usage: 'Room to use furniture', relations: 'Furniture groups', orientation: 'Orientation and view', conversation: 'Conversation', equilibre: 'Visual balance', alignement: 'Alignment', symetrie: 'Symmetry' },
+    criteres: { geometrie: 'Footprints and openings', circulation: 'Routes from doorways', usage: 'Room to use furniture', relations: 'Furniture groups', orientation: 'Orientation and view', conversation: 'Conversation', equilibre: 'Visual balance', alignement: 'Alignment', symetrie: 'Symmetry', tapisLumiere: 'Rugs and lighting near activities' },
     sans: 'Not applicable', recherche: 'Composition principles', sources: 'Rules inspired by these studies, adapted for RealRoom.',
-    profil: 'Preferences', styles: { neutre: 'Flexible', epure: 'Minimal', chaleureux: 'Warm', classique: 'Classic' }, compositions: { equilibre: 'Balance', conversation: 'Conversation', symetrie: 'Symmetry' }
+    profil: 'Preferences', styles: { neutre: 'Flexible', epure: 'Minimal', chaleureux: 'Warm', classique: 'Classic', boheme: 'Bohemian', artdeco: 'Art deco', japandi: 'Japandi', audacieux: 'Bold', mediterraneen: 'Mediterranean', scandinave: 'Scandinavian', industriel: 'Industrial', contemporain: 'Contemporary' }, compositions: { equilibre: 'Balance', conversation: 'Conversation', symetrie: 'Symmetry' }
   }
 };
 
@@ -90,7 +90,7 @@ export default function Confort({ modele, items, produits, lang = 'fr', garder =
       <summary>{t.score} <strong>{bilan.score.total === null ? t.inconnu : `${bilan.score.total}/100`}</strong>{bilan.score.incomplet && <small> · {t.partiel}</small>}</summary>
       <p>{t.scoreNote}</p>
       <dl>{bilan.score.criteres.map(c => <div key={c.id}><dt>{t.criteres[c.id]}</dt><dd>{c.note === null ? c.id === 'circulation' ? t.inconnu : t.sans : `${c.note}/100`}</dd></div>)}</dl>
-      <p>{t.profil} : {t.styles[bilan.score.preferences.style]} · {t.compositions[bilan.score.preferences.composition]}</p>
+      <p>{t.profil} : {bilan.score.preferences.styles.map(id => t.styles[id]).join(' / ')} · {t.compositions[bilan.score.preferences.composition]}</p>
       {bilan.score.preferences.resume && <p>{bilan.score.preferences.resume}</p>}
       {bilan.score.preferences.palette.length > 0 && <p>{bilan.score.preferences.palette.join(' · ')}{bilan.score.preferences.matieres.length > 0 ? ' / ' + bilan.score.preferences.matieres.join(' · ') : ''}</p>}
     </details>

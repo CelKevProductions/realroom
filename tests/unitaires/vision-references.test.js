@@ -28,6 +28,7 @@ test('les inspirations arrivent dans la proposition vision, jamais dans le relev
       assert.ok(contenu.some(c => c.type === 'text' && /not the client's room/.test(c.text)));
       const schema = fournisseur === 'anthropic' ? proposition.output_config.format.schema : proposition.response_format.json_schema.schema;
       assert.ok(schema.required.includes('inspiration'));
+      assert.deepEqual(Object.keys(schema.properties.meubles.items.properties).sort(), ['alternatives', 'produit', 'raison', 'zone']);
       await analyserPiece({ fonction: 'salon', photos: [{ role: 'inspiration', dataUri: image }, { role: 'entree', dataUri: image }] });
       const releve = appels.at(-1).messages.at(-1).content;
       assert.equal(releve.filter(c => ['image', 'image_url'].includes(c.type)).length, 1);

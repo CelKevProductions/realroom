@@ -1,0 +1,58 @@
+name: Apple RoomPlan
+
+on:
+  pull_request:
+    paths:
+      - 'native/ios/**'
+      - 'lib/scan.js'
+      - 'lib/agencement.js'
+      - 'tests/native-export.mjs'
+      - '.github/workflows/ios-roomplan.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'native/ios/**'
+      - 'lib/scan.js'
+      - 'lib/agencement.js'
+      - 'tests/native-export.mjs'
+      - '.github/workflows/ios-roomplan.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: roomplan-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compile-and-export:
+    runs-on: macos-15
+    timeout-minutes: 15
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Versions Apple
+        run: xcodebuild -version
+      - name: Compiler pour simulateur
+        run: >-
+          xcodebuild -project native/ios/RealRoomScan.xcodeproj -scheme RealRoomScan
+          -sdk iphonesimulator -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath "$RUNNER_TEMP/realroom-simulator"
+          CODE_SIGNING_ALLOWED=NO build
+      - name: Compiler pour appareil sans signature
+        run: >-
+          xcodebuild -project native/ios/RealRoomScan.xcodeproj -scheme RealRoomScan
+          -sdk iphoneos -destination 'generic/platform=iOS'
+          -derivedDataPath "$RUNNER_TEMP/realroom-device"
+          CODE_SIGNING_ALLOWED=NO build
+      - name: Vérifier le véritable encodeur Swift
+        run: |
+          xcrun swiftc native/ios/RealRoomScan/MetricSurvey.swift native/ios/Tests/main.swift -o "$RUNNER_TEMP/realroom-export-tests"
+          "$RUNNER_TEMP/realroom-export-tests" "$RUNNER_TEMP/realroom-export.json"
+      - name: Vérifier le contrat Swift vers le site
+        run: node tests/native-export.mjs "$RUNNER_TEMP/realroom-export.json"

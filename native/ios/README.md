@@ -9,8 +9,9 @@ Il n’est pas exposé à Safari : le site importe le relevé JSON du compagnon.
 - Ouvrir `RealRoomScan.xcodeproj` sur un Mac avec Xcode et le SDK iOS.
 - Choisir votre équipe de signature et votre identifiant de bundle : `fr.realroom.scan` est un identifiant provisoire, pas une application déjà publiée.
 - Choisir un **iPhone/iPad physique équipé de LiDAR**, iOS/iPadOS 16 minimum.
-- Compiler, autoriser la caméra, scanner lentement une seule pièce et toucher **Terminer**.
-- **Partager le JSON** → Enregistrer dans Fichiers → dans le site, Android/Apple → **Importer un relevé métrique**.
+- Compiler, autoriser la caméra, scanner lentement une seule pièce bien éclairée et toucher **Terminer**. RoomCaptureView conserve son guidage et sa prévisualisation 3D officiels.
+- Vérifier le récapitulatif des murs, portes, fenêtres, passages et objets. Les éléments de confiance moyenne/faible sont signalés, sans inventer de mesure certifiée.
+- **Enregistrer ou partager le relevé** → Enregistrer dans Fichiers → dans le site, Apple · LiDAR → **Importer un relevé métrique**.
 - Vérifier le plan, portes, fenêtres et mobilier, puis aménager. Ajouter une photo d’entrée uniquement pour le rendu final, en ajustant le point de vue de la maquette si nécessaire.
 
 Vérification de compilation sans signature, sur Mac :
@@ -21,7 +22,18 @@ xcodebuild -project native/ios/RealRoomScan.xcodeproj -scheme RealRoomScan \
   CODE_SIGNING_ALLOWED=NO build
 ```
 
-Le simulateur permet de compiler, **pas de valider un scan LiDAR**. Cette session de développement Linux ne dispose ni de Xcode/SDK Apple, ni de téléphone LiDAR : le source natif n’a pas été compilé ni essayé sur appareil ici. Aucune signature, installation client, publication TestFlight ou App Store n’a été effectuée. Ces étapes requièrent votre environnement Apple et une décision de distribution.
+Le workflow [.github/workflows/ios-roomplan.yml](../../.github/workflows/ios-roomplan.yml) est configuré sur macOS 15 / Xcode 16.4 : compilation iOS Simulator, compilation appareil sans signature, puis test de l'encodeur Swift et import de son fichier réel par `lib/scan.js`. Le résultat d'exécution doit être vérifié dans GitHub Actions ; une configuration seule n'est pas une preuve de compilation.
+
+Le simulateur permet de compiler, **pas de valider un scan LiDAR**. Cette session locale Linux ne dispose ni de Xcode/SDK Apple ni de téléphone LiDAR. Aucune signature, installation client, publication TestFlight ou App Store n’a été effectuée. Ces étapes requièrent votre environnement Apple et une décision de distribution.
+
+## Parcours et récupération
+
+- Compatibilité vérifiée par `RoomCaptureSession.isSupported` ; aucun bouton de scan actif sur appareil incompatible. Le site propose un retour direct aux photos guidées tant que le compagnon n'est pas distribué.
+- Demande caméra protégée contre les doubles démarrages ; après refus, bouton **Ouvrir Réglages** et nouvelle tentative. Une restriction système est distinguée d'un refus.
+- **Terminer** attend une session démarrée. La préparation ne reste pas indéfiniment bloquée : après 45 secondes sans résultat, un message propose de reprendre.
+- Une sortie en arrière-plan pendant la capture/préparation invalide le scan ; les callbacks tardifs ne peuvent pas remplacer un nouveau relevé. **Annuler** et **Nouveau relevé** demandent confirmation avant d'abandonner le brouillon local.
+- Les contours incomplets, cotes non finies, matrices non rigides et exports trop volumineux sont refusés avant le partage. Le site refait la validation complète, notamment le contour rectangulaire et les ouvertures.
+- Texte défilant et Dynamic Type, messages VoiceOver et retour haptique pour succès/erreur. L'aperçu du site reçoit le focus et signale les éléments incertains. Le brouillon temporaire est supprimé en recommençant ; les copies déjà enregistrées dans Fichiers restent intactes.
 
 ## Données et sécurité
 

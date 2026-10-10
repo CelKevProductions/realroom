@@ -199,8 +199,8 @@ async function amenager(p, b, langue) {
   const prep = preparerAmenagement(p.agencement || [], b);
   // démo : un choix plus large que pour Claude, pour que la proposition simulée trouve des pièces qui tiennent
   const cands = choisirCandidats(produits, { dims: p.modele.dims, fonction: p.fonction, envies: prep.envies, budget: prep.budget, parFamille: 30 });
-  const { proposition } = simulerAmenagement({ piece: versClaude(p.modele, prep.base, produits), mode: prep.mode, aRemplacer: prep.aRemplacer, candidats: cands, langue, demo: true });
-  const r = appliquerProposition({ modele: p.modele, prep, proposition, produits });
+  const { proposition } = simulerAmenagement({ piece: versClaude(p.modele, prep.base, produits), mode: prep.mode, aRemplacer: prep.aRemplacer, candidats: cands, envies: prep.envies, garder: prep.garder, langue, demo: true });
+  const r = appliquerProposition({ modele: p.modele, prep, proposition, produits, candidats: cands });
   ecrire(() => { p.agencement = r.agencement; p.proposition = r.proposition; toucher(p); });
   return ok({ piece: publique(p) });
 }

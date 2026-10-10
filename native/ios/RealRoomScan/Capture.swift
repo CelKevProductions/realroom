@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import RoomPlan
 
 struct RoomCaptureHost: UIViewControllerRepresentable {
@@ -32,7 +33,8 @@ final class CaptureController: UIViewController, RoomCaptureViewDelegate {
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        guard !started, RoomCaptureSession.isSupported else { return }
+        guard !started, RoomCaptureSession.isSupported,
+              state.generation == generation, state.phase == .scanning else { return }
         started = true
         capture.captureSession.run(configuration: RoomCaptureSession.Configuration())
         state.readyToStop = true
@@ -43,24 +45,26 @@ final class CaptureController: UIViewController, RoomCaptureViewDelegate {
         capture.captureSession.stop(pauseARSession: true)
     }
     func captureView(shouldPresent roomDataForProcessing: CapturedRoomData, error: Error?) -> Bool {
+        guard state.generation == generation,
+              state.phase == .scanning || state.phase == .processing else { return false }
         if let error = error {
             Task { @MainActor in
                 guard self.state.generation == self.generation else { return }
-                self.state.processing = false
-                self.state.error = "Le scan a échoué : \(error.localizedDescription)"
+                self.state.fail("Le scan a échoué : \(error.localizedDescription)")
             }
+            return false
         }
-        return error == nil
+        state.processing()
+        return true // RoomCaptureView conserve le coaching et la prévisualisation Apple.
     }
     func captureView(didPresent processedResult: CapturedRoom, error: Error?) {
         Task { @MainActor in
-            guard self.state.generation == self.generation else { return }
-            self.state.processing = false
+            guard self.state.generation == self.generation, self.state.phase == .processing else { return }
             do {
                 if let error = error { throw error }
-                self.state.file = try MetricExport.save(processedResult)
+                self.state.complete(try MetricExport.save(processedResult), token: self.generation)
             } catch {
-                self.state.error = "Le relevé n’a pas pu être exporté : \(error.localizedDescription)"
+                self.state.fail("Le relevé n’a pas pu être exporté : \(error.localizedDescription)")
             }
         }
     }

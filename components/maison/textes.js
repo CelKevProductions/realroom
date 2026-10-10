@@ -40,7 +40,8 @@ const fr = {
     suggestions: 'Dans cet esprit, chez Maison Corleone', coupsAide: 'Une pièce vous plaît ? Touchez-la : nous en tiendrons compte.', coup: 'Coup de cœur', max: 'Trois inspirations au plus.',
     styles: [
       ['chaleureux', 'Chaleureux'], ['epure', 'Épuré'], ['boheme', 'Bohème'], ['artdeco', 'Art déco'],
-      ['japandi', 'Japandi'], ['audacieux', 'Audacieux'], ['classique', 'Classique chic'], ['mediterraneen', 'Méditerranéen']
+      ['japandi', 'Japandi'], ['audacieux', 'Audacieux'], ['classique', 'Classique chic'], ['mediterraneen', 'Méditerranéen'],
+      ['scandinave', 'Scandinave'], ['industriel', 'Industriel'], ['contemporain', 'Contemporain']
     ]
   },
   priorite: {
@@ -136,7 +137,8 @@ const en = {
     suggestions: 'In this spirit, at Maison Corleone', coupsAide: 'Like a piece? Tap it and we will take it into account.', coup: 'Favourite', max: 'Three inspirations at most.',
     styles: [
       ['chaleureux', 'Warm'], ['epure', 'Minimal'], ['boheme', 'Bohemian'], ['artdeco', 'Art deco'],
-      ['japandi', 'Japandi'], ['audacieux', 'Bold'], ['classique', 'Classic chic'], ['mediterraneen', 'Mediterranean']
+      ['japandi', 'Japandi'], ['audacieux', 'Bold'], ['classique', 'Classic chic'], ['mediterraneen', 'Mediterranean'],
+      ['scandinave', 'Scandinavian'], ['industriel', 'Industrial'], ['contemporain', 'Contemporary']
     ]
   },
   priorite: {

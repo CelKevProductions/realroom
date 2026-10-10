@@ -37,7 +37,7 @@ export const POST = route(async (request, { params }) => {
     piece: { ...versClaude(p.modele, prep.base, PRODUITS), notes_client: p.notes || '' }, fonction: p.fonction, mode: prep.mode, envies: prep.envies, budget: prep.budget,
     garder: prep.garder, aRemplacer: prep.aRemplacer, candidats: cands, inspirations, langue: b.langue === 'en' ? 'en' : 'fr'
   });
-  const { agencement, proposition: prop } = appliquerProposition({ modele: p.modele, prep, proposition, produits: PRODUITS });
+  const { agencement, proposition: prop } = appliquerProposition({ modele: p.modele, prep, proposition, produits: PRODUITS, candidats: cands });
   const n = await majPiece(u.id, id, { agencement, proposition: prop });
   return json({ piece: publique(n) });
 });

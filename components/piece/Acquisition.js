@@ -13,7 +13,9 @@ const textes = {
     indisponible: 'AR indisponible ici. Utilisez Chrome sur un Android compatible, avec Google Play Services for AR et une connexion HTTPS, ou importez un relevé.',
     verification: 'Vérification de la compatibilité…', hauteur: 'Hauteur mesurée sous plafond (m, facultatif)', hauteurNote: 'Sans mesure saisie, la hauteur restera estimée à 2,50 m.',
     commencer: 'Démarrer le relevé AR', appleIntro: 'RoomPlan utilise le LiDAR et le machine learning Apple sur l’appareil pour relever murs, ouvertures et mobilier. Il nécessite un iPhone/iPad avec LiDAR et une application native, pas Safari.',
-    appleNote: 'L’import JSON RealRoom est prêt. Le compagnon iOS RoomPlan n’est pas encore distribué : il doit être compilé et installé avant de scanner. Un fichier USDZ seul ne contient pas ce contrat d’import.',
+    appleNote: 'L’application de scan RealRoom n’est pas encore disponible au téléchargement. Si vous avez déjà un relevé RealRoom, importez-le ci-dessous. Sinon, commencez avec les photos guidées.',
+    appleEtapes: ['Dans le compagnon RealRoom, scannez une seule pièce rectangulaire, bien éclairée, puis touchez Terminer.', 'Choisissez Enregistrer ou partager le relevé, puis Enregistrer dans Fichiers.', 'Importez ce fichier ici, vérifiez les mesures et complétez le plan avant d’aménager.'],
+    alternativePhotos: 'Utiliser les photos guidées', vigilance: 'Certains éléments du scan ont une confiance moyenne ou faible. Vérifiez leurs dimensions et leur position dans le plan.',
     importer: 'Importer un relevé métrique', prive: 'Seuls les cotes et les éléments du relevé sont enregistrés. Aucune vidéo AR n’est envoyée.',
     apercu: 'Vérifier avant d’importer', utiliser: 'Utiliser ce plan', fermer: 'Annuler', attente: 'Enregistrement…',
     remplacement: 'Remplacer le plan et l’aménagement actuels. Les photos et les rendus restent conservés.',
@@ -38,7 +40,9 @@ const textes = {
     indisponible: 'AR unavailable here. Use Chrome on a compatible Android with Google Play Services for AR and HTTPS, or import a survey.',
     verification: 'Checking compatibility…', hauteur: 'Measured ceiling height (m, optional)', hauteurNote: 'Without a measurement, height stays estimated at 2.50 m.',
     commencer: 'Start AR survey', appleIntro: 'RoomPlan uses on-device Apple machine learning and LiDAR to survey walls, openings and furniture. It requires an iPhone/iPad with LiDAR and a native app, not Safari.',
-    appleNote: 'RealRoom JSON import is ready. The iOS RoomPlan companion is not distributed yet: it must be built and installed before scanning. A USDZ file alone is not this import format.',
+    appleNote: 'The RealRoom scanning app is not available to download yet. If you already have a RealRoom survey, import it below. Otherwise, start with guided photos.',
+    appleEtapes: ['In the RealRoom companion, scan one well-lit rectangular room, then tap Terminer (Finish).', 'Choose Enregistrer ou partager le relevé (Save or share), then Save to Files.', 'Import that file here, check measurements and complete the plan before furnishing.'],
+    alternativePhotos: 'Use guided photos', vigilance: 'Some scanned elements have medium or low confidence. Check their dimensions and position in the plan.',
     importer: 'Import a metric survey', prive: 'Only dimensions and survey elements are saved. No AR video is uploaded.',
     apercu: 'Check before importing', utiliser: 'Use this plan', fermer: 'Cancel', attente: 'Saving…',
     remplacement: 'Replace the current plan and layout. Photos and renders are kept.', mobilier: 'detected item(s)', ouvertures: 'opening(s)', plan: 'Metric room plan preview',
@@ -64,9 +68,11 @@ export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr'
   const [apercu, setApercu] = useState(null), [remplacer, setRemplacer] = useState(false), [attente, setAttente] = useState(false);
   const [actif, setActif] = useState(false), [etatAR, setEtatAR] = useState({ coins: [], mire: false });
   const racineAR = useRef(null), session = useRef(null), controleur = useRef(null), vivant = useRef(true), occupe = useRef(false);
+  const titreApercu = useRef(null);
   const rappels = useRef({}); rappels.current = { onOccupe, onImport };
   const signaler = v => { occupe.current = v; rappels.current.onOccupe?.(v); };
   const message = e => t.erreurs[e?.code || e?.message || e?.erreur] || t.erreur;
+  useEffect(() => { if (apercu && !actif) titreApercu.current?.focus(); }, [apercu, actif]);
   useEffect(() => {
     vivant.current = true;
     const root = racineAR.current, prevenir = e => e.preventDefault();
@@ -83,6 +89,9 @@ export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr'
     const xr = session.current; session.current = null; controleur.current?.detruire(); controleur.current = null;
     if (xr) await xr.end().catch(() => {});
     if (vivant.current) { setActif(false); signaler(false); }
+  }
+  function changerMode(m) {
+    setMode(m); onMode?.(m); setErreur(''); setApercu(null);
   }
   function preparer(scan) {
     const resultat = depuisScan(scan); // validation locale identique à celle du serveur
@@ -136,7 +145,7 @@ export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr'
     <h2>{t.titre}</h2><p>{t.intro}</p>
     {piece?.modele?.capture && <p className={s.succes} role="status">{t.courant}</p>}
     <div className={s.modes} role="group" aria-label={t.titre}>
-      {['photos', 'android', 'apple'].map(m => <button type="button" key={m} aria-pressed={mode === m} disabled={actif || attente} onClick={() => { setMode(m); onMode?.(m); setErreur(''); }}>{t[m]}</button>)}
+      {['photos', 'android', 'apple'].map(m => <button type="button" key={m} aria-pressed={mode === m} disabled={actif || attente} onClick={() => changerMode(m)}>{t[m]}</button>)}
     </div>
     {mode === 'android' && <div className={s.options}>
       <p>{t.androidIntro}</p><p className={s.note}>{t.androidLimite}</p>
@@ -145,12 +154,17 @@ export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr'
       <button type="button" className={s.plein} disabled={!compatible || actif || attente} onClick={demarrer}>{t.commencer}</button>
       {compatible !== true && <p className={s.note}>{compatible == null ? t.verification : t.indisponible}</p>}
     </div>}
-    {mode === 'apple' && <div className={s.options}><p>{t.appleIntro}</p><p className={s.note}>{t.appleNote}</p></div>}
+    {mode === 'apple' && <div className={s.options}>
+      <p>{t.appleIntro}</p><p className={s.note}>{t.appleNote}</p>
+      <button type="button" disabled={attente} onClick={() => changerMode('photos')}>{t.alternativePhotos}</button>
+      <ol>{t.appleEtapes.map(etape => <li key={etape}>{etape}</li>)}</ol>
+    </div>}
     {mode !== 'photos' && <><label className={s.importer}><span>{t.importer}</span><input type="file" accept="application/json,.json,.realroom" aria-label={t.importer} disabled={actif || attente} onChange={e => { importer(e.target.files[0]); e.target.value = ''; }} /></label><p className={s.note}>{t.prive}</p></>}
     {apercu && <div className={s.apercu}>
-      <h3>{t.apercu}</h3><p>{apercu.scan.source === 'apple-roomplan' ? 'Apple RoomPlan' : 'Android ARCore'} · {apercu.agencement.length} {t.mobilier} · {apercu.modele.capture.nbOuvertures} {t.ouvertures}</p>
+      <h3 ref={titreApercu} tabIndex={-1}>{t.apercu}</h3><p>{apercu.scan.source === 'apple-roomplan' ? 'Apple RoomPlan' : 'Android ARCore'} · {apercu.agencement.length} {t.mobilier} · {apercu.modele.capture.nbOuvertures} {t.ouvertures}</p>
       <ApercuPlan modele={apercu.modele} items={apercu.agencement} label={t.plan} />
       <p className={s.note}>{t.intro}</p>
+      {apercu.scan.source === 'apple-roomplan' && [...apercu.scan.walls, ...(apercu.scan.openings || []), ...(apercu.scan.objects || [])].some(e => e.confidence !== 'high') && <p className={s.note}>{t.vigilance}</p>}
       {!apercu.modele.capture.mobilierDetecte && <p className={s.note}>{t.androidLimite}</p>}
       {apercu.modele.dims.sources.hauteur === 'estimation' && <p className={s.note}>{t.hauteurNote}</p>}
       {piece?.modele && <label className={s.confirmer}><input type="checkbox" checked={remplacer} disabled={attente} onChange={e => setRemplacer(e.target.checked)} /><span>{t.remplacement}</span></label>}

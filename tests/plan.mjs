@@ -105,7 +105,9 @@ try {
   const proposee = (await json(await ctx.request.get(`${base}/api/pieces/${p.id}`))).piece;
   assert.equal(proposee.proposition.preferences.style, 'classique');
   assert.equal(proposee.proposition.preferences.composition, 'symetrie');
-  assert.equal(proposee.proposition.confort.score.criteres.length, 9);
+  assert.equal(proposee.proposition.confort.score.criteres.length, 10);
+  assert.equal(proposee.proposition.placement.source, 'solveur');
+  assert.equal(proposee.proposition.selectionBudget.methode, 'sac-a-dos-emplacements');
   await verifierScore(page);
   await page.reload();
   await verifierScore(page);
@@ -211,7 +213,7 @@ async function verifierScore(page) {
   const score = page.locator('details').filter({ has: page.locator('summary').filter({ hasText: 'Score de disposition' }) });
   await score.locator('summary').waitFor({ timeout: 20000 });
   if (!await score.evaluate(el => el.open)) await score.locator('summary').click();
-  assert.equal(await score.locator('dt').count(), 9);
+  assert.equal(await score.locator('dt').count(), 10);
   assert.ok((await score.innerText()).includes('Chemins depuis les portes'));
 }
 

@@ -8,6 +8,8 @@
 .acquisition button[aria-pressed="true"], .acquisition .plein { background: #C9A66B; border-color: #C9A66B; color: #251C16; }
 .acquisition button:focus-visible, .importer:focus-within, .champ input:focus-visible { outline: 2px solid #C9A66B; outline-offset: 3px; }
 .options { max-width: 48rem; }
+.options ol { padding-left: 1.25rem; line-height: 1.55; }
+.options li { margin: .65rem 0; }
 .note, .options small { font-size: .83rem; opacity: .8; }
 .champ { display: grid; gap: .45rem; margin: 1rem 0 .3rem; }
 .champ input { font: inherit; color: inherit; background: transparent; border: 1px solid color-mix(in srgb, currentColor 30%, transparent); padding: .7rem; border-radius: .2rem; max-width: 11rem; }
