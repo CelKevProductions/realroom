@@ -1,6 +1,6 @@
 'use client';
 // L'atelier : la maquette 3D de la pièce et son panneau en trois temps
-// (1 aménager, 2 meubles, 3 résultat). Une action principale par temps, toujours en bas du panneau.
+// (1 aménager, 2 meubles, 3 résultat). Ajout et réaménagement restent accessibles en haut du panneau.
 // Choisir un meuble dans la liste : la caméra glisse jusqu'à lui et en fait le tour.
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { api } from '@/components/api.js';
@@ -46,13 +46,15 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const [mode, setMode] = useState((piece.proposition && piece.proposition.mode) || 'tout');
   const [envies, setEnvies] = useState((piece.proposition && piece.proposition.envies) || '');
   const [budget, setBudget] = useState((piece.proposition && piece.proposition.budget) || '');
-  const [garder, setGarder] = useState(() => new Set());
+  const [garder, setGarder] = useState(() => new Set(piece.proposition?.garder || []));
   const [aRemplacer, setARemplacer] = useState(() => new Set());
   const [dims, setDims] = useState(piece.modele.dims);
   const editeur = useRef(null);
   const outils = useRef(null);
   const panneau = useRef(null);
   const sauvegarde = useRef(null);
+  const ecritures = useRef(Promise.resolve(true));
+  const reamenagement = useRef(false);
   const aCadrer = useRef(null);
   const premierOnglet = useRef(true);
   const lireVue = useCallback(() => editeur.current?.pointDeVue(), []);
@@ -73,20 +75,27 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   }, [onglet]);
 
   // enregistrement différé des modifications faites à la main
-  const enregistrer = useCallback(liste => {
-    clearTimeout(sauvegarde.current);
-    sauvegarde.current = setTimeout(async () => {
+  const ecrire = useCallback(liste => {
+    const tache = ecritures.current.catch(() => false).then(async () => {
       const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { agencement: liste } });
       if (!r.ok) dire(t.erreurs.generique, true);
-    }, 700);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [piece.id]);
-  const modifier = useCallback(f => setItems(l => { const n = f(l); enregistrer(n); return n; }), [enregistrer]);
+      return r.ok;
+    });
+    ecritures.current = tache;
+    return tache;
+  }, [piece.id, t.erreurs.generique]);
+  const enregistrer = useCallback(liste => {
+    clearTimeout(sauvegarde.current);
+    sauvegarde.current = setTimeout(() => { ecrire(liste).catch(() => dire(t.erreurs.generique, true)); }, 700);
+  }, [ecrire, t.erreurs.generique]);
+  const modifier = useCallback(f => {
+    if (reamenagement.current) return;
+    setItems(l => { const n = f(l); enregistrer(n); return n; });
+  }, [enregistrer]);
   const vider = useCallback(async () => {
     clearTimeout(sauvegarde.current);
-    const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { agencement: items } });
-    if (!r.ok) throw new Error('sauvegarde');
-  }, [piece.id, items]);
+    if (!(await ecrire(items))) throw new Error('sauvegarde');
+  }, [ecrire, items]);
   async function ouvrirPhotos() {
     clearTimeout(sauvegarde.current);
     const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { agencement: items } });
@@ -188,16 +197,26 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     if (vue === 'dessus') aCadrer.current = id;
   }
   async function proposer() {
-    if (inspirationOccupe || attente) return;
+    if (inspirationOccupe || reamenagement.current || !services.analyse) return;
+    reamenagement.current = true;
     setAttente(true);
-    const r = await api(`/api/pieces/${piece.id}/amenager`, { method: 'POST', corps: { mode, envies, budget: +budget || 0, garder: [...garder], aRemplacer: [...aRemplacer], langue: lang } });
-    setAttente(false);
-    if (!r.ok) { dire(r.erreur === 'limite' ? t.connexion.erreurs.limite : t.erreurs.generique, true); return; }
-    setPiece(r.piece);
-    setSelection(null);
     setOnglet('meubles');
-    // la nouvelle pièce se dévoile : la caméra fait un lent quart de tour
-    if (vue === 'dessus' && editeur.current) editeur.current.balayer();
+    try {
+      await vider();
+      const r = await api(`/api/pieces/${piece.id}/amenager`, { method: 'POST', corps: { mode, envies, budget: +budget || 0, garder: [...garder], aRemplacer: [...aRemplacer], langue: lang } });
+      if (!r.ok) throw r;
+      setPiece(r.piece);
+      setSelection(null);
+      aCadrer.current = null;
+      dire(tp.reamenage);
+      // la nouvelle pièce se dévoile : la caméra fait un lent quart de tour
+      if (vue === 'dessus') editeur.current?.balayer();
+    } catch (e) {
+      dire(e?.erreur === 'limite' ? t.connexion.erreurs.limite : t.erreurs.generique, true);
+    } finally {
+      reamenagement.current = false;
+      setAttente(false);
+    }
   }
   async function appliquerDims() {
     const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { dims } });
@@ -254,7 +273,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   // ---------- les trois temps du panneau : contenu, puis action principale en pied ----------
   const amenager = (
     <>
-      <div className="panneau__corps" role="tabpanel">
+      <div className="panneau__corps" role="tabpanel" inert={attente || undefined}>
         <Confort modele={piece.modele} items={items} produits={produits} lang={lang} onCorriger={corrigerPlan} />
         <fieldset className="champ champ--groupe">
           <legend>{tp.modeTitre}</legend>
@@ -307,18 +326,13 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
           </div>
         </details>
       </div>
-      <div className="panneau__pied">
-        <button className="btn btn--plein btn--large btn--bloc" onClick={proposer} disabled={attente || inspirationOccupe || !services.analyse}>
-          {attente ? <><span className="rouage rouage--petit" /> {tp.proposition}</> : tp.proposer}
-        </button>
-      </div>
     </>
   );
 
   const prop = piece.proposition;
   const meubles = (
     <>
-      <div className="panneau__corps" role="tabpanel">
+      <div className="panneau__corps" role="tabpanel" inert={attente || undefined}>
         {prop && prop.concept && (
           <div className="concept">
             <b>{tp.concept}</b>
@@ -342,18 +356,15 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         )}
       </div>
       <div className="panneau__pied">
-        <button className="btn btn--clair btn--bloc" onClick={() => ouvrirCatalogue('', null)} disabled={!produits}>
-          <span className="plus" aria-hidden="true" />{tp.ajouterMeuble}
-        </button>
         {/* l'étape suivante, dite clairement : la photo réaliste par IA */}
-        <button className="btn btn--plein btn--bloc" onClick={() => setOnglet('resultat')}>{tp.versRendu}</button>
+        <button className="btn btn--plein btn--bloc" onClick={() => setOnglet('resultat')} disabled={attente}>{tp.versRendu}</button>
       </div>
     </>
   );
 
   return (
     <div className="atelier">
-      <div className="atelier__scene">
+      <div className="atelier__scene" inert={attente || undefined} aria-busy={attente}>
         <Editeur3D ref={editeur} modele={piece.modele} items={items} selection={selection} vue={vue}
           surSelection={surSelection} surDeplacement={surDeplacement} surCadre={setCadre} erreurWebgl={t.erreurs.webgl} />
         {vue === 'photo' && photo && <div className="calque-photo" style={{ backgroundImage: `url(${photo.url})`, opacity: opacite }} />}
@@ -380,9 +391,18 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       </div>
 
       <aside className="atelier__panneau" ref={panneau}>
+        <div className="atelier__actions" role="group" aria-label={tp.ameublement}>
+          <button type="button" className="btn btn--clair" onClick={() => ouvrirCatalogue('', null)} disabled={!produits || attente}>
+            <span className="plus" aria-hidden="true" />{tp.ajouterMeuble}
+          </button>
+          <button type="button" className="btn btn--plein" onClick={proposer} disabled={attente || inspirationOccupe || !services.analyse} title={tp.reamenagerAide}>
+            {attente && <span className="rouage rouage--petit" aria-hidden="true" />}{attente ? tp.proposition : tp.reamenager}
+          </button>
+          {attente && <p role="status">{tp.reamenagerAide}</p>}
+        </div>
         <div className="onglets" role="tablist">
           {ONGLETS.map((o, i) => (
-            <button key={o} role="tab" aria-selected={onglet === o} onClick={() => setOnglet(o)}>
+            <button key={o} role="tab" aria-selected={onglet === o} onClick={() => setOnglet(o)} disabled={attente}>
               <span className="onglets__num">{i + 1}</span>
               <span className="onglets__nom">{tp.panneau[o]}</span>
             </button>

@@ -418,8 +418,15 @@ html:has(.mc-intro) { overscroll-behavior: none; }
 .mc-piece__menu { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 18px; margin-top: 12px; }
 .mc-piece__menu button, .mc-piece__menu a { font-size: .625rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; }
 .mc-piece__menu button:hover, .mc-piece__menu a:hover { opacity: .6; }
-.mc-station { position: absolute; z-index: 12; left: calc(var(--pad) + 6px); bottom: calc(var(--bas) + 28px); width: min(470px, 38vw); max-height: calc(100svh - var(--haut) - 150px); display: grid; gap: 14px; justify-items: start; align-content: start; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.mc-station { position: absolute; z-index: 12; left: calc(var(--pad) + 6px); bottom: calc(var(--bas) + 28px); width: min(470px, 38vw); max-height: calc(100svh - var(--haut) - 150px); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 14px; min-width: 0; overflow: hidden; }
 .mc-station::-webkit-scrollbar { display: none; }
+.mc-station__contenu { display: grid; gap: 14px; justify-items: start; align-content: start; min-width: 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.mc-ameublement { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 8px; width: 100%; }
+.mc-ameublement .mc-btn { min-width: 0; min-height: 48px; padding: 8px 10px; gap: 6px; font-size: .6875rem; letter-spacing: .02em; line-height: 1.35; white-space: normal; text-transform: none; }
+.mc-ameublement svg, .mc-rouage { flex-shrink: 0; }
+.mc-rouage { width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: mc-tourne 1s linear infinite; }
+.mc-reamenagement { font-size: .75rem; line-height: 1.4; }
+@media (prefers-reduced-motion: reduce) { .mc-rouage { animation: none; } }
 .mc-station__pill { color: inherit; border-color: currentColor; background: rgba(246, 241, 232, .55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 .mc-piece.is-soir .mc-station__pill { background: rgba(30, 22, 14, .45); }
 .mc-station__titre { font-size: clamp(2.6rem, 5.2vw, 5.4rem); }
@@ -541,7 +548,7 @@ html:has(.mc-intro) { overscroll-behavior: none; }
 @media (max-width: 899px) {
   .mc-piece__scene { bottom: 46svh; }
   .mc-piece__voile { display: none; }
-  .mc-station { left: 0; right: 0; bottom: 0; width: auto; max-height: 46svh; padding: 16px var(--pad) calc(var(--bas) + 16px); background: var(--papier); overflow-y: auto; align-content: start; border-top: 1px solid var(--trait); border-radius: 14px 14px 0 0; }
+  .mc-station { left: 0; right: 0; bottom: 0; width: auto; height: 46svh; max-height: 46svh; padding: 12px var(--pad) calc(var(--bas) + 12px); background: var(--papier); border-top: 1px solid var(--trait); border-radius: 14px 14px 0 0; }
   .mc-piece.is-soir .mc-station { background: var(--nuit); }
   .mc-station__titre { font-size: 2.4rem; }
   .mc-station__script { font-size: 1.8rem; }

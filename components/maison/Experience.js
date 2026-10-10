@@ -226,7 +226,7 @@ export default function Experience({ lang, demo = false, profil: profilServeur =
       )}
       {phase === 'piece' && piece && piece.modele && (
         <Scene key={piece.id} t={t} lang={lang} demo={demo} piece={piece} rendus={rendus} credits={credits} setCredits={setCredits} profil={profil}
-          nbPieces={nbPieces} onNouvelle={nouvelle} onMesPieces={mesPieces} onDeconnexion={deconnexion} onPhotos={ajouterPhotoRendu} />
+          nbPieces={nbPieces} onNouvelle={nouvelle} onMesPieces={mesPieces} onDeconnexion={deconnexion} onPhotos={ajouterPhotoRendu} onMaj={setPiece} />
       )}
       {phase === 'ouverture' && <div className="mc-ouverture mc-fixe" aria-busy="true"><Logo /></div>}
       {pre && (

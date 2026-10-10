@@ -81,7 +81,8 @@ const fr = {
     nouvelle: 'Nouvelle pièce', mesPieces: 'Mes pièces', aide: 'Glissez pour tourner autour, glissez un meuble pour le déplacer.',
     vue3d: '3D', photo: 'Photo', tournerAide: 'Glissez pour tourner', fermer: 'Fermer', enregistre: 'Modifications enregistrées.',
     erreur: 'Une erreur est survenue. Réessayez.', concept: 'Une proposition Maison Corleone pour votre pièce.',
-    ajouter: 'Ajouter une pièce', precedente: 'Pièce précédente', suivante: 'Pièce suivante', numero: 'Pièce {n} sur {t}', deVotrePiece: 'De votre pièce',
+    ajouter: 'Ajouter des meubles', ameublement: 'Aménager la pièce', reamenager: 'Réaménager automatiquement', reamenagement: 'Réaménagement en cours…', reamenagerAide: 'Nouvelle proposition avec votre budget et votre style.', reamenage: 'Votre nouvel aménagement est prêt.',
+    precedente: 'Pièce précédente', suivante: 'Pièce suivante', numero: 'Pièce {n} sur {t}', deVotrePiece: 'De votre pièce',
     gardeEtat: 'Gardé', retireEtat: 'Retiré', voir360: 'Voir en 360°', dims: '{l} × {p} × {h} cm', vide: 'Aucune pièce Maison Corleone pour l’instant : ajoutez-en depuis le catalogue.',
     renduVoir: 'Voir le rendu', boutique: 'Retour à la boutique Maison Corleone', recommencer: 'Recommencer la démo', nouvellePiece: 'Pièce Maison Corleone', retireToast: '{n} retiré de la pièce.'
   },
@@ -178,7 +179,8 @@ const en = {
     nouvelle: 'New room', mesPieces: 'My rooms', aide: 'Drag to orbit, drag a piece to move it.',
     vue3d: '3D', photo: 'Photo', tournerAide: 'Drag to turn', fermer: 'Close', enregistre: 'Changes saved.',
     erreur: 'Something went wrong. Please try again.', concept: 'A Maison Corleone proposal for your room.',
-    ajouter: 'Add a piece', precedente: 'Previous piece', suivante: 'Next piece', numero: 'Piece {n} of {t}', deVotrePiece: 'From your room',
+    ajouter: 'Add furniture', ameublement: 'Furnish the room', reamenager: 'Redesign automatically', reamenagement: 'Redesigning…', reamenagerAide: 'A new proposal with your budget and style.', reamenage: 'Your new layout is ready.',
+    precedente: 'Previous piece', suivante: 'Next piece', numero: 'Piece {n} of {t}', deVotrePiece: 'From your room',
     gardeEtat: 'Kept', retireEtat: 'Removed', voir360: 'View in 360°', dims: '{l} × {p} × {h} cm', vide: 'No Maison Corleone piece yet: add some from the catalogue.',
     renduVoir: 'View the render', boutique: 'Back to the Maison Corleone shop', recommencer: 'Restart the demo', nouvellePiece: 'Maison Corleone piece', retireToast: '{n} removed from the room.'
   },

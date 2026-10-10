@@ -5,7 +5,7 @@ import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import {scanAndroid} from './fixtures/scans.js';
+import {scanAndroid, scanApple} from './fixtures/scans.js';
 import {vuePourPosition} from '../lib/cadrages.js';
 
 const RACINE = path.resolve(import.meta.dirname, '..');
@@ -187,6 +187,39 @@ essai('crédits offerts plafonnés par domaine (hors grands fournisseurs), sans 
   // example.com : marie, photos, rendu, achat ont déjà reçu les leurs (plafond d'essai : 4 par jour)
   assert.equal((await client().connexion('zoe@example.com')).credits, 0);
   assert.equal((await client().connexion('zoe.martin@gmail.com')).credits, 3);
+});
+
+essai('réaménagement relancé : budget, style, meuble gardé et déplacement enregistré conservés', async () => {
+  const api = client();
+  const moi = await api.connexion('amenagement@meubles.test');
+  const projet = await api('/api/projets', { method: 'POST', corps: { nom: 'Meubles' } });
+  const creation = await api(`/api/projets/${projet.projet.id}/pieces`, { method: 'POST', corps: { nom: 'Chambre', fonction: 'chambre' } });
+  const id = creation.piece.id;
+  const scan = await api(`/api/pieces/${id}/scan`, { method: 'POST', corps: { scan: scanApple() } });
+  assert.equal(scan.statut, 200);
+  const lit = scan.piece.agencement.find(it => it.p?.fam === 'lit');
+  assert.ok(lit, 'le relevé contient le lit existant');
+  const choix = { mode: 'tout', envies: 'Style scandinave, bois clair. Garder le lit et ajouter du rangement.', budget: 3000, garder: [lit.id], aRemplacer: [], langue: 'fr' };
+  const premiere = await api(`/api/pieces/${id}/amenager`, { method: 'POST', corps: choix });
+  assert.equal(premiere.statut, 200, JSON.stringify(premiere));
+  assert.ok(premiere.piece.agencement.some(it => it.origine === 'catalogue'), 'la proposition fournit des meubles du catalogue');
+  const deplace = premiere.piece.agencement.map(it => it.id === lit.id ? { ...it, x: .12 } : it);
+  const enregistrement = await api(`/api/pieces/${id}`, { method: 'PATCH', corps: { agencement: deplace } });
+  assert.equal(enregistrement.statut, 200);
+  const prop = enregistrement.piece.proposition;
+  const suivante = await api(`/api/pieces/${id}/amenager`, { method: 'POST', corps: { mode: 'tout', envies: prop.envies, budget: prop.budget, garder: prop.garder, aRemplacer: [], langue: 'fr' } });
+  assert.equal(suivante.statut, 200, JSON.stringify(suivante));
+  assert.equal(suivante.piece.proposition.budget, choix.budget);
+  assert.equal(suivante.piece.proposition.envies, choix.envies);
+  assert.ok(suivante.piece.proposition.garder.includes(lit.id));
+  assert.ok(suivante.piece.proposition.preferences.styles.includes('scandinave'));
+  assert.deepEqual(suivante.piece.modele, scan.piece.modele, 'réaménager ne refait pas le scan');
+  const garde = suivante.piece.agencement.find(it => it.id === lit.id && it.garde !== false);
+  assert.ok(garde);
+  assert.equal(garde.x, enregistrement.piece.agencement.find(it => it.id === lit.id).x);
+  assert.equal((await api('/api/moi')).credits, moi.credits, 'aucun rendu image généré ou débité');
+  const recharge = await api(`/api/pieces/${id}`);
+  assert.deepEqual(recharge.piece.agencement, suivante.piece.agencement, 'le nouvel aménagement est enregistré');
 });
 
 essai('rendu guidé : caméra, nuit, photo indépendante, concurrence et référence conservée', async () => {

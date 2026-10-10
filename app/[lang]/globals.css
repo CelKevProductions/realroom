@@ -372,7 +372,11 @@ html:has(.atelier), body:has(.atelier) { overflow: hidden; width: 100%; }
 .atelier__scene { position: relative; min-height: 0; background: #EFEBE3; overflow: hidden; }
 .atelier__scene canvas { width: 100%; height: 100%; touch-action: none; }
 .atelier__scene canvas.is-deplace { cursor: grabbing !important; }
-.atelier__panneau { border-left: 1px solid var(--trait); background: var(--platre); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-width: 0; min-height: 0; overflow: hidden; }
+.atelier__panneau { border-left: 1px solid var(--trait); background: var(--platre); display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; min-width: 0; min-height: 0; overflow: hidden; }
+.atelier__actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 8px; padding: 12px; border-bottom: 1px solid var(--trait); }
+.atelier__actions .btn { min-width: 0; min-height: 48px; padding: 8px 10px; font-size: .8rem; white-space: normal; line-height: 1.35; }
+.atelier__actions .plus, .atelier__actions .rouage { flex-shrink: 0; }
+.atelier__actions p { grid-column: 1 / -1; font-size: .75rem; color: var(--graphite); }
 .onglets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--trait); }
 .onglets button { position: relative; display: grid; gap: 2px; justify-items: start; border: 0; background: none; padding: 14px 16px 13px; text-align: left; cursor: pointer; color: var(--gris); transition: color .2s; }
 .onglets button + button { border-left: 1px solid var(--trait); }
@@ -412,7 +416,7 @@ html:has(.atelier), body:has(.atelier) { overflow: hidden; width: 100%; }
 .app-page__actions { display: flex; align-items: center; gap: 14px; }
 @media (max-width: 900px) {
   .atelier { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(140px, 40%) minmax(0, 1fr); }
-  .atelier__panneau { border-left: 0; border-top: 1px solid var(--trait); grid-template-rows: auto minmax(0, 1fr) auto; }
+  .atelier__panneau { border-left: 0; border-top: 1px solid var(--trait); }
   .aide-scene { display: none; }
   .vues { top: 10px; left: 10px; }
   .camera-photo { top: 62px; left: 10px; padding: 6px 9px; width: min(300px, calc(100% - 20px)); }
