@@ -3,13 +3,13 @@
 
   npm run build && python3 tests/maison.py [demo-desktop|demo-mobile|compte] [--mouvement]
 
-- demo-desktop / demo-mobile : /fr/maison-corleone/demo, tout dans le navigateur (aucun appel à /api)
+- demo-desktop / demo-mobile : /fr/maison-corleone/demo, stockage local et aménagement serveur avec double IA
 - compte : /fr/maison-corleone avec la connexion simulée (essais locaux, sans client Shopify),
   analyse, aménagement et rendu simulés côté serveur ; rechargement, redirection de /fr/app, déconnexion.
 Par défaut les animations sont réduites (plus rapide) ; --mouvement joue tout (préchargement, rideaux…).
 Captures dans .essais/.
 """
-import asyncio, os, pathlib, shutil, subprocess, sys, time, urllib.request
+import asyncio, os, pathlib, re, shutil, subprocess, sys, time, urllib.request
 from playwright.async_api import async_playwright, expect
 
 RACINE = pathlib.Path(__file__).resolve().parent.parent
@@ -27,9 +27,11 @@ def serveur():
     donnees = RACINE / '.data' / 'essais-maison'
     shutil.rmtree(donnees, ignore_errors=True)
     env = dict(os.environ, REALROOM_ESSAIS='1', REALROOM_SIMULATION='1', PGLITE_DIR=str(donnees / 'pglite'), FICHIERS_DIR=str(donnees / 'fichiers'), PORT=str(PORT), SITE_URL=BASE)
-    for k in ('MC_CLIENT_ID', 'MC_CLIENT_SECRET'):
-        env.pop(k, None)
-    p = subprocess.Popen(['npx', 'next', 'start', '-p', str(PORT)], cwd=RACINE, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    for k in list(env):
+        if re.search(r'DATABASE_URL|POSTGRES|FAL_|ANTHROPIC_|SESSION_SECRET|MC_CLIENT_|^VERCEL', k):
+            env.pop(k, None)
+    env.update(FAL_KEY='test-sans-reseau', DEMO_AMENAGEMENT_IA='1', DEMO_FAL_AUDIT=str(donnees / 'fal.jsonl'))
+    p = subprocess.Popen(['node', '--import', str(RACINE / 'tests/fixtures/serveur-ia.mjs'), 'node_modules/next/dist/bin/next', 'start', '-p', str(PORT)], cwd=RACINE, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
     for _ in range(120):
         try:
             urllib.request.urlopen(BASE + '/api/etat', timeout=2)
@@ -193,7 +195,8 @@ async def main():
                 await jusquau_parcours(page, '/fr/maison-corleone/demo')
                 await etapes(page, connexion_demo=True)
                 await piece(page)
-                assert not appels, f'la démo a appelé le serveur : {appels[:5]}'
+                assert BASE + '/api/demo/amenager' in appels, appels
+                assert all(url in (BASE + '/api/demo/amenager', BASE + '/api/etat') for url in appels), appels
             else:
                 await jusquau_parcours(page, '/fr/maison-corleone')
                 await etapes(page, connexion_demo=False)

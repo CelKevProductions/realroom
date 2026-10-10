@@ -40,11 +40,13 @@ Le client relève une pièce par photos guidées, par 3 à 32 coins au sol avec 
 ```bash
 npm install
 npm run build
-REALROOM_SIMULATION=1 REALROOM_ESSAIS=1 npm start   # sans aucune clé : analyse, aménagement, rendus et paiement simulés
+REALROOM_SIMULATION=1 REALROOM_ESSAIS=1 npm start   # services des comptes simulés ; démo d'aménagement exige une clé IA
 # ou, pendant le développement : REALROOM_SIMULATION=1 npm run dev
 ```
 
 En local seulement (jamais sur Vercel) : sans `RESEND_API_KEY`, le code de connexion s'affiche sur la page, et sans Stripe l'achat de crédits est simulé. Sans `DATABASE_URL`, la base est créée dans `.data/pglite`.
+
+Les démos `/fr/demo` et `/fr/maison-corleone/demo` appellent réellement l'IA pour aménager via `/api/demo/amenager`. Fournir `FAL_KEY` ou `ANTHROPIC_API_KEY` côté serveur ; sur Vercel, donner aussi à la preview sa propre base et son propre `SESSION_SECRET`. Le plan et les inspirations choisies sont transmis au moteur, sans compte ni débit de crédit image. Par défaut : dix demandes par IP et trente au total sur 24 h, configurables via `.env.example`. Sans ces services, l'interface conserve la pièce et affiche une indisponibilité, sans proposition simulée. `GET /api/demo/amenager` expose la disponibilité de configuration, sans tester le fournisseur ni révéler de clé.
 
 ## Mise en ligne (Vercel)
 
@@ -65,7 +67,7 @@ En local seulement (jamais sur Vercel) : sans `RESEND_API_KEY`, le code de conne
 
 ## Édition Maison Corleone (« Chez vous »)
 
-`/fr/maison-corleone` : l'aménagement offert aux clients de maisoncorleone.com, avec leur compte client de la boutique. Préchargement (celui de la visite privée, aux couleurs de la boutique), intro 3D dirigée par le défilement (`moteur/intro.js`), parcours guidé (pièce, budget, style, priorité, photos ou relevé métrique), chargement 3D (`moteur/chargeur.js`), puis la pièce en 3D avec l'éditeur de RealRoom. Les scans passent par le même plan correctif, le score et le moteur de disposition. Avec un scan, la photo d’entrée peut être ajoutée seulement au moment du rendu, sans refaire la proposition. Deux rendus photo réalistes offerts par client, une seule fois. Démo sans compte : `/fr/maison-corleone/demo` (tout dans le navigateur, analyse et rendus simulés). Code : `components/maison`, `lib/maison.js`, `app/api/mc`.
+`/fr/maison-corleone` : l'aménagement offert aux clients de maisoncorleone.com, avec leur compte client de la boutique. Préchargement (celui de la visite privée, aux couleurs de la boutique), intro 3D dirigée par le défilement (`moteur/intro.js`), parcours guidé (pièce, budget, style, priorité, photos ou relevé métrique), chargement 3D (`moteur/chargeur.js`), puis la pièce en 3D avec l'éditeur de RealRoom. Les scans passent par le même plan correctif, le score et le moteur de disposition. Avec un scan, la photo d’entrée peut être ajoutée seulement au moment du rendu, sans refaire la proposition. Deux rendus photo réalistes offerts par client, une seule fois. Démo sans compte : `/fr/maison-corleone/demo` (stockage navigateur, aménagement IA serveur ; analyse photo et rendus simulés). Code : `components/maison`, `lib/maison.js`, `app/api/mc`.
 
 Connexion : comptes clients Shopify (Customer Account API, OAuth 2.0 / OpenID Connect).
 

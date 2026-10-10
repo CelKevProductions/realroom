@@ -18,8 +18,9 @@ const donnees = fs.mkdtempSync(path.join(racine, '.data', 'essais-plan-'));
 fs.mkdirSync(path.join(racine, '.essais'), { recursive: true });
 const env = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/DATABASE_URL|POSTGRES|BLOB_READ_WRITE|STRIPE_|FAL_|WLT_|ANTHROPIC_|RESEND_|SESSION_SECRET|MC_CLIENT_|^VERCEL/.test(k)));
 Object.assign(env, { REALROOM_ESSAIS: '1', REALROOM_SIMULATION: '1', SITE_URL: base,
-  PGLITE_DIR: path.join(donnees, 'pglite'), FICHIERS_DIR: path.join(donnees, 'fichiers'), PORT: String(port) });
-const serveur = spawn('node', ['node_modules/next/dist/bin/next', 'start', '-H', '127.0.0.1', '-p', String(port)], { cwd: racine, env, detached: true, stdio: 'pipe' });
+  PGLITE_DIR: path.join(donnees, 'pglite'), FICHIERS_DIR: path.join(donnees, 'fichiers'), PORT: String(port),
+  FAL_KEY: 'test-sans-reseau', DEMO_AMENAGEMENT_IA: '1', DEMO_FAL_AUDIT: path.join(donnees, 'fal.jsonl') });
+const serveur = spawn('node', ['--import', path.join(racine, 'tests/fixtures/serveur-ia.mjs'), 'node_modules/next/dist/bin/next', 'start', '-H', '127.0.0.1', '-p', String(port)], { cwd: racine, env, detached: true, stdio: 'pipe' });
 let logs = '';
 serveur.stdout.on('data', d => { logs = (logs + d).slice(-6000); });
 serveur.stderr.on('data', d => { logs = (logs + d).slice(-6000); });

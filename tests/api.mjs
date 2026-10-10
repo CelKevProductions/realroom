@@ -7,6 +7,9 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {scanAndroid, scanApple} from './fixtures/scans.js';
 import {vuePourPosition} from '../lib/cadrages.js';
+import {demandeDemoIA} from '../lib/demo-ia.js';
+import {champsDepuisScan} from '../lib/scan.js';
+import {PRODUITS} from '../lib/catalogue.js';
 
 const RACINE = path.resolve(import.meta.dirname, '..');
 const PORT = Number(process.env.PORT || 3117);
@@ -17,10 +20,10 @@ const PHOTO = fs.readFileSync(path.join(RACINE, 'tests', 'fixtures', 'salon-entr
 fs.rmSync(DONNEES, { recursive: true, force: true });
 const envEssais={...process.env};
 for(const k of Object.keys(envEssais))if(/DATABASE_URL|POSTGRES|_READ_WRITE_TOKEN$|BLOB_STORE_ID|STRIPE_|FAL_|WLT_|ANTHROPIC_|RESEND_|SESSION_SECRET|MC_CLIENT_|^VERCEL/.test(k))delete envEssais[k];
-const serveur = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '-H', '127.0.0.1', '-p', String(PORT)], {
+const serveur = spawn(process.execPath, ['--import', path.join(RACINE, 'tests/fixtures/serveur-ia.mjs'), 'node_modules/next/dist/bin/next', 'start', '-H', '127.0.0.1', '-p', String(PORT)], {
   cwd: RACINE, detached: true, stdio: 'inherit',
   env: { ...envEssais, REALROOM_SIMULATION: '1', REALROOM_ESSAIS: '1', PGLITE_DIR: path.join(DONNEES, 'pglite'), FICHIERS_DIR: path.join(DONNEES, 'fichiers'), PORT: String(PORT), SITE_URL: BASE,
-    BIENVENUES_PAR_DOMAINE: '4', ANALYSES_ESSAI_PAR_JOUR: '3' }
+    BIENVENUES_PAR_DOMAINE: '4', ANALYSES_ESSAI_PAR_JOUR: '3', FAL_KEY: 'test-sans-reseau', DEMO_FAL_AUDIT: path.join(DONNEES, 'fal.jsonl'), DEMO_AMENAGEMENT_IA: '1', DEMO_AMENAGEMENTS_PAR_JOUR: '2', DEMO_AMENAGEMENTS_GLOBAUX_PAR_JOUR: '3' }
 });
 const arreter = () => { try { process.kill(-serveur.pid, 'SIGTERM'); } catch (_) {} };
 process.on('exit', arreter);
@@ -37,10 +40,10 @@ async function attendre() {
 // petit client avec cookie de session
 function client() {
   let cookie = '';
-  const appel = async (url, { method = 'GET', corps, brut, formulaire } = {}) => {
+  const appel = async (url, { method = 'GET', corps, brut, formulaire, headers = {} } = {}) => {
     const r = await fetch(BASE + url, {
       method, redirect: 'manual', signal: AbortSignal.timeout(45000),
-      headers: { ...(cookie ? { cookie } : {}), ...(corps !== undefined ? { 'content-type': 'application/json' } : {}) },
+      headers: { ...headers, ...(cookie ? { cookie } : {}), ...(corps !== undefined ? { 'content-type': 'application/json' } : {}) },
       body: corps !== undefined ? JSON.stringify(corps) : brut !== undefined ? brut : formulaire
     });
     const c = r.headers.get('set-cookie');
@@ -70,6 +73,40 @@ const envoyerPhoto = (api, pieceId, role = 'detail') => {
 
 const essais = [];
 const essai = (nom, fn) => essais.push({ nom, fn });
+
+essai('la démo anonyme appelle le moteur IA, conserve les choix et limite les appels avant le fournisseur', async () => {
+  const api = client(), piece = { ...champsDepuisScan(scanApple()), fonction: 'chambre', notes: 'Conserver le lit' };
+  const modele = structuredClone(piece.modele);
+  const corps = demandeDemoIA(piece, { mode: 'tout', budget: 2000, envies: 'Chambre épurée', garder: [piece.agencement[0].id] }, 'fr');
+  const envoyer = (ip = '192.0.2.1', b = corps, headers = {}) => api('/api/demo/amenager', { method: 'POST', corps: b, headers: { 'x-forwarded-for': ip, ...headers } });
+  assert.equal((await api('/api/moi')).connecte, false);
+  assert.deepEqual(await api('/api/demo/amenager'), { statut: 200, disponible: true, simulation: false });
+  assert.equal((await envoyer('192.0.2.1', corps, { origin: 'https://autre.example' })).statut, 403);
+  assert.equal((await envoyer('192.0.2.1', { ...corps, choix: { ...corps.choix, budget: -1 } })).statut, 400);
+  for (let i = 0; i < 2; i++) {
+    const r = await envoyer();
+    assert.equal(r.statut, 200, JSON.stringify(r)); assert.equal(r.proposition.moteur.type, 'ia');
+    assert.equal(r.proposition.concept, 'Proposition IA du fournisseur de test.');
+    assert.equal(r.proposition.budget, 2000); assert.equal(r.proposition.envies, corps.choix.envies);
+    assert.deepEqual(r.proposition.garder, corps.choix.garder);
+    assert.ok(r.agencement.some(it => it.id === piece.agencement[0].id && it.garde !== false));
+    const total = r.agencement.filter(it => it.origine === 'catalogue' && it.garde !== false).reduce((n, it) => n + PRODUITS[it.sku].prix, 0);
+    assert.ok(total <= 2000); assert.deepEqual(piece.modele, modele); assert.equal(r.piece, undefined);
+  }
+  assert.equal((await envoyer()).statut, 429);
+  assert.equal((await envoyer('192.0.2.2')).statut, 200);
+  assert.equal((await envoyer('192.0.2.3')).statut, 429);
+  const appels = fs.readFileSync(path.join(DONNEES, 'fal.jsonl'), 'utf8').trim().split('\n').map(JSON.parse);
+  assert.equal(appels.length, 3, 'les corps invalides, origines étrangères et quotas ne déclenchent aucun appel IA');
+  assert.ok(appels.every(a => a.max_tokens === 12000));
+  const prompt = appels[0].messages.at(-1).content[0].text;
+  assert.match(prompt, /Chambre épurée/); assert.match(prompt, /Budget for new pieces: 2000/);
+  const releve = JSON.parse(prompt.split('Room (JSON):\n')[1].split('\n\n')[0]);
+  assert.deepEqual(releve.dimensions, { largeur: 4, profondeur: 5, hauteur: 2.6, estimees: true });
+  assert.equal(releve.ouvertures.entree[0].largeur, modele.murs.entree.ouvertures[0].largeur);
+  assert.deepEqual(releve.meubles[0].dimensions_cm, piece.agencement[0].p.dim.map(v => Math.round(v * 100)));
+  assert.equal((await api('/api/moi')).connecte, false);
+});
 
 essai('un corps JSON qui n’est pas un objet donne 400', async () => {
   const api = client();

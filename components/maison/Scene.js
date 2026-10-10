@@ -272,7 +272,7 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
       if (vue === 'dessus') editeur.current?.ensemble();
       dire(ts.reamenage);
     } catch (e) {
-      dire(e?.erreur === 'limite' ? t.chargement.limiteJour : e?.erreur === 'limite-mc' ? t.chargement.limite : e?.statut === 503 ? t.chargement.service : ts.erreur, true);
+      dire(tr.demo.erreurs[e?.erreur] || (e?.erreur === 'limite' ? t.chargement.limiteJour : e?.erreur === 'limite-mc' ? t.chargement.limite : e?.statut === 503 ? t.chargement.service : ts.erreur), true);
     } finally {
       reamenagement.current = false;
       setAttente(false);
@@ -319,8 +319,8 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
       </>
     );
   } else {
-    const pill = `${ts.proposition} · ${remplir(ts.pieces, { n: nouveaux.length })}`;
     const prop = piece.proposition;
+    const pill = `${ts.proposition}${prop?.moteur?.type === 'ia' ? ' · ' + tr.demo.ia : ''} · ${remplir(ts.pieces, { n: nouveaux.length })}`;
     const offerts = remplir(credits > 1 ? ts.offertsPl : ts.offerts, { n: credits });
     contenu = (
       <>

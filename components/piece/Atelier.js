@@ -212,7 +212,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       // la nouvelle pièce se dévoile : la caméra fait un lent quart de tour
       if (vue === 'dessus') editeur.current?.balayer();
     } catch (e) {
-      dire(e?.erreur === 'limite' ? t.connexion.erreurs.limite : t.erreurs.generique, true);
+      dire(t.demo.erreurs[e?.erreur] || (e?.erreur === 'limite' ? t.connexion.erreurs.limite : t.erreurs.generique), true);
     } finally {
       reamenagement.current = false;
       setAttente(false);
@@ -335,7 +335,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       <div className="panneau__corps" role="tabpanel" inert={attente || undefined}>
         {prop && prop.concept && (
           <div className="concept">
-            <b>{tp.concept}</b>
+            <b>{tp.concept}{prop.moteur?.type === 'ia' ? ' · ' + t.demo.ia : ''}</b>
             <p>{prop.concept}</p>
             {prop.conseils && prop.conseils.length > 0 && <><b className="concept__sous">{tp.conseils}</b><ul>{prop.conseils.map(c => <li key={c}>{c}</li>)}</ul></>}
             {prop.alertes && prop.alertes.length > 0 && <><b className="concept__sous">{tp.alertes}</b><ul>{prop.alertes.map(c => <li key={c}>{c}</li>)}</ul></>}

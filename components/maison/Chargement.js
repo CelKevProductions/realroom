@@ -7,6 +7,7 @@ import { api } from '@/components/api.js';
 import { chargerCatalogue } from '@/components/catalogueClient.js';
 import Marque from '@/components/maison/Embleme.js';
 import { composerEnvies, aGarder } from '@/components/maison/demande.js';
+import { texte as texteRealRoom } from '@/lib/i18n.js';
 import { initGsap, lettres, entreeTitre, entreeScript, monter, dechiffrer, reduit } from '@/components/maison/anim.js';
 
 const pause = ms => new Promise(r => setTimeout(r, ms));
@@ -14,6 +15,7 @@ const SEUILS = [0, .2, .38, .6, .8];
 
 export default function Chargement({ t, lang, demo, piece, choix, aDesPieces, onMaj, onFini, onPhotos, onRetour, onMesPieces }) {
   const tc = t.chargement;
+  const erreursDemo = texteRealRoom(lang).demo.erreurs;
   const racine = useRef(null), canvas = useRef(null), pct = useRef(null);
   const moteur = useRef(null);
   const etat = useRef({ phase: 'analyse', t0: performance.now(), aff: 0 });
@@ -44,7 +46,7 @@ export default function Chargement({ t, lang, demo, piece, choix, aDesPieces, on
     });
     const PLAN = {
       analyse: { de: .03, a: .58, tau: demo ? 2.6 : 40 },
-      amenager: { de: .6, a: .96, tau: demo ? 2 : 28 },
+      amenager: { de: .6, a: .96, tau: 28 },
       fin: { de: 1, a: 1, tau: 1 }
     };
     const boucle = () => {
@@ -117,7 +119,7 @@ export default function Chargement({ t, lang, demo, piece, choix, aDesPieces, on
         if (!vivant) return;
         console.error('chargement', e);
         const code = e && e.erreur;
-        setErreur(code === 'limite-mc' ? 'limite' : code === 'limite' ? 'limiteJour' : code === 'service' || (e && e.statut === 503) ? 'service' : 'erreur');
+        setErreur(Object.hasOwn(erreursDemo, code) ? code : code === 'limite-mc' ? 'limite' : code === 'limite' ? 'limiteJour' : code === 'service' || (e && e.statut === 503) ? 'service' : 'erreur');
       }
     })();
     return () => { vivant = false; };
@@ -135,12 +137,12 @@ export default function Chargement({ t, lang, demo, piece, choix, aDesPieces, on
         <p className="mc-charge__pct" aria-hidden="true"><span ref={pct}>0</span><small>%</small></p>
         {erreur ? (
           <div className="mc-charge__erreur" role="alert">
-            <p>{erreur === 'erreur' ? tc.erreur : tc[erreur]}</p>
+            <p>{erreursDemo[erreur] || (erreur === 'erreur' ? tc.erreur : tc[erreur])}</p>
             <div className="mc-charge__actions">
-              {(erreur === 'erreur' || erreur === 'service') && <button type="button" className="mc-btn mc-btn--creme" onClick={reessayer}>{tc.reessayer}</button>}
+              {!['limite', 'limiteJour', 'limite-demo'].includes(erreur) && <button type="button" className="mc-btn mc-btn--creme" onClick={reessayer}>{tc.reessayer}</button>}
               {erreur === 'erreur' && <button type="button" className="mc-btn mc-btn--clair" onClick={onPhotos}>{tc.photos}</button>}
               {erreur === 'limite' && aDesPieces && <button type="button" className="mc-btn mc-btn--creme" onClick={onMesPieces}>{t.scene.mesPieces}</button>}
-              {(erreur === 'limite' || erreur === 'limiteJour') && <button type="button" className="mc-btn mc-btn--clair" onClick={onRetour}>{t.nav.retour}</button>}
+              {(erreur === 'limite' || erreur === 'limiteJour' || Object.hasOwn(erreursDemo, erreur)) && <button type="button" className="mc-btn mc-btn--clair" onClick={onRetour}>{t.nav.retour}</button>}
             </div>
           </div>
         ) : (

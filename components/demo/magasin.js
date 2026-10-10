@@ -1,5 +1,6 @@
 // Démo sans compte : les projets, pièces, rendus et crédits du visiteur vivent dans son navigateur
-// (sessionStorage : la démo repart de zéro quand l'onglet se ferme). Rien n'est envoyé au serveur.
+// (sessionStorage : la démo repart de zéro quand l'onglet se ferme). L'aménagement envoie le plan,
+// le brief et les seules inspirations choisies au moteur IA, sans enregistrer de projet serveur.
 import { pieceDepuisAnalyse } from '@/lib/amenagement.js';
 import { simulerAnalyse } from '@/lib/simulation.js';
 import { CREDITS } from '@/lib/config.js';

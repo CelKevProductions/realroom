@@ -15,7 +15,7 @@ const fr = {
     ],
     fin: { label: 'À vous', lignes: ['Votre pièce', 'vous attend'], script: 'à votre tour', bouton: 'Commencer', note: 'Aménagement offert, et deux rendus photo réalistes, avec votre compte client Maison Corleone.' }
   },
-  nav: { retour: 'Retour', continuer: 'Continuer', etape: 'Étape {n} sur {t}', bonjour: 'Bonjour {p}', connecte: 'Compte Maison Corleone', deconnexion: 'Se déconnecter', demo: 'Démo : l’analyse et les rendus sont simulés', demoCourt: 'Démo' },
+  nav: { retour: 'Retour', continuer: 'Continuer', etape: 'Étape {n} sur {t}', bonjour: 'Bonjour {p}', connecte: 'Compte Maison Corleone', deconnexion: 'Se déconnecter', demo: 'Démo : aménagement IA, analyse photo et rendus simulés', demoCourt: 'Démo' },
   compte: {
     label: 'Votre compte', lignes: ['Votre compte', 'Maison Corleone'], script: 'pour commencer',
     texte: 'Connectez-vous avec votre compte client Maison Corleone, celui de la boutique : l’aménagement de votre pièce vous est offert.',
@@ -26,7 +26,7 @@ const fr = {
     erreur: 'La connexion n’a pas abouti. Réessayez dans un instant.',
     annule: 'Connexion annulée.',
     ref: 'Réf.',
-    demo: 'Essayer la démo', demoNote: 'Démo : la connexion est simulée, rien n’est envoyé.'
+    demo: 'Essayer la démo', demoNote: 'Sans compte. L’IA reçoit votre plan, vos envies et vos inspirations pour l’aménagement.'
   },
   reprise: { label: 'Bon retour', lignes: ['Vos pièces'], script: 'vous attendent', texte: 'Reprenez une pièce déjà aménagée, ou réinventez-en une nouvelle.', nouvelle: 'Aménager une nouvelle pièce', le: 'Modifiée le {d}' },
   piece: {
@@ -113,7 +113,7 @@ const en = {
     ],
     fin: { label: 'Your turn', lignes: ['Your room', 'awaits'], script: 'your turn', bouton: 'Start', note: 'Free interior design, plus two realistic photo renders, with your Maison Corleone customer account.' }
   },
-  nav: { retour: 'Back', continuer: 'Continue', etape: 'Step {n} of {t}', bonjour: 'Hello {p}', connecte: 'Maison Corleone account', deconnexion: 'Sign out', demo: 'Demo: analysis and renders are simulated', demoCourt: 'Demo' },
+  nav: { retour: 'Back', continuer: 'Continue', etape: 'Step {n} of {t}', bonjour: 'Hello {p}', connecte: 'Maison Corleone account', deconnexion: 'Sign out', demo: 'Demo: AI furnishing, simulated photo analysis and renders', demoCourt: 'Demo' },
   compte: {
     label: 'Your account', lignes: ['Your Maison', 'Corleone account'], script: 'to begin',
     texte: 'Sign in with your Maison Corleone customer account, the one you use on the shop: designing your room is on us.',
@@ -124,7 +124,7 @@ const en = {
     erreur: 'Sign-in did not go through. Try again in a moment.',
     annule: 'Sign-in cancelled.',
     ref: 'Ref.',
-    demo: 'Try the demo', demoNote: 'Demo: sign-in is simulated, nothing is sent.'
+    demo: 'Try the demo', demoNote: 'No account needed. AI receives your plan, wishes and inspirations to furnish the room.'
   },
   reprise: { label: 'Welcome back', lignes: ['Your rooms'], script: 'await you', texte: 'Pick up a room you have already designed, or reimagine a new one.', nouvelle: 'Design a new room', le: 'Edited on {d}' },
   piece: {

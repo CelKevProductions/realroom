@@ -1,13 +1,13 @@
 // Démo sans compte : réponses de l'API servies dans le navigateur, avec les mêmes formes que les
-// vraies routes (app/api). L'analyse et l'aménagement sont simulés (lib/simulation.js) mais passent
-// par le même solveur ; le « rendu » est la vue de la maquette, la visite 3D est simulée.
+// vraies routes (app/api). L'aménagement appelle réellement l'IA côté serveur et le même solveur ;
+// l'analyse photo, le rendu (vue de la maquette), la visite 3D et les paiements sont simulés.
 import { lire, ecrire, remettreAZero, piece as pieceDe, projet as projetDe, publique, renduPublic, rendusDe, listeProjets, projetComplet, id as nouvelId } from '@/components/demo/magasin.js';
 import { chargerCatalogue } from '@/components/catalogueClient.js';
 import { simulerAnalyse } from '@/lib/simulation.js';
 import { pieceDepuisAnalyse } from '@/lib/amenagement.js';
 import { dimsValides } from '@/lib/piece.js';
 import { moteurGuideActif } from '@/lib/moteur-guide.js';
-import { amenagerEnArrierePlan } from './calcul.js';
+import { amenagerParIA } from './ia.js';
 import { verifier } from '@/lib/agencement.js';
 import { corrigerPiece, mesuresConfirmees } from '@/lib/geometrie.js';
 import { CREDITS, PACKS, FONCTIONS, ROLES_PHOTO, LIMITES } from '@/lib/config.js';
@@ -196,9 +196,10 @@ async function analyser(p, langue) {
 
 async function amenager(p, b, langue) {
   if (!p.modele) return non('pas-de-modele', 409);
-  await pause(1600);
-  const produits = (await chargerCatalogue()).produits;
-  const r = await amenagerEnArrierePlan({ piece: p, choix: { ...b, moteurGuide: moteurGuideActif(b.moteurGuide) }, langue, produits });
+  const revision = p.maj_le;
+  const r = await amenagerParIA(p, { ...b, moteurGuide: moteurGuideActif(b.moteurGuide) }, langue);
+  if (!r.ok) return r;
+  if (pieceDe(p.id) !== p || p.maj_le !== revision) return non('amenagement-conflit', 409);
   ecrire(() => { p.agencement = r.agencement; p.proposition = r.proposition; toucher(p); });
   return ok({ piece: publique(p) });
 }
