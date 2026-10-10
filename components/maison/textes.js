@@ -69,7 +69,7 @@ const fr = {
     etapes: ['Lecture de vos photos', 'Murs, fenêtres et dimensions', 'Repérage de vos meubles', 'Sélection Maison Corleone', 'Placement dans votre pièce'],
     etapesScan: ['Relevé métrique reçu', 'Validation des cotes importées', 'Préparation de la maquette', 'Sélection Maison Corleone', 'Placement dans votre pièce'],
     duree: 'Environ deux minutes. Laissez cette page ouverte, nous préparons tout.',
-    erreur: 'L’analyse n’a pas abouti.', reessayer: 'Réessayer', photos: 'Reprendre les photos',
+    erreur: 'L’analyse n’a pas abouti.', reessayer: 'Réessayer', photos: 'Reprendre les photos', ouvrirPlan: 'Ouvrir mon plan', reference: 'Référence d’assistance :',
     limite: 'Vous avez aménagé toutes les pièces offertes avec votre compte.', limiteJour: 'Vous avez atteint la limite du jour. Réessayez demain.', service: 'Le service est momentanément indisponible. Réessayez plus tard.'
   },
   scene: {
@@ -167,7 +167,7 @@ const en = {
     etapes: ['Reading your photos', 'Walls, windows and size', 'Finding your furniture', 'Maison Corleone selection', 'Placing it in your room'],
     etapesScan: ['Metric survey received', 'Imported dimensions validated', 'Preparing the room model', 'Maison Corleone selection', 'Placing it in your room'],
     duree: 'About two minutes. Keep this page open, we are preparing everything.',
-    erreur: 'The analysis did not go through.', reessayer: 'Try again', photos: 'Retake the photos',
+    erreur: 'The analysis did not go through.', reessayer: 'Try again', photos: 'Retake the photos', ouvrirPlan: 'Open my plan', reference: 'Support reference:',
     limite: 'You have designed every room included with your account.', limiteJour: 'You have reached today’s limit. Try again tomorrow.', service: 'The service is temporarily unavailable. Try again later.'
   },
   scene: {

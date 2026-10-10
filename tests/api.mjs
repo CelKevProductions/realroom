@@ -10,6 +10,7 @@ import {vuePourPosition} from '../lib/cadrages.js';
 import {demandeDemoIA} from '../lib/demo-ia.js';
 import {champsDepuisScan} from '../lib/scan.js';
 import {PRODUITS} from '../lib/catalogue.js';
+import {lireDXF} from '../lib/plans.js';
 
 const RACINE = path.resolve(import.meta.dirname, '..');
 const PORT = Number(process.env.PORT || 3117);
@@ -38,10 +39,10 @@ async function attendre() {
 }
 
 // petit client avec cookie de session
-function client() {
+function client(base = BASE) {
   let cookie = '';
   const appel = async (url, { method = 'GET', corps, brut, formulaire, headers = {} } = {}) => {
-    const r = await fetch(BASE + url, {
+    const r = await fetch(base + url, {
       method, redirect: 'manual', signal: AbortSignal.timeout(45000),
       headers: { ...headers, ...(cookie ? { cookie } : {}), ...(corps !== undefined ? { 'content-type': 'application/json' } : {}) },
       body: corps !== undefined ? JSON.stringify(corps) : brut !== undefined ? brut : formulaire
@@ -74,6 +75,47 @@ const envoyerPhoto = (api, pieceId, role = 'detail') => {
 const essais = [];
 const essai = (nom, fn) => essais.push({ nom, fn });
 
+// Le fichier client reste local. Pour reproduire un incident : DXF_REGRESSION=/chemin/plan.dxf.
+const pieceRegression = process.env.DXF_REGRESSION
+  ? { ...champsDepuisScan(lireDXF(fs.readFileSync(process.env.DXF_REGRESSION, 'utf8')).pieces[0].scan), fonction: 'chambre', notes: '' }
+  : { ...champsDepuisScan(scanAndroid()), fonction: 'chambre', notes: '' };
+
+essai('clé absente ou refusée : refus explicite sans attente ni remplacement du plan', async () => {
+  const corps = demandeDemoIA(pieceRegression, { budget: 2000 }, 'fr');
+  const avant = structuredClone(corps);
+  for (const [cle, reference] of [['', 'D-02'], ['test-refusee', 'D-07']]) {
+    const base = `http://127.0.0.1:${PORT + 1}`, dossier = path.join(DONNEES, reference);
+    const diagnostic = spawn(process.execPath, ['--import', path.join(RACINE, 'tests/fixtures/serveur-ia.mjs'), 'node_modules/next/dist/bin/next', 'start', '-H', '127.0.0.1', '-p', String(PORT + 1)], {
+      cwd: RACINE, stdio: 'inherit',
+      env: { ...envEssais, REALROOM_ESSAIS: '1', REALROOM_SIMULATION: '1', DEMO_AMENAGEMENT_IA: '1', FAL_KEY: cle, DEMO_FAL_REFUS: '1', PGLITE_DIR: path.join(dossier, 'pglite'), FICHIERS_DIR: path.join(dossier, 'fichiers'), DEMO_FAL_AUDIT: path.join(dossier, 'fal.jsonl') }
+    });
+    try {
+      let pret = false;
+      for (let i = 0; i < 60 && !pret; i++) {
+        if (diagnostic.exitCode !== null) throw new Error('serveur de diagnostic arrêté');
+        try { pret = (await fetch(base + '/api/etat', { signal: AbortSignal.timeout(2000) })).ok; } catch (_) {}
+        if (!pret) await new Promise(ok => setTimeout(ok, 500));
+      }
+      assert.ok(pret);
+      const api = client(base), etat = await api('/api/demo/amenager');
+      assert.equal(etat.disponible, !!cle);
+      if (!cle) assert.equal(etat.reference, reference);
+      const r = await api('/api/demo/amenager', { method: 'POST', corps });
+      assert.equal(r.statut, 503, JSON.stringify(r)); assert.equal(r.erreur, 'ia-indisponible'); assert.equal(r.reference, reference);
+      assert.equal(r.agencement, undefined); assert.equal(r.proposition, undefined);
+      assert.deepEqual(corps, avant);
+      if (!cle) assert.equal(fs.existsSync(path.join(dossier, 'pglite')), false, 'aucun compteur ni appel IA lorsque la clé manque');
+    } finally {
+      await new Promise(ok => {
+        if (diagnostic.exitCode !== null) return ok();
+        const minuteur = setTimeout(() => diagnostic.kill('SIGKILL'), 3000);
+        diagnostic.once('exit', () => { clearTimeout(minuteur); ok(); });
+        diagnostic.kill('SIGTERM');
+      });
+    }
+  }
+});
+
 essai('la démo anonyme appelle le moteur IA, conserve les choix et limite les appels avant le fournisseur', async () => {
   const api = client(), piece = { ...champsDepuisScan(scanApple()), fonction: 'chambre', notes: 'Conserver le lit' };
   const modele = structuredClone(piece.modele);
@@ -94,7 +136,11 @@ essai('la démo anonyme appelle le moteur IA, conserve les choix et limite les a
     assert.ok(total <= 2000); assert.deepEqual(piece.modele, modele); assert.equal(r.piece, undefined);
   }
   assert.equal((await envoyer()).statut, 429);
-  assert.equal((await envoyer('192.0.2.2')).statut, 200);
+  const corpsImporte = demandeDemoIA(pieceRegression, { budget: 2000, envies: 'Chambre épurée' }, 'fr');
+  const original = structuredClone(corpsImporte);
+  const importe = await envoyer('192.0.2.2', corpsImporte);
+  assert.equal(importe.statut, 200, JSON.stringify(importe)); assert.equal(importe.proposition.moteur.type, 'ia');
+  assert.deepEqual(corpsImporte, original, 'le plan importé reste intact à travers l’aménagement');
   assert.equal((await envoyer('192.0.2.3')).statut, 429);
   const appels = fs.readFileSync(path.join(DONNEES, 'fal.jsonl'), 'utf8').trim().split('\n').map(JSON.parse);
   assert.equal(appels.length, 3, 'les corps invalides, origines étrangères et quotas ne déclenchent aucun appel IA');

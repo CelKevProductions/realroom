@@ -14,6 +14,7 @@ import Marque from '@/components/maison/Embleme.js';
 import Fiche from '@/components/maison/Fiche.js';
 import Rendu from '@/components/maison/Rendu.js';
 import { remplir } from '@/components/maison/textes.js';
+import { demandeAmenagement } from '@/components/maison/demande.js';
 import { Fleche, Icone, I, lienBoutique } from '@/components/maison/icones.js';
 import { initGsap, gsap, lettres, entreeTitre, entreeScript, dechiffrer, monter, reduit } from '@/components/maison/anim.js';
 
@@ -21,7 +22,7 @@ const pad2 = n => String(n).padStart(2, '0');
 const cm = v => Math.round(v * 100);
 const DECALAGE = .17;   // la pièce se range à droite de la station (écrans larges)
 
-export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusInitiaux, credits, setCredits, profil, nbPieces, onNouvelle, onMesPieces, onDeconnexion, onPhotos, onMaj }) {
+export default function Scene({ t, lang, demo, piece: initiale, choix, rendus: rendusInitiaux, credits, setCredits, profil, nbPieces, onNouvelle, onMesPieces, onDeconnexion, onPhotos, onMaj }) {
   const ts = t.scene;
   const tr = useMemo(() => texteRealRoom(lang), [lang]);
   const [piece, setPiece] = useState(initiale);
@@ -257,10 +258,9 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
     setAttente(true);
     try {
       await vider();
-      const prop = piece.proposition || {};
       const r = await api(`/api/pieces/${piece.id}/amenager`, {
         method: 'POST',
-        corps: { mode: 'tout', envies: prop.envies || '', budget: prop.budget || 0, garder: prop.garder || [], aRemplacer: [], langue: lang }
+        corps: demandeAmenagement(t, piece, choix, produits, lang)
       });
       if (!r.ok) throw r;
       setPiece(r.piece);

@@ -8,6 +8,7 @@ import { chargerCatalogue } from '@/components/catalogueClient.js';
 import Marque from '@/components/maison/Embleme.js';
 import { composerEnvies, aGarder } from '@/components/maison/demande.js';
 import { texte as texteRealRoom } from '@/lib/i18n.js';
+import { avancerChargement } from '@/lib/chargement.js';
 import { initGsap, lettres, entreeTitre, entreeScript, monter, dechiffrer, reduit } from '@/components/maison/anim.js';
 
 const pause = ms => new Promise(r => setTimeout(r, ms));
@@ -21,6 +22,7 @@ export default function Chargement({ t, lang, demo, piece, choix, aDesPieces, on
   const etat = useRef({ phase: 'analyse', t0: performance.now(), aff: 0 });
   const [etape, setEtape] = useState(0);
   const [erreur, setErreur] = useState(null);
+  const [reference, setReference] = useState(null);
   const [essai, setEssai] = useState(0);
   const courante = useRef(piece);
   const rappels = useRef({});
@@ -44,17 +46,10 @@ export default function Chargement({ t, lang, demo, piece, choix, aDesPieces, on
       if (!vivant || !canvas.current) return;
       try { moteur.current = creerChargeur(canvas.current, { couleur: '#C9A66B' }); } catch (e) { console.error('chargeur 3D', e); }
     });
-    const PLAN = {
-      analyse: { de: .03, a: .58, tau: demo ? 2.6 : 40 },
-      amenager: { de: .6, a: .96, tau: 28 },
-      fin: { de: 1, a: 1, tau: 1 }
-    };
     const boucle = () => {
-      const e = etat.current, pl = PLAN[e.phase] || PLAN.fin;
-      const ecoule = (performance.now() - e.t0) / 1000;
-      const cible = pl.de + (pl.a - pl.de) * (1 - Math.exp(-ecoule / pl.tau));
-      e.aff += (Math.max(e.aff, cible) - e.aff) * (e.phase === 'fin' ? .12 : .05);
-      if (e.phase === 'fin' && 1 - e.aff < .004) e.aff = 1;
+      const e = etat.current;
+      if (e.phase === 'erreur') return;
+      avancerChargement(e, performance.now(), demo);
       if (pct.current) pct.current.textContent = String(Math.floor(e.aff * 100));
       if (moteur.current) moteur.current.avancer(e.aff);
       const i = e.phase === 'fin' && e.aff >= .995 ? SEUILS.length : SEUILS.reduce((m, s, k) => (e.aff >= s ? k : m), 0);
@@ -63,7 +58,7 @@ export default function Chargement({ t, lang, demo, piece, choix, aDesPieces, on
     };
     raf = requestAnimationFrame(boucle);
     return () => { vivant = false; cancelAnimationFrame(raf); if (moteur.current) { moteur.current.detruire(); moteur.current = null; } };
-  }, [demo]);
+  }, [demo, essai]);
 
   // le travail : analyse (si la pièce n'a pas encore sa maquette), puis aménagement
   useEffect(() => {
@@ -81,6 +76,7 @@ export default function Chargement({ t, lang, demo, piece, choix, aDesPieces, on
     };
     (async () => {
       setErreur(null);
+      setReference(null);
       try {
         const cat = await chargerCatalogue().catch(() => null);
         let p = courante.current;
@@ -117,7 +113,9 @@ export default function Chargement({ t, lang, demo, piece, choix, aDesPieces, on
         if (vivant) rappels.current.onFini(p);
       } catch (e) {
         if (!vivant) return;
+        phase('erreur');
         console.error('chargement', e);
+        setReference(/^D-\d{2}$/.test(e?.reference || '') ? e.reference : null);
         const code = e && e.erreur;
         setErreur(Object.hasOwn(erreursDemo, code) ? code : code === 'limite-mc' ? 'limite' : code === 'limite' ? 'limiteJour' : code === 'service' || (e && e.statut === 503) ? 'service' : 'erreur');
       }
@@ -134,11 +132,13 @@ export default function Chargement({ t, lang, demo, piece, choix, aDesPieces, on
         <p className="mc-question__label mc-mono"><i /><span data-label={t.marque + ' · ' + t.service}>{t.marque + ' · ' + t.service}</span></p>
         <h1 className="mc-charge__titre mc-display">{tc.lignes.map((l, i) => <span key={i} className="mc-ligne">{l}</span>)}</h1>
         <p className="mc-charge__script mc-script">{tc.script}</p>
-        <p className="mc-charge__pct" aria-hidden="true"><span ref={pct}>0</span><small>%</small></p>
+        {!erreur && <p className="mc-charge__pct" aria-hidden="true"><span ref={pct}>0</span><small>%</small></p>}
         {erreur ? (
           <div className="mc-charge__erreur" role="alert">
             <p>{erreursDemo[erreur] || (erreur === 'erreur' ? tc.erreur : tc[erreur])}</p>
+            {reference && <small className="mc-mono">{tc.reference} {reference}</small>}
             <div className="mc-charge__actions">
+              {courante.current?.modele && <button type="button" className="mc-btn mc-btn--creme" onClick={() => rappels.current.onFini(courante.current)}>{tc.ouvrirPlan}</button>}
               {!['limite', 'limiteJour', 'limite-demo'].includes(erreur) && <button type="button" className="mc-btn mc-btn--creme" onClick={reessayer}>{tc.reessayer}</button>}
               {erreur === 'erreur' && <button type="button" className="mc-btn mc-btn--clair" onClick={onPhotos}>{tc.photos}</button>}
               {erreur === 'limite' && aDesPieces && <button type="button" className="mc-btn mc-btn--creme" onClick={onMesPieces}>{t.scene.mesPieces}</button>}

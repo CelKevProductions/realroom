@@ -93,7 +93,7 @@ export default function Experience({ lang, demo = false, profil: profilServeur =
     }
     const p = r.piece;
     const amenagee = (p.agencement || []).some(it => it.origine === 'catalogue');
-    const suite = amenagee ? 'piece' : p.modele || p.etat === 'analyse' ? 'chargement' : 'parcours';
+    const suite = amenagee ? 'piece' : p.etat === 'analyse' ? 'chargement' : p.modele ? 'piece' : 'parcours';
     setPiece(p);
     setRendus(r.rendus || []);
     if (suite === 'parcours') { setChoix(c => ({ ...c, fonction: p.fonction })); setEtapeDepart('photos'); }
@@ -225,7 +225,7 @@ export default function Experience({ lang, demo = false, profil: profilServeur =
           onMesPieces={mesPieces} />
       )}
       {phase === 'piece' && piece && piece.modele && (
-        <Scene key={piece.id} t={t} lang={lang} demo={demo} piece={piece} rendus={rendus} credits={credits} setCredits={setCredits} profil={profil}
+        <Scene key={piece.id} t={t} lang={lang} demo={demo} piece={piece} choix={choix} rendus={rendus} credits={credits} setCredits={setCredits} profil={profil}
           nbPieces={nbPieces} onNouvelle={nouvelle} onMesPieces={mesPieces} onDeconnexion={deconnexion} onPhotos={ajouterPhotoRendu} onMaj={setPiece} />
       )}
       {phase === 'ouverture' && <div className="mc-ouverture mc-fixe" aria-busy="true"><Logo /></div>}

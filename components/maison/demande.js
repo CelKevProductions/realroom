@@ -49,3 +49,15 @@ export function aGarder(piece, choix) {
   const fams = new Set(prio.flatMap(k => FAMILLES_PRIORITE[k] || []));
   return (piece.agencement || []).filter(it => it.origine === 'existant' && !fams.has(it.p && it.p.fam)).map(it => it.id);
 }
+
+// Sans proposition (ex. IA indisponible au premier essai), reprendre le brief du parcours.
+export function demandeAmenagement(t, piece, choix = {}, produits, langue) {
+  const prop = piece.proposition;
+  return {
+    mode: 'tout',
+    envies: prop?.envies ?? composerEnvies(t, choix, produits),
+    budget: prop?.budget ?? choix.budget ?? 0,
+    garder: prop?.garder ?? aGarder(piece, choix),
+    aRemplacer: [], langue
+  };
+}

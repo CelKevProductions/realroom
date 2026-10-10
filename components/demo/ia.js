@@ -9,7 +9,20 @@ const dataUri = blob => new Promise((ok, ko) => {
   lecteur.readAsDataURL(blob);
 });
 
+async function appelBorne(options, delai) {
+  const controle = new AbortController();
+  const minuteur = setTimeout(() => controle.abort(), delai);
+  try {
+    const r = await api('/api/demo/amenager', { ...options, signal: controle.signal });
+    return r.erreur === 'annule' ? { ...r, erreur: 'delai-amenagement' } : r;
+  } finally { clearTimeout(minuteur); }
+}
+
 export async function amenagerParIA(piece, choix, langue) {
+  // Refuser immédiatement une démo non configurée, avant de traiter les inspirations.
+  const etat = await appelBorne({}, 15000);
+  if (!etat.ok) return etat;
+  if (!etat.disponible) return { ok: false, erreur: 'ia-indisponible', statut: 503, reference: etat.reference };
   let inspirations;
   try {
     inspirations = await Promise.all((piece.photos || []).filter(p => p.role === 'inspiration').slice(0, 3).map(async p => {
@@ -20,5 +33,6 @@ export async function amenagerParIA(piece, choix, langue) {
       return { dataUri: await dataUri(blob) };
     }));
   } catch (_) { return { ok: false, erreur: 'inspiration-demo', statut: 400 }; }
-  return api('/api/demo/amenager', { method: 'POST', corps: demandeDemoIA(piece, choix, langue, inspirations) });
+  // La fonction Vercel dispose de 300 s ; le navigateur attend au plus 15 s de plus.
+  return appelBorne({ method: 'POST', corps: demandeDemoIA(piece, choix, langue, inspirations) }, 315000);
 }
