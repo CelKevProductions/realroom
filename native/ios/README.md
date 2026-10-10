@@ -22,7 +22,9 @@ xcodebuild -project native/ios/RealRoomScan.xcodeproj -scheme RealRoomScan \
   CODE_SIGNING_ALLOWED=NO build
 ```
 
-Le workflow [.github/workflows/ios-roomplan.yml](../../.github/workflows/ios-roomplan.yml) est configuré sur macOS 15 / Xcode 16.4 : compilation iOS Simulator, compilation appareil sans signature, puis test de l'encodeur Swift et import de son fichier réel par `lib/scan.js`. Le résultat d'exécution doit être vérifié dans GitHub Actions ; une configuration seule n'est pas une preuve de compilation.
+Le workflow [.github/workflows/ios-roomplan.yml](../../.github/workflows/ios-roomplan.yml) exécute sur macOS 15 / Xcode 16.4 : compilation iOS Simulator, compilation appareil sans signature, puis test de l'encodeur Swift et import de son fichier réel par `lib/scan.js`. Ces quatre étapes ont **réussi** sur le commit `a32d25cd55ed524ae403af100917a54617ed0e96` : [exécution GitHub Actions du 10 octobre 2026](https://github.com/CelKevProductions/realroom/actions/runs/38010974859). Le minimum iOS 16 est conservé, avec un arrêt de session adapté à la disponibilité de l'API iOS 17.
+
+La fixture Swift représente une pièce synthétique de 4 × 5 × 2,60 m, tournée et translatée, avec un lit de 140 × 160 cm, porte et fenêtre. Le test vérifie les axes, l'allège et la confiance dans l'import JavaScript ; cinq autres cas refusent un contour incomplet, une matrice non rigide, une cote non finie, trop d'objets ou un fichier trop gros. Aucun de ces cas n'est un scan matériel.
 
 Le simulateur permet de compiler, **pas de valider un scan LiDAR**. Cette session locale Linux ne dispose ni de Xcode/SDK Apple ni de téléphone LiDAR. Aucune signature, installation client, publication TestFlight ou App Store n’a été effectuée. Ces étapes requièrent votre environnement Apple et une décision de distribution.
 

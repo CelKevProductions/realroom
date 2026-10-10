@@ -19,6 +19,7 @@
 .apercu { border-top: 1px solid color-mix(in srgb, currentColor 20%, transparent); padding-top: 1.2rem; margin-top: 1.2rem; }
 .apercu svg { display: block; max-height: 20rem; margin: 1rem auto; }
 .apercu h3 { scroll-margin-top: 5.5rem; }
+:global(.mc-etape) .apercu h3 { scroll-margin-top: .5rem; }
 .confirmer { display: flex; align-items: flex-start; gap: .7rem; font-size: .9rem; line-height: 1.5; margin: 1rem 0; }
 .confirmer input { flex: none; margin-top: .3rem; width: 1.1rem; height: 1.1rem; }
 .erreur { color: #A23C2E; background: #FFF4E9; padding: .7rem; border-radius: .25rem; }

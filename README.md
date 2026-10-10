@@ -1,6 +1,6 @@
 # RealRoom · un service KPW
 
-Le client relève une pièce par photos guidées, par quatre coins au sol avec WebXR/ARCore sur Android compatible, ou par import métrique du compagnon natif Apple RoomPlan/LiDAR. RealRoom affiche un plan à vérifier et une maquette 3D avec les meubles existants. Il propose ensuite un aménagement avec de vrais meubles du catalogue Maison Corleone : selon la fonction, le style et le budget, avec patrons paramétriques et recherche géométrique. Enfin, une photo d’entrée sert au rendu photo réaliste (fal.ai, Nano Banana Pro), puis à la visite 3D (World Labs, Marble). Les générations se paient en crédits (Stripe). Le compagnon iOS est fourni en source, non compilé ni distribué dans cette session ; les captures matérielles restent à valider sur appareil.
+Le client relève une pièce par photos guidées, par quatre coins au sol avec WebXR/ARCore sur Android compatible, ou par import métrique du compagnon natif Apple RoomPlan/LiDAR. RealRoom affiche un plan à vérifier et une maquette 3D avec les meubles existants. Il propose ensuite un aménagement avec de vrais meubles du catalogue Maison Corleone : selon la fonction, le style et le budget, avec patrons paramétriques et recherche géométrique. Enfin, une photo d’entrée sert au rendu photo réaliste (fal.ai, Nano Banana Pro), puis à la visite 3D (World Labs, Marble). Les générations se paient en crédits (Stripe). Le compagnon iOS compile en CI macOS pour simulateur et appareil sans signature ; son export Swift est testé avec l'import du site. Il n'est pas encore distribué et les captures matérielles restent à valider sur appareil.
 
 ## Pile
 
@@ -27,7 +27,7 @@ Le client relève une pièce par photos guidées, par quatre coins au sol avec W
 | `lib/confort.js` | Score expliqué, recuit simulé reproductible, accès et circulation ; jusqu’à trois dispositions aux mêmes produits et prix. |
 | `lib/references.js` | Sources, préférences de composition et inspirations, séparées du relevé métrique. |
 | `lib/scan.js`, `components/piece/Acquisition.js`, `moteur/releveAR.js` | Contrat métrique validé, aperçu/import commun aux deux éditions, coins au sol WebXR/ARCore. Android ne reconnaît pas automatiquement mobilier et ouvertures. |
-| `native/ios` | Compagnon RoomPlan Swift/Xcode : murs, ouvertures et objets ; export JSON sans vidéo, images ni maillage. Construction/signature et essais LiDAR à faire sur Mac/appareil. |
+| `native/ios` | Compagnon RoomPlan Swift/Xcode : murs, ouvertures et objets ; export JSON sans vidéo, images ni maillage. Compilation CI et contrat Swift/JavaScript vérifiés ; signature, distribution et essais LiDAR restent à faire sur appareil. |
 | `lib/composition.js`, `lib/patrons.js`, `lib/budget.js` | Choix sémantiques séparés des coordonnées, neuf départs paramétriques et sac à dos par emplacement avec alternatives éligibles du même usage. |
 | `lib/profils.js`, `lib/styles-index.js`, `scripts/styles_catalogue.py` | Onze styles combinables, profil neutre et indices visuels OpenCLIP calculés hors ligne sur les photos publiques du catalogue ; repli textuel si l'image n'est pas indexée. |
 | `moteur` | Moteur 3D du navigateur |
