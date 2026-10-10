@@ -42,7 +42,11 @@ final class CaptureController: UIViewController, RoomCaptureViewDelegate {
     func stop() {
         guard started && !stopped else { return }
         stopped = true
-        capture.captureSession.stop(pauseARSession: true)
+        if #available(iOS 17.0, *) {
+            capture.captureSession.stop(pauseARSession: true)
+        } else {
+            capture.captureSession.stop()
+        }
     }
     func captureView(shouldPresent roomDataForProcessing: CapturedRoomData, error: Error?) -> Bool {
         guard state.generation == generation,

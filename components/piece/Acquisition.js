@@ -72,7 +72,9 @@ export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr'
   const rappels = useRef({}); rappels.current = { onOccupe, onImport };
   const signaler = v => { occupe.current = v; rappels.current.onOccupe?.(v); };
   const message = e => t.erreurs[e?.code || e?.message || e?.erreur] || t.erreur;
-  useEffect(() => { if (apercu && !actif) titreApercu.current?.focus(); }, [apercu, actif]);
+  useEffect(() => {
+    if (apercu && !actif) { titreApercu.current?.focus(); titreApercu.current?.scrollIntoView({ block: 'start' }); }
+  }, [apercu, actif]);
   useEffect(() => {
     vivant.current = true;
     const root = racineAR.current, prevenir = e => e.preventDefault();
