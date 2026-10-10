@@ -34,7 +34,7 @@ Le simulateur permet de compiler, **pas de valider un scan LiDAR**. Cette sessio
 - Demande caméra protégée contre les doubles démarrages ; après refus, bouton **Ouvrir Réglages** et nouvelle tentative. Une restriction système est distinguée d'un refus.
 - **Terminer** attend une session démarrée. La préparation ne reste pas indéfiniment bloquée : après 45 secondes sans résultat, un message propose de reprendre.
 - Une sortie en arrière-plan pendant la capture/préparation invalide le scan ; les callbacks tardifs ne peuvent pas remplacer un nouveau relevé. **Annuler** et **Nouveau relevé** demandent confirmation avant d'abandonner le brouillon local.
-- Les contours incomplets, cotes non finies, matrices non rigides et exports trop volumineux sont refusés avant le partage. Le site refait la validation complète, notamment le contour rectangulaire et les ouvertures.
+- Les contours incomplets, cotes non finies, matrices non rigides et exports trop volumineux sont refusés avant le partage. Le site refait la validation complète, notamment le contour polygonal fermé et les ouvertures.
 - Texte défilant et Dynamic Type, messages VoiceOver et retour haptique pour succès/erreur. L'aperçu du site reçoit le focus et signale les éléments incertains. Le brouillon temporaire est supprimé en recommençant ; les copies déjà enregistrées dans Fichiers restent intactes.
 
 ## Données et sécurité
@@ -43,8 +43,10 @@ Le simulateur permet de compiler, **pas de valider un scan LiDAR**. Cette sessio
 
 Aucun film, photo, nuage de points ni mesh n’est exporté. Le fichier reste local tant que le client ne le partage pas. Le code natif ne contient ni compte serveur, ni token, ni URL de téléversement automatique.
 
-Le navigateur montre un aperçu sans sauvegarde ; `POST /api/pieces/:id/scan` refait toute la validation, exige le compte propriétaire et protège le remplacement concurrent. Les quotas de relevés Maison Corleone restent applicables. Les unités ambiguës, matrices non rigides, étages différents et contours non rectangulaires sont refusés. Les meubles détectés sont des observations, pas des produits boutique ni des mesures certifiées.
+Le navigateur montre un aperçu sans sauvegarde ; `POST /api/pieces/:id/scan` refait toute la validation, exige le compte propriétaire et protège le remplacement concurrent. Les quotas de relevés Maison Corleone restent applicables. Les unités ambiguës, matrices non rigides, étages différents et contours croisés ou ouverts sont refusés. Les meubles détectés sont des observations, pas des produits boutique ni des mesures certifiées.
 
 Le contrat et les adaptateurs sont testés avec des **données synthétiques**, distinctes d’un vrai scan matériel. Tester sur plusieurs pièces mesurées avant distribution, notamment vitres, miroirs, occultations, mobilier bas et confiance faible.
 
 Références officielles : [RoomPlan](https://developer.apple.com/augmented-reality/roomplan/), [recherche Apple](https://machinelearning.apple.com/research/roomplan), [RoomCaptureViewDelegate](https://developer.apple.com/documentation/roomplan/roomcaptureviewdelegate), [isSupported](https://developer.apple.com/documentation/roomplan/roomcapturesession/issupported).
+
+Le site prend maintenant en charge les contours polygonaux fermés. Le transfert par QR et les applications iOS tierces sont documentés dans [capture-polygones-transfert.md](../../docs/capture-polygones-transfert.md).

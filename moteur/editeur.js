@@ -13,7 +13,8 @@ import {
   THREE, RoomEnvironment, M, std, bloc, cyl, sphere, groupe, cuire, graine,
   definirProduits, construireProduit, construireCatalogue, CAT_GENERIQUE, canvasTex, LUMINEUX
 } from './meubles.js';
-import './modeles/index.js';   // modèles fidèles d'après les photos des produits
+import './modeles/index.js';
+import { contourDe, segmentsDe, aireSignee, contientPoint, contientBoite } from '../lib/contour.js';   // modèles fidèles d'après les photos des produits
 import { produitDe, estMural, estSuspendu, estPlat, estAdosse, estPosable, porteurDe, demiEmpreinte, placerAuMur, normaliserAngle } from '../lib/agencement.js';
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -231,7 +232,12 @@ export function creerEditeur(canvas, opts = {}) {
     const pas = matiere === 'parquet' ? 1.6 : matiere === 'uni' ? 2.5 : 2.4;
     t.repeat.set(L / pas, P / pas);
     const mSol = std('#FFFFFF', sol.matiere === 'moquette' ? 1 : matiere === 'marbre' ? .3 : matiere === 'carrelage' ? .45 : .72, 0, { map: t });
-    const plan = mesh3(new THREE.PlaneGeometry(L, P), mSol);
+    const contour = contourDe(modele);
+    const formeSol = new THREE.Shape(contour.map(([x,z])=>new THREE.Vector2(x,-z)));
+    const geometrieSol = new THREE.ShapeGeometry(formeSol);
+    const uv = geometrieSol.attributes.uv, positions = geometrieSol.attributes.position;
+    for(let i=0;i<uv.count;i++) uv.setXY(i,(positions.getX(i)+L/2)/L,(positions.getY(i)+P/2)/P);
+    const plan = mesh3(geometrieSol, mSol);
     plan.rotation.x = -Math.PI / 2; plan.castShadow = false;
     racine.add(plan);
     // socle discret sous la pièce (maquette posée)
@@ -242,12 +248,13 @@ export function creerEditeur(canvas, opts = {}) {
     const couleurMur = m => (modele.murs && modele.murs[m] && modele.murs[m].couleur) || modele.couleurMurs || '#F1EDE6';
     // chaque mur : largeur intérieure, extrudé vers l'extérieur ; u = abscisse le long du mur
     // (fond en z = -P/2, entrée en z = +P/2 : voir lib/agencement.js)
-    const defs = {
+    let defs = {
       fond: { a: [L / 2, -P / 2], d: [-1, 0], n: [0, -1], long: L, u: pos => L / 2 - pos },
       entree: { a: [-L / 2, P / 2], d: [1, 0], n: [0, 1], long: L, u: pos => pos + L / 2 },
       gauche: { a: [-L / 2, -P / 2], d: [0, 1], n: [-1, 0], long: P, u: pos => pos + P / 2 },
       droite: { a: [L / 2, P / 2], d: [0, -1], n: [1, 0], long: P, u: pos => P / 2 - pos }
     };
+    if (modele.contour) {const sens=Math.sign(aireSignee(contour));defs=Object.fromEntries(segmentsDe(modele).map(p=>[p.id,{a:sens>0?p.b:p.a,d:p.d.map(v=>-sens*v),n:p.n.map(v=>-v),long:p.long,u:pos=>p.long/2-sens*pos}]));}
     for (const [nom, c] of Object.entries(defs)) {
       const ouv = ((modele.murs && modele.murs[nom] && modele.murs[nom].ouvertures) || []).map(o => ({ ...o, u: c.u(o.position) }))
         .filter(o => o.largeur > .1 && o.u - o.largeur / 2 > -.01 && o.u + o.largeur / 2 < c.long + .01);
@@ -282,12 +289,12 @@ export function creerEditeur(canvas, opts = {}) {
       E.murs.push({ nom, me, menuiseries, plinthe, n: bz, centre: new THREE.Vector3(c.a[0] + bx.x * c.long / 2, H / 2, c.a[1] + bx.z * c.long / 2), op: 1 });
     }
     // plafond (vu seulement de l'intérieur)
-    const pl = mesh3(new THREE.PlaneGeometry(L, P), std((modele.plafond && modele.plafond.couleur) || '#F7F5F0', .95));
-    pl.rotation.x = Math.PI / 2; pl.position.y = H; pl.castShadow = false;
+    const pl = mesh3(new THREE.ShapeGeometry(formeSol), std((modele.plafond && modele.plafond.couleur) || '#F7F5F0', .95));
+    pl.rotation.x = -Math.PI / 2; pl.material.side = THREE.BackSide; pl.position.y = H; pl.castShadow = false;
     racine.add(pl);
     E.plafond = pl;
     // contour du sol (repère quand les murs s'effacent)
-    const bord = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints([[-L / 2, -P / 2], [L / 2, -P / 2], [L / 2, P / 2], [-L / 2, P / 2]].map(([x, z]) => new THREE.Vector3(x, .004, z))), new THREE.LineBasicMaterial({ color: '#8F8577', transparent: true, opacity: .55 }));
+    const bord = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(contour.map(([x, z]) => new THREE.Vector3(x, .004, z))), new THREE.LineBasicMaterial({ color: '#8F8577', transparent: true, opacity: .55 }));
     racine.add(bord);
 
     // lumière du jour : soleil au-dessus d'une fenêtre s'il y en a, ombres cadrées sur la pièce
@@ -656,7 +663,7 @@ export function creerEditeur(canvas, opts = {}) {
   function majMurs(cam, force) {
     if (!E.modele) return false;
     const { largeur: L, profondeur: P, hauteur: H } = E.modele.dims;
-    const dedans = Math.abs(cam.position.x) < L / 2 && Math.abs(cam.position.z) < P / 2 && cam.position.y < H;
+    const dedans = contientPoint(E.modele,cam.position.x,cam.position.z) && cam.position.y < H;
     let change = false;
     E.plafond.visible = dedans;
     for (const w of E.murs) {
@@ -797,8 +804,10 @@ export function creerEditeur(canvas, opts = {}) {
         const sol = pointSol(e, estSuspendu(it.p.fam) ? 0 : 0);
         if (!sol) return;
         const [hx, hz] = demiEmpreinte(it.p.dim, it.item.rot || 0);
+        const avantPosition={x:it.item.x,z:it.item.z};
         it.item.x = Math.round(clamp(sol.x + geste.dx, -L / 2 + hx, L / 2 - hx) * 100) / 100;
         it.item.z = Math.round(clamp(sol.z + geste.dz, -P / 2 + hz, P / 2 - hz) * 100) / 100;
+        if(E.modele.contour && !contientBoite(E.modele,{x0:it.item.x-hx,x1:it.item.x+hx,z0:it.item.z-hz,z1:it.item.z+hz}))Object.assign(it.item,avantPosition);
       }
       placerPorteur(it);
       majContour();

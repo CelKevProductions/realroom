@@ -49,15 +49,15 @@ test('Android : échelle inchangée sous rotation, translation et sens de parcou
   const r = depuisScan(inverse); assert.equal(r.modele.dims.largeur, 4); assert.equal(r.modele.dims.profondeur, 5);
 });
 
-test('les formes en L, scans incomplets et points sur des plans différents sont refusés', () => {
+test('les quadrilatères imparfaits passent ; scans incomplets et sols différents sont refusés', () => {
   const a = scanAndroid(); a.floorCorners[2][0] -= .6;
-  assert.throws(() => depuisScan(a), e => e.code === 'scan-forme');
+  assert.equal(depuisScan(a).modele.contour.length,4);
   const b = scanAndroid(); b.floorCorners[2][1] += .2;
   assert.throws(() => depuisScan(b), e => e.code === 'scan-sol');
   const c = scanApple(); c.walls.pop();
   assert.throws(() => depuisScan(c), e => e.code === 'scan-incomplet');
   const d = scanApple(); d.walls.push({ ...d.walls[0], size: [1, 2.6, 0], transform: matrice(0, 1.3, 0) });
-  assert.throws(() => depuisScan(d), e => e.code === 'scan-forme');
+  assert.throws(() => depuisScan(d), e => ['scan-forme','scan-incomplet'].includes(e.code));
   const e = scanApple(); e.walls[3].size[0] = 2;
   assert.throws(() => depuisScan(e), err => err.code === 'scan-incomplet');
 });

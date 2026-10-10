@@ -41,7 +41,7 @@ export async function ouvrirReleveAR(session, racine, onEtat) {
       const poses = suivi ? frame.getHitTestResults(hitSource).map(r => r.getPose(reference)).filter(Boolean) : [];
       // L'utilisateur vise le sol ; après le premier coin, imposer le même niveau horizontal.
       const pose = poses.find(p => p.transform.matrix[5] > .95
-        && (coins.length === 0 || Math.abs(p.transform.position.y - coins[0][1]) <= .08));
+        && (coins.length === 0 || Math.abs(p.transform.position.y - coins[0][1]) <= .15));
       if (pose) {
         const p = pose.transform.position;
         point = { valeur: [p.x, p.y, p.z], t: performance.now() };
@@ -52,8 +52,8 @@ export async function ouvrirReleveAR(session, racine, onEtat) {
     });
     return {
       validerCoin() {
-        if (fini || !point || performance.now() - point.t > 300 || coins.length >= 4) throw new Error('ar-suivi');
-        if (coins.some(p => Math.hypot(p[0] - point.valeur[0], p[2] - point.valeur[2]) < .3)) throw new Error('scan-coins');
+        if (fini || !point || performance.now() - point.t > 300 || coins.length >= 32) throw new Error('ar-suivi');
+        if (coins.some(p => Math.hypot(p[0] - point.valeur[0], p[2] - point.valeur[2]) < .2)) throw new Error('scan-coins');
         coins.push([...point.valeur]);
         const marqueur = new THREE.Mesh(new THREE.CircleGeometry(.045, 24).rotateX(-Math.PI / 2),
           new THREE.MeshBasicMaterial({ color: '#A6CA97', side: THREE.DoubleSide }));

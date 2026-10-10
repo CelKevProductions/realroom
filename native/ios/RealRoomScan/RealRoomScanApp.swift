@@ -158,7 +158,7 @@ struct ScanScreen: View {
                                 }
                             }
                             if state.supported {
-                                Label("Une seule pièce rectangulaire", systemImage: "square.dashed").font(.headline)
+                                Label("Une seule pièce, contour complet", systemImage: "square.dashed").font(.headline)
                                 Text("Éclairez la pièce et dégagez la vue des angles. Montrez lentement les murs, les portes et les fenêtres ; suivez les indications à l’écran.")
                                 Text("Les miroirs, vitres et objets masqués peuvent être mal détectés. Vous corrigerez leurs cotes et les éléments manquants dans le plan.").font(.footnote)
                                 Button(action: state.start) {

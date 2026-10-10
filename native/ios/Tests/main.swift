@@ -29,7 +29,7 @@ func refuses(_ survey: MetricSurvey, _ expected: MetricIssue) throws {
         guard String(describing: error) == String(describing: expected) else { fatalError("Mauvaise erreur d’export : \(error)") }
     }
 }
-try refuses(MetricSurvey(walls: Array(walls.prefix(3)), openings: [], objects: []), .incomplete)
+try refuses(MetricSurvey(walls: Array(walls.prefix(2)), openings: [], objects: []), .incomplete)
 var scaled = walls[0].transform; scaled[0] = 1.2
 try refuses(MetricSurvey(walls: [element("bad", "wall", [4, 2.6, 0], scaled)] + Array(walls.dropFirst()), openings: [], objects: []), .invalid)
 try refuses(MetricSurvey(walls: walls, openings: [], objects: [element("bad", "bed", [.nan, 1, 1.6], matrix(0, 0.5, 0))]), .invalid)

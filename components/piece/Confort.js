@@ -1,4 +1,5 @@
 'use client';
+import { referencesStylesDe } from '@/lib/references-styles.js';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { bilanConfort, optimiserAmenagement } from '@/lib/confort.js';
@@ -94,6 +95,7 @@ export default function Confort({ modele, items, produits, lang = 'fr', garder =
       {bilan.score.preferences.resume && <p>{bilan.score.preferences.resume}</p>}
       {bilan.score.preferences.palette.length > 0 && <p>{bilan.score.preferences.palette.join(' · ')}{bilan.score.preferences.matieres.length > 0 ? ' / ' + bilan.score.preferences.matieres.join(' · ') : ''}</p>}
     </details>
+    <details className={s.details}><summary>{lang==='fr'?'Inspirations des styles':'Style inspirations'}</summary><p>{lang==='fr'?'Exemples de palettes, matières et compositions. Votre sélection de styles guide les produits et les dispositions ; les passages restent prioritaires.':'Examples of palettes, materials and compositions. Your styles guide products and layouts; clear passages remain the priority.'}</p><ul>{referencesStylesDe(bilan.score.preferences.styles).map(ref=><li key={ref.id}><a href={ref.url} target="_blank" rel="noopener noreferrer">{ref.titre}</a></li>)}</ul></details>
     <details className={s.details}>
       <summary>{t.details}{bilan.alertes.length > 0 && <span> · {bilan.alertes.length}</span>}</summary>
       {bilan.alertes.length > 0 && <ul>{bilan.alertes.map((a, i) => <li key={i}>{a.texte}</li>)}</ul>}

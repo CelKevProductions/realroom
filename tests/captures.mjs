@@ -63,7 +63,7 @@ export async function verifierCaptures({ browser, ctx, base, racine }) {
   await acquisition.getByText(/AR indisponible ici/).waitFor();
   assert.ok(await acquisition.getByRole('button', { name: 'Démarrer le relevé AR' }).isDisabled());
   await acquisition.getByRole('button', { name: 'Apple · LiDAR' }).click();
-  await acquisition.getByText(/pas encore disponible au téléchargement/).waitFor();
+  await acquisition.getByText(/une application RoomPlan existante/).waitFor();
   await acquisition.getByRole('button', { name: 'Utiliser les photos guidées' }).click();
   assert.equal(await acquisition.getByRole('button', { name: 'Photos guidées' }).getAttribute('aria-pressed'), 'true');
   await acquisition.getByRole('button', { name: 'Apple · LiDAR' }).click();

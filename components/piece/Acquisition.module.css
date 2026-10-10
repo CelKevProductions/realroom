@@ -27,8 +27,11 @@
 .ar { position: fixed; inset: 0; z-index: 10000; color: #FFF5E7; }
 .ar[hidden] { display: none; }
 .ar > canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.commandes { position: absolute; bottom: max(1rem, env(safe-area-inset-bottom)); left: 1rem; right: 1rem; padding: 1rem; background: rgba(30, 23, 18, .94); border-radius: .5rem; }
+.commandes { position: absolute; bottom: calc(max(6rem, 12dvh) + env(safe-area-inset-bottom)); max-height: calc(100dvh - 8rem - env(safe-area-inset-bottom)); overflow-y: auto; overscroll-behavior: contain; left: 1rem; right: 1rem; padding: 1rem; background: rgba(30, 23, 18, .94); border-radius: .5rem; }
 .commandes strong { font-size: 1rem; }
 .commandes .actions { margin-bottom: 0; }
-.commandes button { font-size: .85rem; }
+.commandes button { font-size: .85rem; min-height: 44px; }
 @media (max-width: 600px) { .acquisition { padding: 1rem; } .modes { gap: .4rem; } .modes button { flex: 1 1 40%; font-size: .85rem; padding: .7rem .45rem; } .actions button { flex: 1 1 40%; } }
+
+.commandes .actions { position: sticky; bottom: -1rem; background: #241c16; padding: .6rem 0; }
+@media (max-height: 500px) { .commandes { left: .5rem; right: .5rem; padding: .65rem; bottom: calc(6rem + env(safe-area-inset-bottom)); max-height: calc(100dvh - 7rem - env(safe-area-inset-bottom)); } .commandes p { font-size: .8rem; margin: .35rem 0; } .commandes .actions { bottom: -.65rem; } }

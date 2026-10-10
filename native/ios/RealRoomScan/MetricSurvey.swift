@@ -51,7 +51,7 @@ struct MetricSurvey: Encodable {
     }
 
     func encoded() throws -> Data {
-        guard walls.count >= 4 else { throw MetricIssue.incomplete }
+        guard walls.count >= 3 else { throw MetricIssue.incomplete }
         guard walls.count <= 32, openings.count <= 24, objects.count <= 80 else { throw MetricIssue.tooLarge }
         for (elements, isObject) in [(walls + openings, false), (objects, true)] {
             for e in elements {

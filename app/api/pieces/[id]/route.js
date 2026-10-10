@@ -28,7 +28,7 @@ export const PATCH = route(async (request, { params }) => {
   // Le plan corrigé remplace la géométrie ; le relevé reste visible, même s'il faut l'ajuster.
   if ((b.dims || b.geometrie) && p.modele) {
     const correction = b.geometrie && typeof b.geometrie === 'object' ? b.geometrie : { dims: b.dims };
-    Object.assign(champs, corrigerPiece(p.modele, Array.isArray(b.agencement) ? nettoyer(b.agencement) : p.agencement || [], correction, PRODUITS));
+    try { Object.assign(champs, corrigerPiece(p.modele, Array.isArray(b.agencement) ? nettoyer(b.agencement) : p.agencement || [], correction, PRODUITS)); } catch(e) { if(['scan-forme','scan-coins','scan-dimensions'].includes(e.message)) throw new ErreurHTTP(400,e.message);throw e; }
     champs.dims = mesuresConfirmees(champs.modele);
     champs.proposition = p.proposition ? { ...p.proposition, confort: null } : null;
   }
@@ -55,7 +55,7 @@ function nettoyer(liste) {
     if (!it || typeof it.id !== 'string') return null;
     const base = { id: it.id.slice(0, 40), origine: it.origine === 'existant' ? 'existant' : 'catalogue', ...pick(it, ['x', 'z', 'rot', 'y']) };
     if (typeof base.x !== 'number' || typeof base.z !== 'number') return null;
-    if (['fond', 'gauche', 'droite', 'entree'].includes(it.mur)) base.mur = it.mur;
+    if (['fond', 'gauche', 'droite', 'entree'].includes(it.mur) || /^pan_([1-9]|[12][0-9]|3[0-2])$/.test(it.mur)) base.mur = it.mur;
     if (it.garde === false) base.garde = false;
     if (typeof it.raison === 'string') base.raison = it.raison.slice(0, 240);
     if (base.origine === 'catalogue') {

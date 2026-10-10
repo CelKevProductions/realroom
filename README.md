@@ -1,6 +1,6 @@
 # RealRoom · un service KPW
 
-Le client relève une pièce par photos guidées, par quatre coins au sol avec WebXR/ARCore sur Android compatible, ou par import métrique du compagnon natif Apple RoomPlan/LiDAR. RealRoom affiche un plan à vérifier et une maquette 3D avec les meubles existants. Il propose ensuite un aménagement avec de vrais meubles du catalogue Maison Corleone : selon la fonction, le style et le budget, avec patrons paramétriques et recherche géométrique. Enfin, une photo d’entrée sert au rendu photo réaliste (fal.ai, Nano Banana Pro), puis à la visite 3D (World Labs, Marble). Les générations se paient en crédits (Stripe). Le compagnon iOS compile en CI macOS pour simulateur et appareil sans signature ; son export Swift est testé avec l'import du site. Il n'est pas encore distribué et les captures matérielles restent à valider sur appareil.
+Le client relève une pièce par photos guidées, par 3 à 32 coins au sol avec WebXR/ARCore sur Android compatible, ou par import JSON Apple RoomPlan/LiDAR (application tierce existante ou compagnon natif). Un QR code permet le transfert temporaire depuis le téléphone. RealRoom affiche un plan polygonal à vérifier et une maquette 3D avec les meubles existants. Il propose ensuite un aménagement avec de vrais meubles du catalogue Maison Corleone : selon la fonction, le style et le budget, avec patrons paramétriques et recherche géométrique. Enfin, une photo d’entrée sert au rendu photo réaliste (fal.ai, Nano Banana Pro), puis à la visite 3D (World Labs, Marble). Les générations se paient en crédits (Stripe). Le compagnon iOS compile en CI macOS pour simulateur et appareil sans signature ; son export Swift est testé avec l'import du site. Il n'est pas encore distribué et les captures matérielles restent à valider sur appareil.
 
 ## Pile
 
@@ -123,3 +123,5 @@ python3 tests/harnais/essai-editeur.py     # moteur 3D seul (après : npx esbuil
 Plan d’amélioration du relevé et du placement : [docs/plan-mistral-realroom.md](docs/plan-mistral-realroom.md).
 
 Construction et limites du compagnon Apple : [native/ios/README.md](native/ios/README.md). Les fixtures de scan des tests sont synthétiques : elles ne valident ni la précision ARCore/LiDAR ni la compilation Swift.
+
+Le détail du scan polygonal, de l’import Apple, du transfert QR et des références de style figure dans [capture-polygones-transfert.md](docs/capture-polygones-transfert.md).
