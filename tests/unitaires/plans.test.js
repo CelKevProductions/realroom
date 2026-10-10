@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {lireDXF,exporterDXF,APP_LAGARSOFT} from '../../lib/plans.js';
+import {lireDXF,exporterDXF,APP_LAGARSOFT,creerLecteurDXF,messageErreurDXF} from '../../lib/plans.js';
 import {depuisScan,VERSION_SCAN} from '../../lib/scan.js';
 import {aireSignee,contientPoint,segmentsDe} from '../../lib/contour.js';
 import {vuePourAngle,ANGLES_RENDU} from '../../lib/cadrages.js';
@@ -29,6 +29,56 @@ test('sans unité, aucune estimation de cote ; unité manuelle puis validation e
 test('DXF invalide, courbe, croisé ou binaire est refusé sans correction inventée',()=>{
  for(const s of ['AutoCAD Binary DXF\r\n',dxf([...poly([[0,0],[4,0],[4,3],[0,3]]),42,.3]),dxf(poly([[0,0],[4,3],[4,0],[0,3]])),'0\nEOF\n25'])assert.throws(()=>lireDXF(s));
  assert.throws(()=>lireDXF(dxf(poly([[0,0],[4,0],[4,3],[0,3]])).replace('10\n0\n20\n0\n','10\n0\n')),'une coordonnée manquante ne devient pas un triangle inventé');
+});
+test('un meuble ou une annotation courbe ne fait pas refuser un sol valide',()=>{
+ const sol=poly([[0,0],[4,0],[4,3],[0,3]]);
+ const meuble=[...poly([[1,1],[2,1],[2,2],[1,2]],'FURNITURE'),42,.5];
+ const annotation=[0,'POLYLINE',8,'ANNOTATIONS',70,1,0,'VERTEX',10,0,20,0,42,.5,0,'SEQEND'];
+ const autreCalque=[...poly([[0,0],[4,0],[4,3],[0,3]],'DECORATION'),42,.5];
+ for(const decor of [meuble,annotation,autreCalque]){
+  const r=lireDXF(dxf([...sol,...decor]));assert.equal(r.pieces.length,1);assert.equal(r.pieces[0].surface,12);
+ }
+ assert.throws(()=>lireDXF(dxf([...sol,42,.5,...meuble])),e=>e.code==='plan-courbe','un sol courbe reste refusé');
+ const sansCalqueSol=poly([[0,0],[4,0],[4,3],[0,3]],'0');
+ assert.equal(lireDXF(dxf([...sansCalqueSol,...meuble])).pieces[0].surface,12);
+});
+test('une abscisse DXF dupliquée ou sans ordonnée n’est jamais ignorée',()=>{
+ const fichier=dxf(poly([[0,0],[4,0],[4,3],[0,3]]));
+ for(const coord of ['10\n99\n10\n0\n20\n0\n','20\n0\n','10\n0\n']){
+  assert.throws(()=>lireDXF(fichier.replace('10\n0\n20\n0\n',coord)),e=>e.code==='plan-format');
+ }
+});
+test('deux lectures de DXF : seul le dernier fichier choisi peut être affiché',async()=>{
+ const lecteur=creerLecteurDXF(),resultats=[],erreurs=[];
+ const fichier=surface=>dxf(poly([[0,0],[surface,0],[surface,3],[0,3]]));
+ let terminer;
+ const lent=lecteur.lire({size:100,text:()=>new Promise(r=>{terminer=r;})},r=>resultats.push(r.resultat.pieces[0].surface),e=>erreurs.push(e.code));
+ await lecteur.lire({size:100,text:async()=>fichier(5)},r=>resultats.push(r.resultat.pieces[0].surface),e=>erreurs.push(e.code));
+ terminer(fichier(4));await lent;
+ assert.deepEqual(resultats,[15]);assert.deepEqual(erreurs,[]);
+});
+test('lecture périmée, annulation et taille : aucun résultat ou échec tardif ne remplace le plan',async()=>{
+ const lecteur=creerLecteurDXF(),resultats=[],erreurs=[],fichier=dxf(poly([[0,0],[4,0],[4,3],[0,3]]));
+ let echouer;
+ const lent=lecteur.lire({size:100,text:()=>new Promise((_,r)=>{echouer=r;})},r=>resultats.push(r),e=>erreurs.push(e.code));
+ await lecteur.lire({size:100,text:async()=>fichier},r=>resultats.push(r.resultat.pieces[0].surface),e=>erreurs.push(e.code));
+ echouer(new Error('ancienne lecture'));await lent;
+ let terminer;
+ const annule=lecteur.lire({size:100,text:()=>new Promise(r=>{terminer=r;})},r=>resultats.push(r),e=>erreurs.push(e.code));
+ lecteur.annuler();terminer(fichier);await annule;
+ assert.deepEqual(resultats,[12]);assert.deepEqual(erreurs,[]);
+ let lu=false;
+ await lecteur.lire({size:5e6+1,text:async()=>{lu=true;return fichier;}},r=>resultats.push(r),e=>erreurs.push(e.code));
+ assert.equal(lu,false);assert.deepEqual(erreurs,['plan-taille']);
+ await lecteur.lire({size:100,text:async()=>'fichier incomplet'},r=>resultats.push(r),e=>erreurs.push(e.code));
+ assert.deepEqual(erreurs,['plan-taille','plan-format']);
+});
+test('les messages DXF proposent une action en français et anglais sans contenu privé',()=>{
+ assert.match(messageErreurDXF('plan-taille'),/5 Mo.*PDF\/image/);
+ assert.match(messageErreurDXF('plan-format','en'),/DXF.*PDF\/image/);
+ assert.match(messageErreurDXF('plan-courbe'),/contour.*courbes.*segments/);
+ assert.match(messageErreurDXF('plan-unites','en'),/actual units/);
+ assert.match(messageErreurDXF('scan-dimensions'),/unités.*3 à 32/);
 });
 test('un contour oblique et ses portes survivent à l’export métrique',()=>{
  const ps=[[0,0],[4,.5],[3.7,3.5],[0,3]],o={type:'porte',a:[.8,.1],b:[1.6,.2]},s={...scan(),floorCorners:ps.map(([x,z])=>[x,0,z]),openings:[o]};
