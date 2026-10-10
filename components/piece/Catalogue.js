@@ -67,6 +67,7 @@ function Fiche({ p, t, lang, produits, action, choisir, fermer }) {
           <b>{p.nom}</b>
           {p.titre && p.titre !== p.nom && <p>{p.titre}</p>}
           <p className="detail__cotes">{p.cat}, {remplir(tc.dims, { l: cm(p.dim[0]), p: cm(p.dim[1]), h: cm(p.dim[2]) })}</p>
+          {p.dimEstimees && <p className="avis avis--note">{lang==='fr'?'Dimensions estimées : à confirmer avant l’achat.':'Estimated dimensions: confirm before purchase.'}</p>}
           <p className="detail__prix">{p.prix > 0 ? prix(p.prix * 100, lang) : t.piece.surDevis}</p>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { api } from '@/components/api.js';
 import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
+import Tutoriel from './Tutoriel.js';
 import Confort from '@/components/piece/Confort.js';
 import Inspirations from '@/components/piece/Inspirations.js';
 import Resultat from '@/components/piece/Resultat.js';
@@ -247,6 +248,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const amenager = (
     <>
       <div className="panneau__corps" role="tabpanel">
+        <Tutoriel lang={lang}/>
         <Confort modele={piece.modele} items={items} produits={produits} lang={lang} onCorriger={corrigerPlan} />
         <fieldset className="champ champ--groupe">
           <legend>{tp.modeTitre}</legend>
@@ -384,7 +386,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         {onglet === 'meubles' && meubles}
         {onglet === 'resultat' && (
           <Resultat lang={lang} t={t} piece={{ ...piece, agencement: items }} rendus={rendus} setRendus={setRendus} solde={solde} setSolde={setSolde} couts={couts} services={services}
-            capturer={o => editeur.current && editeur.current.capture(o)} onPhoto={ouvrirPhotos} />
+            capturer={o => editeur.current && editeur.current.capture(o)} onPhoto={ouvrirPhotos} setPiece={setPiece} />
         )}
       </aside>
 

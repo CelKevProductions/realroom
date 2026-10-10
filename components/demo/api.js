@@ -12,6 +12,7 @@ import { corrigerPiece, mesuresConfirmees } from '@/lib/geometrie.js';
 import { CREDITS, PACKS, FONCTIONS, ROLES_PHOTO, LIMITES } from '@/lib/config.js';
 import { placePhoto } from '@/lib/references.js';
 import { champsDepuisScan, ErreurScan } from '@/lib/scan.js';
+import { ANGLES_RENDU } from '@/lib/cadrages.js';
 
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const maintenant = () => new Date().toISOString();
@@ -215,11 +216,12 @@ async function generer(p, b) {
     if (!source) return non('rendu', 400);
   } else {
     if (!/^data:image\/jpeg;base64,/.test(String(b.capture || ''))) return non('capture', 400);
-    if (!p.photos.some(f => f.role === 'entree')) return non('photo-entree', 400);
+    if (b.angle && !ANGLES_RENDU.includes(b.angle)) return non('angle', 400);
+    if (!p.photos.some(f => f.role === (b.angle || 'entree'))) return non('photo-entree', 400);
   }
   if (lire().credits < cout) return non('credits', 402);
   const r = {
-    id: nouvelId('g_'), piece_id: p.id, type: monde ? 'monde' : 'image', etat: 'en_cours', credits: cout, source: source ? source.id : null,
+    id: nouvelId('g_'), piece_id: p.id, type: monde ? 'monde' : 'image', angle: monde ? null : b.angle || 'entree', etat: 'en_cours', credits: cout, source: source ? source.id : null,
     capture: monde ? null : b.capture, resultat: null, erreur: null, cree_le: maintenant(), fini_le: null, pret_a: Date.now() + (monde ? 5000 : 3000)
   };
   ecrire(e => {

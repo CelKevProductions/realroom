@@ -6,6 +6,7 @@ import { debiterGeneration, echouerGeneration } from '@/lib/credits.js';
 import { enregistrer, enDataUri, lire } from '@/lib/stockage.js';
 import { consigneRendu, soumettreRendu, soumettreMonde } from '@/lib/generation.js';
 import { PRODUITS } from '@/lib/catalogue.js';
+import {ANGLES_RENDU} from '@/lib/cadrages.js';
 
 export const maxDuration = 60;
 const EXTENSIONS = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
@@ -47,7 +48,9 @@ export const POST = route(async (request, { params }) => {
 
   const capture = String(b.capture || '');
   if (!/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(capture) || capture.length > 3.8e6) throw new ErreurHTTP(400, 'capture');
-  const photo = (p.photos || []).find(f => f.role === 'entree');
+  const angle=b.angle??'entree';
+  if(!ANGLES_RENDU.includes(angle))throw new ErreurHTTP(400,'angle');
+  const photo = (p.photos || []).find(f => f.role === angle);
   if (!photo) throw new ErreurHTTP(400, 'photo-entree');
   if (!(await debiterGeneration({ uid: u.id, n: CREDITS.rendu, motif: 'rendu', rid, pieceId: id, type: 'image' }))) throw new ErreurHTTP(402, 'credits');
   let refCapture = null;
@@ -56,12 +59,12 @@ export const POST = route(async (request, { params }) => {
     await sql(`UPDATE rendus SET suivi = $2::jsonb WHERE id = $1`, [rid, JSON.stringify({ capture: refCapture })]);
     const items = p.agencement || [];
     const mode = (p.proposition && p.proposition.mode) || 'tout';
-    const consigne = consigneRendu({ piece: p, modele: p.modele, items, produits: PRODUITS, mode });
+    const consigne = consigneRendu({ piece: p, modele: p.modele, items, produits: PRODUITS, mode,angle });
     const produitsImages = items.filter(it => it.origine === 'catalogue' && it.garde !== false && PRODUITS[it.sku] && PRODUITS[it.sku].img).slice(0, 11).map(it => PRODUITS[it.sku].img);
     const { suivi } = await soumettreRendu({ photo: await enDataUri(photo), capture, produitsImages, consigne });
     // en simulation, l'image « rendue » est la capture elle-même : on garde sa référence, pas les octets
     if (suivi.simulation) suivi.image = refCapture.url;
-    await sql(`UPDATE rendus SET suivi = $2::jsonb WHERE id = $1`, [rid, JSON.stringify({ ...suivi, capture: refCapture, consigne })]);
+    await sql(`UPDATE rendus SET suivi = $2::jsonb WHERE id = $1`, [rid, JSON.stringify({ ...suivi, capture: refCapture, consigne,angle })]);
   } catch (e) {
     await echouerGeneration(rid, e.message);
     throw e.code === 'cle' ? e : new ErreurHTTP(502, 'rendu', e.message);

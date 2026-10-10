@@ -25,7 +25,7 @@ function Montant({ valeur, lang, libre }) {
   const el = useRef(null);
   const affiche = useRef(0);
   useLayoutEffect(() => {
-    const ecrire = v => { if (el.current) el.current.textContent = v ? prix(Math.round(v / 50) * 50 * 100, lang, 0) : libre; };
+    const ecrire = v => { if (el.current) el.current.textContent = v ? prix(Math.round(v * 100), lang, Number.isInteger(valeur) ? 0 : 2) : libre; };
     if (!valeur || !affiche.current || reduit()) { affiche.current = valeur; ecrire(valeur); return; }
     const o = { v: affiche.current };
     const tw = gsap.to(o, { v: valeur, duration: .6, ease: 'power3.out', onUpdate: () => ecrire(o.v), onComplete: () => { affiche.current = valeur; } });
@@ -227,7 +227,8 @@ export default function Parcours({
         {question(t.budget)}
         <div className="mc-reponses">
           <div className="mc-budget">
-            <p className="mc-budget__valeur" aria-live="polite"><Montant valeur={choix.budget} lang={lang} libre={t.budget.libre} />{choix.budget > 0 && <small>{t.budget.environ}</small>}</p>
+            <p className="mc-budget__valeur" aria-live="polite"><Montant valeur={choix.budget} lang={lang} libre={t.budget.libre} />{choix.budget > 0 && <small>{lang==='fr'?'plafond de votre sélection':'your selection limit'}</small>}</p>
+            <label className="mc-budget__saisie"><span className="mc-mono">{lang==='fr'?'Mon budget (€)':'My budget (€)'}</span><input type="number" inputMode="decimal" min="0" max="1000000" step=".01" placeholder="2500" value={choix.budget||''} onChange={e=>{const n=Number(e.target.value);if(Number.isFinite(n)&&n>=0&&n<=1e6)setChoix(c=>({...c,budget:n}));}}/><small>{lang==='fr'?'Saisissez votre plafond ou choisissez « Sans limite ».':'Enter your spending limit or choose “No limit”.'}</small></label>
             <div className={'mc-curseur' + (choix.budget ? '' : ' is-libre')}>
               <span className="mc-curseur__rail" />
               <span className="mc-curseur__plein" style={{ width: pct + '%' }} />

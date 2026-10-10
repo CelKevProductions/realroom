@@ -512,7 +512,7 @@ dialog.catalogue::backdrop { background: rgba(18, 18, 17, .42); transition: back
 
 /* ---------- résultat : avant / après ---------- */
 .avant-apres { position: relative; overflow: hidden; background: var(--calque); user-select: none; touch-action: pan-y; border: 1px solid var(--trait); }
-.avant-apres img { width: 100%; display: block; }
+.avant-apres img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .avant-apres__apres { position: absolute; inset: 0; overflow: hidden; }
 .avant-apres__apres img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .avant-apres__poignee { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--platre); pointer-events: none; }

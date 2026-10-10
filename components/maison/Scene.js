@@ -7,6 +7,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { api } from '@/components/api.js';
 import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
+import Tutoriel from '@/components/piece/Tutoriel.js';
 import Confort from '@/components/piece/Confort.js';
 import { texte as texteRealRoom, prix } from '@/lib/i18n.js';
 import { estMural, estSuspendu, estAdosse, placerAuMur, demiEmpreinte, resoudre, ANGLES } from '@/lib/agencement.js';
@@ -304,6 +305,7 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
           <li>{remplir(ts.maquette, { l: String(piece.modele.dims.largeur).replace('.', lang === 'fr' ? ',' : '.'), p: String(piece.modele.dims.profondeur).replace('.', lang === 'fr' ? ',' : '.') })}</li>
           {existants.length > 0 && <li>{remplir(ts.gardes, { n: gardes })}</li>}
         </ul>
+        <Tutoriel lang={lang}/>
         <Confort modele={piece.modele} items={items} produits={produits} lang={lang} garder={prop?.garder} avis={prop?.alertes} mode={prop?.mode} envies={prop?.envies} preferences={prop?.preferences} onAppliquer={liste => modifier(() => liste)} onCorriger={corrigerPlan} />
         <p className="mc-station__total"><small className="mc-mono">{ts.total}</small>{prix(total * 100, lang)}</p>
         <div className="mc-station__actions">
@@ -389,7 +391,7 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
       )}
       {rendu && (
         <Rendu key={rendu.n} t={t} piece={{ ...piece, agencement: items }} rendus={rendus} setRendus={setRendus} credits={credits} setCredits={setCredits}
-          capturer={capturer} avant={vider} demarrer={rendu.demarrer} fermer={fermerRendu} onPhotos={quitter(onPhotos)} />
+          capturer={capturer} avant={vider} demarrer={rendu.demarrer} lang={lang} onPiece={setPiece} fermer={fermerRendu} onPhotos={quitter(onPhotos)} />
       )}
       {toast && <div key={toast.n} className="mc-toast" role="status">{toast.texte}</div>}
     </div>

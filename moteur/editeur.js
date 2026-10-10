@@ -15,6 +15,7 @@ import {
 } from './meubles.js';
 import './modeles/index.js';
 import { contourDe, segmentsDe, aireSignee, contientPoint, contientBoite } from '../lib/contour.js';   // modèles fidèles d'après les photos des produits
+import {vuePourAngle} from '../lib/cadrages.js';
 import { produitDe, estMural, estSuspendu, estPlat, estAdosse, estPosable, porteurDe, demiEmpreinte, placerAuMur, normaliserAngle } from '../lib/agencement.js';
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -856,7 +857,8 @@ export function creerEditeur(canvas, opts = {}) {
   function capture(o = {}) {
     if (!E.modele) return null;
     const w = o.largeur || 1536, h = o.hauteur || 1024;
-    const p = vuePhoto();
+    const v=o.angle&&o.angle!=='entree'?vuePourAngle(E.modele,o.angle):null;
+    const p = v?{px:v.x,py:v.y,pz:v.z,tx:v.cx,ty:v.cy,tz:v.cz,fov:v.fov}:vuePhoto();
     const cam = new THREE.PerspectiveCamera(o.fov || p.fov, w / h, .05, 200);
     cam.position.set(p.px, p.py, p.pz); cam.lookAt(p.tx, p.ty, p.tz); cam.updateMatrixWorld();
     const avant = { taille: renderer.getSize(new THREE.Vector2()), dpr: renderer.getPixelRatio() };

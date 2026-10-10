@@ -58,6 +58,7 @@ export default function Fiche({ t, lang, p, produits, onFermer, onEchanger, onRe
         </div>
         <div className="mc-fiche__texte" ref={texte}>
           <p className="mc-fiche__cat mc-mono">{p.cat}{p.dim ? ' · ' + remplir(t.scene.dims, { l: cm(p.dim[0]), p: cm(p.dim[1]), h: cm(p.dim[2]) }) : ''}</p>
+          {p.dimEstimees && <p className="mc-note">{lang==='fr'?'Dimensions estimées : à confirmer avant l’achat.':'Estimated dimensions: confirm before purchase.'}</p>}
           <h3 className="mc-fiche__nom">{p.nom}</h3>
           {p.titre && p.titre !== p.nom && <p className="mc-fiche__titre">{p.titre}</p>}
           {p.texte && <p className="mc-fiche__desc">{p.texte}</p>}

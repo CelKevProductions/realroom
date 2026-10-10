@@ -7,6 +7,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { verifierTransfertContour } from './transfert-contour.mjs';
 import { verifierCaptures } from './captures.mjs';
+import { verifierGuides, capturerBanc } from './parcours-guide.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(require.resolve('playwright', { paths: [process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES || '.', process.cwd()] }));
@@ -44,7 +45,9 @@ try {
   const session = connexion.headers()['set-cookie']?.match(/rr_session=([^;]+)/)?.[1];
   assert.ok(session, 'Cookie de session absent');
   await ctx.addCookies([{ name: 'rr_session', value: session, url: base, httpOnly: true, sameSite: 'Lax' }]);
-  if(process.env.TRANSFERTS_SEULS==='1'){await verifierTransfertContour({browser,ctx,base});await ctx.close();}
+  if(process.env.VISION_SEUL==='1'){await capturerBanc({browser,base,racine});await ctx.close();}
+  else if(process.env.GUIDES_SEULS==='1'){await verifierGuides({browser,ctx,base,racine});await ctx.close();}
+  else if(process.env.TRANSFERTS_SEULS==='1'){await verifierTransfertContour({browser,ctx,base});await ctx.close();}
   else if (process.env.CAPTURES_SEULES === '1') {
     await verifierCaptures({ browser, ctx, base, racine });
     await ctx.close();

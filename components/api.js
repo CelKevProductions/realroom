@@ -1,5 +1,7 @@
 // Appels à l'API depuis le navigateur : JSON, erreurs lisibles, jamais d'exception réseau non gérée
+import { moteurGuideActif } from '@/lib/moteur-guide.js';
 export async function api(url, { method = 'GET', corps, formulaire, signal } = {}) {
+  if (corps && url.endsWith('/amenager') && !moteurGuideActif()) corps = {...corps, moteurGuide:false};
   // démo sans compte (/fr/demo…) : tout se passe dans le navigateur, rien n'est envoyé au serveur
   if (typeof window !== 'undefined' && /^\/[a-z]{2}\/(maison-corleone\/)?demo(\/|$)/.test(location.pathname)) {
     const { repondre } = await import('@/components/demo/api.js');

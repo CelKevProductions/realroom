@@ -44,6 +44,6 @@ export const GET = route(async (request, { params }) => {
       } else return encore({ progres: s.progres || null, position: s.position ?? null });
     }
   }
-  const f = await une("SELECT id, type, etat, credits, resultat, erreur, cree_le, fini_le, suivi->>'source' AS source FROM rendus WHERE id = $1", [id]);
+  const f = await une("SELECT id, type, etat, credits, resultat, erreur, cree_le, fini_le, suivi->>'source' AS source, COALESCE(suivi->>'angle', 'entree') AS angle FROM rendus WHERE id = $1", [id]);
   return json(renduPublic(f));
 });

@@ -35,13 +35,13 @@ Si un couchage est conservé, un nouveau lit proposé est écarté avec un avert
 
 ## Limites et vérification
 
-Le même moteur reçoit désormais les imports RoomPlan et les quatre coins métriques WebXR/ARCore dans RealRoom et Maison Corleone. Les cotes de capteur restent de source `scan`, et non `mesure` humaine. Sans hauteur saisie sur Android, 2,50 m reste une estimation. Le plan permet d’ajouter les meubles et ouvertures non détectés ; un meuble existant saisi ne devient pas un produit du catalogue. Les formes non rectangulaires sont refusées à l’import, jamais agrandies artificiellement. La photo d’entrée peut être ajoutée ultérieurement pour le rendu, sans relancer l’analyse ni effacer le relevé.
+Le même moteur reçoit désormais les imports RoomPlan et les contours métriques WebXR/ARCore de 3 à 32 coins et les plans DXF dans RealRoom et Maison Corleone. Les cotes de capteur restent de source `scan`, et non `mesure` humaine. Sans hauteur saisie sur Android, 2,50 m reste une estimation. Le plan permet d’ajouter les meubles et ouvertures non détectés ; un meuble existant saisi ne devient pas un produit du catalogue. Les contours simples concaves et obliques sont conservés ; les formes croisées restent refusées. La photo d’entrée peut être ajoutée ultérieurement pour le rendu, sans relancer l’analyse ni effacer le relevé.
 
-Les distances sont des repères d’usage sur une maquette rectangulaire, pas une certification d’accessibilité. Les formes sont approchées par des empreintes rectangulaires ; une photo ne fournit pas des mesures garanties. Sans porte reconnue, le panneau demande de vérifier la circulation au lieu de la déclarer dégagée. Les erreurs de dimensions ou d’ouvertures nécessitent une correction de la maquette.
+Les distances sont des repères d’usage sur une maquette paramétrique, pas une certification d’accessibilité. Les formes sont approchées par des empreintes rectangulaires ; une photo ne fournit pas des mesures garanties. Sans porte reconnue, le panneau demande de vérifier la circulation au lieu de la déclarer dégagée. Les erreurs de dimensions ou d’ouvertures nécessitent une correction de la maquette.
 
 `npm test` couvre notamment les passages coupés malgré deux portes dégagées, les accès au lit et au rangement, les fenêtres, les objets sur leur support, les éléments fixes, les limites du budget et l’absence de mutation des données d’entrée. `npm run build` vérifie l’intégration Next.js. Le parcours `python3 tests/maison.py demo-desktop` (ou `demo-mobile`) inclut le panneau et vérifie qu’optimiser ne consomme pas de crédit.
 
-La génération de photo IA, ses modèles, ses routes et son système de crédits sont inchangés. Les consignes de relevé et de proposition d’aménagement sont enrichies dans `lib/claude.js`.
+La demande du 10 octobre ajoute le choix d’un angle et d’une photo correspondante, avec aperçu et déclenchement explicite ; les modèles, coûts et suivi/remboursement sont conservés. Voir `parcours-guide.md`. Les consignes de relevé et de proposition d’aménagement sont enrichies dans `lib/claude.js`.
 
 ## Correction du cas de la chambre (5 octobre 2026)
 

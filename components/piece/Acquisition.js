@@ -5,17 +5,20 @@ import { ApercuPlan } from '@/components/piece/PlanPiece.js';
 import { depuisScan, normaliserScan, VERSION_SCAN, MAX_SCAN_OCTETS } from '@/lib/scan.js';
 import s from './Acquisition.module.css';
 import TransfertScan from './TransfertScan.js';
+import Tutoriel from './Tutoriel.js';
+import ImportPlan from './ImportPlan.js';
+import PlanTrace from './PlanTrace.js';
+import {APP_LAGARSOFT, exporterDXF} from '@/lib/plans.js';
 
 const textes = {
   fr: { titre: 'Comment relever votre pièce ?', intro: 'Un scan apporte une échelle métrique. Le plan et les éléments détectés restent à vérifier.',
-    photos: 'Photos guidées', android: 'Android · ARCore', apple: 'Apple · LiDAR',
+    photos: 'Téléverser des photos', android: 'Scan Android', apple: 'Scan Apple',
     androidIntro: 'Dans Chrome sur un Android compatible ARCore, pointez les coins au sol dans l’ordre en faisant le tour de la pièce (3 à 32 coins, y compris les renfoncements). Terminez après le dernier coin, sans repointer le premier.',
     androidLimite: 'Ce relevé mesure le contour. Il ne reconnaît ni les meubles ni les portes : ajoutez-les ensuite dans le plan.',
     indisponible: 'AR indisponible ici. Utilisez Chrome sur un Android compatible, avec Google Play Services for AR et une connexion HTTPS, ou importez un relevé.',
     verification: 'Vérification de la compatibilité…', hauteur: 'Hauteur mesurée sous plafond (m, facultatif)', hauteurNote: 'Sans mesure saisie, la hauteur restera estimée à 2,50 m.',
-    commencer: 'Démarrer le relevé AR', appleIntro: 'RoomPlan utilise le LiDAR et le machine learning Apple sur l’appareil pour relever murs, ouvertures et mobilier. Il nécessite un iPhone/iPad avec LiDAR et une application native, pas Safari.',
-    appleNote: 'Vous pouvez utiliser une application RoomPlan existante, puis importer son JSON CapturedRoom. Voxelio est gratuit à télécharger avec des options payantes ; vérifiez dans l’application les limites de scan et les conditions de l’export JSON. Le format doit être compatible : vérifiez l’aperçu avant de l’utiliser.',
-    appleEtapes: ['Dans Voxelio, choisissez Room Scan / Room Plan sur un iPhone ou iPad compatible LiDAR et relevez une seule pièce.', 'Exportez le JSON de la pièce dans Fichiers (pas seulement le modèle USDZ), puis revenez dans cet onglet.', 'Importez ce fichier ici, vérifiez les mesures et complétez le plan avant d’aménager.'],
+    commencer: 'Démarrer le relevé AR', appleIntro: 'Avec Lagarsoft LiDAR Scanner, relevez la pièce sur un iPhone ou iPad équipé de LiDAR, puis déposez le DXF ici.',
+    appleNote: 'L’application est gratuite et nécessite iOS 17 ou plus. Sur Android, choisissez Scan Android dans Chrome ; Lagarsoft est une application Apple.',
     alternativePhotos: 'Utiliser les photos guidées', vigilance: 'Certains éléments du scan ont une confiance moyenne ou faible. Vérifiez leurs dimensions et leur position dans le plan.',
     importer: 'Importer un relevé métrique', prive: 'Seuls les cotes et les éléments du relevé sont enregistrés. Aucune vidéo AR n’est envoyée.',
     apercu: 'Vérifier avant d’importer', utiliser: 'Utiliser ce plan', fermer: 'Annuler', attente: 'Enregistrement…',
@@ -35,14 +38,13 @@ const textes = {
       'ar-refuse': 'La session AR n’a pas démarré. Vérifiez la compatibilité et autorisez la caméra si vous souhaitez scanner.',
       'trop-gros': 'Le fichier dépasse 5 Mo. Exportez le JSON d’une seule pièce, sans images ni maillage.', 'limite-mc': 'Le nombre de relevés inclus dans votre compte Maison Corleone est atteint.' } },
   en: { titre: 'How would you like to survey your room?', intro: 'A scan provides metric scale. Check the plan and detected elements before use.',
-    photos: 'Guided photos', android: 'Android · ARCore', apple: 'Apple · LiDAR',
+    photos: 'Upload photos', android: 'Scan Android', apple: 'Scan Apple',
     androidIntro: 'In Chrome on an ARCore-compatible Android, mark the floor corners in order around the room (3–32 corners, including recesses). Finish after the last corner without repeating the first.',
     androidLimite: 'This survey measures the outline. It does not recognise furniture or openings: add them in the room plan.',
     indisponible: 'AR unavailable here. Use Chrome on a compatible Android with Google Play Services for AR and HTTPS, or import a survey.',
     verification: 'Checking compatibility…', hauteur: 'Measured ceiling height (m, optional)', hauteurNote: 'Without a measurement, height stays estimated at 2.50 m.',
-    commencer: 'Start AR survey', appleIntro: 'RoomPlan uses on-device Apple machine learning and LiDAR to survey walls, openings and furniture. It requires an iPhone/iPad with LiDAR and a native app, not Safari.',
-    appleNote: 'Use an existing RoomPlan app, then import its CapturedRoom JSON. Voxelio is free to download with paid options; check scan limits and JSON export availability in the app. The format must be compatible: check the preview before using it.',
-    appleEtapes: ['In Voxelio, choose Room Scan / Room Plan on a LiDAR-compatible iPhone or iPad and scan one room.', 'Save the room JSON to Files (not just the USDZ model), then return to this tab.', 'Import that file here, check measurements and complete the plan before furnishing.'],
+    commencer: 'Start AR survey', appleIntro: 'Scan the room with Lagarsoft LiDAR Scanner on a LiDAR-equipped iPhone or iPad, then upload the DXF here.',
+    appleNote: 'The app is free and requires iOS 17 or later. On Android, choose Scan Android in Chrome; Lagarsoft is an Apple app.',
     alternativePhotos: 'Use guided photos', vigilance: 'Some scanned elements have medium or low confidence. Check their dimensions and position in the plan.',
     importer: 'Import a metric survey', prive: 'Only dimensions and survey elements are saved. No AR video is uploaded.',
     apercu: 'Check before importing', utiliser: 'Use this plan', fermer: 'Cancel', attente: 'Saving…',
@@ -67,6 +69,7 @@ export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr'
   const [mode, setMode] = useState(modeInitial), [compatible, setCompatible] = useState(null);
   const [hauteur, setHauteur] = useState(''), [erreur, setErreur] = useState('');
   const [apercu, setApercu] = useState(null), [remplacer, setRemplacer] = useState(false), [attente, setAttente] = useState(false);
+  const [appQR,setAppQR]=useState(null);
   const [actif, setActif] = useState(false), [etatAR, setEtatAR] = useState({ coins: [], mire: false });
   const racineAR = useRef(null), session = useRef(null), controleur = useRef(null), vivant = useRef(true), occupe = useRef(false);
   const titreApercu = useRef(null);
@@ -89,6 +92,8 @@ export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr'
       if (occupe.current) rappels.current.onOccupe?.(false);
     };
   }, []);
+  useEffect(()=>{if(mode!=='apple'||appQR)return;let fini=false;fetch('/api/guides/lagarsoft').then(r=>r.ok?r.json():null).then(j=>{if(!fini&&j)setAppQR(j);}).catch(()=>{});return()=>{fini=true;};},[mode,appQR]);
+  function telecharger(format){if(!apercu)return;const texte=format==='json'?JSON.stringify(apercu.scan,null,2):exporterDXF(apercu.scan),url=URL.createObjectURL(new Blob([texte],{type:format==='json'?'application/json':'application/dxf'}));const a=document.createElement('a');a.href=url;a.download=`realroom-plan.${format}`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
   async function arreter() {
     const xr = session.current; session.current = null; controleur.current?.detruire(); controleur.current = null;
     if (xr) await xr.end().catch(() => {});
@@ -149,38 +154,46 @@ export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr'
     finally { if (vivant.current) setAttente(false); signaler(false); }
   }
   return <section className={s.acquisition} aria-label={t.titre}>
-    <h2>{t.titre}</h2><p>{t.intro}</p>
-    {!mobileSeul && <TransfertScan lang={lang} onScan={scan=>{try{preparer(scan);setMode(scan.source==='apple-roomplan'?'apple':'android');onMode?.(scan.source==='apple-roomplan'?'apple':'android');}catch(e){setErreur(message(e));}}}/>}
+    <p className={s.etape}>{lang==='fr'?'1 · Relever la pièce → 2 · Vérifier le plan → 3 · Aménager':'1 · Capture room → 2 · Check plan → 3 · Furnish'}</p>
+    <h2>{t.titre}</h2>
     {piece?.modele?.capture && <p className={s.succes} role="status">{t.courant}</p>}
     <div className={s.modes} role="group" aria-label={t.titre}>
-      {['photos', 'android', 'apple'].map(m => <button type="button" key={m} aria-pressed={mode === m} disabled={actif || attente} onClick={() => changerMode(m)}>{t[m]}</button>)}
+      {['photos', 'android', 'apple'].map(m => <button type="button" key={m} aria-pressed={mode === m} disabled={actif || attente} onClick={() => changerMode(m)}><strong>{t[m]}</strong><small>{lang==='fr'?(m==='photos'?'Fidélité du plan plus faible · cotes estimées':m==='android'?'Meilleure fidélité · coins mesurés':'Meilleure fidélité · DXF métrique'):(m==='photos'?'Lower plan fidelity · estimated dimensions':m==='android'?'Higher fidelity · measured corners':'Higher fidelity · metric DXF')}</small></button>)}
     </div>
+    <p className={s.note}>{lang==='fr'?'Un scan améliore la géométrie. Le rendu photo final dépend aussi de la photo et de l’IA.':'A scan improves geometry. The final photo also depends on its reference and AI.'}</p>
+    {!mobileSeul && <TransfertScan lang={lang} onScan={scan=>{try{preparer(scan);const m=scan.source==='android-arcore-webxr'?'android':scan.source==='plan-dessine'?'plan':'apple';setMode(m);onMode?.(m);}catch(e){setErreur(message(e));}}}/>}
+    <button type="button" className={s.lien} disabled={actif||attente} onClick={()=>changerMode('plan')}>{lang==='fr'?'J’ai déjà un plan de la maison · DXF, PDF ou image':'I already have a floor plan · DXF, PDF or image'}</button>
+    {mode==='photos'&&<Tutoriel lang={lang} mode="parcours"/>}
+    {mode==='plan'&&<div><h3>{lang==='fr'?'Choisir une pièce dans mon plan':'Choose a room in my floor plan'}</h3><ImportPlan lang={lang} disabled={attente} onScan={preparer}/><details><summary>{lang==='fr'?'Mon plan est un PDF ou une image':'My plan is a PDF or image'}</summary><PlanTrace lang={lang} disabled={attente} onScan={preparer}/></details></div>}
     {mode === 'android' && <div className={s.options}>
-      <p>{t.androidIntro}</p><p className={s.note}>{t.androidLimite}</p>
+      <p>{t.androidIntro}</p><Tutoriel lang={lang} mode="android"/>
       <label className={s.champ}><span>{t.hauteur}</span><input type="number" min="1.9" max="8" step=".01" value={hauteur} placeholder="2.50" onChange={e => setHauteur(e.target.value)} /></label>
-      <small>{t.hauteurNote}</small>
+      <details><summary>{lang==='fr'?'Ce que mesure le scan':'What the scan measures'}</summary><p>{t.androidLimite}</p><small>{t.hauteurNote}</small></details>
       <button type="button" className={s.plein} disabled={!compatible || actif || attente} onClick={demarrer}>{t.commencer}</button>
       {compatible !== true && <p className={s.note}>{compatible == null ? t.verification : t.indisponible}</p>}
     </div>}
     {mode === 'apple' && <div className={s.options}>
-      <p>{t.appleIntro}</p><p className={s.note}>{t.appleNote}</p>
-      <button type="button" disabled={attente} onClick={() => changerMode('photos')}>{t.alternativePhotos}</button>
-      <p><a href="https://apps.apple.com/app/id6764829442" target="_blank" rel="noopener noreferrer">{lang==='fr'?'Ouvrir Voxelio dans l’App Store':'Open Voxelio in the App Store'}</a> · <a href="https://www.voxelio.app/modes/roomplan-scanner" target="_blank" rel="noopener noreferrer">{lang==='fr'?'Voir le mode et les exports':'View mode and exports'}</a></p>
-      <ol>{t.appleEtapes.map(etape => <li key={etape}>{etape}</li>)}</ol>
+      <p>{t.appleIntro}</p>
+      <a className={s.plein} href={APP_LAGARSOFT} target="_blank" rel="noopener noreferrer">{lang==='fr'?'Installer Lagarsoft · App Store':'Install Lagarsoft · App Store'}</a>
+      {appQR&&<details><summary>{lang==='fr'?'Installer sur mon iPhone · QR App Store':'Install on my iPhone · App Store QR'}</summary><img src={appQR.qr} width="224" height="224" alt={lang==='fr'?'QR code App Store Lagarsoft':'Lagarsoft App Store QR code'}/></details>}
+      <Tutoriel lang={lang} mode="apple"/>
+      <ImportPlan lang={lang} disabled={attente} onScan={preparer}/>
+      <details><summary>{lang==='fr'?'Compatibilité Apple':'Apple compatibility'}</summary><p>{t.appleNote}</p></details>
     </div>}
-    {(mode !== 'photos' || mobileSeul) && <><label className={s.importer}><span>{t.importer}</span><input type="file" accept="application/json,.json,.realroom" aria-label={t.importer} disabled={actif || attente} onChange={e => { importer(e.target.files[0]); e.target.value = ''; }} /></label><p className={s.note}>{t.prive}</p></>}
+    {(mode !== 'photos' || mobileSeul) && <details><summary>{lang==='fr'?'Importer un relevé JSON existant':'Import an existing JSON survey'}</summary><label className={s.importer}><span>{t.importer}</span><input type="file" accept="application/json,.json,.realroom" aria-label={t.importer} disabled={actif || attente} onChange={e => { importer(e.target.files[0]); e.target.value = ''; }} /></label><p className={s.note}>{t.prive}</p></details>}
     {apercu && <div className={s.apercu}>
-      <h3 ref={titreApercu} tabIndex={-1}>{t.apercu}</h3><p>{apercu.scan.source === 'apple-roomplan' ? 'Apple RoomPlan' : 'Android ARCore'} · {apercu.agencement.length} {t.mobilier} · {apercu.modele.capture.nbOuvertures} {t.ouvertures}</p>
+      <h3 ref={titreApercu} tabIndex={-1}>{t.apercu}</h3><p>{apercu.scan.source === 'apple-roomplan' ? 'Apple RoomPlan' : apercu.scan.source === 'android-arcore-webxr' ? 'Scan Android' : lang==='fr'?'Plan importé':'Imported plan'} · {apercu.agencement.length} {t.mobilier} · {apercu.modele.capture.nbOuvertures} {t.ouvertures}</p>
       <ApercuPlan modele={apercu.modele} items={apercu.agencement} label={t.plan} />
       <p className={s.note}>{t.intro}</p>
       {apercu.scan.source === 'apple-roomplan' && [...apercu.scan.walls, ...(apercu.scan.openings || []), ...(apercu.scan.objects || [])].some(e => e.confidence !== 'high') && <p className={s.note}>{t.vigilance}</p>}
-      {!apercu.modele.capture.mobilierDetecte && <p className={s.note}>{t.androidLimite}</p>}
+      {!apercu.modele.capture.mobilierDetecte && <p className={s.note}>{lang==='fr'?'Complétez les meubles existants et vérifiez les ouvertures dans le plan éditable.':'Add existing furniture and check openings in the editable plan.'}</p>}
       {apercu.modele.dims.sources.hauteur === 'estimation' && <p className={s.note}>{t.hauteurNote}</p>}
       {piece?.modele && <label className={s.confirmer}><input type="checkbox" checked={remplacer} disabled={attente} onChange={e => setRemplacer(e.target.checked)} /><span>{t.remplacement}</span></label>}
+      <details><summary>{lang==='fr'?'Conserver une copie du relevé':'Keep a survey copy'}</summary><button type="button" onClick={()=>telecharger('json')}>JSON</button> <button type="button" onClick={()=>telecharger('dxf')}>DXF</button></details>
       <div className={s.actions}><button type="button" disabled={attente} onClick={() => setApercu(null)}>{t.fermer}</button><button type="button" className={s.plein} disabled={attente || (!!piece?.modele && !remplacer)} onClick={enregistrer}>{attente ? t.attente : envoyerScan ? (lang==='fr'?'Envoyer sur mon ordinateur':'Send to my computer') : t.utiliser}</button></div>
     </div>}
     {erreur && <p className={s.erreur} role="alert">{erreur}</p>}
-    <p className={s.note}>{t.rendu}</p>
+
     <div ref={racineAR} className={s.ar} hidden={!actif}>
       <div className={s.commandes}>
         <strong>{t.coin} {etatAR.coins.length + 1} · {etatAR.coins.length} {lang==='fr'?'point(s) relevé(s)':'recorded point(s)'}</strong><p>{etatAR.mire ? t.instruction : t.recherche}</p>

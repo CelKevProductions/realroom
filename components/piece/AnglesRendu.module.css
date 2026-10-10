@@ -1,0 +1,10 @@
+.angles { border: 0; padding: 0; margin: 1rem 0; min-width: 0; }
+.angles legend { font-weight: 600; margin: .5rem 0; }
+.choix { display: flex; flex-wrap: wrap; gap: .4rem; margin: .7rem 0; }
+.choix button { font: inherit; font-size: .8rem; padding: .7rem; border: 1px solid #a99d8b; border-radius: .4rem; color: inherit; background: transparent; min-height: 44px; }
+.choix button[aria-pressed=true] { background: #d4b67f; color: #21180e; }
+.apercu { width: 100%; max-width: 32rem; max-height: 28vh; object-fit: contain; background: #e8e1d5; border-radius: .5rem; }
+.angles p { font-size: .8rem; line-height: 1.5; }
+.photo { font-size: .85rem; text-decoration: underline; position: relative; display: inline-block; padding: .6rem 0; cursor: pointer; }
+.photo input { position: absolute; inset: 0; opacity: 0; width: 100%; cursor: pointer; }
+.photo:focus-within { outline: 2px solid #947240; outline-offset: 3px; }
