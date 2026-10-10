@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { MURS, boite, produitDe, estSuspendu } from '@/lib/agencement.js';
 import { longueurMur, corrigerPiece } from '@/lib/geometrie.js';
 import s from './PlanPiece.module.css';
-import { contourDe, segmentsDe, pointOuverture, validerContour } from '@/lib/contour.js';
+import { contourDe, segmentsDe, pointOuverture, lettreMur } from '@/lib/contour.js';
 
 const textes = {
   fr: { titre: 'Vérifier le plan de la pièce', intro: 'Mesurez une longueur réelle pour corriger l’échelle. Les autres dimensions restent estimées tant que vous ne les confirmez pas.',
@@ -45,6 +45,7 @@ export function ApercuPlan({ modele, items = [], produits = {}, label, ouverture
   return <svg className={s.plan} viewBox={`${-L / 2 - marge} ${-P / 2 - marge} ${L + marge * 2} ${P + marge * 2}`}
     role="img" aria-label={label}>
     <polygon points={contourDe(modele).map(p=>p.join(",")).join(" ")} fill="#F8F4EA" stroke="#74634F" strokeWidth={.035} />
+    {segmentsDe(modele).map((pan,i)=><text key={pan.id} x={pan.centre[0]-pan.n[0]*marge*.32} y={pan.centre[1]-pan.n[1]*marge*.32} textAnchor="middle" dominantBaseline="middle" fontSize={Math.min(.19,marge*.32)} fill="#524838">{lettreMur(i)}</text>)}
     {items.filter(it => it.garde !== false).map(it => {
       const p = produitDe(it, produits);
       if (!p?.dim || estSuspendu(p.fam)) return null;
@@ -94,7 +95,7 @@ export default function PlanPiece({ modele, items, produits, lang = 'fr', onSauv
   try { preview=corrigerPiece(modele,items,correction,produits); } catch (_) { contourValide=false;preview={modele,agencement:items}; }
   const modelePlan=preview.modele, pans=segmentsDe(modelePlan);
   const long = longueurMur(modelePlan.dims, mur, modelePlan);
-  const nomMur=m=>t.murs[m] || `${lang==='fr'?'Mur':'Wall'} ${m.split('_').at(-1)}`;
+  const nomMur=m=>`${lang==='fr'?'Mur':'Wall'} ${lettreMur(Math.max(0,pans.findIndex(p=>p.id===m)))}${t.murs[m]?` · ${t.murs[m]}`:''}`;
   const contourTexte=lang==='fr' ? 'Coins du contour · coordonnées X/Z en mètres' : 'Outline corners · X/Z coordinates in metres';
   const contourErreur=lang==='fr' ? 'Le contour se croise, est trop petit ou dépasse le cadre. Corrigez les coins.' : 'The outline crosses itself, is too small or exceeds the frame. Correct the corners.';
   const existants = preview.agencement.filter(it => it.origine === 'existant' && it.garde !== false && it.p?.dim);
@@ -155,7 +156,9 @@ export default function PlanPiece({ modele, items, produits, lang = 'fr', onSauv
     } catch (_) { setErreur(t.erreur); }
     setAttente(false);
   }
-  const champ = (label, value, change, min = 0, max = 30) => <label className={s.champ}><span>{label} (m)</span><input type="number" step=".01" min={min} max={max} required value={value} onChange={e => change(e.target.value)} /></label>;
+  // Les limites d'un scan peuvent finir au millimètre : step=.01 aurait pour base
+  // cette limite (ex. -2.025), et refuserait à tort la cote réelle -2.02.
+  const champ = (label, value, change, min = 0, max = 30) => <label className={s.champ}><span>{label} (m)</span><input type="number" inputMode="decimal" step="any" min={min} max={max} required value={value} onChange={e => change(e.target.value)} /></label>;
   return <dialog ref={dialogue} className={s.dialogue} onCancel={e => { e.preventDefault(); if (!attente) onFermer(); }} aria-labelledby="plan-titre">
     <form onSubmit={sauver}>
       <header className={s.entete}><h2 id="plan-titre">{t.titre}</h2><button type="button" disabled={attente} aria-label={t.fermer} onClick={onFermer}>×</button></header>
@@ -171,7 +174,7 @@ export default function PlanPiece({ modele, items, produits, lang = 'fr', onSauv
           {!contour ? <button type="button" onClick={activerContour}>{lang==='fr'?'Modifier la forme de la pièce':'Edit room shape'}</button> : <>
             <p className={s.intro}>{lang==='fr'?'Glissez les coins sur le plan ou saisissez leurs coordonnées. Ajouter/retirer un coin efface les ouvertures : replacez-les ensuite.':'Drag corners or enter coordinates. Adding/removing a corner clears openings: place them again afterwards.'}</p>
             {!contourValide && <p role="alert">{contourErreur}</p>}
-            {contour.map((p,i)=><fieldset key={i} className={s.ouvertureChamps}><legend>{lang==='fr'?'Coin':'Corner'} {i+1}</legend><div className={s.paire}>{champ('X',p[0],v=>coin(i,0,v),-modelePlan.dims.largeur/2,modelePlan.dims.largeur/2)}{champ('Z',p[1],v=>coin(i,1,v),-modelePlan.dims.profondeur/2,modelePlan.dims.profondeur/2)}</div><p>{lang==='fr'?'Mur suivant':'Next wall'} : {Math.hypot(p[0]-contour[(i+1)%contour.length][0],p[1]-contour[(i+1)%contour.length][1]).toFixed(2)} m</p><div className={s.actions}><button type="button" disabled={contour.length>=32} onClick={()=>{const q=contour[(i+1)%contour.length];changerCoins([...contour.slice(0,i+1),p.map((v,k)=>rond((v+q[k])/2)),...contour.slice(i+1)]);}}>{lang==='fr'?'Ajouter un coin après':'Add corner after'}</button><button type="button" disabled={contour.length<=3} onClick={()=>changerCoins(contour.filter((_,j)=>j!==i))}>{t.retirer}</button></div></fieldset>)}
+            {contour.map((p,i)=><fieldset key={i} className={s.ouvertureChamps}><legend>{lang==='fr'?'Coin':'Corner'} {i+1}</legend><div className={s.paire}>{champ('X',p[0],v=>coin(i,0,v),-modelePlan.dims.largeur/2,modelePlan.dims.largeur/2)}{champ('Z',p[1],v=>coin(i,1,v),-modelePlan.dims.profondeur/2,modelePlan.dims.profondeur/2)}</div><p>{lang==='fr'?'Mur':'Wall'} {lettreMur(i)} : {Math.hypot(p[0]-contour[(i+1)%contour.length][0],p[1]-contour[(i+1)%contour.length][1]).toFixed(2)} m</p><div className={s.actions}><button type="button" disabled={contour.length>=32} onClick={()=>{const q=contour[(i+1)%contour.length];changerCoins([...contour.slice(0,i+1),p.map((v,k)=>rond((v+q[k])/2)),...contour.slice(i+1)]);}}>{lang==='fr'?'Ajouter un coin après':'Add corner after'}</button><button type="button" disabled={contour.length<=3} onClick={()=>changerCoins(contour.filter((_,j)=>j!==i))}>{t.retirer}</button></div></fieldset>)}
           </>}
           <h3>{t.ouvertures}</h3>
           <label className={s.champ}><span>{nomMur(mur)}</span><select aria-label={t.ouvertures} value={mur} onChange={e => { setMur(e.target.value); setSelection(null); }}>{pans.map(({id:m}) => <option key={m} value={m}>{nomMur(m)}</option>)}</select></label>

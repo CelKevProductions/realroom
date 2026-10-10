@@ -91,7 +91,7 @@ export function publique(p) {
     modele: p.modele, agencement: p.agencement || [], proposition: p.proposition, erreur: p.erreur, maj_le: p.maj_le
   };
 }
-export const renduPublic = r => ({ id: r.id, type: r.type, angle: r.angle || 'entree', etat: r.etat, credits: r.credits, resultat: r.resultat, erreur: r.erreur, cree_le: r.cree_le, fini_le: r.fini_le, source: r.source || null });
+export const renduPublic = r => ({ id: r.id, type: r.type, angle: r.angle || 'entree', vue:r.vue||null,ambiance:r.ambiance||'jour',reference:r.reference||null,referenceLargeur:r.referenceLargeur,referenceHauteur:r.referenceHauteur,etat: r.etat, credits: r.credits, resultat: r.resultat, erreur: r.erreur, cree_le: r.cree_le, fini_le: r.fini_le, source: r.source || null });
 export const rendusDe = idPiece => lire().rendus.filter(r => r.piece_id === idPiece).sort((a, b) => (a.cree_le < b.cree_le ? 1 : -1)).map(renduPublic);
 
 export function listeProjets() {

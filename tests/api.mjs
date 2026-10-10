@@ -5,6 +5,8 @@ import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
+import {scanAndroid} from './fixtures/scans.js';
+import {vuePourPosition} from '../lib/cadrages.js';
 
 const RACINE = path.resolve(import.meta.dirname, '..');
 const PORT = Number(process.env.PORT || 3117);
@@ -13,9 +15,11 @@ const DONNEES = path.join(RACINE, '.data', 'essais-api');
 const PHOTO = fs.readFileSync(path.join(RACINE, 'tests', 'fixtures', 'salon-entree.jpg'));
 
 fs.rmSync(DONNEES, { recursive: true, force: true });
-const serveur = spawn('npx', ['next', 'start', '-p', String(PORT)], {
-  cwd: RACINE, detached: true, stdio: 'ignore',
-  env: { ...process.env, REALROOM_SIMULATION: '1', REALROOM_ESSAIS: '1', PGLITE_DIR: path.join(DONNEES, 'pglite'), FICHIERS_DIR: path.join(DONNEES, 'fichiers'), PORT: String(PORT), SITE_URL: BASE,
+const envEssais={...process.env};
+for(const k of Object.keys(envEssais))if(/DATABASE_URL|POSTGRES|_READ_WRITE_TOKEN$|BLOB_STORE_ID|STRIPE_|FAL_|WLT_|ANTHROPIC_|RESEND_|SESSION_SECRET|MC_CLIENT_|^VERCEL/.test(k))delete envEssais[k];
+const serveur = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '-H', '127.0.0.1', '-p', String(PORT)], {
+  cwd: RACINE, detached: true, stdio: 'inherit',
+  env: { ...envEssais, REALROOM_SIMULATION: '1', REALROOM_ESSAIS: '1', PGLITE_DIR: path.join(DONNEES, 'pglite'), FICHIERS_DIR: path.join(DONNEES, 'fichiers'), PORT: String(PORT), SITE_URL: BASE,
     BIENVENUES_PAR_DOMAINE: '4', ANALYSES_ESSAI_PAR_JOUR: '3' }
 });
 const arreter = () => { try { process.kill(-serveur.pid, 'SIGTERM'); } catch (_) {} };
@@ -23,7 +27,8 @@ process.on('exit', arreter);
 
 async function attendre() {
   for (let i = 0; i < 120; i++) {
-    try { if ((await fetch(BASE + '/api/etat')).ok) return; } catch (_) {}
+    if(serveur.exitCode!==null)throw new Error('le serveur s’est arrêté : '+serveur.exitCode);
+    try { if ((await fetch(BASE + '/api/etat',{signal:AbortSignal.timeout(2000)})).ok) return; } catch (_) {}
     await new Promise(r => setTimeout(r, 500));
   }
   throw new Error('le serveur ne démarre pas');
@@ -34,7 +39,7 @@ function client() {
   let cookie = '';
   const appel = async (url, { method = 'GET', corps, brut, formulaire } = {}) => {
     const r = await fetch(BASE + url, {
-      method, redirect: 'manual',
+      method, redirect: 'manual', signal: AbortSignal.timeout(45000),
       headers: { ...(cookie ? { cookie } : {}), ...(corps !== undefined ? { 'content-type': 'application/json' } : {}) },
       body: corps !== undefined ? JSON.stringify(corps) : brut !== undefined ? brut : formulaire
     });
@@ -182,6 +187,48 @@ essai('crédits offerts plafonnés par domaine (hors grands fournisseurs), sans 
   // example.com : marie, photos, rendu, achat ont déjà reçu les leurs (plafond d'essai : 4 par jour)
   assert.equal((await client().connexion('zoe@example.com')).credits, 0);
   assert.equal((await client().connexion('zoe.martin@gmail.com')).credits, 3);
+});
+
+essai('rendu guidé : caméra, nuit, photo indépendante, concurrence et référence conservée', async () => {
+  const api=client();await api.connexion('camera@angles.test');
+  const pr=await api('/api/projets',{method:'POST',corps:{nom:'Caméra'}});
+  const pc=await api(`/api/projets/${pr.projet.id}/pieces`,{method:'POST',corps:{nom:'Chambre',fonction:'chambre'}});
+  const id=pc.piece.id;
+  const sc=await api(`/api/pieces/${id}/scan`,{method:'POST',corps:{scan:scanAndroid()}});
+  assert.equal(sc.statut,200);
+  const vue=vuePourPosition(sc.piece.modele,'fond-gauche');
+  const capture='data:image/jpeg;base64,'+PHOTO.toString('base64');
+  const requete={type:'image',angle:'libre',vue,ambiance:'nuit',capture};
+  assert.equal((await api(`/api/pieces/${id}/rendus`,{method:'POST',corps:requete})).erreur,'photo-entree');
+  assert.equal((await api(`/api/pieces/${id}/rendus`,{method:'POST',corps:{...requete,sansPhoto:'true'}})).statut,400);
+  assert.equal((await api(`/api/pieces/${id}/rendus`,{method:'POST',corps:{...requete,sansPhoto:true,vue:{...vue,x:50}}})).statut,400);
+  assert.equal((await api('/api/moi')).credits,3);
+  const ph=await envoyerPhoto(api,id,'rendu');assert.equal(ph.statut,200);
+  const uid=uidDe(ph.piece);
+  const doubles=await Promise.all([1,2].map(()=>api(`/api/pieces/${id}/rendus`,{method:'POST',corps:requete})));
+  assert.deepEqual(doubles.map(r=>r.statut).sort(),[201,409]);
+  assert.equal((await api('/api/moi')).credits,2);
+  const g=doubles.find(r=>r.statut===201);
+  let fini;for(let i=0;i<20;i++){fini=await api(`/api/rendus/${g.id}`);if(fini.etat!=='en_cours')break;await new Promise(r=>setTimeout(r,400));}
+  assert.equal(fini.etat,'fini');assert.equal(fini.ambiance,'nuit');assert.deepEqual(fini.vue,vue);
+  assert.ok(fini.reference.includes('/captures/'));assert.notEqual(fini.reference,ph.piece.photos[0].url);
+  assert.equal(fini.referenceLargeur,1600);assert.equal(fini.referenceHauteur,1200);
+  assert.equal((await envoyerPhoto(api,id,'rendu')).statut,200);
+  assert.equal((await api(fini.reference)).statut,200,'le remplacement ne supprime pas la référence historique');
+  const sans=await api(`/api/pieces/${id}/rendus`,{method:'POST',corps:{...requete,ambiance:'jour',sansPhoto:true}});
+  assert.equal(sans.statut,201);assert.equal((await api('/api/moi')).credits,1);
+  assert.equal((await api(`/api/pieces/${id}/rendus`)).rendus.length,2);
+  assert.equal((await api(`/api/pieces/${id}`,{method:'DELETE'})).statut,200);
+  assert.equal(fichiersDe(uid,'photos')+fichiersDe(uid,'captures'),0,'les instantanés sont supprimés avec la pièce');
+});
+
+essai('les pages RealRoom, Maison Corleone et relevé mobile sont servies', async () => {
+  for(const url of ['/fr/demo','/en/demo','/fr/maison-corleone/demo','/en/maison-corleone/demo','/fr/releve','/en/releve']) {
+    const r=await fetch(BASE+url);assert.equal(r.status,200,url);
+    const html=await r.text();assert.ok(html.includes('</html>'),url);
+  }
+  const guide=await fetch(BASE+'/api/guides/lagarsoft');assert.equal(guide.status,200);
+  const j=await guide.json();assert.ok(j.qr.startsWith('data:image/'),'le QR Apple est disponible');
 });
 
 try {

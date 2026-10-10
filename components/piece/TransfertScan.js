@@ -1,10 +1,12 @@
 'use client';
-import {useEffect,useRef,useState} from 'react';
+import {useEffect,useRef,useState,useCallback} from 'react';
+import s from './Acquisition.module.css';
 
-export default function TransfertScan({lang='fr',onScan}) {
+export default function TransfertScan({lang='fr',onScan,automatique=false}) {
   const fr=lang==='fr',[ticket,setTicket]=useState(null),[etat,setEtat]=useState(''),[attente,setAttente]=useState(false),vivant=useRef(true),rappel=useRef(onScan);
   rappel.current=onScan;
-  useEffect(()=>{vivant.current=true;return()=>{vivant.current=false;};},[]);
+  const ticketRef=useRef(null);ticketRef.current=ticket;
+  useEffect(()=>{vivant.current=true;return()=>{vivant.current=false;const t=ticketRef.current;if(t)fetch('/api/transferts',{method:'DELETE',headers:{Authorization:`Bearer ${t.lecture}`}}).catch(()=>{});};},[]);
   useEffect(()=>{
     if(!ticket)return;let fini=false,timer,requete;
     async function verifier(){
@@ -21,11 +23,13 @@ export default function TransfertScan({lang='fr',onScan}) {
     }
     verifier();return()=>{fini=true;clearTimeout(timer);requete?.abort();};
   },[ticket,fr]);
-  async function creer(){setAttente(true);setEtat('');try{const r=await fetch('/api/transferts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lang})});const j=await r.json();if(!r.ok)throw Error();if(vivant.current)setTicket(j);}catch(_){if(vivant.current)setEtat(fr?'Impossible de créer le lien. Réessayez.':'Could not create link. Try again.');}finally{if(vivant.current)setAttente(false);}}
+  const creer=useCallback(async()=>{setAttente(true);setEtat('');try{const r=await fetch('/api/transferts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lang})});const j=await r.json();if(!r.ok)throw Error();if(vivant.current)setTicket(j);else fetch('/api/transferts',{method:'DELETE',headers:{Authorization:`Bearer ${j.lecture}`}}).catch(()=>{});}catch(_){if(vivant.current)setEtat(fr?'Impossible de créer le lien. Réessayez.':'Could not create link. Try again.');}finally{if(vivant.current)setAttente(false);}},[lang,fr]);
+  useEffect(()=>{if(!automatique)return;const h=setTimeout(creer,0);return()=>clearTimeout(h);},[automatique,creer]);
   async function annuler(){const t=ticket;setTicket(null);setEtat('');if(t)await fetch('/api/transferts',{method:'DELETE',headers:{Authorization:`Bearer ${t.lecture}`}}).catch(()=>{});}
-  return <div>
-    <button type="button" disabled={attente} onClick={creer}>{attente?(fr?'Préparation…':'Preparing…'):(fr?'Scanner avec mon téléphone · QR code':'Scan with my phone · QR code')}</button>
-    {ticket&&<div><p>{fr?'Scannez ce QR code avec votre téléphone. Android : relevez les coins. Scan Apple : déposez le DXF Lagarsoft, puis envoyez-le ici.':'Scan this QR code on your phone. Android: record corners. Scan Apple: upload the Lagarsoft DXF, then send it here.'}</p><img src={ticket.qr} width="256" height="256" alt={fr?'QR code vers le relevé sur téléphone':'QR code for phone survey'} style={{maxWidth:'100%',display:'block'}}/><p><a href={ticket.lien} target="_blank" rel="noopener noreferrer">{fr?'Ouvrir le lien sur ce téléphone':'Open link on this phone'}</a></p><p><small>{fr?'Lien privé valable 15 minutes, un seul envoi. Ne le partagez pas. Seules les données métriques transitent ; aucun accès à votre compte.':'Private link valid for 15 minutes, one submission. Keep it private. Metric data only; no account access.'}</small></p><button type="button" onClick={annuler}>{fr?'Annuler ce lien':'Cancel this link'}</button></div>}
+  return <aside className={s.qr} aria-label={fr?'Scanner sur mon téléphone':'Scan on my phone'}>
+    <h3>{fr?'Continuez sur votre téléphone':'Continue on your phone'}</h3>
+    {!ticket&&<button type="button" disabled={attente} onClick={creer}>{attente?(fr?'Préparation du QR…':'Preparing QR…'):(fr?'Afficher le QR code':'Show QR code')}</button>}
+    {ticket&&<div><img src={ticket.qr} width="256" height="256" alt={fr?'QR code vers le relevé sur téléphone':'QR code for phone survey'}/><p>{fr?'Scannez pour ouvrir le relevé. Votre téléphone choisit le parcours Android ou Apple.':'Scan to open the survey. Your phone selects the Android or Apple workflow.'}</p><p><a href={ticket.lien} target="_blank" rel="noopener noreferrer">{fr?'Ouvrir le lien':'Open link'}</a></p><p><small>{fr?'Lien privé · 15 minutes · un seul envoi.':'Private link · 15 minutes · one submission.'}</small></p><button type="button" onClick={annuler}>{fr?'Fermer ce lien':'Close link'}</button></div>}
     <p role="status">{etat}</p>
-  </div>;
+  </aside>;
 }

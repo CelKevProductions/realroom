@@ -54,8 +54,8 @@ const fr = {
   },
   photos: {
     label: 'Votre relevé', lignes: ['Votre pièce', 'prend forme'], script: 'à votre mesure',
-    texte: 'Choisissez les photos guidées ou un relevé métrique. Après un scan, la photo d’entrée ne sert qu’au rendu photo final.',
-    principale: 'Depuis l’entrée', repere: 'Photo du rendu', prendre: 'Prendre la photo', remplacer: 'Remplacer', autre: 'Autre angle',
+    texte: 'Choisissez des photos, un scan Android, un scan Apple ou le plan de votre maison. Vérifiez ensuite les cotes avant d’aménager.',
+    principale: 'Depuis l’entrée', repere: 'Photo de la pièce', prendre: 'Prendre la photo', remplacer: 'Remplacer', autre: 'Autre angle',
     dims: 'Vous connaissez ses dimensions ? (facultatif)', largeur: 'Largeur (m)', profondeur: 'Profondeur (m)',
     angles: { fond: 'Du fond vers l’entrée', gauche: 'Le mur de gauche', droite: 'Le mur de droite' },
     precision: 'Une seule photo donne une estimation. La vue opposée aide à retrouver la porte et les meubles cachés. Gardez le même rangement entre les prises.',
@@ -151,8 +151,8 @@ const en = {
   },
   photos: {
     label: 'Your survey', lignes: ['Your room', 'takes shape'], script: 'to your measure',
-    texte: 'Choose guided photos or a metric survey. After a scan, the entrance photo is only needed for the final photo render.',
-    principale: 'From the doorway', repere: 'Render photo', prendre: 'Take the photo', remplacer: 'Replace', autre: 'Other angle',
+    texte: 'Choose photos, an Android scan, an Apple scan or your house floor plan. Then check the dimensions before furnishing.',
+    principale: 'From the doorway', repere: 'Room photo', prendre: 'Take the photo', remplacer: 'Replace', autre: 'Other angle',
     dims: 'Do you know its size? (optional)', largeur: 'Width (m)', profondeur: 'Depth (m)',
     angles: { fond: 'From the far end to the entrance', gauche: 'The left wall', droite: 'The right wall' },
     precision: 'One photo gives an estimate. The opposite view helps locate the door and hidden furniture. Keep the room arranged the same way between photos.',

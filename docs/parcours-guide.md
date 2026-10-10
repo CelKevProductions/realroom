@@ -1,4 +1,4 @@
-# Parcours photos, Android et Lagarsoft
+# Parcours photos, Android, Apple et plan de maison
 
 Le client relève sa pièce, vérifie le plan 2D, conserve les meubles importants, choisit budget et style, compare les dispositions et prépare sa photo finale. Ce parcours est partagé entre RealRoom et Maison Corleone, en français et anglais.
 
@@ -20,7 +20,17 @@ Regénérer hors du build Vercel avec Python, Pillow, FFmpeg, DejaVu Sans : `pyt
 
 ## Rendus
 
-`lib/cadrages.js` définit les quatre vues autorisées. La caméra et sa cible restent à l'intérieur des contours concaves. Le client ajoute une photo correspondant à cette vue, voit l'aperçu, puis déclenche explicitement la génération. L'angle reste dans `suivi.angle`, déjà JSONB ; les anciennes images sont associées à la vue d'entrée par défaut. Le comparateur conserve un aspect ratio explicite pour éviter un résultat réduit à une ligne lors du chargement des photos.
+`lib/cadrages.js` définit huit positions photo et valide une caméra libre métrique, située dans le contour de la pièce. Le client peut regarder autour en Vue Photo ; `pointDeVue()` fournit position, direction et champ. Le rendu utilise cet instantané. Les anciennes demandes par rôle entrée/fond/gauche/droite restent compatibles.
+
+`AnglesRendu` partage le même parcours entre les deux éditions : valider le cadrage, puis déposer/prendre la photo réelle du même angle, ou confirmer explicitement le choix sans photo. Choix jour/nuit, aperçu au format de la photo, une seule génération. Jusqu'à trois autres photos de la pièce complètent les références des produits ; l'ensemble est plafonné à dix images. Les paramètres sont conservés dans le JSONB existant, sans migration.
+
+La photo `rendu` n'entre ni dans le relevé ni dans son quota de huit photos. Un instantané privé de cette référence accompagne le rendu et survit à son remplacement. La route fichiers vérifie toujours le propriétaire ; suppression de pièce/projet/compte nettoie aussi ces instantanés. Le débit compare la révision du compte pour que deux demandes simultanées ne déclenchent pas deux images. Le suivi et le remboursement existants restent utilisés.
+
+## Présentation et téléphone
+
+Quatre cartes de capture, dont Plan de la maison ; aucun QR dans les photos. QR Android privé et QR Apple App Store déjà ouverts à côté des méthodes sur ordinateur. La page de relevé mobile choisit Android/Apple, affiche d'abord l'action principale et laisse les autres méthodes accessibles. Android vérifie `isSessionSupported('immersive-ar')`. La présence de LiDAR n'est pas détectable depuis Safari ; Lagarsoft vérifie son matériel.
+
+Les cotes ont un pas libre, les murs portent des lettres. Les écrans fixes ne créent plus de défilement de document par leur filigrane ou leur hauteur ; les longs contenus gardent leur défilement interne. Les photos sont centrées sous le titre et les cartes. La visite a une flèche cliquable et des transitions plus lentes. Le chargement n'a plus de rectangle extérieur ; l'optimisation de démo se fait dans `moteur/amenager-worker.js`. Le panneau meublé Maison Corleone conserve Total, Rendu réaliste et Ajouter une pièce, sans les deux blocs supprimés.
 
 ## Vérification
 
@@ -29,3 +39,5 @@ Regénérer hors du build Vercel avec Python, Pillow, FFmpeg, DejaVu Sans : `pyt
 Le banc, ses limites et les choix critiques du protocole sont dans [DECISIONS.md](../DECISIONS.md) et [validation-ameublement.json](validation-ameublement.json). Les capteurs physiques Android doivent encore être vérifiés sur un appareil compatible. L'export DXF Lagarsoft réel fourni est vérifié ; l'application native RealRoom conservée dans le dépôt est une alternative et n'est pas requise pour ce parcours.
 
 Les corrections et les limites de la dernière passe DXF sont décrites dans [le rapport des imports](qa-parcours-2026-10-10/report.md).
+
+Les corrections de cotes, caméra et rendu guidé sont décrites dans [le rapport UX et rendu](ux-rendu-2026-10-10.md). Les contrôles navigateur cités plus haut appartiennent aux versions antérieures ; ils ne remplacent pas une nouvelle validation visuelle de ces écrans.

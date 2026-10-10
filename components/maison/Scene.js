@@ -7,8 +7,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { api } from '@/components/api.js';
 import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
-import Tutoriel from '@/components/piece/Tutoriel.js';
-import Confort from '@/components/piece/Confort.js';
+import CameraPhoto from '@/components/piece/CameraPhoto.js';
 import { texte as texteRealRoom, prix } from '@/lib/i18n.js';
 import { estMural, estSuspendu, estAdosse, placerAuMur, demiEmpreinte, resoudre, ANGLES } from '@/lib/agencement.js';
 import Marque from '@/components/maison/Embleme.js';
@@ -63,6 +62,7 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
   const ecrire = useCallback(async liste => {
     const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { agencement: liste } });
     if (!r.ok) dire(ts.erreur, true);
+    return r.ok;
   }, [piece.id, ts.erreur]);
   const enregistrer = useCallback(liste => {
     clearTimeout(sauvegarde.current.h);
@@ -74,9 +74,9 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
     clearTimeout(sauvegarde.current.h);
     const l = sauvegarde.current.liste;
     sauvegarde.current.liste = null;
-    if (l) await ecrire(l);
+    if (l && !(await ecrire(l))) {sauvegarde.current.liste = l;throw new Error('sauvegarde');}
   }, [ecrire]);
-  useEffect(() => () => { vider(); }, [vider]);
+  useEffect(() => () => { vider().catch(()=>{}); }, [vider]);
   const modifier = useCallback(f => setItems(l => { const n = f(l); enregistrer(n); return n; }), [enregistrer]);
 
   const produitDe = useCallback(it => (it.sku ? produits && produits[it.sku] : it.p), [produits]);
@@ -95,9 +95,9 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
   // ---------- éditeur prêt : la pièce se range, les points apparaissent ----------
   useEffect(() => {
     if (!pret || !editeur.current) return;
-    editeur.current.decalage(large && !fiche ? DECALAGE : 0, 0, arrivee.current);
+    editeur.current.decalage(large && !fiche && vue !== 'photo' ? DECALAGE : 0, 0, arrivee.current);
     arrivee.current = false;
-  }, [pret, large, fiche]);
+  }, [pret, large, fiche, vue]);
   useEffect(() => { if (pret && editeur.current) editeur.current.ambiance(soir ? 1 : 0, 1700); }, [soir, pret]);
   useLayoutEffect(() => {
     if (!pret || reduit()) return;
@@ -230,19 +230,13 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
     if (vue === 'dessus') aCadrer.current = id;
   }
 
-  async function corrigerPlan(geometrie) {
-    await vider();
-    const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { geometrie, agencement: items } });
-    if (!r.ok) return false;
-    setPiece(r.piece); setItems(r.piece.agencement); setSelection(null); setCadre(null);
-    return true;
-  }
-
   // ---------- rendu réaliste ----------
   const ouvrirRendu = () => setRendu({ demarrer: !renduEnCours && credits > 0, n: Date.now() });
   const fermerRendu = useCallback(() => setRendu(null), []);
   const capturer = useCallback(o => (editeur.current ? editeur.current.capture(o) : null), []);
-  const quitter = f => async () => { await vider(); f(); };
+  const lireVue = useCallback(() => editeur.current?.pointDeVue(), []);
+  const surVue = useCallback(v => { setSelection(null); editeur.current?.choisirVue(v); setVue('photo'); }, []);
+  const quitter = f => async () => { try {await vider(); f();}catch(_){} };
 
   // ---------- station ----------
   const prixDe = p => (p && p.prix > 0 ? prix(p.prix * 100, lang) : ts.surDevis);
@@ -305,8 +299,6 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
           <li>{remplir(ts.maquette, { l: String(piece.modele.dims.largeur).replace('.', lang === 'fr' ? ',' : '.'), p: String(piece.modele.dims.profondeur).replace('.', lang === 'fr' ? ',' : '.') })}</li>
           {existants.length > 0 && <li>{remplir(ts.gardes, { n: gardes })}</li>}
         </ul>
-        <Tutoriel lang={lang}/>
-        <Confort modele={piece.modele} items={items} produits={produits} lang={lang} garder={prop?.garder} avis={prop?.alertes} mode={prop?.mode} envies={prop?.envies} preferences={prop?.preferences} onAppliquer={liste => modifier(() => liste)} onCorriger={corrigerPlan} />
         <p className="mc-station__total"><small className="mc-mono">{ts.total}</small>{prix(total * 100, lang)}</p>
         <div className="mc-station__actions">
           <button type="button" className="mc-rendu-btn" onClick={ouvrirRendu} disabled={!credits && !renduEnCours && !finis.length}>
@@ -369,6 +361,7 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
       {produits && <section className={'mc-station' + (choisi ? ' mc-station--meuble' : '')} key={cleStation} ref={station} aria-live="polite">{contenu}</section>}
 
       <div className="mc-commandes">
+        {vue === 'photo' && <div className="mc-camera"><CameraPhoto modele={piece.modele} lang={lang} surChoisir={surVue}/><small>{lang==='fr'?'Glissez sur la pièce pour regarder autour.':'Drag on the room to look around.'}</small></div>}
         {cadre && vue === 'dessus' && !choisi && <button type="button" className="mc-segment mc-segment--seul" onClick={ensemble}><span>{ts.ensemble}</span></button>}
         <div className="mc-segment" role="group" aria-label={ts.jour + ' / ' + ts.soir}>
           <button type="button" aria-pressed={!soir} onClick={() => setSoir(false)}>{ts.jour}</button>
@@ -391,7 +384,7 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
       )}
       {rendu && (
         <Rendu key={rendu.n} t={t} piece={{ ...piece, agencement: items }} rendus={rendus} setRendus={setRendus} credits={credits} setCredits={setCredits}
-          capturer={capturer} avant={vider} demarrer={rendu.demarrer} lang={lang} onPiece={setPiece} fermer={fermerRendu} onPhotos={quitter(onPhotos)} />
+          capturer={capturer} lireVue={lireVue} surVue={surVue} avant={vider} demarrer={rendu.demarrer} lang={lang} onPiece={setPiece} fermer={fermerRendu} />
       )}
       {toast && <div key={toast.n} className="mc-toast" role="status">{toast.texte}</div>}
     </div>

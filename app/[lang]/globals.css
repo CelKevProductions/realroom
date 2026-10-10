@@ -367,11 +367,12 @@ dialog.tuto { width: min(520px, 100% - 24px); }
 @keyframes progres { 0% { transform: scaleX(0); } 60% { transform: scaleX(1); } 100% { transform: scaleX(1); opacity: 0; } }
 
 /* ---------- atelier : maquette 3D et panneau ---------- */
-.atelier { display: grid; grid-template-columns: minmax(0, 1fr) 400px; height: calc(100svh - var(--haut-entete, var(--entete))); border-top: 1px solid var(--trait); }
+html:has(.atelier), body:has(.atelier) { overflow: hidden; width: 100%; }
+.atelier { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px); width: 100%; min-width: 0; min-height: 0; overflow: hidden; height: calc(100dvh - var(--haut-entete, var(--entete))); border-top: 1px solid var(--trait); }
 .atelier__scene { position: relative; min-height: 0; background: #EFEBE3; overflow: hidden; }
 .atelier__scene canvas { width: 100%; height: 100%; touch-action: none; }
 .atelier__scene canvas.is-deplace { cursor: grabbing !important; }
-.atelier__panneau { border-left: 1px solid var(--trait); background: var(--platre); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0; }
+.atelier__panneau { border-left: 1px solid var(--trait); background: var(--platre); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-width: 0; min-height: 0; overflow: hidden; }
 .onglets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--trait); }
 .onglets button { position: relative; display: grid; gap: 2px; justify-items: start; border: 0; background: none; padding: 14px 16px 13px; text-align: left; cursor: pointer; color: var(--gris); transition: color .2s; }
 .onglets button + button { border-left: 1px solid var(--trait); }
@@ -382,13 +383,16 @@ dialog.tuto { width: min(520px, 100% - 24px); }
 .onglets__num { font: .72rem var(--m); }
 .onglets button[aria-selected='true'] .onglets__num { color: var(--rouille); }
 .onglets__nom { font-weight: 600; font-size: .95rem; }
-.panneau__corps { overflow-y: auto; overscroll-behavior: contain; padding: 22px 20px 28px; display: grid; gap: 20px; align-content: start; }
+.panneau__corps { min-width: 0; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; padding: 22px 20px 28px; display: grid; gap: 20px; align-content: start; }
+.panneau__corps > * { min-width: 0; }
 .panneau__pied { padding: 14px 20px 16px; border-top: 1px solid var(--trait); background: var(--platre); display: grid; gap: 8px; }
 .panneau__pied:empty { display: none; }
 .panneau__intro { color: var(--graphite); font-size: .92rem; }
 
 /* commandes posées sur la scène */
 .vues { position: absolute; top: 14px; left: 14px; z-index: 3; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.camera-photo { position: absolute; top: 72px; left: 14px; z-index: 3; width: min(310px, calc(100% - 28px)); padding: 10px; border: 1px solid var(--trait); border-radius: 8px; background: var(--platre); }
+.camera-photo small { display: block; margin-top: 5px; font-size: .75rem; color: var(--graphite); }
 .segment { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--platre); border: 1px solid var(--trait); }
 .vues .btn--clair { background: var(--platre); }
 .segment button[disabled] { opacity: .4; cursor: not-allowed; }
@@ -407,10 +411,12 @@ dialog.tuto { width: min(520px, 100% - 24px); }
 .guide-scene .btn--clair { background: var(--platre); }
 .app-page__actions { display: flex; align-items: center; gap: 14px; }
 @media (max-width: 900px) {
-  .atelier { grid-template-columns: 1fr; grid-template-rows: 42svh minmax(0, 1fr); }
+  .atelier { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(140px, 40%) minmax(0, 1fr); }
   .atelier__panneau { border-left: 0; border-top: 1px solid var(--trait); grid-template-rows: auto minmax(0, 1fr) auto; }
   .aide-scene { display: none; }
   .vues { top: 10px; left: 10px; }
+  .camera-photo { top: 62px; left: 10px; padding: 6px 9px; width: min(300px, calc(100% - 20px)); }
+  .camera-photo small { display: none; }
   .guide-scene { top: 10px; right: 10px; }
   .opacite { left: 10px; bottom: 10px; }
   /* onglets sur une ligne, pied plus serré */

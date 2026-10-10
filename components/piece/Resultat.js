@@ -10,7 +10,7 @@ import Croquis from '@/components/Croquis.js';
 import AnglesRendu from './AnglesRendu.js';
 import { remplir } from '@/lib/i18n.js';
 
-export default function Resultat({ lang, t, piece, rendus, setRendus, solde, setSolde, couts, services, capturer, onPhoto, setPiece }) {
+export default function Resultat({ lang, t, piece, rendus, setRendus, solde, setSolde, couts, services, capturer,lireVue,surVue,avant,setPiece }) {
   const tp = t.piece;
   const racine = useRacine(lang);
   const images = rendus.filter(r => r.type === 'image');
@@ -18,8 +18,6 @@ export default function Resultat({ lang, t, piece, rendus, setRendus, solde, set
   // erreur affichée près du bouton qui l'a déclenchée (rendu ou visite)
   const [erreur, setErreur] = useState(null);
   const [apercu, setApercu] = useState(null);
-  const [angle,setAngle]=useState('entree');
-  const photo = (piece.photos || []).find(p => p.role === angle);
   const enCours = rendus.filter(r => r.etat === 'en_cours');
 
   // suivi des générations en cours : un tour après l'autre (jamais deux suivis du même rendu en même temps)
@@ -45,30 +43,25 @@ export default function Resultat({ lang, t, piece, rendus, setRendus, solde, set
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enCours.map(r => r.id).join()]);
 
-  async function generer(type, rendu) {
+  async function generer(type, rendu,options) {
     setErreur(null);
     const dire = texte => setErreur({ texte, de: type });
     const cout = type === 'monde' ? couts.monde : couts.rendu;
     if (solde < cout) { dire(tp.creditsManquants); return; }
     let corps = { type };
     if (type === 'image') {
-      // capture de la maquette au format de la vraie photo
-      const ratio = photo && photo.largeur && photo.hauteur ? photo.largeur / photo.hauteur : 4 / 3;
-      const largeur = ratio >= 1 ? 1536 : Math.round(1536 * ratio), hauteur = ratio >= 1 ? Math.round(1536 / ratio) : 1536;
-      const capture = capturer({ largeur, hauteur,angle });
-      if (!capture) { dire(t.erreurs.generique); return; }
-      corps.capture = capture;corps.angle=angle;
-      setApercu(capture);
+      if (!options?.capture) { dire(t.erreurs.generique); return; }
+      corps={...corps,...options};setApercu(options.capture);
     } else corps.rendu = rendu;
     const r = await api(`/api/pieces/${piece.id}/rendus`, { method: 'POST', corps });
-    if (!r.ok) { dire(r.erreur === 'credits' ? tp.creditsManquants : r.message && r.statut === 503 ? r.message : t.erreurs.generique); return; }
+    if (!r.ok) { dire(r.erreur === 'credits' ? tp.creditsManquants : r.erreur==='rendu-en-cours'?(lang==='fr'?'Une photo est déjà en cours. Attendez sa fin.':'A photo is already being generated. Wait for it to finish.'):r.message && r.statut === 503 ? r.message : t.erreurs.generique); return; }
     setSolde(s => s - cout);
-    setRendus(l => [{ id: r.id, type, angle: type === 'image' ? angle : null, etat: 'en_cours', credits: cout, resultat: null, cree_le: new Date().toISOString(), source: rendu || null }, ...l]);
+    setRendus(l => [{ id: r.id, type, angle: options?.angle||null,vue:options?.vue,ambiance:options?.ambiance,etat: 'en_cours', credits: cout, resultat: null, cree_le: new Date().toISOString(), source: rendu || null }, ...l]);
   }
 
   const finis = images.filter(r => r.etat === 'fini' && r.resultat);
   const actuel = finis.find(r => r.id === choisi) || finis[0];
-  const photoAvant = (piece.photos || []).find(p => p.role === (actuel?.angle || 'entree'));
+  const photoAvant = actuel?.reference?{url:actuel.reference,largeur:actuel.resultat?.largeur||actuel.referenceLargeur||4,hauteur:actuel.resultat?.hauteur||actuel.referenceHauteur||3}:(piece.photos || []).find(p => p.role === (actuel?.angle || 'entree'));
   const mondes = rendus.filter(r => r.type === 'monde');
   const imageEnCours = enCours.find(r => r.type === 'image');
   const cout = n => remplir(tp.coute, { n, s: n > 1 ? 's' : '' });
@@ -81,10 +74,8 @@ export default function Resultat({ lang, t, piece, rendus, setRendus, solde, set
     <>
       <div className="panneau__corps" role="tabpanel">
         <div className="bloc__tete"><h3>{tp.renduTitre}</h3><p>{tp.renduTexte}</p></div>
-        <AnglesRendu lang={lang} piece={piece} onPiece={setPiece} angle={angle} setAngle={setAngle} capturer={capturer} disabled={!!imageEnCours}/>
+        <AnglesRendu lang={lang} piece={piece} onPiece={setPiece} capturer={capturer} lireVue={lireVue} surVue={surVue} avant={avant} disabled={!!imageEnCours||!services.rendu} cout={couts.rendu} onGenerer={o=>generer('image',null,o)}/>
         {!services.rendu && <p className="avis">{tp.renduIndispo}</p>}
-        {!photo && <div className="avis"><p>{lang === 'en' ? 'Your metric plan is ready. Add a photo from this view for the final photo render; your scan will be kept.' : 'Votre plan métrique est prêt. Ajoutez une photo de cette vue pour le rendu photo final ; votre scan sera conservé.'}</p>
-          <button type="button" className="btn btn--clair btn--petit" onClick={onPhoto}>{lang === 'en' ? 'Add the render photo' : 'Ajouter la photo du rendu'}</button></div>}
         {erreur && erreur.de === 'image' && avisErreur}
         {imageEnCours && (
           <div className="rendu-attente">
@@ -130,11 +121,6 @@ export default function Resultat({ lang, t, piece, rendus, setRendus, solde, set
             {erreur && erreur.de === 'monde' && avisErreur}
           </div>
         )}
-      </div>
-      <div className="panneau__pied">
-        <button className="btn btn--plein btn--large btn--bloc" onClick={() => generer('image')} disabled={!services.rendu || !!imageEnCours || !photo}>
-          {imageEnCours ? <><span className="rouage rouage--petit" /> {tp.renduEnCours}</> : <>{tp.generer} <span className="cout">{cout(couts.rendu)}</span></>}
-        </button>
       </div>
     </>
   );

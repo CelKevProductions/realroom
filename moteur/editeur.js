@@ -15,7 +15,7 @@ import {
 } from './meubles.js';
 import './modeles/index.js';
 import { contourDe, segmentsDe, aireSignee, contientPoint, contientBoite } from '../lib/contour.js';   // modèles fidèles d'après les photos des produits
-import {vuePourAngle} from '../lib/cadrages.js';
+import {vuePourAngle,validerVue,vuePourPosition} from '../lib/cadrages.js';
 import { produitDe, estMural, estSuspendu, estPlat, estAdosse, estPosable, porteurDe, demiEmpreinte, placerAuMur, normaliserAngle } from '../lib/agencement.js';
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -482,9 +482,12 @@ export function creerEditeur(canvas, opts = {}) {
   function vuePhoto() {
     const { largeur: L, profondeur: P } = E.modele.dims;
     const v = E.modele.vue || {};
-    const px = clamp(v.x ?? 0, -L / 2 + .1, L / 2 - .1), pz = clamp(v.z ?? P / 2 - .25, -P / 2 + .1, P / 2 - .05);
+    const [px,pz] = pointCamera(v.x ?? 0,v.z ?? P/2-.25);
     return { px, py: v.y ?? 1.5, pz, tx: v.cx ?? 0, ty: v.cy ?? 1.05, tz: v.cz ?? -P / 2, fov: v.fov || 60 };
   }
+  function pointCamera(x,z){if(contientPoint(E.modele,x,z,.025))return [x,z];const v=vuePourPosition(E.modele,'entree');return [v.x,v.z];}
+  function pointDeVue(){const p=E.mode==='photo'?poseCourante():vuePhoto();return {x:p.px,y:p.py,z:p.pz,cx:p.tx,cy:p.ty,cz:p.tz,fov:p.fov};}
+  function choisirVue(v){if(!E.modele)return;E.modele.vue=validerVue(E.modele,v);vue('photo',false);}
   function poseCourante() {
     if (E.mode === 'photo') {
       const b = vuePhoto();
@@ -514,7 +517,7 @@ export function creerEditeur(canvas, opts = {}) {
     if (E.cadre) { E.cadre = null; rappel.cadre(null); poserOrbite({ ...orbiteDefaut(), theta: E.orbite.theta }); }
     const arrivee = poseCourante();
     if (!anime || !depart || reduit) { E.anim = null; appliquerPose(arrivee); demander(); rappel.vue(E.mode); return; }
-    E.anim = { depart, t0: performance.now(), duree: 1150 };
+    E.anim = { depart, t0: performance.now(), duree: 1650 };
     rappel.vue(E.mode);
     demander();
   }
@@ -542,7 +545,7 @@ export function creerEditeur(canvas, opts = {}) {
     if (!E.modele || reduit || E.mode !== 'dessus') return;
     const d = orbiteDefaut();
     poserOrbite({ ...d, theta: d.theta - 1.15, phi: .3, r: d.r * 1.75, cy: d.cy + .5 });
-    glisser(d, 2600, 'sortie');
+    glisser(d, 3400, 'douce');
     E.tween.vers.theta = d.theta;   // l'arc complet, pas le plus court chemin
   }
   // cadre un meuble : la caméra glisse jusqu'à lui, de trois quarts face, puis en fait lentement le tour
@@ -564,9 +567,9 @@ export function creerEditeur(canvas, opts = {}) {
     };
     E.cadre = id; E.auto = null;
     rappel.cadre(id);
-    glisser(vers, 1400, 'douce', () => {
+    glisser(vers, 1900, 'douce', () => {
       if (E.cadre !== id || reduit) return;
-      E.auto = mural ? { type: 'balancier', base: vers.theta, t0: performance.now() } : { type: 'tour', vitesse: .17 };
+      E.auto = mural ? { type: 'balancier', base: vers.theta, t0: performance.now() } : { type: 'tour', vitesse: .10 };
       demander();
     });
     return true;
@@ -760,7 +763,7 @@ export function creerEditeur(canvas, opts = {}) {
     pointeurs.set(e.pointerId, { x: e.clientX, y: e.clientY });
     try { canvas.setPointerCapture(e.pointerId); } catch (_) { /* rien */ }
     if (pointeurs.size === 2) { const [a, b] = [...pointeurs.values()]; geste = { type: 'pince', d: Math.hypot(a.x - b.x, a.y - b.y), r: E.orbite.r, fov: camera.fov }; return; }
-    const id = opts.lectureSeule ? null : viser(e);
+    const id = opts.lectureSeule || E.mode === 'photo' ? null : viser(e);
     if (id) {
       const it = E.items.get(id);
       const sol = pointSol(e, 0);
@@ -771,7 +774,7 @@ export function creerEditeur(canvas, opts = {}) {
   });
   canvas.addEventListener('pointermove', e => {
     if (!pointeurs.has(e.pointerId)) {
-      if (!geste && E.modele && !opts.lectureSeule && e.pointerType === 'mouse') canvas.style.cursor = viser(e) ? 'grab' : '';
+      if (!geste && E.modele && !opts.lectureSeule && e.pointerType === 'mouse') canvas.style.cursor = E.mode==='photo'?'grab':viser(e) ? 'grab' : '';
       return;
     }
     pointeurs.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -786,7 +789,7 @@ export function creerEditeur(canvas, opts = {}) {
     const dx = e.clientX - geste.x, dy = e.clientY - geste.y;
     geste.x = e.clientX; geste.y = e.clientY; geste.bouge += Math.abs(dx) + Math.abs(dy);
     if (geste.type === 'vue') {
-      if (E.mode === 'photo') { E.regard.yaw = clamp(E.regard.yaw + dx * .004, -1.2, 1.2); E.regard.pitch = clamp(E.regard.pitch + dy * .003, -.5, .5); }
+      if (E.mode === 'photo') { E.regard.yaw += dx * .003; E.regard.pitch = clamp(E.regard.pitch + dy * .0025, -.7, .7); }
       else { E.orbite.theta -= dx * .006; E.orbite.phi = clamp(E.orbite.phi - dy * .005, .12, 1.45); }
       demander();
       return;
@@ -858,13 +861,14 @@ export function creerEditeur(canvas, opts = {}) {
     if (!E.modele) return null;
     const w = o.largeur || 1536, h = o.hauteur || 1024;
     const v=o.angle&&o.angle!=='entree'?vuePourAngle(E.modele,o.angle):null;
-    const p = v?{px:v.x,py:v.y,pz:v.z,tx:v.cx,ty:v.cy,tz:v.cz,fov:v.fov}:vuePhoto();
+    const pv=o.vue?validerVue(E.modele,o.vue):null;
+    const p = pv?{px:pv.x,py:pv.y,pz:pv.z,tx:pv.cx,ty:pv.cy,tz:pv.cz,fov:pv.fov}:v?{px:v.x,py:v.y,pz:v.z,tx:v.cx,ty:v.cy,tz:v.cz,fov:v.fov}:E.mode==='photo'?poseCourante():vuePhoto();
     const cam = new THREE.PerspectiveCamera(o.fov || p.fov, w / h, .05, 200);
     cam.position.set(p.px, p.py, p.pz); cam.lookAt(p.tx, p.ty, p.tz); cam.updateMatrixWorld();
     const avant = { taille: renderer.getSize(new THREE.Vector2()), dpr: renderer.getPixelRatio() };
-    // le rendu réaliste part de la photo, prise de jour : la capture se fait toujours en lumière du jour
+    // La capture suit le choix jour/nuit, sans modifier l'ambiance de l'atelier.
     const kAmb = E.amb.k;
-    if (kAmb > 0) appliquerAmbiance(0);
+    appliquerAmbiance(o.ambiance==='nuit'?1:o.ambiance==='jour'?0:kAmb);
     aides.visible = false;
     majMurs(cam, true);
     E.plafond.visible = true;
@@ -875,7 +879,7 @@ export function creerEditeur(canvas, opts = {}) {
     const url = canvas.toDataURL('image/jpeg', o.qualite || .9);
     renderer.setPixelRatio(avant.dpr);
     renderer.setSize(avant.taille.x, avant.taille.y, false);
-    if (kAmb > 0) appliquerAmbiance(kAmb);
+    appliquerAmbiance(kAmb);
     aides.visible = true;
     E.murs.forEach(w2 => { w2.op = -1; });
     E.ombres = true;
@@ -900,6 +904,8 @@ export function creerEditeur(canvas, opts = {}) {
     majVuePhoto(v) { if (!E.modele) return; E.modele.vue = { ...(E.modele.vue || {}), ...v }; if (E.mode === 'photo') vue('photo', false); },
     selectionner: id => selectionner(id, false),
     vue,
+    choisirVue,
+    pointDeVue,
     intro,
     cadrer,
     ensemble,

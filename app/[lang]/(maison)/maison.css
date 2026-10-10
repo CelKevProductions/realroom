@@ -40,7 +40,7 @@
   -webkit-font-smoothing: antialiased;
 }
 body:has(.mc) { background: var(--expresso, #332817); }
-html:has(.mc-fixe) { overflow: hidden; }
+html:has(.mc-fixe), body:has(.mc-fixe), html:has(.mc-intro), body:has(.mc-intro) { overflow: hidden; width: 100%; }
 /* remise à zéro (spécificité d'une seule classe : les classes .mc-… définies plus bas l'emportent ;
    le catalogue RealRoom, dans un <dialog>, garde ses propres styles) */
 .mc :where(h1, h2, h3, h4, p):where(:not(dialog *)) { margin: 0; font: inherit; letter-spacing: inherit; }
@@ -187,7 +187,10 @@ html:has(.mc-intro) { overscroll-behavior: none; }
 .mc-hud__barre { height: 1px; background: currentColor; opacity: .25; position: relative; }
 .mc-hud__barre > span { position: absolute; inset: 0; background: currentColor; transform-origin: 0 50%; transform: scaleX(0); opacity: 1; will-change: transform; }
 .mc-hud__defiler { position: absolute; left: 50%; bottom: calc(var(--bas) + 70px); transform: translateX(-50%); display: grid; justify-items: center; gap: 10px; transition: opacity .6s; }
-.mc-hud__defiler i { width: 1px; height: 44px; background: currentColor; transform-origin: top; animation: mc-defile 2.2s var(--ease) infinite; opacity: .6; }
+.mc-hud__defiler svg { width: 28px; height: 34px; animation: mc-fleche 2.8s ease-in-out infinite; }
+.mc-hud__defiler:disabled { pointer-events: none; }
+@keyframes mc-fleche { 0%, 100% { transform: translateY(0); opacity: .6; } 50% { transform: translateY(9px); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .mc-hud__defiler svg { animation: none; } }
 @keyframes mc-defile { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
 /* récit : un texte par moment, posé comme une légende de plan */
 .mc-recit { position: absolute; z-index: 4; inset: 0; pointer-events: none; color: var(--encre); transition: color .8s var(--ease); }
@@ -243,16 +246,24 @@ html:has(.mc-intro) { overscroll-behavior: none; }
 .mc-guide { background: var(--papier); color: var(--encre); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
 .mc-guide__tete { display: flex; justify-content: flex-end; align-items: center; gap: 20px; padding: calc(var(--haut) + 34px) var(--pad) 0 calc(var(--pad) + 100px); min-height: 98px; }
 .mc-guide__compte { color: var(--gris); }
-.mc-guide__corps { position: relative; overflow-y: auto; overscroll-behavior: contain; padding: clamp(10px, 3vh, 40px) var(--pad) 28px; }
-.mc-etape { position: relative; z-index: 1; min-height: 100%; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 28px clamp(32px, 5vw, 90px); align-items: center; }
-.mc-guide__filigrane { position: absolute; right: -2vw; bottom: 4vh; font-family: var(--script); font-size: clamp(8rem, 26vw, 28rem); line-height: 1; color: var(--expresso); opacity: .045; transform: rotate(-8deg); pointer-events: none; white-space: nowrap; }
+.mc-guide__corps { position: relative; min-width: 0; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; padding: clamp(10px, 2vh, 28px) var(--pad) 20px; display: grid; }
+.mc-etape { position: relative; z-index: 1; min-width: 0; min-height: 0; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 28px clamp(32px, 5vw, 90px); align-items: center; }
+.mc-guide__filigrane { display: none; }
 .mc-question { display: grid; gap: 16px; align-content: center; position: relative; z-index: 1; }
 .mc-question__label { display: flex; gap: 12px; align-items: center; color: var(--gris); }
 .mc-question__label i { width: 30px; height: 1px; background: currentColor; }
 .mc-question__titre { font-size: clamp(2.8rem, 6.4vw, 6.6rem); }
 .mc-question__script { margin: -.3em 0 0 .45em; font-size: clamp(2.1rem, 3.6vw, 3.6rem); color: var(--cuivre); transform: rotate(-5deg); transform-origin: 0 50%; }
 .mc-question__texte { max-width: 30em; color: var(--gris); font-size: .9375rem; }
-.mc-reponses { position: relative; z-index: 1; display: grid; gap: 16px; align-content: center; }
+.mc-reponses { position: relative; z-index: 1; min-width: 0; display: grid; gap: 16px; align-content: center; }
+.mc-reponses > * { min-width: 0; }
+.mc-etape--photos { grid-template-columns: minmax(0, 1fr); align-content: start; gap: 24px; }
+.mc-etape--photos .mc-question { align-content: start; gap: 10px; }
+.mc-etape--photos .mc-question__titre { font-size: clamp(2.6rem, 4.8vw, 4.2rem); }
+.mc-etape--photos .mc-question__texte { max-width: 60em; }
+.mc-etape--photos .mc-reponses { width: min(100%, 1120px); justify-self: center; align-content: start; }
+.mc-etape--photos .mc-photos { width: min(100%, 640px); justify-self: center; }
+.mc-etape--photos .mc-photo-principale { aspect-ratio: auto; height: clamp(210px, 34dvh, 360px); }
 .mc-guide__pied { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 22px; align-items: center; padding: 18px var(--pad) calc(var(--bas) + 22px); border-top: 1px solid var(--trait); background: var(--papier); }
 .mc-guide__progres { position: relative; height: 1px; background: var(--trait-fort); }
 .mc-guide__progres > span { position: absolute; inset: 0; background: var(--expresso); transform-origin: 0 50%; transition: transform .9s var(--ease); }
@@ -431,6 +442,9 @@ html:has(.mc-intro) { overscroll-behavior: none; }
 .mc-station__total { font-family: var(--serif); font-size: clamp(2rem, 3.2vw, 3rem); line-height: 1; }
 .mc-station__actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .mc-commandes { position: absolute; z-index: 14; right: var(--pad); bottom: calc(var(--bas) + 28px); display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; align-items: center; max-width: 56vw; }
+.mc-commandes .mc-camera { flex-basis: 100%; margin-left: auto; width: min(100%, 340px); max-width: 340px; padding: 10px 14px; background: var(--papier); color: var(--encre); border: 1px solid var(--trait); border-radius: 10px; }
+.mc-camera small { display: block; margin-top: 6px; font-size: .75rem; }
+.mc-camera select { background: var(--papier); color: var(--encre); }
 .mc-segment { display: inline-flex; padding: 3px; border-radius: 999px; background: rgba(246, 241, 232, .82); border: 1px solid var(--trait); color: var(--encre); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 .mc-segment button { padding: .78em 1.15em; border-radius: 999px; font-family: var(--mono); font-size: .625rem; letter-spacing: .06em; text-transform: uppercase; transition: background-color .3s, color .3s; }
 .mc-segment button[aria-pressed='true'] { background: var(--encre); color: var(--papier); }
@@ -481,7 +495,7 @@ html:has(.mc-intro) { overscroll-behavior: none; }
 .mc-rendu { position: fixed; inset: 0; z-index: 60; background: rgba(23, 18, 12, .97); color: var(--creme); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; padding: calc(var(--haut) + 24px) var(--pad) calc(var(--bas) + 22px); gap: 18px; }
 .mc-rendu__tete { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .mc-rendu__titre { font-family: var(--serif); text-transform: uppercase; font-size: clamp(1.6rem, 3vw, 2.6rem); line-height: 1; }
-.mc-rendu__corps { position: relative; display: grid; justify-items: center; align-content: start; min-height: 0; overflow-y: auto; gap: 18px; padding: 2px; }
+.mc-rendu__corps { position: relative; display: grid; justify-items: center; align-content: start; min-width: 0; min-height: 0; overflow-x: hidden; overflow-y: auto; gap: 18px; padding: 2px; }
 .mc-rendu__corps > fieldset { width: min(100%, 760px); }
 .mc-rendu__image { position: relative; width: min(100%, calc((100svh - var(--haut) - var(--bas) - 240px) * var(--ratio, 1.333))); aspect-ratio: var(--ratio, 4 / 3); overflow: hidden; border-radius: 3px; background: #2A2017; }
 .mc-rendu__image > img { width: 100%; height: 100%; object-fit: cover; }
@@ -534,6 +548,8 @@ html:has(.mc-intro) { overscroll-behavior: none; }
   .mc-station__texte { font-size: .85rem; }
   .mc-station__liste { max-height: none; overflow: visible; }
   .mc-commandes { bottom: calc(46svh + 12px); right: 10px; left: 10px; max-width: none; justify-content: space-between; }
+  .mc-commandes .mc-camera { max-width: none; width: 100%; padding: 7px 10px; }
+  .mc-camera small { display: none; }
   .mc-aide { display: none; }
   .mc-piece__tete { top: calc(var(--haut) + 16px); }
   .mc-piece__menu { gap: 6px 12px; }

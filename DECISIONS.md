@@ -8,13 +8,15 @@ Sources consultées : [Merrell et al., 2011](https://graphics.stanford.edu/proje
 
 ## Capture
 
-- Trois choix principaux : photos, Scan Android, Scan Apple. L'import d'un plan est un lien séparé. Les informations secondaires et tutoriels sont repliés.
+- Quatre choix principaux : photos, Scan Android, Scan Apple et Plan de la maison. Les informations secondaires et tutoriels sont repliés. Le QR de transfert Android et le QR App Store Apple sont affichés directement à côté de leur méthode sur ordinateur ; aucun QR dans les photos.
 - Les photos donnent une géométrie plus incertaine. Le scan améliore l'échelle et le contour ; il ne garantit pas la beauté ni la fidélité de la photo IA finale. Les mentions de qualité décrivent donc la fidélité du plan.
 - Lagarsoft reste une application iOS sur appareil LiDAR compatible. Safari ne propose pas de permission RoomPlan. Le parcours Apple est application → Export → DXF · 2D floorplan → Fichiers → retour au site. Aucun compte externe ou abonnement souscrit.
 - Android utilise le vrai WebXR/ARCore dans Chrome. Polygones simples de 3 à 32 coins, concaves et obliques, sans exigence d'angles droits ; un contour croisé, plusieurs niveaux de sol, des trous ou des murs courbes exacts restent hors contrat. Une pièce n'est jamais remplacée par son rectangle englobant.
 - Le DXF réel fourni a été lu localement : 8 coins, 2 portes, environ 13,14 m². Il n'est pas copié dans le dépôt. Lecture déterministe des unités et calques ; pas de conversion IA de coordonnées métriques. Fal n'est pas nécessaire pour DXF → JSON.
 - PDF/image : choisir une page, calibrer une longueur connue, tracer une seule pièce puis ajouter les ouvertures. Aucune reconnaissance automatique des cotes n'est prétendue. PDF.js et son worker sont locaux, en version `legacy` pour les navigateurs mobiles ; document non envoyé à un tiers.
 - Le QR App Store est distinct du lien privé de transfert. Le transfert existant garde ses secrets distincts, durée de 15 minutes et confirmation sur ordinateur. Les exports Android JSON et DXF sont proposés dans l'aperçu.
+- Le téléphone ouvre un parcours compact Android ou Apple selon la plateforme. La compatibilité Android est vérifiée avec WebXR. Safari ne révèle pas le modèle matériel ni la présence de LiDAR : Lagarsoft vérifie son capteur, le site ne prétend pas déduire qu'un iPhone récent possède LiDAR.
+- Cotes manuelles : pas de saisie libre (`step="any"`), y compris avec les bornes au millimètre d'un scan. Les murs sont nommés A, B, C… sur le plan et dans les champs sans changer les IDs enregistrés.
 
 ## Mobilier et optimisation
 
@@ -28,13 +30,19 @@ Les mouvements groupent lit/chevets et suivent les supports. Les huit meilleurs 
 
 Les 20 000–60 000 itérations et la température « 2 → 0 » du protocole ne sont pas recopiées : les pénalités RealRoom ont une autre échelle et le moteur fonctionne aussi sur téléphone. Le banc complet mesuré prend environ 0,5–2,1 s par chambre sur cette machine ; ce n'est pas une garantie de temps mobile. Jusqu'à trois variantes sont proposées si elles diffèrent assez et n'aggravent aucun contrôle, avec moins de variantes lorsqu'aucune autre n'est admissible.
 
+Les candidats réservent aussi un modèle compact par usage, en plus de l'alternative économique. La démo propose deux chevets quand ils ne sont pas intégrés au lit, et du rangement si disponible. Budget, formes et contrôles de circulation peuvent toujours écarter ces ajouts. Aucune dimension ou fiche produit inventée. Le calcul de la démo passe dans un Web Worker afin de laisser l'animation et les gestes disponibles ; les routes réelles calculent déjà sur le serveur.
+
 ## Style, budget et rendu
 
 Les onze styles, patrons et références éditoriales existants sont conservés. L'index OpenCLIP réellement calculé couvre 278/341 produits ; aucun score n'est inventé pour les autres. Les inspirations influencent les préférences sémantiques et le choix des produits, jamais les dimensions. Cela suit la demande explicite de mieux adapter et étiqueter les styles, malgré la phrase du protocole qui les réserve au seul rendu. Aucun scraping Pinterest ni copie de photos protégées.
 
 Le budget se saisit librement, en euros et centimes. Le sac à dos existant garde quantités, usages et alternatives ; les pièces conservées ne disparaissent pas pour masquer un dépassement.
 
-Quatre vues : entrée, fond, gauche, droite. Aperçu 3D approximatif et photo du même rôle, sans déduire une calibration exacte. Une référence absente et un angle invalide sont refusés avant débit. Ouvrir la fenêtre Maison Corleone ne déclenche plus une génération ; le client clique après le choix de vue. L'angle est conservé dans les métadonnées JSON du rendu, sans changement de schéma, et l'avant/après retrouve la photo correspondante. Modèles, coût unitaire et suivi/remboursement existants sont conservés.
+Vue Photo : quatre côtés et quatre coins, y compris dans une pièce concave, et regard libre sur 360°. Le rendu utilise l'instantané métrique de la caméra choisie, jamais un retour forcé à l'entrée. Étape 1 : cadrage et validation. Étape 2 : dépôt/prise de photo du même angle, lumière jour/nuit et clic de génération. Continuer sans photo exige un choix explicite et affiche une perte possible de réalisme. Pas de redirection vers la page de relevé.
+
+Les autres angles de la vraie pièce complètent matériaux et détails. La consigne fixe la caméra et le mobilier à partir de la capture 3D ; les références sont plafonnées à dix images. Une photo de référence dédiée est indépendante des quotas de relevé/inspiration. Son instantané privé reste accessible dans l'historique après un remplacement, et est supprimé avec la pièce. Une seule génération photo active par compte : un contrôle de révision dans le débit atomique protège les demandes concurrentes. Modèles, coût unitaire et remboursement restent inchangés ; `num_images=1` et `limit_generations=true` demandent une seule sortie au fournisseur.
+
+Les écrans fixes restent dans le viewport, avec défilement interne uniquement lorsque le contenu le nécessite. Capture centrée sous le titre et les méthodes ; blocs tutoriel 30 s et « La pièce au quotidien » retirés de la pièce meublée. La flèche de visite est cliquable, les transitions sont ralenties, et le rectangle filaire extérieur du chargement est supprimé.
 
 ## Contrôle et repli
 

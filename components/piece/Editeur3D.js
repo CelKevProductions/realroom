@@ -17,7 +17,7 @@ export default function Editeur3D({ ref, modele, items, selection, vue, surSelec
   const rappels = useRef({});
   rappels.current = { surSelection, surDeplacement, surCadre };
   const [panne, setPanne] = useState(false);
-  const cle = JSON.stringify(modele && [modele.dims, modele.murs, modele.sol, modele.plafond]);
+  const cle = JSON.stringify(modele && [modele.dims, modele.contour, modele.murs, modele.sol, modele.plafond]);
 
   useEffect(() => {
     let vivant = true;
@@ -55,6 +55,8 @@ export default function Editeur3D({ ref, modele, items, selection, vue, surSelec
 
   useImperativeHandle(ref, () => ({
     capture: o => (ed.current ? ed.current.capture(o) : null),
+    pointDeVue: () => ed.current?.pointDeVue()||null,
+    choisirVue: v => ed.current?.choisirVue(v),
     projeter: id => (ed.current ? ed.current.projeter(id) : null),
     tourner: (id, d) => (ed.current ? ed.current.tourner(id, d) : null),
     cadrer: id => (ed.current ? ed.current.cadrer(id) : false),

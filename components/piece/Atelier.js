@@ -6,7 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { api } from '@/components/api.js';
 import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
-import Tutoriel from './Tutoriel.js';
+import CameraPhoto from './CameraPhoto.js';
 import Confort from '@/components/piece/Confort.js';
 import Inspirations from '@/components/piece/Inspirations.js';
 import Resultat from '@/components/piece/Resultat.js';
@@ -55,6 +55,8 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const sauvegarde = useRef(null);
   const aCadrer = useRef(null);
   const premierOnglet = useRef(true);
+  const lireVue = useCallback(() => editeur.current?.pointDeVue(), []);
+  const surVue = useCallback(v => { setSelection(null); setOpacite(0); editeur.current?.choisirVue(v); setVue('photo'); }, []);
 
   useEffect(() => { chargerCatalogue().then(c => { setProduits(c.produits); setLibelles(c.libelles || {}); }); }, []);
   useEffect(() => { setItems(piece.agencement || []); }, [piece.agencement]);
@@ -80,6 +82,11 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [piece.id]);
   const modifier = useCallback(f => setItems(l => { const n = f(l); enregistrer(n); return n; }), [enregistrer]);
+  const vider = useCallback(async () => {
+    clearTimeout(sauvegarde.current);
+    const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { agencement: items } });
+    if (!r.ok) throw new Error('sauvegarde');
+  }, [piece.id, items]);
   async function ouvrirPhotos() {
     clearTimeout(sauvegarde.current);
     const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { agencement: items } });
@@ -248,7 +255,6 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const amenager = (
     <>
       <div className="panneau__corps" role="tabpanel">
-        <Tutoriel lang={lang}/>
         <Confort modele={piece.modele} items={items} produits={produits} lang={lang} onCorriger={corrigerPlan} />
         <fieldset className="champ champ--groupe">
           <legend>{tp.modeTitre}</legend>
@@ -313,7 +319,6 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const meubles = (
     <>
       <div className="panneau__corps" role="tabpanel">
-        <Confort modele={piece.modele} items={items} produits={produits} lang={lang} garder={prop?.garder} mode={prop?.mode} envies={prop?.envies} preferences={prop?.preferences} onAppliquer={liste => modifier(() => liste)} onCorriger={corrigerPlan} />
         {prop && prop.concept && (
           <div className="concept">
             <b>{tp.concept}</b>
@@ -354,10 +359,11 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         {vue === 'photo' && photo && <div className="calque-photo" style={{ backgroundImage: `url(${photo.url})`, opacity: opacite }} />}
         <div className="vues">
           <div className="segment" role="group">
-            {['dessus', 'photo'].map(v => <button key={v} aria-pressed={vue === v} onClick={() => setVue(v)}>{tp.vues[v]}</button>)}
+            {['dessus', 'photo'].map(v => <button key={v} aria-pressed={vue === v} onClick={() => {setSelection(null);setVue(v);}}>{tp.vues[v]}</button>)}
           </div>
           {cadre && vue === 'dessus' && <button className="btn btn--clair btn--petit" onClick={() => { setSelection(null); editeur.current && editeur.current.ensemble(); }}>{tp.ensemble}</button>}
         </div>
+        {vue === 'photo' && <div className="camera-photo"><CameraPhoto modele={piece.modele} lang={lang} surChoisir={surVue}/><small>{lang==='fr'?'Glissez sur la pièce pour regarder autour.':'Drag on the room to look around.'}</small></div>}
         {vue === 'photo' && photo && (
           <label className="opacite">{tp.comparer}<input type="range" min="0" max="1" step=".05" value={opacite} onChange={e => setOpacite(+e.target.value)} /></label>
         )}
@@ -386,7 +392,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         {onglet === 'meubles' && meubles}
         {onglet === 'resultat' && (
           <Resultat lang={lang} t={t} piece={{ ...piece, agencement: items }} rendus={rendus} setRendus={setRendus} solde={solde} setSolde={setSolde} couts={couts} services={services}
-            capturer={o => editeur.current && editeur.current.capture(o)} onPhoto={ouvrirPhotos} setPiece={setPiece} />
+            capturer={o => editeur.current && editeur.current.capture(o)} lireVue={lireVue} surVue={surVue} avant={vider} setPiece={setPiece} />
         )}
       </aside>
 

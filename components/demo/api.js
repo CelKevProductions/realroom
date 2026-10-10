@@ -3,16 +3,17 @@
 // par le même solveur ; le « rendu » est la vue de la maquette, la visite 3D est simulée.
 import { lire, ecrire, remettreAZero, piece as pieceDe, projet as projetDe, publique, renduPublic, rendusDe, listeProjets, projetComplet, id as nouvelId } from '@/components/demo/magasin.js';
 import { chargerCatalogue } from '@/components/catalogueClient.js';
-import { simulerAnalyse, simulerAmenagement } from '@/lib/simulation.js';
-import { pieceDepuisAnalyse, preparerAmenagement, appliquerProposition } from '@/lib/amenagement.js';
-import { choisirCandidats } from '@/lib/selection.js';
-import { versClaude, dimsValides } from '@/lib/piece.js';
+import { simulerAnalyse } from '@/lib/simulation.js';
+import { pieceDepuisAnalyse } from '@/lib/amenagement.js';
+import { dimsValides } from '@/lib/piece.js';
+import { moteurGuideActif } from '@/lib/moteur-guide.js';
+import { amenagerEnArrierePlan } from './calcul.js';
 import { verifier } from '@/lib/agencement.js';
 import { corrigerPiece, mesuresConfirmees } from '@/lib/geometrie.js';
 import { CREDITS, PACKS, FONCTIONS, ROLES_PHOTO, LIMITES } from '@/lib/config.js';
 import { placePhoto } from '@/lib/references.js';
 import { champsDepuisScan, ErreurScan } from '@/lib/scan.js';
-import { ANGLES_RENDU } from '@/lib/cadrages.js';
+import {optionsRendu} from '@/lib/rendu-options.js';
 
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const maintenant = () => new Date().toISOString();
@@ -197,11 +198,7 @@ async function amenager(p, b, langue) {
   if (!p.modele) return non('pas-de-modele', 409);
   await pause(1600);
   const produits = (await chargerCatalogue()).produits;
-  const prep = preparerAmenagement(p.agencement || [], b);
-  // démo : un choix plus large que pour Claude, pour que la proposition simulée trouve des pièces qui tiennent
-  const cands = choisirCandidats(produits, { dims: p.modele.dims, fonction: p.fonction, envies: prep.envies, budget: prep.budget, parFamille: 30 });
-  const { proposition } = simulerAmenagement({ piece: versClaude(p.modele, prep.base, produits), mode: prep.mode, aRemplacer: prep.aRemplacer, candidats: cands, envies: prep.envies, garder: prep.garder, langue, demo: true });
-  const r = appliquerProposition({ modele: p.modele, prep, proposition, produits, candidats: cands });
+  const r = await amenagerEnArrierePlan({ piece: p, choix: { ...b, moteurGuide: moteurGuideActif(b.moteurGuide) }, langue, produits });
   ecrire(() => { p.agencement = r.agencement; p.proposition = r.proposition; toucher(p); });
   return ok({ piece: publique(p) });
 }
@@ -211,17 +208,18 @@ async function generer(p, b) {
   const monde = b.type === 'monde';
   const cout = monde ? CREDITS.monde : CREDITS.rendu;
   let source = null;
+  let options=null;
   if (monde) {
     source = lire().rendus.find(r => r.id === b.rendu && r.piece_id === p.id && r.type === 'image' && r.etat === 'fini');
     if (!source) return non('rendu', 400);
   } else {
     if (!/^data:image\/jpeg;base64,/.test(String(b.capture || ''))) return non('capture', 400);
-    if (b.angle && !ANGLES_RENDU.includes(b.angle)) return non('angle', 400);
-    if (!p.photos.some(f => f.role === (b.angle || 'entree'))) return non('photo-entree', 400);
+    try{options=optionsRendu(p,b);}catch(e){return non(e.code,400);}
+    if(lire().rendus.some(r=>r.type==='image'&&r.etat==='en_cours'))return non('rendu-en-cours',409);
   }
   if (lire().credits < cout) return non('credits', 402);
   const r = {
-    id: nouvelId('g_'), piece_id: p.id, type: monde ? 'monde' : 'image', angle: monde ? null : b.angle || 'entree', etat: 'en_cours', credits: cout, source: source ? source.id : null,
+    id: nouvelId('g_'), piece_id: p.id, type: monde ? 'monde' : 'image', angle: monde ? null : options.angle,vue:options?.vue,ambiance:options?.ambiance,reference:options?.photo?.url||null,referenceLargeur:options?.photo?.largeur,referenceHauteur:options?.photo?.hauteur, etat: 'en_cours', credits: cout, source: source ? source.id : null,
     capture: monde ? null : b.capture, resultat: null, erreur: null, cree_le: maintenant(), fini_le: null, pret_a: Date.now() + (monde ? 5000 : 3000)
   };
   ecrire(e => {

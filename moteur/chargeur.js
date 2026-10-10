@@ -38,7 +38,7 @@ export function creerChargeur(canvas, opts = {}) {
   ], .9));
   // meubles en volumes filaires, dans l'ordre où ils apparaissent
   const boites = [
-    [-1.75, .15, .9, .78, 2.2, Math.PI / 2], [-.75, .15, 1.9, .02, 2.4, Math.PI / 2], [-.75, .15, .45, .45, .45, 0],
+    [-1, .15, .9, .78, 2.2, Math.PI / 2], [-.75, .15, .45, .45, .45, 0],
     [.45, -.75, .85, .8, .85, -2.1], [.6, .95, .8, .78, .8, -1], [-1.95, -1.45, .4, 1.6, .4, 0], [1.4, -P / 2 + .25, 1.5, .85, .4, 0]
   ].map(([x, z, w, h, d, r]) => {
     const g = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d)), new THREE.LineBasicMaterial({ color: '#F1E6D3', transparent: true, opacity: 0 }));
@@ -49,22 +49,24 @@ export function creerChargeur(canvas, opts = {}) {
   });
   // plan de lecture qui balaie la pièce (lecture des photos)
   const mScan = new THREE.MeshBasicMaterial({ color: laiton, transparent: true, opacity: .12, side: THREE.DoubleSide, depthWrite: false });
-  const scan = new THREE.Mesh(new THREE.PlaneGeometry(L * 1.06, H * 1.1), mScan);
+  const scan = new THREE.Mesh(new THREE.PlaneGeometry(L, H), mScan);
   scan.position.y = H / 2;
   piece.add(scan);
-  const bordScan = ligne([[-L * .53, 0, 0], [L * .53, 0, 0]], .9);
+  const bordScan = ligne([[-L / 2, 0, 0], [L / 2, 0, 0]], .9);
   piece.add(bordScan);
 
   const E = { q: 0, raf: 0, actif: true, t: 0 };
+  const debut = performance.now();
+  const reduit = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   function avancer(q) { E.q = clamp(q, 0, 1); }
   function tick(t) {
     E.raf = 0;
     if (!E.actif) return;
-    const s = t / 1000;
-    piece.rotation.y = -.7 + s * .18;
+    const s = (t - debut) / 1000;
+    piece.rotation.y = -.7 + (reduit ? 0 : s * .09);
     // le plan de lecture va et vient tant que les photos sont lues (première moitié)
     const lecture = 1 - clamp((E.q - .4) / .15, 0, 1);
-    const z = Math.sin(s * 1.1) * P * .48;
+    const z = Math.sin(s * .65) * P * .48;
     scan.position.z = z; bordScan.position.set(0, .002, z);
     mScan.opacity = .12 * lecture; bordScan.material.opacity = .9 * lecture;
     scan.visible = bordScan.visible = lecture > .01;

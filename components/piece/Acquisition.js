@@ -9,10 +9,11 @@ import Tutoriel from './Tutoriel.js';
 import ImportPlan from './ImportPlan.js';
 import PlanTrace from './PlanTrace.js';
 import {APP_LAGARSOFT, exporterDXF} from '@/lib/plans.js';
+import {appareilCapture} from '@/lib/appareils.js';
 
 const textes = {
   fr: { titre: 'Comment relever votre pièce ?', intro: 'Un scan apporte une échelle métrique. Le plan et les éléments détectés restent à vérifier.',
-    photos: 'Téléverser des photos', android: 'Scan Android', apple: 'Scan Apple',
+    photos: 'Téléverser des photos', android: 'Scan Android', apple: 'Scan Apple', planMaison: 'Plan de la maison',
     androidIntro: 'Dans Chrome sur un Android compatible ARCore, pointez les coins au sol dans l’ordre en faisant le tour de la pièce (3 à 32 coins, y compris les renfoncements). Terminez après le dernier coin, sans repointer le premier.',
     androidLimite: 'Ce relevé mesure le contour. Il ne reconnaît ni les meubles ni les portes : ajoutez-les ensuite dans le plan.',
     indisponible: 'AR indisponible ici. Utilisez Chrome sur un Android compatible, avec Google Play Services for AR et une connexion HTTPS, ou importez un relevé.',
@@ -24,7 +25,7 @@ const textes = {
     apercu: 'Vérifier avant d’importer', utiliser: 'Utiliser ce plan', fermer: 'Annuler', attente: 'Enregistrement…',
     remplacement: 'Remplacer le plan et l’aménagement actuels. Les photos et les rendus restent conservés.',
     mobilier: 'meuble(s) détecté(s)', ouvertures: 'ouverture(s)', plan: 'Aperçu du plan métrique',
-    courant: 'Relevé métrique enregistré — vérifiez le plan avant d’aménager.', rendu: 'La photo d’entrée reste nécessaire uniquement pour votre rendu photo final.',
+    courant: 'Relevé métrique enregistré — vérifiez le plan avant d’aménager.',
     coin: 'Coin', instruction: 'Visez le sol dans le coin, puis validez le point. Restez au même niveau de sol.',
     recherche: 'Déplacez doucement le téléphone jusqu’à voir la mire au sol.', valider: 'Valider ce coin', retour: 'Annuler le dernier coin', terminer: 'Terminer et vérifier le plan',
     erreur: 'Le relevé n’a pas pu être enregistré. Réessayez.',
@@ -38,7 +39,7 @@ const textes = {
       'ar-refuse': 'La session AR n’a pas démarré. Vérifiez la compatibilité et autorisez la caméra si vous souhaitez scanner.',
       'trop-gros': 'Le fichier dépasse 5 Mo. Exportez le JSON d’une seule pièce, sans images ni maillage.', 'limite-mc': 'Le nombre de relevés inclus dans votre compte Maison Corleone est atteint.' } },
   en: { titre: 'How would you like to survey your room?', intro: 'A scan provides metric scale. Check the plan and detected elements before use.',
-    photos: 'Upload photos', android: 'Scan Android', apple: 'Scan Apple',
+    photos: 'Upload photos', android: 'Scan Android', apple: 'Scan Apple', planMaison: 'House floor plan',
     androidIntro: 'In Chrome on an ARCore-compatible Android, mark the floor corners in order around the room (3–32 corners, including recesses). Finish after the last corner without repeating the first.',
     androidLimite: 'This survey measures the outline. It does not recognise furniture or openings: add them in the room plan.',
     indisponible: 'AR unavailable here. Use Chrome on a compatible Android with Google Play Services for AR and HTTPS, or import a survey.',
@@ -49,7 +50,7 @@ const textes = {
     importer: 'Import a metric survey', prive: 'Only dimensions and survey elements are saved. No AR video is uploaded.',
     apercu: 'Check before importing', utiliser: 'Use this plan', fermer: 'Cancel', attente: 'Saving…',
     remplacement: 'Replace the current plan and layout. Photos and renders are kept.', mobilier: 'detected item(s)', ouvertures: 'opening(s)', plan: 'Metric room plan preview',
-    courant: 'Metric survey saved — check your plan before furnishing.', rendu: 'The entrance photo is only needed for the final photo render.',
+    courant: 'Metric survey saved — check your plan before furnishing.',
     coin: 'Corner', instruction: 'Aim at the floor corner and confirm. Keep all points on the same floor level.',
     recherche: 'Move your phone slowly until the floor reticle appears.', valider: 'Confirm this corner', retour: 'Undo last corner', terminer: 'Finish and check plan',
     erreur: 'The survey could not be saved. Please try again.', erreurs: {
@@ -67,6 +68,7 @@ const textes = {
 export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr', onOccupe, onImport, onMode, envoyerScan, mobileSeul=false, modeInitial='photos' }) {
   const t = textes[lang] || textes.fr;
   const [mode, setMode] = useState(modeInitial), [compatible, setCompatible] = useState(null);
+  const [appareil,setAppareil]=useState('ordinateur'),[autresModes,setAutresModes]=useState(false);
   const [hauteur, setHauteur] = useState(''), [erreur, setErreur] = useState('');
   const [apercu, setApercu] = useState(null), [remplacer, setRemplacer] = useState(false), [attente, setAttente] = useState(false);
   const [appQR,setAppQR]=useState(null);
@@ -81,7 +83,8 @@ export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr'
   }, [apercu, actif]);
   useEffect(() => {
     vivant.current = true;
-    if(mobileSeul && /iPhone|iPad|iPod/.test(navigator.userAgent)) setMode('apple');
+    const a=appareilCapture(navigator);setAppareil(a);
+    if(mobileSeul&&a!=='ordinateur'){setMode(a);onMode?.(a);}
     const root = racineAR.current, prevenir = e => e.preventDefault();
     root.addEventListener('beforexrselect', prevenir);
     if (!isSecureContext || !navigator.xr) setCompatible(false);
@@ -153,33 +156,41 @@ export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr'
     } catch (e) { if (vivant.current) setErreur(message(e)); }
     finally { if (vivant.current) setAttente(false); signaler(false); }
   }
-  return <section className={s.acquisition} aria-label={t.titre}>
+  const surTelephone=appareil!=='ordinateur';
+  return <section className={`${s.acquisition}${mobileSeul?' '+s.mobile:''}`} aria-label={t.titre}>
     <p className={s.etape}>{lang==='fr'?'1 · Relever la pièce → 2 · Vérifier le plan → 3 · Aménager':'1 · Capture room → 2 · Check plan → 3 · Furnish'}</p>
     <h2>{t.titre}</h2>
     {piece?.modele?.capture && <p className={s.succes} role="status">{t.courant}</p>}
-    <div className={s.modes} role="group" aria-label={t.titre}>
-      {['photos', 'android', 'apple'].map(m => <button type="button" key={m} aria-pressed={mode === m} disabled={actif || attente} onClick={() => changerMode(m)}><strong>{t[m]}</strong><small>{lang==='fr'?(m==='photos'?'Fidélité du plan plus faible · cotes estimées':m==='android'?'Meilleure fidélité · coins mesurés':'Meilleure fidélité · DXF métrique'):(m==='photos'?'Lower plan fidelity · estimated dimensions':m==='android'?'Higher fidelity · measured corners':'Higher fidelity · metric DXF')}</small></button>)}
-    </div>
+    {(!mobileSeul||autresModes)&&<div className={s.modes} role="group" aria-label={t.titre}>
+      {['photos', 'android', 'apple','plan'].map(m => <button type="button" key={m} aria-pressed={mode === m} disabled={actif || attente} onClick={() => changerMode(m)}><strong>{t[m==='plan'?'planMaison':m]}</strong><small>{lang==='fr'?(m==='photos'?'Fidélité du plan plus faible · cotes estimées':m==='android'?'Meilleure fidélité · coins mesurés':m==='apple'?'Meilleure fidélité · DXF métrique':'DXF, PDF ou image · échelle vérifiée'):(m==='photos'?'Lower plan fidelity · estimated dimensions':m==='android'?'Higher fidelity · measured corners':m==='apple'?'Higher fidelity · metric DXF':'DXF, PDF or image · verified scale')}</small></button>)}
+    </div>}
     <p className={s.note}>{lang==='fr'?'Un scan améliore la géométrie. Le rendu photo final dépend aussi de la photo et de l’IA.':'A scan improves geometry. The final photo also depends on its reference and AI.'}</p>
-    {!mobileSeul && <TransfertScan lang={lang} onScan={scan=>{try{preparer(scan);const m=scan.source==='android-arcore-webxr'?'android':scan.source==='plan-dessine'?'plan':'apple';setMode(m);onMode?.(m);}catch(e){setErreur(message(e));}}}/>}
-    <button type="button" className={s.lien} disabled={actif||attente} onClick={()=>changerMode('plan')}>{lang==='fr'?'J’ai déjà un plan de la maison · DXF, PDF ou image':'I already have a floor plan · DXF, PDF or image'}</button>
+    <div className={!surTelephone&&['android','apple'].includes(mode)?s.contenu:undefined}>
+    <div>
     {mode==='photos'&&<Tutoriel lang={lang} mode="parcours"/>}
     {mode==='plan'&&<div><h3>{lang==='fr'?'Choisir une pièce dans mon plan':'Choose a room in my floor plan'}</h3><ImportPlan lang={lang} disabled={attente} onScan={preparer}/><details><summary>{lang==='fr'?'Mon plan est un PDF ou une image':'My plan is a PDF or image'}</summary><PlanTrace lang={lang} disabled={attente} onScan={preparer}/></details></div>}
     {mode === 'android' && <div className={s.options}>
-      <p>{t.androidIntro}</p><Tutoriel lang={lang} mode="android"/>
-      <label className={s.champ}><span>{t.hauteur}</span><input type="number" min="1.9" max="8" step=".01" value={hauteur} placeholder="2.50" onChange={e => setHauteur(e.target.value)} /></label>
+      {surTelephone&&<h3>{lang==='fr'?'Scanner ma pièce':'Scan my room'}</h3>}
+      <p>{t.androidIntro}</p>
+      <label className={s.champ}><span>{t.hauteur}</span><input type="number" inputMode="decimal" min="1.9" max="8" step="any" value={hauteur} placeholder="2.50" onChange={e => setHauteur(e.target.value)} /></label>
       <details><summary>{lang==='fr'?'Ce que mesure le scan':'What the scan measures'}</summary><p>{t.androidLimite}</p><small>{t.hauteurNote}</small></details>
-      <button type="button" className={s.plein} disabled={!compatible || actif || attente} onClick={demarrer}>{t.commencer}</button>
+      <button type="button" className={s.plein} disabled={!compatible || actif || attente} onClick={demarrer}>{lang==='fr'?'Scanner ma pièce':'Scan my room'}</button>
       {compatible !== true && <p className={s.note}>{compatible == null ? t.verification : t.indisponible}</p>}
+      <Tutoriel lang={lang} mode="android"/>
     </div>}
     {mode === 'apple' && <div className={s.options}>
       <p>{t.appleIntro}</p>
-      <a className={s.plein} href={APP_LAGARSOFT} target="_blank" rel="noopener noreferrer">{lang==='fr'?'Installer Lagarsoft · App Store':'Install Lagarsoft · App Store'}</a>
-      {appQR&&<details><summary>{lang==='fr'?'Installer sur mon iPhone · QR App Store':'Install on my iPhone · App Store QR'}</summary><img src={appQR.qr} width="224" height="224" alt={lang==='fr'?'QR code App Store Lagarsoft':'Lagarsoft App Store QR code'}/></details>}
+      <a className={s.plein} href={APP_LAGARSOFT} target="_blank" rel="noopener noreferrer">{surTelephone?(lang==='fr'?'Scanner avec Lagarsoft · App Store':'Scan with Lagarsoft · App Store'):(lang==='fr'?'Lagarsoft · App Store':'Lagarsoft · App Store')}</a>
+      <p className={s.note}>{lang==='fr'?'iPhone Pro/Pro Max avec LiDAR (12 Pro ou plus récent), ou iPad Pro avec LiDAR. L’application vérifie la compatibilité du capteur.':'LiDAR-equipped iPhone Pro/Pro Max (12 Pro or newer), or LiDAR iPad Pro. The app checks sensor compatibility.'}</p>
       <Tutoriel lang={lang} mode="apple"/>
       <ImportPlan lang={lang} disabled={attente} onScan={preparer}/>
       <details><summary>{lang==='fr'?'Compatibilité Apple':'Apple compatibility'}</summary><p>{t.appleNote}</p></details>
     </div>}
+    </div>
+    {!mobileSeul&&!surTelephone&&mode==='android'&&<TransfertScan automatique lang={lang} onScan={scan=>{try{preparer(scan);}catch(e){setErreur(message(e));}}}/>}
+    {!surTelephone&&mode==='apple'&&<aside className={s.qr}><h3>{lang==='fr'?'Ouvrez Lagarsoft sur iPhone':'Open Lagarsoft on iPhone'}</h3>{appQR?<img src={appQR.qr} width="224" height="224" alt={lang==='fr'?'QR code App Store Lagarsoft':'Lagarsoft App Store QR code'}/>:<p role="status">{lang==='fr'?'Préparation du QR…':'Preparing QR…'}</p>}<p>{lang==='fr'?'Scannez, exportez en DXF puis déposez le fichier ici.':'Scan, export as DXF, then upload the file here.'}</p><a href={APP_LAGARSOFT} target="_blank" rel="noopener noreferrer">App Store ↗</a></aside>}
+    </div>
+    {mobileSeul&&<button type="button" className={s.autreMode} disabled={actif||attente} onClick={()=>setAutresModes(v=>!v)}>{lang==='fr'?'Choisir une autre méthode':'Choose another method'}</button>}
     {(mode !== 'photos' || mobileSeul) && <details><summary>{lang==='fr'?'Importer un relevé JSON existant':'Import an existing JSON survey'}</summary><label className={s.importer}><span>{t.importer}</span><input type="file" accept="application/json,.json,.realroom" aria-label={t.importer} disabled={actif || attente} onChange={e => { importer(e.target.files[0]); e.target.value = ''; }} /></label><p className={s.note}>{t.prive}</p></details>}
     {apercu && <div className={s.apercu}>
       <h3 ref={titreApercu} tabIndex={-1}>{t.apercu}</h3><p>{apercu.scan.source === 'apple-roomplan' ? 'Apple RoomPlan' : apercu.scan.source === 'android-arcore-webxr' ? 'Scan Android' : lang==='fr'?'Plan importé':'Imported plan'} · {apercu.agencement.length} {t.mobilier} · {apercu.modele.capture.nbOuvertures} {t.ouvertures}</p>

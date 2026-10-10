@@ -58,3 +58,15 @@ test('un crédit Stripe ne compte qu’une fois', async () => {
   assert.equal(await crediter('u_a', 10, 'achat', 'stripe:cs_test_1'), false);
   assert.equal(await solde('u_a'), 10);
 });
+
+test('deux demandes de photo depuis la même révision ne débitent qu’une fois', async () => {
+  await sql("INSERT INTO utilisateurs (id,email,credits) VALUES ('u_photo','photo@exemple.fr',5)");
+  await sql("INSERT INTO projets (id,utilisateur_id,nom) VALUES ('p_photo','u_photo','Photo')");
+  await sql("INSERT INTO pieces (id,projet_id,utilisateur_id,nom) VALUES ('r_photo','p_photo','u_photo','Pièce')");
+  const {revision}=await une("SELECT xmin::text AS revision FROM utilisateurs WHERE id='u_photo'");
+  const resultats=await Promise.all(['g_photo_a','g_photo_b'].map(rid=>debiterGeneration({uid:'u_photo',n:1,motif:'rendu',rid,pieceId:'r_photo',type:'image',revision})));
+  assert.equal(resultats.filter(Boolean).length,1);
+  assert.equal(await solde('u_photo'),4);
+  assert.equal((await une("SELECT count(*)::int AS n FROM rendus WHERE utilisateur_id='u_photo'")).n,1);
+  assert.equal((await une("SELECT count(*)::int AS n FROM mouvements WHERE utilisateur_id='u_photo'")).n,1);
+});
