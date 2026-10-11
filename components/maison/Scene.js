@@ -8,6 +8,7 @@ import { api } from '@/components/api.js';
 import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
 import CameraPhoto from '@/components/piece/CameraPhoto.js';
+import PlanVie from '@/components/piece/PlanVie.js';
 import { texte as texteRealRoom, prix } from '@/lib/i18n.js';
 import { estMural, estSuspendu, estAdosse, placerAuMur, demiEmpreinte, resoudre, ANGLES } from '@/lib/agencement.js';
 import Marque from '@/components/maison/Embleme.js';
@@ -328,6 +329,7 @@ export default function Scene({ t, lang, demo, piece: initiale, choix, rendus: r
         <h1 className="mc-station__titre mc-display">{remplir(ts.titre, { piece: t.fonctions[piece.fonction] || piece.nom })}</h1>
         <p className="mc-station__script mc-script">{ts.script}</p>
         <p className="mc-station__texte">{(prop && prop.concept) || ts.concept}</p>
+        <PlanVie proposition={prop} langue={lang} />
         {nouveaux.length > 0 ? (
           <ol className="mc-station__liste">
             {nouveaux.map((it, i) => {

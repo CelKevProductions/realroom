@@ -459,6 +459,12 @@ html:has(.atelier), body:has(.atelier) { overflow: hidden; width: 100%; }
 .concept .concept__sous { font: 600 .82rem/1.3 var(--d); margin-top: 4px; }
 .concept p { color: var(--graphite); font-size: .92rem; }
 .concept ul { margin: 0; padding-left: 18px; color: var(--graphite); font-size: .88rem; display: grid; gap: 4px; }
+.plan-vie { min-width: 0; font-size: .82rem; line-height: 1.5; }
+.plan-vie__zones { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+.plan-vie__zones span { border: 1px solid currentColor; border-radius: 20px; padding: 3px 10px; opacity: .8; }
+.plan-vie__details { margin-top: 8px; max-width: 31em; }
+.plan-vie__details summary { cursor: pointer; font-size: .82rem; }
+.plan-vie__details p { margin-top: 8px; overflow-wrap: anywhere; }
 .corriger summary { cursor: pointer; font-size: .875rem; color: var(--graphite); list-style: none; }
 .corriger summary::-webkit-details-marker { display: none; }
 .corriger summary::before { content: '+'; display: inline-block; width: 1em; font-family: var(--m); }

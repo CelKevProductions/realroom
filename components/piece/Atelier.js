@@ -8,6 +8,7 @@ import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
 import CameraPhoto from './CameraPhoto.js';
 import Confort from '@/components/piece/Confort.js';
+import PlanVie from '@/components/piece/PlanVie.js';
 import Inspirations from '@/components/piece/Inspirations.js';
 import Resultat from '@/components/piece/Resultat.js';
 import Tuto from '@/components/Tuto.js';
@@ -337,6 +338,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
           <div className="concept">
             <b>{tp.concept}{prop.moteur?.type === 'ia' ? ' · ' + t.demo.ia : ''}</b>
             <p>{prop.concept}</p>
+            <PlanVie proposition={prop} langue={lang} />
             {prop.conseils && prop.conseils.length > 0 && <><b className="concept__sous">{tp.conseils}</b><ul>{prop.conseils.map(c => <li key={c}>{c}</li>)}</ul></>}
             {prop.alertes && prop.alertes.length > 0 && <><b className="concept__sous">{tp.alertes}</b><ul>{prop.alertes.map(c => <li key={c}>{c}</li>)}</ul></>}
           </div>

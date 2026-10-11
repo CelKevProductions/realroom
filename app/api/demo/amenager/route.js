@@ -43,7 +43,7 @@ export const POST = route(async request => {
     console.error('Aménagement IA démo indisponible', e?.code || 'modele');
     throw new ErreurHTTP(502, 'amenagement-ia');
   }
-  const resultat = appliquerProposition({ modele: p.modele, prep, proposition: r.proposition, produits: PRODUITS, candidats: cands });
+  const resultat = appliquerProposition({ modele: p.modele, fonction: p.fonction, prep, proposition: r.proposition, produits: PRODUITS, candidats: cands });
   resultat.proposition.moteur = { type: 'ia', modele: r.usage?.modele || MODELES.claude };
   return json(resultat);
 });

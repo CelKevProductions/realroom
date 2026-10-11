@@ -10,7 +10,7 @@ globalThis.fetch = async (url, options) => {
   const texte = corps.messages.at(-1).content.find(c => c.type === 'text').text;
   const ids = [...texte.matchAll(/^([^\s|]+) \|/gm)].map(m => m[1]);
   const p = ids.map(id => catalogue.produits[id]).find(p => p && ['table', 'lampe'].includes(p.fam));
-  const proposition = { concept: 'Proposition IA du fournisseur de test.', inspiration: null, retirer: [], conseils: [], meubles: p ? [{ produit: p.id, alternatives: [], zone: p.fam === 'lampe' ? 'eclairage' : 'decoration', raison: 'Compléter une fonction sans bloquer les passages.' }] : [] };
+  const proposition = { concept: 'Proposition IA du fournisseur de test.', planVie: [], inspiration: null, retirer: [], conseils: [], meubles: p ? [{ produit: p.id, alternatives: [], zone: p.fam === 'lampe' ? 'eclairage' : 'decoration', raison: 'Compléter une fonction sans bloquer les passages.' }] : [] };
   fs.appendFileSync(process.env.DEMO_FAL_AUDIT, JSON.stringify(corps) + '\n');
   return Response.json({ choices: [{ message: { content: JSON.stringify(proposition) }, finish_reason: 'stop' }], usage: { prompt_tokens: 10, completion_tokens: 20 } });
 };

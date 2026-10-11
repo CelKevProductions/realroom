@@ -24,6 +24,10 @@ test('l’aménagement réel traverse Fal malgré REALROOM_SIMULATION et transme
   assert.match(appels[0].corps.messages[1].content[0].text, /Budget for new pieces: 900/);
   assert.equal(r.usage.modele, appels[0].corps.model);
   assert.ok(appels[0].corps.response_format.json_schema.schema.required.includes('meubles'));
+  const schema = appels[0].corps.response_format.json_schema.schema;
+  assert.ok(schema.required.includes('planVie'));
+  assert.deepEqual(Object.keys(schema.properties.planVie.items.properties).sort(), ['priorite', 'raison', 'type']);
+  assert.match(appels[0].corps.messages[1].content[0].text, /Functional programme.*"surface":20/);
 });
 
 test('une clé manquante ou une erreur du fournisseur ne produit jamais un aménagement simulé', async t => {
