@@ -3,13 +3,13 @@
 
   npm run build && python3 tests/maison.py [demo-desktop|demo-mobile|compte] [--mouvement]
 
-- demo-desktop / demo-mobile : /fr/maison-corleone/demo, tout dans le navigateur (aucun appel à /api)
+- demo-desktop / demo-mobile : /fr/maison-corleone/demo, stockage local et aménagement serveur avec double IA
 - compte : /fr/maison-corleone avec la connexion simulée (essais locaux, sans client Shopify),
   analyse, aménagement et rendu simulés côté serveur ; rechargement, redirection de /fr/app, déconnexion.
 Par défaut les animations sont réduites (plus rapide) ; --mouvement joue tout (préchargement, rideaux…).
 Captures dans .essais/.
 """
-import asyncio, os, pathlib, shutil, subprocess, sys, time, urllib.request
+import asyncio, os, pathlib, re, shutil, subprocess, sys, time, urllib.request
 from playwright.async_api import async_playwright, expect
 
 RACINE = pathlib.Path(__file__).resolve().parent.parent
@@ -27,9 +27,11 @@ def serveur():
     donnees = RACINE / '.data' / 'essais-maison'
     shutil.rmtree(donnees, ignore_errors=True)
     env = dict(os.environ, REALROOM_ESSAIS='1', REALROOM_SIMULATION='1', PGLITE_DIR=str(donnees / 'pglite'), FICHIERS_DIR=str(donnees / 'fichiers'), PORT=str(PORT), SITE_URL=BASE)
-    for k in ('MC_CLIENT_ID', 'MC_CLIENT_SECRET'):
-        env.pop(k, None)
-    p = subprocess.Popen(['npx', 'next', 'start', '-p', str(PORT)], cwd=RACINE, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    for k in list(env):
+        if re.search(r'DATABASE_URL|POSTGRES|FAL_|ANTHROPIC_|SESSION_SECRET|MC_CLIENT_|^VERCEL', k):
+            env.pop(k, None)
+    env.update(FAL_KEY='test-sans-reseau', DEMO_AMENAGEMENT_IA='1', DEMO_FAL_AUDIT=str(donnees / 'fal.jsonl'))
+    p = subprocess.Popen(['node', '--import', str(RACINE / 'tests/fixtures/serveur-ia.mjs'), 'node_modules/next/dist/bin/next', 'start', '-p', str(PORT)], cwd=RACINE, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
     for _ in range(120):
         try:
             urllib.request.urlopen(BASE + '/api/etat', timeout=2)
@@ -112,6 +114,10 @@ async def etapes(page, connexion_demo):
     await capture(page, 'priorite', 600)
     await clic(page, '.mc-guide__pied .mc-btn')
     await page.wait_for_selector('.mc-etape--photos', timeout=20000)
+    await expect(page.get_by_label('Du fond vers l’entrée', exact=True)).to_have_count(1)
+    await expect(page.get_by_label('Le mur de gauche', exact=True)).to_have_count(1)
+    await expect(page.get_by_label('Le mur de droite', exact=True)).to_have_count(1)
+    await page.locator('.mc-photo-notes textarea').fill('Conserver les rangements ; radiateur sous la fenêtre.')
     await expect(page.locator('.mc-guide__pied .mc-btn')).to_be_disabled()
     await page.set_input_files('.mc-photo-principale input[type=file]', str(PHOTO))
     await page.wait_for_selector('.mc-photo-principale img', timeout=30000)
@@ -133,6 +139,15 @@ async def piece(page):
     assert nb >= 2, f'proposition trop courte ({nb} pièces)'
     await expect(page.locator('.mc-station__pill')).to_contain_text(f'{nb} pièces')
     await expect(page.locator('.mc-rendu-btn')).to_contain_text('2 offerts')
+    confort = page.get_by_role('region', name='La pièce au quotidien')
+    await expect(confort).to_be_visible()
+    await confort.get_by_role('button', name='Optimiser la disposition').click()
+    await page.wait_for_function("() => document.querySelector('[role=status]')?.textContent.length > 0")
+    await expect(page.locator('.mc-rendu-btn')).to_contain_text('2 offerts')
+    await page.locator('.mc-station__titre').scroll_into_view_if_needed()
+    titre = await page.locator('.mc-station__titre').bounding_box()
+    station = await page.locator('.mc-station').bounding_box()
+    assert titre['y'] >= station['y'] - 2, 'titre inaccessible en haut du panneau'
     await capture(page, 'piece-3d', 2500)
     nom = (await lignes.first.locator('b').inner_text()).strip()
     await clic(page, '.mc-ligne-piece >> nth=0')
@@ -180,7 +195,8 @@ async def main():
                 await jusquau_parcours(page, '/fr/maison-corleone/demo')
                 await etapes(page, connexion_demo=True)
                 await piece(page)
-                assert not appels, f'la démo a appelé le serveur : {appels[:5]}'
+                assert BASE + '/api/demo/amenager' in appels, appels
+                assert all(url in (BASE + '/api/demo/amenager', BASE + '/api/etat') for url in appels), appels
             else:
                 await jusquau_parcours(page, '/fr/maison-corleone')
                 await etapes(page, connexion_demo=False)

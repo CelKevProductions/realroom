@@ -1,0 +1,373 @@
+{
+  "endpoint_id": "openrouter/router/vision",
+  "model": "google/gemini-3.8-flash",
+  "source": "Maquettes exclusivement synthétiques ; comparaison neutre, ordre inversé.",
+  "resultats": [
+    {
+      "id": "10-direct",
+      "surface": 10,
+      "ordre": "direct",
+      "images": [
+        {
+          "nom": "10-avant.jpg",
+          "sha256": "61d25561fac422038fa3bc0048b83736e453ec41c1c329b443f036da58c138b4"
+        },
+        {
+          "nom": "10-apres.jpg",
+          "sha256": "dc415d0f3e4ae1965089a850f9e493a3e4f026920ff355745243821199f18efe"
+        }
+      ],
+      "prompt": "Compare les deux aménagements de ce salon synthétique de 10 m². La première image est A, la seconde B. Chaque image contient deux vues opposées de la même version. Géométrie, catalogue disponible, brief « Salon chaleureux » et caméras sont identiques. Les parois proches et les objets attachés à ces parois sont coupés pour voir l’intérieur. Ce sont des maquettes métriques simplifiées, pas des photos. Juge seulement ce qui est visible : adaptation de la quantité de mobilier à la surface, cohérence des espaces de vie, lisibilité des points focaux, sentiment de vide ou d’encombrement. Ne certifie aucune largeur de passage à partir des images. Aucune version n’est désignée comme nouvelle ou meilleure. Réponds en JSON : {\"preference\":\"A|B|egalite\",\"raison\":\"...\",\"A\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"B\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"reserves\":[\"...\"],\"ameliorations\":[\"...\"]}. Tu peux préférer A, B ou déclarer l’égalité. Réponds en français.",
+      "input": {
+        "model": "google/gemini-3.8-flash",
+        "max_tokens": 4000,
+        "temperature": 0,
+        "reasoning": true,
+        "enable_web_search": false
+      },
+      "critique": {
+        "preference": "B",
+        "A": {
+          "densite": "trop vide",
+          "zones_lisibles": 1
+        },
+        "B": {
+          "densite": "equilibree",
+          "zones_lisibles": 1
+        }
+      },
+      "preferenceVersion": "apres",
+      "archivePartielle": true,
+      "sortieTronquee": true,
+      "note": "Champs effectivement lus pendant la séance ; copie partielle de la critique, sans reconstitution des champs absents."
+    },
+    {
+      "id": "10-inverse",
+      "surface": 10,
+      "ordre": "inverse",
+      "images": [
+        {
+          "nom": "10-apres.jpg",
+          "sha256": "dc415d0f3e4ae1965089a850f9e493a3e4f026920ff355745243821199f18efe"
+        },
+        {
+          "nom": "10-avant.jpg",
+          "sha256": "61d25561fac422038fa3bc0048b83736e453ec41c1c329b443f036da58c138b4"
+        }
+      ],
+      "prompt": "Compare les deux aménagements de ce salon synthétique de 10 m². La première image est A, la seconde B. Chaque image contient deux vues opposées de la même version. Géométrie, catalogue disponible, brief « Salon chaleureux » et caméras sont identiques. Les parois proches et les objets attachés à ces parois sont coupés pour voir l’intérieur. Ce sont des maquettes métriques simplifiées, pas des photos. Juge seulement ce qui est visible : adaptation de la quantité de mobilier à la surface, cohérence des espaces de vie, lisibilité des points focaux, sentiment de vide ou d’encombrement. Ne certifie aucune largeur de passage à partir des images. Aucune version n’est désignée comme nouvelle ou meilleure. Réponds en JSON : {\"preference\":\"A|B|egalite\",\"raison\":\"...\",\"A\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"B\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"reserves\":[\"...\"],\"ameliorations\":[\"...\"]}. Tu peux préférer A, B ou déclarer l’égalité. Réponds en français.",
+      "input": {
+        "model": "google/gemini-3.8-flash",
+        "max_tokens": 4000,
+        "temperature": 0,
+        "reasoning": true,
+        "enable_web_search": false
+      },
+      "critique": {
+        "preference": "A",
+        "A": {
+          "densite": "equilibree",
+          "zones_lisibles": 1
+        },
+        "B": {
+          "densite": "trop vide",
+          "zones_lisibles": 1
+        }
+      },
+      "preferenceVersion": "apres",
+      "archivePartielle": true,
+      "sortieTronquee": false,
+      "note": "Champs effectivement lus pendant la séance ; copie partielle de la critique, sans reconstitution des champs absents."
+    },
+    {
+      "id": "30-direct",
+      "surface": 30,
+      "ordre": "direct",
+      "images": [
+        {
+          "nom": "30-avant-vision.jpg",
+          "sha256": "9192e35744f001863a8a36a9a704afcd3c9d685db480c6216d6c43d363bcbea3"
+        },
+        {
+          "nom": "30-apres-vision.jpg",
+          "sha256": "d1a9b5617cc68c08df3ec07d56818245124d26f908ef0c596374bc3a589b8e84"
+        }
+      ],
+      "prompt": "Compare les deux aménagements de ce salon synthétique de 30 m². La première image est A, la seconde B. Chaque image contient deux vues opposées de la même version. Géométrie, catalogue disponible, brief « Salon chaleureux » et caméras sont identiques. Les parois proches et les objets attachés à ces parois sont coupés pour voir l’intérieur. Ce sont des maquettes métriques simplifiées, pas des photos. Juge seulement ce qui est visible : adaptation de la quantité de mobilier à la surface, cohérence des espaces de vie, lisibilité des points focaux, sentiment de vide ou d’encombrement. Ne certifie aucune largeur de passage à partir des images. Aucune version n’est désignée comme nouvelle ou meilleure. Réponds en JSON : {\"preference\":\"A|B|egalite\",\"raison\":\"...\",\"A\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"B\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"reserves\":[\"...\"],\"ameliorations\":[\"...\"]}. Tu peux préférer A, B ou déclarer l’égalité. Réponds en français.",
+      "inputOverrides": {
+        "max_tokens": 6000
+      },
+      "input": {
+        "model": "google/gemini-3.8-flash",
+        "max_tokens": 6000,
+        "temperature": 0,
+        "reasoning": true,
+        "enable_web_search": false
+      },
+      "sortie": "```json\n{\n  \"preference\": \"B\",\n  \"raison\": \"La version B optimise nettement mieux la surface de 30 m² grâce à l'ajout d'une enfilade qui apporte du rangement et habille un mur resté nu dans A. Le repositionnement du fauteuil d'appoint dans l'angle du fond meuble plus judicieusement l'espace, réduisant l'impression de grand vide central et répondant mieux au brief d'un salon chaleureux.\",\n  \"A\": {\n    \"densite\": \"trop vide\",\n    \"zones_lisibles\": 3\n  },\n  \"B\": {\n    \"densite\": \"equilibree\",\n    \"zones_lisibles\": 3\n  },\n  \"reserves\": [\n    \"L'orientation du fauteuil d'appoint dans le fond de la pièce en B reste un peu en retrait de la lumière naturelle.\",\n    \"Le grand espace central de circulation reste assez dégagé au détriment d'une ambiance très feutrée.\"\n  ],\n  \"ameliorations\": [\n    \"Ajouter un tapis sous la table à manger et au niveau du fauteuil pour renforcer le côté chaleureux et mieux ancrer chaque zone.\",\n    \"Compléter avec des éléments muraux (étagères, miroirs ou cadres) au-dessus de l'enfilade pour accentuer la verticalité.\"\n  ]\n}\n```",
+      "critique": {
+        "preference": "B",
+        "raison": "La version B optimise nettement mieux la surface de 30 m² grâce à l'ajout d'une enfilade qui apporte du rangement et habille un mur resté nu dans A. Le repositionnement du fauteuil d'appoint dans l'angle du fond meuble plus judicieusement l'espace, réduisant l'impression de grand vide central et répondant mieux au brief d'un salon chaleureux.",
+        "A": {
+          "densite": "trop vide",
+          "zones_lisibles": 3
+        },
+        "B": {
+          "densite": "equilibree",
+          "zones_lisibles": 3
+        },
+        "reserves": [
+          "L'orientation du fauteuil d'appoint dans le fond de la pièce en B reste un peu en retrait de la lumière naturelle.",
+          "Le grand espace central de circulation reste assez dégagé au détriment d'une ambiance très feutrée."
+        ],
+        "ameliorations": [
+          "Ajouter un tapis sous la table à manger et au niveau du fauteuil pour renforcer le côté chaleureux et mieux ancrer chaque zone.",
+          "Compléter avec des éléments muraux (étagères, miroirs ou cadres) au-dessus de l'enfilade pour accentuer la verticalité."
+        ]
+      },
+      "preferenceVersion": "apres"
+    },
+    {
+      "id": "30-inverse",
+      "surface": 30,
+      "ordre": "inverse",
+      "images": [
+        {
+          "nom": "30-apres-vision.jpg",
+          "sha256": "d1a9b5617cc68c08df3ec07d56818245124d26f908ef0c596374bc3a589b8e84"
+        },
+        {
+          "nom": "30-avant-vision.jpg",
+          "sha256": "9192e35744f001863a8a36a9a704afcd3c9d685db480c6216d6c43d363bcbea3"
+        }
+      ],
+      "prompt": "Compare les deux aménagements de ce salon synthétique de 30 m². La première image est A, la seconde B. Chaque image contient deux vues opposées de la même version. Géométrie, catalogue disponible, brief « Salon chaleureux » et caméras sont identiques. Les parois proches et les objets attachés à ces parois sont coupés pour voir l’intérieur. Ce sont des maquettes métriques simplifiées, pas des photos. Juge seulement ce qui est visible : adaptation de la quantité de mobilier à la surface, cohérence des espaces de vie, lisibilité des points focaux, sentiment de vide ou d’encombrement. Ne certifie aucune largeur de passage à partir des images. Aucune version n’est désignée comme nouvelle ou meilleure. Réponds en JSON : {\"preference\":\"A|B|egalite\",\"raison\":\"...\",\"A\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"B\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"reserves\":[\"...\"],\"ameliorations\":[\"...\"]}. Tu peux préférer A, B ou déclarer l’égalité. Réponds en français.",
+      "inputOverrides": {
+        "max_tokens": 6000
+      },
+      "input": {
+        "model": "google/gemini-3.8-flash",
+        "max_tokens": 6000,
+        "temperature": 0,
+        "reasoning": true,
+        "enable_web_search": false
+      },
+      "sortie": "```json\n{\n  \"preference\": \"A\",\n  \"raison\": \"La version A propose un agencement nettement plus cohérent et chaleureux. Le coin lecture est judicieusement installé près de la fenêtre, l'espace repas est centralisé de manière logique et la présence du buffet meuble harmonieusement l'espace sans l'encombrer. En comparaison, la version B supprime le buffet et disperse le fauteuil dans un angle isolé, créant un vide central peu accueillant.\",\n  \"A\": {\n    \"densite\": \"equilibree\",\n    \"zones_lisibles\": 3\n  },\n  \"B\": {\n    \"densite\": \"trop vide\",\n    \"zones_lisibles\": 2\n  },\n  \"reserves\": [\n    \"Dans les deux versions, le meuble TV tourne le dos au reste de la pièce, ce qui peut créer une rupture visuelle depuis l'entrée ou l'espace repas.\",\n    \"L'orientation du canapé face au meuble TV laisse un passage à l'arrière qui pourrait être optimisé.\"\n  ],\n  \"ameliorations\": [\n    \"Ajouter un grand tapis sous la table à manger pour mieux délimiter la zone repas et renforcer le côté chaleureux.\",\n    \"Rapprocher légèrement le coin salon pour fluidifier la circulation entre l'accès et l'espace repas.\"\n  ]\n}\n```",
+      "critique": {
+        "preference": "A",
+        "raison": "La version A propose un agencement nettement plus cohérent et chaleureux. Le coin lecture est judicieusement installé près de la fenêtre, l'espace repas est centralisé de manière logique et la présence du buffet meuble harmonieusement l'espace sans l'encombrer. En comparaison, la version B supprime le buffet et disperse le fauteuil dans un angle isolé, créant un vide central peu accueillant.",
+        "A": {
+          "densite": "equilibree",
+          "zones_lisibles": 3
+        },
+        "B": {
+          "densite": "trop vide",
+          "zones_lisibles": 2
+        },
+        "reserves": [
+          "Dans les deux versions, le meuble TV tourne le dos au reste de la pièce, ce qui peut créer une rupture visuelle depuis l'entrée ou l'espace repas.",
+          "L'orientation du canapé face au meuble TV laisse un passage à l'arrière qui pourrait être optimisé."
+        ],
+        "ameliorations": [
+          "Ajouter un grand tapis sous la table à manger pour mieux délimiter la zone repas et renforcer le côté chaleureux.",
+          "Rapprocher légèrement le coin salon pour fluidifier la circulation entre l'accès et l'espace repas."
+        ]
+      },
+      "preferenceVersion": "apres"
+    },
+    {
+      "id": "90-direct",
+      "surface": 90,
+      "ordre": "direct",
+      "images": [
+        {
+          "nom": "90-avant.jpg",
+          "sha256": "aae11f6323325bc8fe29653169e932e594bbbf032015a5d72824d106df2563d1"
+        },
+        {
+          "nom": "90-apres.jpg",
+          "sha256": "5b3653fe0bc7572121b48f6184d881592768f6da9c62650383b3c0b8b9c8e9bd"
+        }
+      ],
+      "prompt": "Compare les deux aménagements de ce salon synthétique de 90 m². La première image est A, la seconde B. Chaque image contient deux vues opposées de la même version. Géométrie, catalogue disponible, brief « Salon chaleureux » et caméras sont identiques. Les parois proches et les objets attachés à ces parois sont coupés pour voir l’intérieur. Ce sont des maquettes métriques simplifiées, pas des photos. Juge seulement ce qui est visible : adaptation de la quantité de mobilier à la surface, cohérence des espaces de vie, lisibilité des points focaux, sentiment de vide ou d’encombrement. Ne certifie aucune largeur de passage à partir des images. Aucune version n’est désignée comme nouvelle ou meilleure. Réponds en JSON : {\"preference\":\"A|B|egalite\",\"raison\":\"...\",\"A\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"B\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"reserves\":[\"...\"],\"ameliorations\":[\"...\"]}. Tu peux préférer A, B ou déclarer l’égalité. Réponds en français.",
+      "input": {
+        "model": "google/gemini-3.8-flash",
+        "max_tokens": 4000,
+        "temperature": 0,
+        "reasoning": true,
+        "enable_web_search": false
+      },
+      "critique": {
+        "preference": "B",
+        "raison": "La version B exploite mieux les 90 m² en répartissant les fonctions, évitant le grand vide asymétrique visible en A.",
+        "A": {
+          "densite": "trop vide",
+          "zones_lisibles": 2
+        },
+        "B": {
+          "densite": "equilibree",
+          "zones_lisibles": 3
+        },
+        "reserves": [
+          "Vaste superficie encore peu meublée",
+          "Manque de texture pour le brief chaleureux"
+        ],
+        "ameliorations": [
+          "Ajouter des tapis pour délimiter les zones",
+          "Intégrer rangements et plantes pour occuper l'espace"
+        ]
+      },
+      "preferenceVersion": "apres",
+      "archivePartielle": false,
+      "sortieTronquee": false,
+      "note": "Critique reçue complète, normalisée sans identifiants de requête ni facturation."
+    },
+    {
+      "id": "90-inverse",
+      "surface": 90,
+      "ordre": "inverse",
+      "images": [
+        {
+          "nom": "90-apres.jpg",
+          "sha256": "5b3653fe0bc7572121b48f6184d881592768f6da9c62650383b3c0b8b9c8e9bd"
+        },
+        {
+          "nom": "90-avant.jpg",
+          "sha256": "aae11f6323325bc8fe29653169e932e594bbbf032015a5d72824d106df2563d1"
+        }
+      ],
+      "prompt": "Compare les deux aménagements de ce salon synthétique de 90 m². La première image est A, la seconde B. Chaque image contient deux vues opposées de la même version. Géométrie, catalogue disponible, brief « Salon chaleureux » et caméras sont identiques. Les parois proches et les objets attachés à ces parois sont coupés pour voir l’intérieur. Ce sont des maquettes métriques simplifiées, pas des photos. Juge seulement ce qui est visible : adaptation de la quantité de mobilier à la surface, cohérence des espaces de vie, lisibilité des points focaux, sentiment de vide ou d’encombrement. Ne certifie aucune largeur de passage à partir des images. Aucune version n’est désignée comme nouvelle ou meilleure. Réponds en JSON : {\"preference\":\"A|B|egalite\",\"raison\":\"...\",\"A\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"B\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"reserves\":[\"...\"],\"ameliorations\":[\"...\"]}. Tu peux préférer A, B ou déclarer l’égalité. Réponds en français.",
+      "input": {
+        "model": "google/gemini-3.8-flash",
+        "max_tokens": 4000,
+        "temperature": 0,
+        "reasoning": true,
+        "enable_web_search": false
+      },
+      "critique": {
+        "preference": "A",
+        "A": {
+          "densite": "trop vide",
+          "zones_lisibles": 4
+        }
+      },
+      "preferenceVersion": "apres",
+      "archivePartielle": true,
+      "sortieTronquee": false,
+      "note": "Champs effectivement lus pendant la séance ; copie partielle de la critique, sans reconstitution des champs absents."
+    }
+  ],
+  "limites": [
+    "Les deux dernières critiques de 30 m² préfèrent après, dans les deux ordres ; elles ne garantissent pas un classement universel sur d’autres pièces.",
+    "À 10 m², le verdict direct et la densité sont présents, mais la sortie est tronquée ; aucune resoumission pour compléter cette archive.",
+    "Les avis visuels ne certifient pas la géométrie : ils évoquent parfois une suspension décentrée pourtant centrée métriquement.",
+    "Les tentatives transmises au MIME application/octet-stream ont été écartées, car leurs descriptions inventaient des objets."
+  ],
+  "historique30": [
+    {
+      "id": "30-direct",
+      "surface": 30,
+      "ordre": "direct",
+      "images": [
+        {
+          "nom": "30-avant-vision.jpg",
+          "sha256": "9192e35744f001863a8a36a9a704afcd3c9d685db480c6216d6c43d363bcbea3",
+          "url": "https://github.com/CelKevProductions/realroom/blob/e23e936fb0b3f043cd47af03662d5c08982cddb9/docs/composition-surface/30-avant-vision.jpg"
+        },
+        {
+          "nom": "30-apres-vision.jpg",
+          "sha256": "648915c0bf4b87d2c522b00cc084235948c66df257a475db51f024931e6530e2",
+          "url": "https://github.com/CelKevProductions/realroom/blob/e23e936fb0b3f043cd47af03662d5c08982cddb9/docs/composition-surface/30-apres-vision.jpg"
+        }
+      ],
+      "prompt": "Compare les deux aménagements de ce salon synthétique de 30 m². La première image est A, la seconde B. Chaque image contient deux vues opposées de la même version. Géométrie, catalogue disponible, brief « Salon chaleureux » et caméras sont identiques. Les parois proches et les objets attachés à ces parois sont coupés pour voir l’intérieur. Ce sont des maquettes métriques simplifiées, pas des photos. Juge seulement ce qui est visible : adaptation de la quantité de mobilier à la surface, cohérence des espaces de vie, lisibilité des points focaux, sentiment de vide ou d’encombrement. Ne certifie aucune largeur de passage à partir des images. Aucune version n’est désignée comme nouvelle ou meilleure. Réponds en JSON : {\"preference\":\"A|B|egalite\",\"raison\":\"...\",\"A\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"B\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"reserves\":[\"...\"],\"ameliorations\":[\"...\"]}. Tu peux préférer A, B ou déclarer l’égalité. Réponds en français.",
+      "inputOverrides": {
+        "max_tokens": 6000
+      },
+      "input": {
+        "model": "google/gemini-3.8-flash",
+        "max_tokens": 6000,
+        "temperature": 0,
+        "reasoning": true,
+        "enable_web_search": false
+      },
+      "sortie": "```json\n{\n  \"preference\": \"A\",\n  \"raison\": \"La version A répartit plus harmonieusement le mobilier sur les 30 m². L'espace lecture (fauteuil et bout de canapé) y forme un coin distinct et aéré près de la fenêtre, tandis que la version B concentre le buffet, le fauteuil et l'espace repas dans le même angle, créant une surcharge locale inutile alors qu'une large portion de la pièce reste vide.\",\n  \"A\": {\n    \"densite\": \"equilibree\",\n    \"zones_lisibles\": 3\n  },\n  \"B\": {\n    \"densite\": \"equilibree\",\n    \"zones_lisibles\": 2\n  },\n  \"reserves\": [\n    \"Dans les deux configurations, le meuble TV en îlot tourne son dos vers le centre de la pièce et la circulation principale.\",\n    \"Une grande surface de plancher reste totalement nue au premier plan dans les deux cas.\"\n  ],\n  \"ameliorations\": [\n    \"Intégrer un grand tapis sous la table à manger ou redéployer le salon vers le centre pour mieux occuper le vide au premier plan.\",\n    \"Adosser le meuble TV à une cloison ou revoir l'orientation du coin salon pour éviter de voir le dos des écrans et des connectiques depuis l'entrée ou le coin repas.\"\n  ]\n}\n```",
+      "critique": {
+        "preference": "A",
+        "raison": "La version A répartit plus harmonieusement le mobilier sur les 30 m². L'espace lecture (fauteuil et bout de canapé) y forme un coin distinct et aéré près de la fenêtre, tandis que la version B concentre le buffet, le fauteuil et l'espace repas dans le même angle, créant une surcharge locale inutile alors qu'une large portion de la pièce reste vide.",
+        "A": {
+          "densite": "equilibree",
+          "zones_lisibles": 3
+        },
+        "B": {
+          "densite": "equilibree",
+          "zones_lisibles": 2
+        },
+        "reserves": [
+          "Dans les deux configurations, le meuble TV en îlot tourne son dos vers le centre de la pièce et la circulation principale.",
+          "Une grande surface de plancher reste totalement nue au premier plan dans les deux cas."
+        ],
+        "ameliorations": [
+          "Intégrer un grand tapis sous la table à manger ou redéployer le salon vers le centre pour mieux occuper le vide au premier plan.",
+          "Adosser le meuble TV à une cloison ou revoir l'orientation du coin salon pour éviter de voir le dos des écrans et des connectiques depuis l'entrée ou le coin repas."
+        ]
+      },
+      "preferenceVersion": "avant",
+      "versionCode": "e23e936fb0b3f043cd47af03662d5c08982cddb9",
+      "note": "Avant la séparation minimale de 80 cm ; classement partagé, conservé dans l’historique."
+    },
+    {
+      "id": "30-inverse",
+      "surface": 30,
+      "ordre": "inverse",
+      "images": [
+        {
+          "nom": "30-apres-vision.jpg",
+          "sha256": "648915c0bf4b87d2c522b00cc084235948c66df257a475db51f024931e6530e2",
+          "url": "https://github.com/CelKevProductions/realroom/blob/e23e936fb0b3f043cd47af03662d5c08982cddb9/docs/composition-surface/30-apres-vision.jpg"
+        },
+        {
+          "nom": "30-avant-vision.jpg",
+          "sha256": "9192e35744f001863a8a36a9a704afcd3c9d685db480c6216d6c43d363bcbea3",
+          "url": "https://github.com/CelKevProductions/realroom/blob/e23e936fb0b3f043cd47af03662d5c08982cddb9/docs/composition-surface/30-avant-vision.jpg"
+        }
+      ],
+      "prompt": "Compare les deux aménagements de ce salon synthétique de 30 m². La première image est A, la seconde B. Chaque image contient deux vues opposées de la même version. Géométrie, catalogue disponible, brief « Salon chaleureux » et caméras sont identiques. Les parois proches et les objets attachés à ces parois sont coupés pour voir l’intérieur. Ce sont des maquettes métriques simplifiées, pas des photos. Juge seulement ce qui est visible : adaptation de la quantité de mobilier à la surface, cohérence des espaces de vie, lisibilité des points focaux, sentiment de vide ou d’encombrement. Ne certifie aucune largeur de passage à partir des images. Aucune version n’est désignée comme nouvelle ou meilleure. Réponds en JSON : {\"preference\":\"A|B|egalite\",\"raison\":\"...\",\"A\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"B\":{\"densite\":\"trop vide|equilibree|trop chargee\",\"zones_lisibles\":0},\"reserves\":[\"...\"],\"ameliorations\":[\"...\"]}. Tu peux préférer A, B ou déclarer l’égalité. Réponds en français.",
+      "inputOverrides": {
+        "max_tokens": 6000
+      },
+      "input": {
+        "model": "google/gemini-3.8-flash",
+        "max_tokens": 6000,
+        "temperature": 0,
+        "reasoning": true,
+        "enable_web_search": false
+      },
+      "sortie": "```json\n{\n  \"preference\": \"A\",\n  \"raison\": \"La version A répond mieux au brief « Salon chaleureux » grâce à l'intégration d'un grand buffet qui habille l'espace et structure le coin repas. En version B, la suppression du meuble de rangement laisse un sentiment de vide important au centre et le long des murs pour une pièce de 30 m², tandis que le fauteuil isolé en coin paraît déconnecté du reste du mobilier.\",\n  \"A\": {\n    \"densite\": \"equilibree\",\n    \"zones_lisibles\": 2\n  },\n  \"B\": {\n    \"densite\": \"trop vide\",\n    \"zones_lisibles\": 2\n  },\n  \"reserves\": [\n    \"Dans la version A, le second fauteuil d'appoint est trop collé au buffet et empiète sur l'espace de la table à manger.\",\n    \"La suspension lumineuse ne tombe pas parfaitement au-dessus de la table de repas dans les deux versions.\"\n  ],\n  \"ameliorations\": [\n    \"Déplacer le fauteuil d'appoint de la version A vers un coin lecture plus aéré ou l'intégrer pleinement au salon face au canapé.\",\n    \"Recentrer la suspension au-dessus de la table à manger pour mieux marquer le coin repas.\",\n    \"Ajouter un grand tapis sous la table à manger pour réchauffer le sol et délimiter plus nettement la zone repas.\"\n  ]\n}\n```",
+      "critique": {
+        "preference": "A",
+        "raison": "La version A répond mieux au brief « Salon chaleureux » grâce à l'intégration d'un grand buffet qui habille l'espace et structure le coin repas. En version B, la suppression du meuble de rangement laisse un sentiment de vide important au centre et le long des murs pour une pièce de 30 m², tandis que le fauteuil isolé en coin paraît déconnecté du reste du mobilier.",
+        "A": {
+          "densite": "equilibree",
+          "zones_lisibles": 2
+        },
+        "B": {
+          "densite": "trop vide",
+          "zones_lisibles": 2
+        },
+        "reserves": [
+          "Dans la version A, le second fauteuil d'appoint est trop collé au buffet et empiète sur l'espace de la table à manger.",
+          "La suspension lumineuse ne tombe pas parfaitement au-dessus de la table de repas dans les deux versions."
+        ],
+        "ameliorations": [
+          "Déplacer le fauteuil d'appoint de la version A vers un coin lecture plus aéré ou l'intégrer pleinement au salon face au canapé.",
+          "Recentrer la suspension au-dessus de la table à manger pour mieux marquer le coin repas.",
+          "Ajouter un grand tapis sous la table à manger pour réchauffer le sol et délimiter plus nettement la zone repas."
+        ]
+      },
+      "preferenceVersion": "apres",
+      "versionCode": "e23e936fb0b3f043cd47af03662d5c08982cddb9",
+      "note": "Avant la séparation minimale de 80 cm ; classement partagé, conservé dans l’historique."
+    }
+  ]
+}

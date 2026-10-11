@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Démo sans compte (/fr/demo) : parcours complet dans le navigateur, sans aucune API serveur.
+"""Démo sans compte (/fr/demo) : stockage local et aménagement serveur, fournisseur IA remplacé.
 Captures dans .essais/.
 
   npm run build && python3 tests/demo.py [desktop|mobile]
@@ -19,10 +19,14 @@ FORMAT = sys.argv[1] if len(sys.argv) > 1 else 'desktop'
 def serveur():
     donnees = RACINE / '.data' / 'essais-demo'
     shutil.rmtree(donnees, ignore_errors=True)
-    # aucune clé, aucune simulation côté serveur : la démo ne doit rien lui demander
+    # Clé fictive et double chargé dans Node : aucun appel externe, comptes toujours locaux.
     env = dict(os.environ, REALROOM_ESSAIS='1', PGLITE_DIR=str(donnees / 'pglite'), FICHIERS_DIR=str(donnees / 'fichiers'), PORT=str(PORT), SITE_URL=BASE)
+    for k in list(env):
+        if re.search(r'DATABASE_URL|POSTGRES|FAL_|ANTHROPIC_|SESSION_SECRET|^VERCEL', k):
+            env.pop(k, None)
+    env.update(FAL_KEY='test-sans-reseau', DEMO_AMENAGEMENT_IA='1', DEMO_FAL_AUDIT=str(donnees / 'fal.jsonl'))
     env.pop('REALROOM_SIMULATION', None)
-    p = subprocess.Popen(['npx', 'next', 'start', '-p', str(PORT)], cwd=RACINE, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    p = subprocess.Popen(['node', '--import', str(RACINE / 'tests/fixtures/serveur-ia.mjs'), 'node_modules/next/dist/bin/next', 'start', '-p', str(PORT)], cwd=RACINE, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
     for _ in range(120):
         try:
             urllib.request.urlopen(BASE + '/api/etat', timeout=2)
@@ -124,7 +128,8 @@ async def parcours(page, appels_api):
     r = await page.goto(BASE + '/fr/app')
     assert '/fr/connexion' in page.url, 'l’application est accessible sans compte : ' + page.url
     print('appels à l’API serveur pendant la démo :', appels_api)
-    assert not [a for a in appels_api if a.startswith('/api/') and a not in ('/api/etat',)], appels_api
+    assert '/api/demo/amenager' in appels_api, appels_api
+    assert not [a for a in appels_api if a.startswith('/api/') and a not in ('/api/etat', '/api/demo/amenager')], appels_api
 
 
 async def main():

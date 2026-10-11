@@ -30,6 +30,7 @@ const pad2 = n => String(n).padStart(2, '0');
 
 export default function Intro({ t, lang, charger, actif, onAvance, onPret, onFini }) {
   const section = useRef(null), canvas = useRef(null), barre = useRef(null), defiler = useRef(null);
+  const avancer = useRef(null);
   const hudNom = useRef(null), hudNum = useRef(null);
   const blocs = useRef([]);
   const etiqRefs = useRef({});
@@ -186,10 +187,11 @@ export default function Intro({ t, lang, charger, actif, onAvance, onPret, onFin
       if (st.enCours || cible < 0 || cible >= N) return;
       st.etape = cible;
       st.de = st.p; st.vers = ETAPES[cible].p;
-      st.duree = R ? 0 : Math.min(2300, Math.max(1300, 1100 + 2600 * Math.abs(st.vers - st.de)));
+      st.duree = R ? 0 : Math.min(3200, Math.max(1800, 1500 + 3600 * Math.abs(st.vers - st.de)));
       st.t0 = performance.now(); st.enCours = true; st.montre = false;
       afficher(-1);
     };
+    avancer.current = () => aller(1);
     const image = temps => {
       if (st.enCours) {
         const k = st.duree ? Math.min(1, Math.max(0, (temps - st.t0) / st.duree)) : 1;
@@ -199,7 +201,7 @@ export default function Intro({ t, lang, charger, actif, onAvance, onPret, onFin
       }
       // « Faites défiler » : à chaque arrêt, sauf le dernier
       const df = !st.enCours && st.etape < N - 1;
-      if (df !== dernierDefiler) { dernierDefiler = df; if (defiler.current) defiler.current.style.opacity = df ? '1' : '0'; }
+      if (df !== dernierDefiler) { dernierDefiler = df; if (defiler.current) {defiler.current.style.opacity = df ? '1' : '0';defiler.current.disabled = !df;} }
       const p = st.p;
       if (Math.abs(p - dernierP) > 1e-5 || dernierP < 0) {
         dernierP = p;
@@ -254,6 +256,7 @@ export default function Intro({ t, lang, charger, actif, onAvance, onPret, onFin
       raf = requestAnimationFrame(boucle);
     }
     return () => {
+      avancer.current = null;
       cancelAnimationFrame(raf);
       removeEventListener('resize', surTaille);
       removeEventListener('wheel', surMolette);
@@ -302,7 +305,7 @@ export default function Intro({ t, lang, charger, actif, onAvance, onPret, onFin
         <div className="mc-hud mc-hud--haut">
           <button type="button" className="mc-lien" onClick={fini}>{t.intro.passer}</button>
         </div>
-        <div className="mc-hud__defiler mc-hud mc-mono" ref={defiler}><span>{t.intro.defiler}</span><i /></div>
+        <button type="button" className="mc-hud__defiler mc-hud mc-mono" ref={defiler} onClick={()=>avancer.current?.()} aria-label={t.intro.defiler}><span>{t.intro.defiler}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M12 3v17M5 13l7 7 7-7"/></svg></button>
         <div className="mc-hud mc-hud--bas mc-mono">
           <span ref={hudNom}>{t.marque}</span>
           <span className="mc-hud__barre"><span ref={barre} /></span>

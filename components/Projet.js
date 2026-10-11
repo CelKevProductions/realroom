@@ -80,7 +80,7 @@ export default function Projet({ lang, t, initial }) {
       {!p.pieces.length && <p className="vide" data-entree="">{t.projet.vide}</p>}
       <div className="grille-cartes" data-entree="">
         {p.pieces.map(x => {
-          const image = x.dernier_rendu || (x.photos[0] && x.photos[0].url);
+          const image = x.dernier_rendu || x.photos.find(photo => photo.role !== 'inspiration')?.url;
           return (
             <Link key={x.id} href={`${racine}/pieces/${x.id}`} className="carte-projet">
               <span className="carte-projet__image">{image ? <img src={image} alt="" loading="lazy" /> : <Croquis />}</span>

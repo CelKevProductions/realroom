@@ -1,0 +1,705 @@
+{
+  "version": "9099770",
+  "modele": {
+    "dims": {
+      "largeur": 5,
+      "profondeur": 4,
+      "hauteur": 2.6,
+      "estimees": false
+    },
+    "murs": {
+      "entree": {
+        "ouvertures": [
+          {
+            "type": "porte",
+            "position": -1.65,
+            "largeur": 0.9,
+            "hauteur": 2.05,
+            "allege": 0
+          }
+        ]
+      },
+      "fond": {
+        "ouvertures": [
+          {
+            "type": "passage",
+            "position": 1.95,
+            "largeur": 0.8,
+            "hauteur": 2.05,
+            "allege": 0,
+            "destination": "cuisine"
+          }
+        ]
+      },
+      "droite": {
+        "ouvertures": [
+          {
+            "type": "fenetre",
+            "position": -0.2,
+            "largeur": 1.1,
+            "hauteur": 1.2,
+            "allege": 0.95
+          }
+        ]
+      },
+      "gauche": {
+        "ouvertures": []
+      }
+    }
+  },
+  "catalogue": {
+    "canape": {
+      "fam": "canape",
+      "nom": "Canapé compact trois places",
+      "dim": [
+        2.1,
+        0.82,
+        0.8
+      ],
+      "prix": 800,
+      "id": "canape",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "fauteuil": {
+      "fam": "fauteuil",
+      "nom": "Fauteuil de lecture",
+      "dim": [
+        0.65,
+        0.65,
+        0.85
+      ],
+      "prix": 180,
+      "id": "fauteuil",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "basse": {
+      "fam": "table",
+      "nom": "Table basse",
+      "dim": [
+        0.7,
+        0.45,
+        0.4
+      ],
+      "prix": 100,
+      "id": "basse",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "tv": {
+      "fam": "meuble",
+      "nom": "Meuble TV",
+      "dim": [
+        1.1,
+        0.35,
+        0.5
+      ],
+      "prix": 150,
+      "id": "tv",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "repas": {
+      "fam": "table",
+      "nom": "Table de repas quatre personnes",
+      "dim": [
+        1,
+        0.7,
+        0.75
+      ],
+      "prix": 220,
+      "id": "repas",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "repas6": {
+      "fam": "table",
+      "nom": "Table de repas six personnes",
+      "dim": [
+        1.6,
+        0.8,
+        0.75
+      ],
+      "prix": 260,
+      "id": "repas6",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "repas8": {
+      "fam": "table",
+      "nom": "Table de repas huit personnes",
+      "dim": [
+        2.2,
+        0.9,
+        0.75
+      ],
+      "prix": 300,
+      "id": "repas8",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "chaise": {
+      "fam": "chaise",
+      "nom": "Chaise de repas",
+      "dim": [
+        0.42,
+        0.42,
+        0.8
+      ],
+      "prix": 55,
+      "id": "chaise",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "lampadaire": {
+      "fam": "lampadaire",
+      "nom": "Lampadaire",
+      "dim": [
+        0.25,
+        0.25,
+        1.6
+      ],
+      "prix": 90,
+      "id": "lampadaire",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "suspension": {
+      "fam": "suspension",
+      "nom": "Suspension",
+      "dim": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "prix": 80,
+      "id": "suspension",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "lit": {
+      "fam": "lit",
+      "nom": "Lit double",
+      "dim": [
+        1.6,
+        2,
+        1
+      ],
+      "prix": 500,
+      "id": "lit",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "chevet": {
+      "fam": "table",
+      "nom": "Chevet",
+      "dim": [
+        0.45,
+        0.4,
+        0.5
+      ],
+      "prix": 60,
+      "id": "chevet",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "armoire": {
+      "fam": "armoire",
+      "nom": "Armoire",
+      "dim": [
+        1.4,
+        0.55,
+        2
+      ],
+      "prix": 350,
+      "id": "armoire",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "buffet": {
+      "fam": "buffet",
+      "nom": "Buffet",
+      "dim": [
+        1.2,
+        0.4,
+        0.8
+      ],
+      "prix": 160,
+      "id": "buffet",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "bureau": {
+      "fam": "bureau",
+      "nom": "Bureau",
+      "dim": [
+        1.2,
+        0.6,
+        0.75
+      ],
+      "prix": 180,
+      "id": "bureau",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "siege": {
+      "fam": "chaise",
+      "nom": "Chaise de bureau",
+      "dim": [
+        0.5,
+        0.5,
+        0.85
+      ],
+      "prix": 70,
+      "id": "siege",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "lampe": {
+      "fam": "lampe",
+      "nom": "Lampe de table",
+      "dim": [
+        0.15,
+        0.15,
+        0.35
+      ],
+      "prix": 30,
+      "id": "lampe",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "baignoire": {
+      "fam": "baignoire",
+      "nom": "Baignoire îlot",
+      "dim": [
+        1.6,
+        0.7,
+        0.6
+      ],
+      "prix": 500,
+      "id": "baignoire",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "murale": {
+      "fam": "baignoire",
+      "nom": "Baignoire murale",
+      "dim": [
+        1.5,
+        0.65,
+        0.6
+      ],
+      "prix": 400,
+      "id": "murale",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "vasque": {
+      "fam": "vasque",
+      "nom": "Double vasque",
+      "dim": [
+        1.2,
+        0.5,
+        0.8
+      ],
+      "prix": 300,
+      "id": "vasque",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "miroir": {
+      "fam": "miroir",
+      "nom": "Miroir",
+      "dim": [
+        0.6,
+        0.06,
+        0.8
+      ],
+      "prix": 50,
+      "id": "miroir",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "console": {
+      "fam": "console",
+      "nom": "Console",
+      "dim": [
+        0.8,
+        0.35,
+        0.8
+      ],
+      "prix": 100,
+      "id": "console",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "banc": {
+      "fam": "banc",
+      "nom": "Banc",
+      "dim": [
+        1,
+        0.35,
+        0.5
+      ],
+      "prix": 80,
+      "id": "banc",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "jardin": {
+      "fam": "salon-jardin",
+      "nom": "Ensemble salon de jardin avec table",
+      "dim": [
+        2.4,
+        1.8,
+        0.8
+      ],
+      "prix": 650,
+      "ext": true,
+      "id": "jardin",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "tableExt": {
+      "fam": "table",
+      "nom": "Table de repas extérieure",
+      "dim": [
+        1.4,
+        0.8,
+        0.75
+      ],
+      "prix": 220,
+      "ext": true,
+      "id": "tableExt",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "chaiseExt": {
+      "fam": "chaise",
+      "nom": "Chaise extérieure",
+      "dim": [
+        0.45,
+        0.45,
+        0.85
+      ],
+      "prix": 60,
+      "ext": true,
+      "id": "chaiseExt",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "transat": {
+      "fam": "transat",
+      "nom": "Transat",
+      "dim": [
+        0.65,
+        1.8,
+        0.8
+      ],
+      "prix": 150,
+      "ext": true,
+      "id": "transat",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    }
+  },
+  "items": [
+    {
+      "id": "c2e31ca_0",
+      "origine": "catalogue",
+      "sku": "canape",
+      "x": -0.3,
+      "z": -1.59,
+      "rot": 0,
+      "raison": "Complète l’ensemble salon."
+    },
+    {
+      "id": "c2e31ca_3",
+      "origine": "catalogue",
+      "sku": "repas",
+      "x": -0.61,
+      "z": 0.91,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble repas."
+    },
+    {
+      "id": "c2e31ca_9",
+      "origine": "catalogue",
+      "sku": "fauteuil",
+      "x": -2.12,
+      "z": -0.91,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble salon."
+    },
+    {
+      "id": "c2e31ca_2",
+      "origine": "catalogue",
+      "sku": "tv",
+      "x": 2.32,
+      "z": -0.36,
+      "rot": -1.5707963267948966,
+      "raison": "Complète l’ensemble salon."
+    },
+    {
+      "id": "c2e31ca_1",
+      "origine": "catalogue",
+      "sku": "chevet",
+      "x": 0.8,
+      "z": 0.57,
+      "rot": 0,
+      "raison": "Complète l’ensemble salon."
+    },
+    {
+      "id": "c2e31ca_4",
+      "origine": "catalogue",
+      "sku": "chaise",
+      "x": -0.17,
+      "z": 1.79,
+      "rot": -1.5707963267948966,
+      "raison": "Complète l’ensemble repas."
+    },
+    {
+      "id": "c2e31ca_5",
+      "origine": "catalogue",
+      "sku": "chaise",
+      "x": 0.73,
+      "z": -0.77,
+      "rot": -1.5707963267948966,
+      "raison": "Complète l’ensemble repas."
+    },
+    {
+      "id": "c2e31ca_6",
+      "origine": "catalogue",
+      "sku": "chaise",
+      "x": -1.29,
+      "z": 0.58,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble repas."
+    },
+    {
+      "id": "c2e31ca_7",
+      "origine": "catalogue",
+      "sku": "chaise",
+      "x": 1.3,
+      "z": 0.85,
+      "rot": 0,
+      "raison": "Complète l’ensemble repas."
+    },
+    {
+      "id": "c2e31ca_10",
+      "origine": "catalogue",
+      "sku": "suspension",
+      "x": 0,
+      "z": -1.56,
+      "rot": 0,
+      "raison": "Complète l’ensemble repas."
+    },
+    {
+      "id": "c2e31ca_8",
+      "origine": "catalogue",
+      "sku": "lampe",
+      "x": -1.35,
+      "z": -0.74,
+      "rot": -1.5707963267948966,
+      "raison": "Complète l’ensemble salon."
+    }
+  ],
+  "proposition": {
+    "mode": "tout",
+    "envies": "Salon avec repas",
+    "budget": 4000,
+    "garder": [],
+    "confort": {
+      "passageCible": 0.9,
+      "score": {
+        "version": "realroom-2026-10-v3",
+        "total": 92,
+        "contraintes": 0,
+        "cout": 84.36,
+        "criteres": [
+          {
+            "id": "geometrie",
+            "note": 100,
+            "problemes": 0,
+            "poids": 4
+          },
+          {
+            "id": "circulation",
+            "note": 100,
+            "problemes": 0,
+            "poids": 3
+          },
+          {
+            "id": "usage",
+            "note": 67,
+            "problemes": 1,
+            "poids": 3
+          },
+          {
+            "id": "relations",
+            "note": 100,
+            "penalite": 0,
+            "poids": 1
+          },
+          {
+            "id": "orientation",
+            "note": 100,
+            "penalite": 0,
+            "poids": 1
+          },
+          {
+            "id": "conversation",
+            "note": 100,
+            "penalite": 0,
+            "poids": 0.6
+          },
+          {
+            "id": "equilibre",
+            "note": 92,
+            "penalite": 13.21,
+            "poids": 0.35
+          },
+          {
+            "id": "alignement",
+            "note": 100,
+            "penalite": 0,
+            "poids": 0.25
+          },
+          {
+            "id": "symetrie",
+            "note": null,
+            "penalite": 0,
+            "poids": 0
+          },
+          {
+            "id": "tapisLumiere",
+            "note": 100,
+            "penalite": 0,
+            "poids": 0.3
+          }
+        ],
+        "preferences": {
+          "style": "neutre",
+          "styles": [
+            "neutre"
+          ],
+          "composition": "equilibre",
+          "palette": [],
+          "matieres": [],
+          "resume": ""
+        },
+        "incomplet": false
+      },
+      "circulation": true,
+      "acces": false,
+      "ouvertures": true,
+      "alertes": [
+        {
+          "type": "acces",
+          "ids": [
+            "c2e31ca_3"
+          ],
+          "texte": "Prévoyez plus de recul pour utiliser ce meuble. (Table de repas quatre personnes)"
+        }
+      ],
+      "mesuresEstimees": false
+    },
+    "preferences": {
+      "style": "neutre",
+      "styles": [
+        "neutre"
+      ],
+      "composition": "equilibre",
+      "palette": [],
+      "matieres": [],
+      "resume": ""
+    },
+    "recherche": {
+      "methode": "recuit-simule",
+      "iterations": 2816,
+      "acceptationsMoinsBonnes": 570,
+      "candidatsVerifies": 0,
+      "patronsEssayes": [
+        "salon-conversation",
+        "salon-lateral",
+        "repas-central",
+        "repas-longitudinal"
+      ]
+    },
+    "selectionBudget": {
+      "methode": "sac-a-dos-emplacements",
+      "emplacements": 11,
+      "candidats": 11,
+      "retenus": 11,
+      "cout": 1740,
+      "prixComplets": true,
+      "plafond": 4000,
+      "approximation": false,
+      "substitutions": []
+    },
+    "placement": {
+      "source": "solveur",
+      "departSemantique": true,
+      "compositionsTestees": 17
+    },
+    "concept": "",
+    "conseils": [],
+    "alertes": [],
+    "date": "2026-10-11T00:07:00.332Z"
+  }
+}

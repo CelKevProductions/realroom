@@ -3,16 +3,18 @@
 import { useState } from 'react';
 import { api } from '@/components/api.js';
 import { reduireImage } from '@/components/piece/image.js';
+import Acquisition from '@/components/piece/Acquisition.js';
 
 const ROLES = ['entree', 'fond', 'gauche', 'droite'];
 
-export default function Photos({ t, piece, setPiece, analyser, attente }) {
+export default function Photos({ lang = 'fr', t, piece, setPiece, analyser, attente, onImport, onOuvrir }) {
   const tp = t.piece;
   const [envoi, setEnvoi] = useState({});
   const [erreur, setErreur] = useState('');
+  const [mode, setMode] = useState('photos'), [captureOccupe, setCaptureOccupe] = useState(false);
   const [dims, setDims] = useState(() => ({ largeur: piece.dims?.largeur ?? '', profondeur: piece.dims?.profondeur ?? '', hauteur: piece.dims?.hauteur ?? '' }));
   const [notes, setNotes] = useState(piece.notes || '');
-  const photos = piece.photos || [];
+  const photos = (piece.photos || []).filter(p => p.role !== 'inspiration');
   const photo = role => photos.find(p => p.role === role);
   const details = photos.filter(p => p.role === 'detail');
 
@@ -69,7 +71,8 @@ export default function Photos({ t, piece, setPiece, analyser, attente }) {
 
   return (
     <div className="etape-photos">
-      <section className="bloc" data-entree="">
+      <Acquisition piece={piece} setPiece={setPiece} lang={lang} onImport={onImport} onOccupe={setCaptureOccupe} onMode={setMode} />
+      <section className="bloc" data-entree="" hidden={mode !== 'photos'}>
         <div className="bloc__tete"><h2>{tp.photosTitre}</h2><p>{tp.photosIntro}</p></div>
         <div className="photos-grille">
           {ROLES.map(role => caseRendu({ role, p: photo(role), principale: role === 'entree' }))}
@@ -79,7 +82,7 @@ export default function Photos({ t, piece, setPiece, analyser, attente }) {
         {erreur && <p className="avis avis--alerte">{erreur}</p>}
       </section>
 
-      <section className="bloc" data-entree="">
+      <section className="bloc" data-entree="" hidden={mode !== 'photos'}>
         <div className="bloc__tete"><h2>{tp.mesuresTitre}</h2><p>{tp.mesuresIntro}</p></div>
         <div className="mesures">
           {['largeur', 'profondeur', 'hauteur'].map(k => (
@@ -95,10 +98,11 @@ export default function Photos({ t, piece, setPiece, analyser, attente }) {
         </label>
       </section>
 
-      <div className="barre-action">
-        {!photo('entree') && <span className="barre-action__aide">{tp.manquePhoto}</span>}
-        <button className="btn btn--plein btn--large" disabled={!photo('entree') || attente} onClick={async () => { await majDims(); analyser(); }}>{tp.analyser}</button>
-      </div>
+      {mode === 'photos' && <div className="barre-action">
+        {!piece.modele?.capture && !photo('entree') && <span className="barre-action__aide">{tp.manquePhoto}</span>}
+        {piece.modele?.capture ? <button className="btn btn--plein btn--large" disabled={captureOccupe || Object.values(envoi).some(Boolean)} onClick={onOuvrir}>{lang === 'en' ? 'Return to metric plan' : 'Revenir au plan métrique'}</button>
+          : <button className="btn btn--plein btn--large" disabled={!photo('entree') || attente || captureOccupe || Object.values(envoi).some(Boolean)} onClick={async () => { await majDims(); analyser(); }}>{tp.analyser}</button>}
+      </div>}
     </div>
   );
 }

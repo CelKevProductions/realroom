@@ -2,8 +2,11 @@ import { route, json, exiger, lireJSON, ErreurHTTP } from '@/lib/http.js';
 import { piece, majPiece, supprimerPiece, publique, rendusDe, renduPublic } from '@/lib/projets.js';
 import { dimsValides } from '@/lib/piece.js';
 import { FONCTIONS } from '@/lib/config.js';
-import { resoudre, verifier } from '@/lib/agencement.js';
+import { verifier } from '@/lib/agencement.js';
+import { corrigerPiece, mesuresConfirmees } from '@/lib/geometrie.js';
 import { PRODUITS } from '@/lib/catalogue.js';
+import { attacheMur } from '@/lib/hauteurs.js';
+import { estMural } from '@/lib/agencement.js';
 
 export const GET = route(async (request, { params }) => {
   const u = await exiger(request);
@@ -24,16 +27,17 @@ export const PATCH = route(async (request, { params }) => {
   if (FONCTIONS.includes(b.fonction)) champs.fonction = b.fonction;
   if (typeof b.notes === 'string') champs.notes = b.notes.slice(0, 1000);
   if (b.dims) champs.dims = dimsValides(b.dims);
-  // dimensions corrigées dans l'atelier : le modèle suit, les meubles restent dans la pièce
-  if (b.dims && p.modele) {
-    const d = dimsValides(b.dims);
-    const m = { ...p.modele, dims: { ...p.modele.dims, ...Object.fromEntries(Object.entries(d).filter(([, v]) => v)) } };
-    champs.modele = m;
-    champs.agencement = resoudre(m, p.agencement || [], PRODUITS, { jeu: 0 }).items;
+  // Le plan corrigé remplace la géométrie ; le relevé reste visible, même s'il faut l'ajuster.
+  if ((b.dims || b.geometrie) && p.modele) {
+    const correction = b.geometrie && typeof b.geometrie === 'object' ? b.geometrie : { dims: b.dims };
+    try { Object.assign(champs, corrigerPiece(p.modele, Array.isArray(b.agencement) ? nettoyer(b.agencement, p.modele) : p.agencement || [], correction, PRODUITS)); } catch(e) { if(['scan-forme','scan-coins','scan-dimensions'].includes(e.message)) throw new ErreurHTTP(400,e.message);throw e; }
+    champs.dims = mesuresConfirmees(champs.modele);
+    champs.proposition = p.proposition ? { ...p.proposition, confort: null, densite: null } : null;
   }
   if (Array.isArray(b.agencement)) {
     if (!p.modele) throw new ErreurHTTP(409, 'pas-de-modele');
-    champs.agencement = nettoyer(b.agencement);
+    if (!b.dims && !b.geometrie) champs.agencement = nettoyer(b.agencement, p.modele);
+    if (p.proposition) champs.proposition = { ...p.proposition, confort: null, densite: null };
   }
   if (b.vue && p.modele) champs.modele = { ...(champs.modele || p.modele), vue: { ...p.modele.vue, ...pick(b.vue, ['x', 'y', 'z', 'cx', 'cy', 'cz', 'fov']) } };
   const n = await majPiece(u.id, id, champs);
@@ -49,14 +53,21 @@ export const DELETE = route(async (request, { params }) => {
 
 const pick = (o, cles) => Object.fromEntries(cles.filter(k => typeof o[k] === 'number' && isFinite(o[k])).map(k => [k, o[k]]));
 // agencement venu du navigateur : champs connus seulement, produits du catalogue existants
-function nettoyer(liste) {
+function nettoyer(liste, modele) {
   return liste.slice(0, 80).map(it => {
     if (!it || typeof it.id !== 'string') return null;
     const base = { id: it.id.slice(0, 40), origine: it.origine === 'existant' ? 'existant' : 'catalogue', ...pick(it, ['x', 'z', 'rot', 'y']) };
     if (typeof base.x !== 'number' || typeof base.z !== 'number') return null;
-    if (['fond', 'gauche', 'droite', 'entree'].includes(it.mur)) base.mur = it.mur;
+    if (['fond', 'gauche', 'droite', 'entree'].includes(it.mur) || /^pan_([1-9]|[12][0-9]|3[0-2])$/.test(it.mur)) base.mur = it.mur;
     if (it.garde === false) base.garde = false;
     if (typeof it.raison === 'string') base.raison = it.raison.slice(0, 240);
+    if (['wall_item', 'ceiling_item', 'surface_item'].includes(it.kind)) base.kind = it.kind;
+    if (Number.isFinite(it.y)) base.height = it.y;
+    if (it.attach_to?.type === 'furniture' && typeof it.attach_to.id === 'string' && liste.some(q => q?.id === it.attach_to.id)) base.attach_to = { type: 'furniture', id: it.attach_to.id.slice(0, 40) };
+    if (it.attach_to?.type === 'ceiling') base.attach_to = { type: 'ceiling' };
+    for (const k of ['zoneId', 'usageProgramme', 'slotProgramme']) if (typeof it[k] === 'string') base[k] = it[k].slice(0, 80);
+    if (typeof it.obligatoireProgramme === 'boolean') base.obligatoireProgramme = it.obligatoireProgramme;
+    if (Number.isFinite(it.prioriteProgramme)) base.prioriteProgramme = Math.max(1, Math.min(7, it.prioriteProgramme));
     if (base.origine === 'catalogue') {
       if (!PRODUITS[it.sku]) return null;
       base.sku = it.sku;
@@ -64,8 +75,10 @@ function nettoyer(liste) {
       const q = it.p || {};
       if (!Array.isArray(q.dim) || q.dim.length !== 3 || !q.dim.every(v => typeof v === 'number' && v > 0 && v < 8)) return null;
       base.p = { nom: String(q.nom || '').slice(0, 80), fam: String(q.fam || 'autre').slice(0, 20), st: String(q.st || '').slice(0, 40), dim: q.dim, cols: (Array.isArray(q.cols) ? q.cols : []).filter(c => /^#[0-9a-f]{6}$/i.test(c)).slice(0, 3), mat: String(q.mat || 'tissu').slice(0, 20), metal: 'noir', bois: String(q.bois || '').slice(0, 20) };
+      if (q.dimsLues === true) base.p.dimsLues = true;
       if (typeof it.confiance === 'number') base.confiance = it.confiance;
     }
-    return base;
+    const produit = base.sku ? PRODUITS[base.sku] : base.p;
+    return modele && estMural(produit.fam) ? attacheMur(modele, base, produit) : base;
   }).filter(Boolean);
 }

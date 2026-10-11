@@ -1,0 +1,2252 @@
+{
+  "version": 1,
+  "regles": "realroom-2026-10-v3",
+  "date": "2026-10-10",
+  "audit": {
+    "nombreProduits": 341,
+    "dimensionsNumeriques": 341,
+    "dimensionsEstimees": [
+      "ecp-12",
+      "boxing-glove",
+      "duo-fruit",
+      "organika",
+      "rl-550",
+      "sl-550",
+      "ph-550",
+      "lcp-220",
+      "cof-510",
+      "cb-01",
+      "ms-pm-art-02",
+      "sgl-light-2412",
+      "ccl-orb-24",
+      "agc-struct-9186",
+      "ltl-arc-5592",
+      "sef-cont-18",
+      "plafonnier-wood-orb",
+      "canape-3-places-outdoor-en-teck-et-tissage-corde",
+      "canape-dangle-modulaire-design-2603-avec-meridienne-et-tissu-boucle"
+    ],
+    "prixNonConfirme": [
+      "tabouret-enfant-coque-blanche-square-kid",
+      "table-lounge-outdoor-en-teck-massif-1",
+      "canape-3-places-outdoor-en-teck-et-tissage-corde",
+      "daybed-dexterieur-en-teck-jyt311-02",
+      "canape-3-places-outdoor-contemporain-tissu-chine-et-motifs-geometriques-9733",
+      "canape-3-places-modulaire-multicolore-et-tissu-texture",
+      "canape-dangle-modulaire-design-2603-avec-meridienne-et-tissu-boucle"
+    ],
+    "familles": {
+      "lit": 34,
+      "suspension": 32,
+      "applique": 10,
+      "lampadaire": 1,
+      "lustre": 9,
+      "fauteuil": 143,
+      "tabouret": 3,
+      "canape": 28,
+      "banc": 2,
+      "baignoire": 47,
+      "sculpture": 3,
+      "salon-jardin": 9,
+      "jardiniere": 1,
+      "meridienne": 2,
+      "balancelle": 1,
+      "table": 5,
+      "miroir": 2,
+      "pouf": 1,
+      "meuble": 6,
+      "tapis": 1,
+      "plafonnier": 1
+    },
+    "meublesBanc": [
+      {
+        "id": "nd-01",
+        "nom": "Nordic Duo",
+        "dim": [
+          1.7,
+          2.1,
+          1
+        ],
+        "prix": 1250
+      },
+      {
+        "id": "nordic-table-basse",
+        "nom": "Nordic",
+        "dim": [
+          0.4,
+          0.4,
+          0.48
+        ],
+        "prix": 299
+      },
+      {
+        "id": "et-650",
+        "nom": "Évasion Tropicale",
+        "dim": [
+          1.5,
+          0.42,
+          0.78
+        ],
+        "prix": 650
+      }
+    ]
+  },
+  "synthese": {
+    "cas": 10,
+    "sansConflit": 9,
+    "circulationValidee": 10,
+    "toutesReglesUsage": 6,
+    "mobilierComplet": 8,
+    "scoresAmeliores": 10,
+    "scoreMoyenAvant": 60.8,
+    "scoreMoyenApres": 87.9
+  },
+  "chambres": [
+    {
+      "nom": "9 m²",
+      "modele": {
+        "dims": {
+          "largeur": 3,
+          "profondeur": 3,
+          "hauteur": 2.6,
+          "estimees": false
+        },
+        "murs": {
+          "entree": {
+            "ouvertures": [
+              {
+                "type": "porte",
+                "position": 0.2,
+                "largeur": 0.9,
+                "hauteur": 2.05,
+                "allege": 0
+              }
+            ]
+          },
+          "fond": {
+            "ouvertures": [
+              {
+                "type": "fenetre",
+                "position": 0,
+                "largeur": 1.1,
+                "hauteur": 1.2,
+                "allege": 0.95
+              }
+            ]
+          },
+          "gauche": {
+            "ouvertures": []
+          },
+          "droite": {
+            "ouvertures": []
+          }
+        }
+      },
+      "mobilier": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": -0.65,
+          "z": -0.45,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": 0.84,
+          "z": -1.3,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": 1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        }
+      ],
+      "avant": {
+        "score": 43,
+        "contraintes": 1,
+        "circulation": false,
+        "acces": false,
+        "ouvertures": false,
+        "cout": 38933.06,
+        "alertes": [
+          {
+            "type": "fenetre",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "acces",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "circulation",
+            "ids": []
+          },
+          {
+            "type": "chemin",
+            "ids": [
+              "lit"
+            ]
+          }
+        ]
+      },
+      "ecartesAvant": [
+        "rangement"
+      ],
+      "apres": {
+        "score": 49,
+        "contraintes": 1,
+        "circulation": true,
+        "acces": false,
+        "ouvertures": false,
+        "cout": 24337.72,
+        "alertes": [
+          {
+            "type": "fenetre",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "acces",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "acces",
+            "ids": [
+              "rangement"
+            ]
+          }
+        ]
+      },
+      "agencement": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": -0.43,
+          "z": -0.35,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": 1.29,
+          "z": 0.75,
+          "rot": -1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -1.23,
+          "z": 0.76,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        }
+      ],
+      "variantes": 1,
+      "dureeMs": 796,
+      "recherche": {
+        "methode": "recuit-simule",
+        "iterations": 1920,
+        "acceptationsMoinsBonnes": 137,
+        "candidatsVerifies": 8,
+        "patronsEssayes": [
+          "chambre-decalee",
+          "chambre-axiale",
+          "chambre-laterale"
+        ]
+      },
+      "conflits": [],
+      "ecartes": [
+        "chevet-d"
+      ]
+    },
+    {
+      "nom": "10,5 m²",
+      "modele": {
+        "dims": {
+          "largeur": 3,
+          "profondeur": 3.5,
+          "hauteur": 2.6,
+          "estimees": false
+        },
+        "murs": {
+          "entree": {
+            "ouvertures": [
+              {
+                "type": "porte",
+                "position": 0.2,
+                "largeur": 0.9,
+                "hauteur": 2.05,
+                "allege": 0
+              }
+            ]
+          },
+          "fond": {
+            "ouvertures": [
+              {
+                "type": "fenetre",
+                "position": 0,
+                "largeur": 1.1,
+                "hauteur": 1.2,
+                "allege": 0.95
+              }
+            ]
+          },
+          "gauche": {
+            "ouvertures": []
+          },
+          "droite": {
+            "ouvertures": []
+          }
+        }
+      },
+      "mobilier": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": 0,
+          "z": -0.21,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": 1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        }
+      ],
+      "avant": {
+        "score": 69,
+        "contraintes": 0,
+        "circulation": false,
+        "acces": false,
+        "ouvertures": true,
+        "cout": 14481.4,
+        "alertes": [
+          {
+            "type": "circulation",
+            "ids": []
+          },
+          {
+            "type": "chemin",
+            "ids": [
+              "lit"
+            ]
+          }
+        ]
+      },
+      "ecartesAvant": [
+        "rangement"
+      ],
+      "apres": {
+        "score": 93,
+        "contraintes": 0,
+        "circulation": true,
+        "acces": false,
+        "ouvertures": true,
+        "cout": 62.4,
+        "alertes": [
+          {
+            "type": "acces",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "acces",
+            "ids": [
+              "rangement"
+            ]
+          }
+        ]
+      },
+      "agencement": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": -0.45,
+          "z": -0.3,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": 1.29,
+          "z": 1,
+          "rot": -1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -1.25,
+          "z": 0.81,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": -1.25,
+          "z": -1.41,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        }
+      ],
+      "variantes": 1,
+      "dureeMs": 943,
+      "recherche": {
+        "methode": "recuit-simule",
+        "iterations": 2048,
+        "acceptationsMoinsBonnes": 172,
+        "candidatsVerifies": 8,
+        "patronsEssayes": [
+          "chambre-decalee",
+          "chambre-axiale",
+          "chambre-laterale"
+        ]
+      },
+      "conflits": [],
+      "ecartes": []
+    },
+    {
+      "nom": "12,25 m² · deux portes",
+      "modele": {
+        "dims": {
+          "largeur": 3.5,
+          "profondeur": 3.5,
+          "hauteur": 2.6,
+          "estimees": false
+        },
+        "murs": {
+          "entree": {
+            "ouvertures": [
+              {
+                "type": "porte",
+                "position": 0.2,
+                "largeur": 0.9,
+                "hauteur": 2.05,
+                "allege": 0
+              }
+            ]
+          },
+          "fond": {
+            "ouvertures": [
+              {
+                "type": "fenetre",
+                "position": 0,
+                "largeur": 1.1,
+                "hauteur": 1.2,
+                "allege": 0.95
+              }
+            ]
+          },
+          "gauche": {
+            "ouvertures": []
+          },
+          "droite": {
+            "ouvertures": [
+              {
+                "type": "porte",
+                "position": 0,
+                "largeur": 0.85,
+                "hauteur": 2.05,
+                "allege": 0
+              }
+            ]
+          }
+        }
+      },
+      "mobilier": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": 0,
+          "z": -0.21,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": 1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        }
+      ],
+      "avant": {
+        "score": 69,
+        "contraintes": 0,
+        "circulation": false,
+        "acces": false,
+        "ouvertures": true,
+        "cout": 26481.4,
+        "alertes": [
+          {
+            "type": "circulation",
+            "ids": []
+          },
+          {
+            "type": "chemin",
+            "ids": [
+              "lit"
+            ]
+          }
+        ]
+      },
+      "ecartesAvant": [
+        "rangement"
+      ],
+      "apres": {
+        "score": 98,
+        "contraintes": 0,
+        "circulation": true,
+        "acces": true,
+        "ouvertures": true,
+        "cout": 14.98,
+        "alertes": []
+      },
+      "agencement": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": -0.7,
+          "z": -0.03,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": 1,
+          "z": -1.54,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -1.5,
+          "z": 1.08,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": -1.5,
+          "z": -1.14,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        }
+      ],
+      "variantes": 1,
+      "dureeMs": 769,
+      "recherche": {
+        "methode": "recuit-simule",
+        "iterations": 288,
+        "acceptationsMoinsBonnes": 21,
+        "candidatsVerifies": 1,
+        "patronsEssayes": [
+          "chambre-decalee",
+          "chambre-axiale",
+          "chambre-laterale"
+        ]
+      },
+      "conflits": [],
+      "ecartes": []
+    },
+    {
+      "nom": "14 m²",
+      "modele": {
+        "dims": {
+          "largeur": 3.5,
+          "profondeur": 4,
+          "hauteur": 2.6,
+          "estimees": false
+        },
+        "murs": {
+          "entree": {
+            "ouvertures": [
+              {
+                "type": "porte",
+                "position": 0.2,
+                "largeur": 0.9,
+                "hauteur": 2.05,
+                "allege": 0
+              }
+            ]
+          },
+          "fond": {
+            "ouvertures": [
+              {
+                "type": "fenetre",
+                "position": 0,
+                "largeur": 1.1,
+                "hauteur": 1.2,
+                "allege": 0.95
+              }
+            ]
+          },
+          "gauche": {
+            "ouvertures": []
+          },
+          "droite": {
+            "ouvertures": []
+          }
+        }
+      },
+      "mobilier": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": 0,
+          "z": 0,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": 1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        }
+      ],
+      "avant": {
+        "score": 94,
+        "contraintes": 0,
+        "circulation": true,
+        "acces": true,
+        "ouvertures": true,
+        "cout": 385.18,
+        "alertes": []
+      },
+      "ecartesAvant": [
+        "rangement"
+      ],
+      "apres": {
+        "score": 99,
+        "contraintes": 0,
+        "circulation": true,
+        "acces": true,
+        "ouvertures": true,
+        "cout": 9.23,
+        "alertes": []
+      },
+      "agencement": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": -0.69,
+          "z": -0.3,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": 1.53,
+          "z": 1.25,
+          "rot": -1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -1.48,
+          "z": 0.81,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": -1.48,
+          "z": -1.41,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        }
+      ],
+      "variantes": 2,
+      "dureeMs": 555,
+      "recherche": {
+        "methode": "recuit-simule",
+        "iterations": 576,
+        "acceptationsMoinsBonnes": 76,
+        "candidatsVerifies": 1,
+        "patronsEssayes": [
+          "chambre-decalee",
+          "chambre-axiale",
+          "chambre-laterale"
+        ]
+      },
+      "conflits": [],
+      "ecartes": []
+    },
+    {
+      "nom": "16 m² · deux portes",
+      "modele": {
+        "dims": {
+          "largeur": 4,
+          "profondeur": 4,
+          "hauteur": 2.6,
+          "estimees": false
+        },
+        "murs": {
+          "entree": {
+            "ouvertures": [
+              {
+                "type": "porte",
+                "position": 0.2,
+                "largeur": 0.9,
+                "hauteur": 2.05,
+                "allege": 0
+              }
+            ]
+          },
+          "fond": {
+            "ouvertures": [
+              {
+                "type": "fenetre",
+                "position": 0,
+                "largeur": 1.1,
+                "hauteur": 1.2,
+                "allege": 0.95
+              }
+            ]
+          },
+          "gauche": {
+            "ouvertures": []
+          },
+          "droite": {
+            "ouvertures": [
+              {
+                "type": "porte",
+                "position": 0,
+                "largeur": 0.85,
+                "hauteur": 2.05,
+                "allege": 0
+              }
+            ]
+          }
+        }
+      },
+      "mobilier": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": 0,
+          "z": 0,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": -1.1,
+          "z": 1.79,
+          "rot": 3.141592653589793,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": 1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        }
+      ],
+      "avant": {
+        "score": 69,
+        "contraintes": 0,
+        "circulation": false,
+        "acces": false,
+        "ouvertures": true,
+        "cout": 2672.11,
+        "alertes": [
+          {
+            "type": "acces",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "acces",
+            "ids": [
+              "rangement"
+            ]
+          },
+          {
+            "type": "chemin",
+            "ids": [
+              "rangement"
+            ]
+          }
+        ]
+      },
+      "ecartesAvant": [],
+      "apres": {
+        "score": 99,
+        "contraintes": 0,
+        "circulation": true,
+        "acces": true,
+        "ouvertures": true,
+        "cout": 11.19,
+        "alertes": []
+      },
+      "agencement": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": -0.94,
+          "z": -0.08,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": 1.25,
+          "z": -1.19,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -1.75,
+          "z": -1.19,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": -1.75,
+          "z": 1.03,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        }
+      ],
+      "variantes": 2,
+      "dureeMs": 643,
+      "recherche": {
+        "methode": "recuit-simule",
+        "iterations": 576,
+        "acceptationsMoinsBonnes": 62,
+        "candidatsVerifies": 3,
+        "patronsEssayes": [
+          "chambre-decalee",
+          "chambre-axiale",
+          "chambre-laterale"
+        ]
+      },
+      "conflits": [],
+      "ecartes": []
+    },
+    {
+      "nom": "20 m²",
+      "modele": {
+        "dims": {
+          "largeur": 4,
+          "profondeur": 5,
+          "hauteur": 2.6,
+          "estimees": false
+        },
+        "murs": {
+          "entree": {
+            "ouvertures": [
+              {
+                "type": "porte",
+                "position": 0.2,
+                "largeur": 0.9,
+                "hauteur": 2.05,
+                "allege": 0
+              }
+            ]
+          },
+          "fond": {
+            "ouvertures": [
+              {
+                "type": "fenetre",
+                "position": 0,
+                "largeur": 1.1,
+                "hauteur": 1.2,
+                "allege": 0.95
+              }
+            ]
+          },
+          "gauche": {
+            "ouvertures": []
+          },
+          "droite": {
+            "ouvertures": []
+          }
+        }
+      },
+      "mobilier": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": 0,
+          "z": 0,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": 0,
+          "z": 1.39,
+          "rot": 3.141592653589793,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": 1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        }
+      ],
+      "avant": {
+        "score": 46,
+        "contraintes": 0,
+        "circulation": false,
+        "acces": false,
+        "ouvertures": true,
+        "cout": 17752.76,
+        "alertes": [
+          {
+            "type": "acces",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "acces",
+            "ids": [
+              "rangement"
+            ]
+          },
+          {
+            "type": "circulation",
+            "ids": []
+          },
+          {
+            "type": "chemin",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "chemin",
+            "ids": [
+              "rangement"
+            ]
+          }
+        ]
+      },
+      "ecartesAvant": [],
+      "apres": {
+        "score": 99,
+        "contraintes": 0,
+        "circulation": true,
+        "acces": true,
+        "ouvertures": true,
+        "cout": 6.74,
+        "alertes": []
+      },
+      "agencement": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": 0.94,
+          "z": -0.46,
+          "rot": -1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": -0.83,
+          "z": 1.26,
+          "rot": 1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": 1.74,
+          "z": -1.57,
+          "rot": -1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": 1.74,
+          "z": 0.65,
+          "rot": -1.5707963267948966,
+          "origine": "catalogue"
+        }
+      ],
+      "variantes": 3,
+      "dureeMs": 1036,
+      "recherche": {
+        "methode": "recuit-simule",
+        "iterations": 576,
+        "acceptationsMoinsBonnes": 86,
+        "candidatsVerifies": 5,
+        "patronsEssayes": [
+          "chambre-decalee",
+          "chambre-axiale",
+          "chambre-laterale"
+        ]
+      },
+      "conflits": [],
+      "ecartes": []
+    },
+    {
+      "nom": "L · 12 m²",
+      "modele": {
+        "v": 1,
+        "contour": [
+          [
+            -2,
+            -2
+          ],
+          [
+            2,
+            -2
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            -2,
+            2
+          ]
+        ],
+        "dims": {
+          "largeur": 4,
+          "profondeur": 4,
+          "hauteur": 2.6,
+          "estimees": true,
+          "sources": {
+            "largeur": "scan",
+            "profondeur": "scan",
+            "hauteur": "mesure"
+          }
+        },
+        "murs": {
+          "pan_1": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": [
+              {
+                "type": "porte",
+                "position": -0.75,
+                "largeur": 0.9,
+                "hauteur": 2.05,
+                "allege": 0,
+                "confiance": 0.5,
+                "hauteurEstimee": true
+              }
+            ]
+          },
+          "pan_2": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          },
+          "pan_3": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": [
+              {
+                "type": "fenetre",
+                "position": 0,
+                "largeur": 0.7,
+                "hauteur": 1.2,
+                "allege": 0.95
+              }
+            ]
+          },
+          "pan_4": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          },
+          "pan_5": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          },
+          "pan_6": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          }
+        },
+        "sol": {
+          "matiere": "autre",
+          "couleur": "#B9A58B"
+        },
+        "plafond": {
+          "couleur": "#F6F4EF"
+        },
+        "style": "",
+        "ambiance": "",
+        "remarques": [
+          "Contrôlez les cotes et les ouvertures sur place avant de commander.",
+          "Le plan 2D ne fournit ni hauteur des ouvertures, ni mobilier, ni sens de battant : vérifiez et complétez ces éléments."
+        ],
+        "vue": {
+          "x": -0.75,
+          "z": -1.7,
+          "y": 1.5,
+          "cx": -0.13,
+          "cy": 1.05,
+          "cz": -0.13,
+          "fov": 50
+        },
+        "capture": {
+          "version": "realroom-scan-v1",
+          "source": "plan-dxf",
+          "unites": "m",
+          "metrique": true,
+          "aVerifier": true,
+          "ouverturesDetectees": true,
+          "mobilierDetecte": false,
+          "nbMeubles": 0,
+          "nbOuvertures": 1
+        }
+      },
+      "mobilier": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": -0.95,
+          "z": 0.05,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": -0.82,
+          "z": 1.75,
+          "rot": -3.141592653589793,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -1.8,
+          "z": -1.24,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": 1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        }
+      ],
+      "avant": {
+        "score": 57,
+        "contraintes": 0,
+        "circulation": false,
+        "acces": false,
+        "ouvertures": true,
+        "cout": 6427.37,
+        "alertes": [
+          {
+            "type": "acces",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "acces",
+            "ids": [
+              "rangement"
+            ]
+          },
+          {
+            "type": "chemin",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "chemin",
+            "ids": [
+              "rangement"
+            ]
+          }
+        ]
+      },
+      "ecartesAvant": [],
+      "apres": {
+        "score": 70,
+        "contraintes": 0,
+        "circulation": true,
+        "acces": false,
+        "ouvertures": true,
+        "cout": 1867.54,
+        "alertes": [
+          {
+            "type": "acces",
+            "ids": [
+              "lit"
+            ]
+          }
+        ]
+      },
+      "agencement": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": -0.95,
+          "z": 0.91,
+          "rot": -3.141592653589793,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": 1.35,
+          "z": -1.1,
+          "rot": -1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": 0.1,
+          "z": -0.41,
+          "rot": 3.141592653589793,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": 0.53,
+          "z": -0.22,
+          "rot": 3.141592653589793,
+          "origine": "catalogue"
+        }
+      ],
+      "variantes": 2,
+      "dureeMs": 1593,
+      "recherche": {
+        "methode": "recuit-simule",
+        "iterations": 1024,
+        "acceptationsMoinsBonnes": 64,
+        "candidatsVerifies": 8,
+        "patronsEssayes": [
+          "chambre-decalee",
+          "chambre-axiale",
+          "chambre-laterale"
+        ]
+      },
+      "conflits": [],
+      "ecartes": []
+    },
+    {
+      "nom": "L · 16 m² · deux portes",
+      "modele": {
+        "v": 1,
+        "contour": [
+          [
+            -2.5,
+            -2
+          ],
+          [
+            2.5,
+            -2
+          ],
+          [
+            2.5,
+            0
+          ],
+          [
+            0.5,
+            0
+          ],
+          [
+            0.5,
+            2
+          ],
+          [
+            -2.5,
+            2
+          ]
+        ],
+        "dims": {
+          "largeur": 5,
+          "profondeur": 4,
+          "hauteur": 2.6,
+          "estimees": true,
+          "sources": {
+            "largeur": "scan",
+            "profondeur": "scan",
+            "hauteur": "mesure"
+          }
+        },
+        "murs": {
+          "pan_1": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": [
+              {
+                "type": "porte",
+                "position": -0.94,
+                "largeur": 1.13,
+                "hauteur": 2.05,
+                "allege": 0,
+                "confiance": 0.5,
+                "hauteurEstimee": true
+              }
+            ]
+          },
+          "pan_2": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          },
+          "pan_3": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": [
+              {
+                "type": "fenetre",
+                "position": 0,
+                "largeur": 0.7,
+                "hauteur": 1.2,
+                "allege": 0.95
+              }
+            ]
+          },
+          "pan_4": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          },
+          "pan_5": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": [
+              {
+                "type": "porte",
+                "position": 0.56,
+                "largeur": 0.67,
+                "hauteur": 2.05,
+                "allege": 0,
+                "confiance": 0.5,
+                "hauteurEstimee": true
+              }
+            ]
+          },
+          "pan_6": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          }
+        },
+        "sol": {
+          "matiere": "autre",
+          "couleur": "#B9A58B"
+        },
+        "plafond": {
+          "couleur": "#F6F4EF"
+        },
+        "style": "",
+        "ambiance": "",
+        "remarques": [
+          "Contrôlez les cotes et les ouvertures sur place avant de commander.",
+          "Le plan 2D ne fournit ni hauteur des ouvertures, ni mobilier, ni sens de battant : vérifiez et complétez ces éléments."
+        ],
+        "vue": {
+          "x": -0.94,
+          "z": -1.7,
+          "y": 1.5,
+          "cx": 0,
+          "cy": 1.05,
+          "cz": 0,
+          "fov": 50
+        },
+        "capture": {
+          "version": "realroom-scan-v1",
+          "source": "plan-dxf",
+          "unites": "m",
+          "metrique": true,
+          "aVerifier": true,
+          "ouverturesDetectees": true,
+          "mobilierDetecte": false,
+          "nbMeubles": 0,
+          "nbOuvertures": 2
+        }
+      },
+      "mobilier": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": -0.45,
+          "z": 0.05,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": -0.35,
+          "z": 1.61,
+          "rot": 3.141592653589793,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -1.54,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": 1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        }
+      ],
+      "avant": {
+        "score": 45,
+        "contraintes": 0,
+        "circulation": false,
+        "acces": false,
+        "ouvertures": true,
+        "cout": 17948.48,
+        "alertes": [
+          {
+            "type": "acces",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "acces",
+            "ids": [
+              "rangement"
+            ]
+          },
+          {
+            "type": "circulation",
+            "ids": []
+          },
+          {
+            "type": "chemin",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "chemin",
+            "ids": [
+              "rangement"
+            ]
+          }
+        ]
+      },
+      "ecartesAvant": [],
+      "apres": {
+        "score": 74,
+        "contraintes": 0,
+        "circulation": true,
+        "acces": false,
+        "ouvertures": true,
+        "cout": 1010.13,
+        "alertes": [
+          {
+            "type": "acces",
+            "ids": [
+              "lit"
+            ]
+          }
+        ]
+      },
+      "agencement": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": -0.45,
+          "z": 0.05,
+          "rot": 3.141592653589793,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": 1.52,
+          "z": -0.87,
+          "rot": -1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -0.8,
+          "z": 1.43,
+          "rot": 3.141592653589793,
+          "origine": "catalogue"
+        }
+      ],
+      "variantes": 1,
+      "dureeMs": 1348,
+      "recherche": {
+        "methode": "recuit-simule",
+        "iterations": 960,
+        "acceptationsMoinsBonnes": 126,
+        "candidatsVerifies": 1,
+        "patronsEssayes": [
+          "chambre-decalee",
+          "chambre-axiale",
+          "chambre-laterale"
+        ]
+      },
+      "conflits": [],
+      "ecartes": [
+        "chevet-d"
+      ]
+    },
+    {
+      "nom": "Oblique · 15 m²",
+      "modele": {
+        "v": 1,
+        "contour": [
+          [
+            -2,
+            -2
+          ],
+          [
+            2,
+            -2
+          ],
+          [
+            2,
+            1.5
+          ],
+          [
+            -2,
+            2
+          ]
+        ],
+        "dims": {
+          "largeur": 4,
+          "profondeur": 4,
+          "hauteur": 2.6,
+          "estimees": true,
+          "sources": {
+            "largeur": "scan",
+            "profondeur": "scan",
+            "hauteur": "mesure"
+          }
+        },
+        "murs": {
+          "pan_1": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": [
+              {
+                "type": "porte",
+                "position": -0.75,
+                "largeur": 0.9,
+                "hauteur": 2.05,
+                "allege": 0,
+                "confiance": 0.5,
+                "hauteurEstimee": true
+              }
+            ]
+          },
+          "pan_2": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          },
+          "pan_3": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": [
+              {
+                "type": "fenetre",
+                "position": 0,
+                "largeur": 0.7,
+                "hauteur": 1.2,
+                "allege": 0.95
+              }
+            ]
+          },
+          "pan_4": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          }
+        },
+        "sol": {
+          "matiere": "autre",
+          "couleur": "#B9A58B"
+        },
+        "plafond": {
+          "couleur": "#F6F4EF"
+        },
+        "style": "",
+        "ambiance": "",
+        "remarques": [
+          "Contrôlez les cotes et les ouvertures sur place avant de commander.",
+          "Le plan 2D ne fournit ni hauteur des ouvertures, ni mobilier, ni sens de battant : vérifiez et complétez ces éléments."
+        ],
+        "vue": {
+          "x": -0.75,
+          "z": -1.7,
+          "y": 1.5,
+          "cx": 0,
+          "cy": 1.05,
+          "cz": 0,
+          "fov": 50
+        },
+        "capture": {
+          "version": "realroom-scan-v1",
+          "source": "plan-dxf",
+          "unites": "m",
+          "metrique": true,
+          "aVerifier": true,
+          "ouverturesDetectees": true,
+          "mobilierDetecte": false,
+          "nbMeubles": 0,
+          "nbOuvertures": 1
+        }
+      },
+      "mobilier": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": 0,
+          "z": 0,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": -0.05,
+          "z": 1.41,
+          "rot": 3.141592653589793,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": 1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        }
+      ],
+      "avant": {
+        "score": 58,
+        "contraintes": 0,
+        "circulation": false,
+        "acces": false,
+        "ouvertures": true,
+        "cout": 6082.33,
+        "alertes": [
+          {
+            "type": "acces",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "acces",
+            "ids": [
+              "rangement"
+            ]
+          },
+          {
+            "type": "chemin",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "chemin",
+            "ids": [
+              "rangement"
+            ]
+          }
+        ]
+      },
+      "ecartesAvant": [],
+      "apres": {
+        "score": 99,
+        "contraintes": 0,
+        "circulation": true,
+        "acces": true,
+        "ouvertures": true,
+        "cout": 7.79,
+        "alertes": []
+      },
+      "agencement": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": 0.91,
+          "z": -0.55,
+          "rot": -1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": -0.65,
+          "z": 1.3,
+          "rot": 3.141592653589793,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": 1.71,
+          "z": -1.66,
+          "rot": -1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": 1.71,
+          "z": 0.56,
+          "rot": -1.5707963267948966,
+          "origine": "catalogue"
+        }
+      ],
+      "variantes": 2,
+      "dureeMs": 1138,
+      "recherche": {
+        "methode": "recuit-simule",
+        "iterations": 576,
+        "acceptationsMoinsBonnes": 69,
+        "candidatsVerifies": 6,
+        "patronsEssayes": [
+          "chambre-decalee",
+          "chambre-axiale",
+          "chambre-laterale"
+        ]
+      },
+      "conflits": [],
+      "ecartes": []
+    },
+    {
+      "nom": "Décroché · 15 m²",
+      "modele": {
+        "v": 1,
+        "contour": [
+          [
+            -2,
+            -2
+          ],
+          [
+            2,
+            -2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            -2,
+            2
+          ]
+        ],
+        "dims": {
+          "largeur": 4,
+          "profondeur": 4,
+          "hauteur": 2.6,
+          "estimees": true,
+          "sources": {
+            "largeur": "scan",
+            "profondeur": "scan",
+            "hauteur": "mesure"
+          }
+        },
+        "murs": {
+          "pan_1": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": [
+              {
+                "type": "porte",
+                "position": -0.75,
+                "largeur": 0.9,
+                "hauteur": 2.05,
+                "allege": 0,
+                "confiance": 0.5,
+                "hauteurEstimee": true
+              }
+            ]
+          },
+          "pan_2": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          },
+          "pan_3": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": [
+              {
+                "type": "fenetre",
+                "position": 0,
+                "largeur": 0.7,
+                "hauteur": 1.2,
+                "allege": 0.95
+              }
+            ]
+          },
+          "pan_4": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          },
+          "pan_5": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          },
+          "pan_6": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          },
+          "pan_7": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          },
+          "pan_8": {
+            "couleur": "#EFEAE2",
+            "observe": null,
+            "ouvertures": []
+          }
+        },
+        "sol": {
+          "matiere": "autre",
+          "couleur": "#B9A58B"
+        },
+        "plafond": {
+          "couleur": "#F6F4EF"
+        },
+        "style": "",
+        "ambiance": "",
+        "remarques": [
+          "Contrôlez les cotes et les ouvertures sur place avant de commander.",
+          "Le plan 2D ne fournit ni hauteur des ouvertures, ni mobilier, ni sens de battant : vérifiez et complétez ces éléments."
+        ],
+        "vue": {
+          "x": -0.75,
+          "z": -1.7,
+          "y": 1.5,
+          "cx": 0,
+          "cy": 1.05,
+          "cz": 0,
+          "fov": 50
+        },
+        "capture": {
+          "version": "realroom-scan-v1",
+          "source": "plan-dxf",
+          "unites": "m",
+          "metrique": true,
+          "aVerifier": true,
+          "ouverturesDetectees": true,
+          "mobilierDetecte": false,
+          "nbMeubles": 0,
+          "nbOuvertures": 1
+        }
+      },
+      "mobilier": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": 0.65,
+          "z": -0.15,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": -0.82,
+          "z": 1.75,
+          "rot": -3.141592653589793,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": -1.15,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": 1.75,
+          "z": -0.8,
+          "rot": 0,
+          "origine": "catalogue"
+        }
+      ],
+      "avant": {
+        "score": 58,
+        "contraintes": 0,
+        "circulation": false,
+        "acces": false,
+        "ouvertures": true,
+        "cout": 5903.02,
+        "alertes": [
+          {
+            "type": "acces",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "chemin",
+            "ids": [
+              "lit"
+            ]
+          },
+          {
+            "type": "chemin",
+            "ids": [
+              "rangement"
+            ]
+          }
+        ]
+      },
+      "ecartesAvant": [],
+      "apres": {
+        "score": 99,
+        "contraintes": 0,
+        "circulation": true,
+        "acces": true,
+        "ouvertures": true,
+        "cout": 6.1,
+        "alertes": []
+      },
+      "agencement": [
+        {
+          "id": "lit",
+          "sku": "nd-01",
+          "x": 0.89,
+          "z": -0.45,
+          "rot": -1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "rangement",
+          "sku": "et-650",
+          "x": -1,
+          "z": 1.77,
+          "rot": 3.141592653589793,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-g",
+          "sku": "nordic-table-basse",
+          "x": 1.69,
+          "z": -1.56,
+          "rot": -1.5707963267948966,
+          "origine": "catalogue"
+        },
+        {
+          "id": "chevet-d",
+          "sku": "nordic-table-basse",
+          "x": 1.69,
+          "z": 0.66,
+          "rot": -1.5707963267948966,
+          "origine": "catalogue"
+        }
+      ],
+      "variantes": 1,
+      "dureeMs": 2044,
+      "recherche": {
+        "methode": "recuit-simule",
+        "iterations": 2048,
+        "acceptationsMoinsBonnes": 246,
+        "candidatsVerifies": 8,
+        "patronsEssayes": [
+          "chambre-decalee",
+          "chambre-axiale",
+          "chambre-laterale"
+        ]
+      },
+      "conflits": [],
+      "ecartes": []
+    }
+  ],
+  "reference": {
+    "nom": "Référence protocole · 14 m²",
+    "modele": {
+      "dims": {
+        "largeur": 3.5,
+        "profondeur": 4,
+        "hauteur": 2.6,
+        "estimees": false
+      },
+      "murs": {
+        "entree": {
+          "ouvertures": [
+            {
+              "type": "porte",
+              "position": 0.2,
+              "largeur": 0.9,
+              "hauteur": 2.05,
+              "allege": 0
+            }
+          ]
+        },
+        "fond": {
+          "ouvertures": []
+        },
+        "gauche": {
+          "ouvertures": []
+        },
+        "droite": {
+          "ouvertures": []
+        }
+      }
+    },
+    "mobilier": [
+      {
+        "id": "lit",
+        "sku": "lit",
+        "x": 0,
+        "z": 0,
+        "rot": 0
+      },
+      {
+        "id": "commode",
+        "sku": "commode",
+        "x": 1.49,
+        "z": 0,
+        "rot": -1.5707963267948966
+      },
+      {
+        "id": "cg",
+        "sku": "chevet",
+        "x": -1.1,
+        "z": -0.7,
+        "rot": 0
+      }
+    ],
+    "avant": {
+      "score": 69,
+      "contraintes": 0,
+      "circulation": false,
+      "acces": false,
+      "ouvertures": true,
+      "cout": 2866.78,
+      "alertes": [
+        {
+          "type": "acces",
+          "ids": [
+            "lit"
+          ]
+        },
+        {
+          "type": "acces",
+          "ids": [
+            "commode"
+          ]
+        },
+        {
+          "type": "chemin",
+          "ids": [
+            "commode"
+          ]
+        }
+      ]
+    },
+    "ecartesAvant": [
+      "cd",
+      "armoire"
+    ],
+    "apres": {
+      "score": 99,
+      "contraintes": 0,
+      "circulation": true,
+      "acces": true,
+      "ouvertures": true,
+      "cout": 9.95,
+      "alertes": []
+    },
+    "agencement": [
+      {
+        "id": "lit",
+        "sku": "lit",
+        "x": 0.09,
+        "z": -0.99,
+        "rot": 0
+      },
+      {
+        "id": "armoire",
+        "sku": "armoire",
+        "x": -1.44,
+        "z": 1,
+        "rot": 1.5707963267948966
+      },
+      {
+        "id": "commode",
+        "sku": "commode",
+        "x": 1.49,
+        "z": 0.65,
+        "rot": -1.5707963267948966
+      },
+      {
+        "id": "cg",
+        "sku": "chevet",
+        "x": -1,
+        "z": -1.75,
+        "rot": 0
+      },
+      {
+        "id": "cd",
+        "sku": "chevet",
+        "x": 1.18,
+        "z": -1.75,
+        "rot": 0
+      }
+    ],
+    "variantes": 1,
+    "dureeMs": 404,
+    "recherche": {
+      "methode": "recuit-simule",
+      "iterations": 624,
+      "acceptationsMoinsBonnes": 64,
+      "candidatsVerifies": 3,
+      "patronsEssayes": [
+        "chambre-decalee",
+        "chambre-axiale",
+        "chambre-laterale"
+      ]
+    },
+    "conflits": [],
+    "ecartes": []
+  }
+}

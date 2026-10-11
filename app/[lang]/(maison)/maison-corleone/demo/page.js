@@ -5,7 +5,7 @@ export async function generateMetadata({ params }) {
   return { title: { absolute: (lang === 'en' ? 'Demo · At home' : 'Démo · Chez vous') + ' · Maison Corleone' } };
 }
 
-// démo sans compte : tout se passe dans le navigateur (analyse et rendus simulés)
+// Démo sans compte : stockage navigateur, aménagement IA serveur, analyse photo et rendus simulés.
 export default async function Page({ params, searchParams }) {
   const { lang } = await params;
   const sp = await searchParams;

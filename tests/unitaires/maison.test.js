@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { suiteSure, estCompteMaison } from '../../lib/maison-regles.js';
 import { textesMaison } from '../../components/maison/textes.js';
-import { composerEnvies, aGarder, suggerer } from '../../components/maison/demande.js';
+import { composerEnvies, aGarder, suggerer, demandeAmenagement } from '../../components/maison/demande.js';
 
 test('retour après connexion : seulement une page de l’édition Maison Corleone', () => {
   for (const ok of ['/fr/maison-corleone', '/en/maison-corleone', '/fr/maison-corleone/demo', '/fr/maison-corleone?piece=r_Ab3-_x9']) {
@@ -46,6 +46,17 @@ test('meubles gardés : tout ce que les priorités ne visent pas (rien si tout r
   assert.deepEqual(aGarder(piece, { priorites: ['canape', 'eclairage', 'tables'] }), ['e3']);
   assert.deepEqual(aGarder(piece, { priorites: ['tout'] }), []);
   assert.deepEqual(aGarder(piece, { priorites: [] }), []);
+});
+
+test('après une IA indisponible, relancer depuis le plan conserve budget, style et priorités', () => {
+  const piece = { agencement: [{ id: 'e1', origine: 'existant', p: { fam: 'lampe' } }] };
+  const choix = { budget: 2020, styles: ['epure'], texte: 'Un coin lecture', priorites: ['lit'] };
+  const demande = demandeAmenagement(textesMaison('fr'), piece, choix, {}, 'fr');
+  assert.equal(demande.budget, 2020); assert.match(demande.envies, /Épuré/); assert.match(demande.envies, /Un coin lecture/);
+  assert.deepEqual(demande.garder, ['e1']);
+  piece.proposition = { budget: 0, envies: '', garder: [] };
+  const reprise = demandeAmenagement(textesMaison('fr'), piece, choix, {}, 'fr');
+  assert.equal(reprise.budget, 0); assert.equal(reprise.envies, ''); assert.deepEqual(reprise.garder, []);
 });
 
 test('suggestions : familles de la pièce, budget respecté, style d’abord, variété', () => {

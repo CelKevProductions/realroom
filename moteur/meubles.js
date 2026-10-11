@@ -18,6 +18,7 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { construireObjetGenerique } from './generiques.js';
 
 // produits connus des constructeurs (catalogue et meubles relevés sur les photos)
 let DATA = { PRODUITS: {} };
@@ -1227,7 +1228,8 @@ function construireProduit(sku, o = {}) {
   if (!p) return groupe('vide');
   let g;
   // modèle fidèle s'il existe ; sinon pièces choisies : maquette détaillée ; reste : maquette générique
-  if (MODELES[sku] && p.dim && !o.generique) g = MODELES[sku](p, o);
+  if (p.generique) g = construireObjetGenerique(p);
+  else if (MODELES[sku] && p.dim && !o.generique) g = MODELES[sku](p, o);
   else if (p.look) { const f = CAT_BUILD[p.cat]; g = f ? f(p.look, o) : groupe('vide'); }
   else g = construireCatalogue(p, o);
   g.userData.sku = sku;

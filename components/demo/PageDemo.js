@@ -10,7 +10,7 @@ import Croquis from '@/components/Croquis.js';
 import { useFil } from '@/components/fil.js';
 import { lire, piece, publique, rendusDe, listeProjets, projetComplet } from '@/components/demo/magasin.js';
 
-const SERVICES = { analyse: true, rendu: true, monde: true };
+const SERVICES = { analyse: true, rendu: true, monde: true, simulation: true };
 
 function Introuvable({ lang, t }) {
   useFil([{ nom: t.projets.titre, href: `/${lang}/demo` }, { nom: t.erreurs.introuvable }]);

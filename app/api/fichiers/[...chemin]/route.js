@@ -12,6 +12,7 @@ export const GET = route(async (request, { params }) => {
   const url = '/api/fichiers/' + c;
   const lignes = await sql(`SELECT f AS ref FROM pieces, jsonb_array_elements(photos) f WHERE utilisateur_id = $1 AND f->>'url' = $2
     UNION ALL SELECT suivi->'capture' FROM rendus WHERE utilisateur_id = $1 AND suivi->'capture'->>'url' = $2
+    UNION ALL SELECT suivi->'reference' FROM rendus WHERE utilisateur_id = $1 AND suivi->'reference'->>'url' = $2
     UNION ALL SELECT resultat->'fichier' FROM rendus WHERE utilisateur_id = $1 AND resultat->'fichier'->>'url' = $2 LIMIT 1`, [u.id, url]);
   const ref = lignes[0] && lignes[0].ref;
   const f = ref && await lire(ref);

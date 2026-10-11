@@ -40,6 +40,7 @@ export default function Experience({ lang, demo = false, profil: profilServeur =
   const [etapeDepart, setEtapeDepart] = useState(null);
   const [produits, setProduits] = useState(null);
   const [pretClient, setPretClient] = useState(false);
+  const [photoPourRendu, setPhotoPourRendu] = useState(false);
   const rideau = useRef(null);
   const enCreation = useRef(null);
   const connecte = demo ? demoConnecte : !!profil;
@@ -92,7 +93,7 @@ export default function Experience({ lang, demo = false, profil: profilServeur =
     }
     const p = r.piece;
     const amenagee = (p.agencement || []).some(it => it.origine === 'catalogue');
-    const suite = amenagee ? 'piece' : p.modele || p.etat === 'analyse' ? 'chargement' : 'parcours';
+    const suite = amenagee ? 'piece' : p.etat === 'analyse' ? 'chargement' : p.modele ? 'piece' : 'parcours';
     setPiece(p);
     setRendus(r.rendus || []);
     if (suite === 'parcours') { setChoix(c => ({ ...c, fonction: p.fonction })); setEtapeDepart('photos'); }
@@ -154,17 +155,23 @@ export default function Experience({ lang, demo = false, profil: profilServeur =
 
   // ---------- les temps du parcours ----------
   const commencer = () => transition(() => { setEtapeDepart(null); setPhase('parcours'); });
-  async function lancer(dims) {
+  async function lancer(dims, notes = '') {
     let p = piece;
     try { p = await assurerPiece(); } catch (_) { /* la pièce existe déjà : on continue */ }
-    if (!p) return;
+    if (!p) return false;
     const num = v => { const n = parseFloat(String(v || '').replace(',', '.')); return n > .8 && n < 30 ? Math.round(n * 100) / 100 : null; };
     const d = { largeur: num(dims && dims.largeur), profondeur: num(dims && dims.profondeur) };
-    if (d.largeur || d.profondeur) {
-      const r = await api(`/api/pieces/${p.id}`, { method: 'PATCH', corps: { dims: { ...(p.dims || {}), ...d } } });
-      if (r.ok) setPiece(r.piece);
-    }
-    transition(() => setPhase('chargement'));
+    const r = await api(`/api/pieces/${p.id}`, { method: 'PATCH', corps: { notes: String(notes).slice(0, 1000), ...(d.largeur || d.profondeur ? { dims: { ...(p.dims || {}), ...d } } : {}) } });
+    if (r.ok) setPiece(r.piece);
+    else return false; // Ne pas lancer une analyse qui ignorerait les précisions saisies.
+    if (photoPourRendu && r.piece.proposition) { setPhotoPourRendu(false); transition(() => setPhase('piece')); }
+    else transition(() => setPhase('chargement'));
+  }
+  async function ajouterPhotoRendu() {
+    const r = await api(`/api/pieces/${piece.id}`);
+    if (!r.ok) return;
+    setPiece(r.piece); setRendus(r.rendus || []); setPhotoPourRendu(true);
+    transition(() => { setEtapeDepart('photos'); setPhase('parcours'); });
   }
   function finChargement(p) {
     setPiece(p);
@@ -175,6 +182,7 @@ export default function Experience({ lang, demo = false, profil: profilServeur =
   function nouvelle() {
     setChoix(c => ({ ...CHOIX_DEPART, budget: c.budget, styles: c.styles }));
     setPiece(null);
+    setPhotoPourRendu(false);
     setRendus([]);
     transition(() => { setEtapeDepart('piece'); setPhase('parcours'); });
   }
@@ -206,6 +214,7 @@ export default function Experience({ lang, demo = false, profil: profilServeur =
       {phase === 'parcours' && pretClient && (
         <Parcours t={t} lang={lang} demo={demo} etapeInitiale={etapeInitiale} connecte={connecte} profil={profil} connexion={connexion} message={message} raison={raison}
           choix={choix} setChoix={setChoix} piece={piece} setPiece={setPiece} assurerPiece={assurerPiece} produits={produits}
+          photoPourRendu={photoPourRendu}
           onConnecteDemo={connecterDemo} onOuvrirPiece={id => ouvrirPiece(id)} onLancer={lancer} onDeconnexion={deconnexion} />
       )}
       {phase === 'chargement' && piece && (
@@ -216,8 +225,8 @@ export default function Experience({ lang, demo = false, profil: profilServeur =
           onMesPieces={mesPieces} />
       )}
       {phase === 'piece' && piece && piece.modele && (
-        <Scene key={piece.id} t={t} lang={lang} demo={demo} piece={piece} rendus={rendus} credits={credits} setCredits={setCredits} profil={profil}
-          nbPieces={nbPieces} onNouvelle={nouvelle} onMesPieces={mesPieces} onDeconnexion={deconnexion} />
+        <Scene key={piece.id} t={t} lang={lang} demo={demo} piece={piece} choix={choix} rendus={rendus} credits={credits} setCredits={setCredits} profil={profil}
+          nbPieces={nbPieces} onNouvelle={nouvelle} onMesPieces={mesPieces} onDeconnexion={deconnexion} onPhotos={ajouterPhotoRendu} onMaj={setPiece} />
       )}
       {phase === 'ouverture' && <div className="mc-ouverture mc-fixe" aria-busy="true"><Logo /></div>}
       {pre && (

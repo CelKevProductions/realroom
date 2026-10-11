@@ -1,0 +1,5168 @@
+{
+  "modele": {
+    "dims": {
+      "largeur": 10,
+      "profondeur": 14,
+      "hauteur": 2.7,
+      "estimees": true
+    },
+    "contour": [
+      [
+        -5,
+        -7
+      ],
+      [
+        5,
+        -7
+      ],
+      [
+        5,
+        -3
+      ],
+      [
+        0,
+        -3
+      ],
+      [
+        0,
+        7
+      ],
+      [
+        -5,
+        7
+      ]
+    ],
+    "murs": {
+      "pan_1": {
+        "ouvertures": [
+          {
+            "type": "porte",
+            "position": -3.5,
+            "largeur": 0.9,
+            "hauteur": 2.04,
+            "allege": 0
+          }
+        ],
+        "couleur": "#EFEAE2",
+        "observe": true
+      },
+      "pan_2": {
+        "ouvertures": [],
+        "couleur": "#EFEAE2",
+        "observe": true
+      },
+      "pan_3": {
+        "ouvertures": [
+          {
+            "type": "fenetre",
+            "position": 0,
+            "largeur": 1.4,
+            "hauteur": 1.2,
+            "allege": 0.9
+          }
+        ],
+        "couleur": "#EFEAE2",
+        "observe": true
+      },
+      "pan_4": {
+        "ouvertures": [],
+        "couleur": "#EFEAE2",
+        "observe": true
+      },
+      "pan_5": {
+        "ouvertures": [
+          {
+            "type": "porte",
+            "position": 0,
+            "largeur": 0.9,
+            "hauteur": 2.04,
+            "allege": 0
+          }
+        ],
+        "couleur": "#EFEAE2",
+        "observe": true
+      },
+      "pan_6": {
+        "ouvertures": [
+          {
+            "type": "fenetre",
+            "position": 3,
+            "largeur": 1.4,
+            "hauteur": 1.2,
+            "allege": 0.9
+          }
+        ],
+        "couleur": "#EFEAE2",
+        "observe": true
+      }
+    },
+    "sol": {
+      "matiere": "parquet",
+      "couleur": "#C7AD86"
+    }
+  },
+  "items": [
+    {
+      "id": "cs2fm0k_1",
+      "origine": "catalogue",
+      "sku": "rr-gen-repas-210",
+      "x": -3.23,
+      "z": -2.76,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "table-repas",
+      "slotProgramme": "repas:table-repas:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_17",
+      "origine": "catalogue",
+      "sku": "cmb-310",
+      "x": -4.63,
+      "z": 2.81,
+      "rot": 1.5707963267948966,
+      "raison": "Version plus compacte pour aménager les espaces choisis.",
+      "zoneId": "salon",
+      "usageProgramme": "canape",
+      "slotProgramme": "salon:canape:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_19",
+      "origine": "catalogue",
+      "sku": "buffet-laque-noire-cuir-matelasse-led-sonia",
+      "x": -2.14,
+      "z": 2.81,
+      "rot": -1.5707963267948966,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "meuble-tv",
+      "slotProgramme": "salon:meuble-tv:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_0",
+      "origine": "catalogue",
+      "sku": "rr-gen-bureau-100",
+      "x": 1.72,
+      "z": -6.73,
+      "rot": 0,
+      "raison": "Complète l’ensemble travail.",
+      "zoneId": "travail",
+      "usageProgramme": "bureau",
+      "slotProgramme": "travail:bureau:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_15",
+      "origine": "catalogue",
+      "sku": "vsc-09",
+      "x": 1.72,
+      "z": -6.06,
+      "rot": 3.141592653589793,
+      "raison": "Version plus compacte pour aménager les espaces choisis.",
+      "zoneId": "travail",
+      "usageProgramme": "chaise-bureau",
+      "slotProgramme": "travail:chaise-bureau:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_21",
+      "origine": "catalogue",
+      "sku": "ce-320",
+      "x": -3.66,
+      "z": 2.01,
+      "rot": 0,
+      "raison": "Version plus compacte pour aménager les espaces choisis.",
+      "zoneId": "salon",
+      "usageProgramme": "fauteuil-salon",
+      "slotProgramme": "salon:fauteuil-salon:1",
+      "prioriteProgramme": 3,
+      "obligatoireProgramme": false
+    },
+    {
+      "id": "cs2fm0k_22",
+      "origine": "catalogue",
+      "sku": "ce-320",
+      "x": -3.66,
+      "z": 3.62,
+      "rot": 3.141592653589793,
+      "raison": "Version plus compacte pour aménager les espaces choisis.",
+      "zoneId": "salon",
+      "usageProgramme": "fauteuil-salon",
+      "slotProgramme": "salon:fauteuil-salon:2",
+      "prioriteProgramme": 3,
+      "obligatoireProgramme": false
+    },
+    {
+      "id": "cs2fm0k_13",
+      "origine": "catalogue",
+      "sku": "ce-320",
+      "x": 2.89,
+      "z": -3.36,
+      "rot": 3.141592653589793,
+      "raison": "Version plus compacte pour aménager les espaces choisis.",
+      "zoneId": "lecture",
+      "usageProgramme": "fauteuil-lecture",
+      "slotProgramme": "lecture:fauteuil-lecture:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_11",
+      "origine": "catalogue",
+      "sku": "ec-650",
+      "x": -4.63,
+      "z": -6.81,
+      "rot": 0,
+      "raison": "Complète l’ensemble rangement.",
+      "zoneId": "rangement",
+      "usageProgramme": "buffet",
+      "slotProgramme": "rangement:buffet:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_2",
+      "origine": "catalogue",
+      "sku": "rr-gen-chaise-bois",
+      "x": -2.47,
+      "z": -1.97,
+      "rot": -1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "chaise-repas",
+      "slotProgramme": "repas:chaise-repas:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_3",
+      "origine": "catalogue",
+      "sku": "rr-gen-chaise-bois",
+      "x": -2.47,
+      "z": -2.5,
+      "rot": -1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "chaise-repas",
+      "slotProgramme": "repas:chaise-repas:2",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_4",
+      "origine": "catalogue",
+      "sku": "rr-gen-chaise-bois",
+      "x": -2.47,
+      "z": -3.02,
+      "rot": -1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "chaise-repas",
+      "slotProgramme": "repas:chaise-repas:3",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_5",
+      "origine": "catalogue",
+      "sku": "rr-gen-chaise-bois",
+      "x": -2.47,
+      "z": -3.55,
+      "rot": -1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "chaise-repas",
+      "slotProgramme": "repas:chaise-repas:4",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_6",
+      "origine": "catalogue",
+      "sku": "rr-gen-chaise-bois",
+      "x": -4,
+      "z": -1.97,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "chaise-repas",
+      "slotProgramme": "repas:chaise-repas:5",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_7",
+      "origine": "catalogue",
+      "sku": "rr-gen-chaise-bois",
+      "x": -4,
+      "z": -2.5,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "chaise-repas",
+      "slotProgramme": "repas:chaise-repas:6",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_8",
+      "origine": "catalogue",
+      "sku": "rr-gen-chaise-bois",
+      "x": -4,
+      "z": -3.02,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "chaise-repas",
+      "slotProgramme": "repas:chaise-repas:7",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_9",
+      "origine": "catalogue",
+      "sku": "rr-gen-chaise-bois",
+      "x": -4,
+      "z": -3.55,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "chaise-repas",
+      "slotProgramme": "repas:chaise-repas:8",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_20",
+      "origine": "catalogue",
+      "sku": "fpf-lamp-7705",
+      "x": -4.63,
+      "z": 4.16,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "lumiere-salon",
+      "slotProgramme": "salon:lumiere-salon:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_14",
+      "origine": "catalogue",
+      "sku": "fpf-lamp-7705",
+      "x": 3.47,
+      "z": -3.31,
+      "rot": 3.141592653589793,
+      "raison": "Complète l’ensemble lecture.",
+      "zoneId": "lecture",
+      "usageProgramme": "lumiere-lecture",
+      "slotProgramme": "lecture:lumiere-lecture:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_18",
+      "origine": "catalogue",
+      "sku": "nordic-table-basse",
+      "x": -3.66,
+      "z": 2.81,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "table-basse",
+      "slotProgramme": "salon:table-basse:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_10",
+      "origine": "catalogue",
+      "sku": "rr-gen-appoint-35",
+      "x": 2.37,
+      "z": -3.36,
+      "rot": 3.141592653589793,
+      "raison": "Complète l’ensemble lecture.",
+      "zoneId": "lecture",
+      "usageProgramme": "table-appoint",
+      "slotProgramme": "lecture:table-appoint:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "cs2fm0k_23",
+      "origine": "catalogue",
+      "sku": "al-480",
+      "x": -3.66,
+      "z": 2.81,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "tapis",
+      "slotProgramme": "salon:tapis:1",
+      "prioriteProgramme": 3,
+      "obligatoireProgramme": false
+    },
+    {
+      "id": "cs2fm0k_24",
+      "origine": "catalogue",
+      "sku": "rr-gen-television-43",
+      "x": -2.14,
+      "z": 2.81,
+      "rot": -1.5707963267948966,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "television",
+      "slotProgramme": "salon:television:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true,
+      "y": 1.185,
+      "kind": "surface_item",
+      "attach_to": {
+        "type": "furniture",
+        "id": "cs2fm0k_19"
+      },
+      "height": 1.185
+    },
+    {
+      "id": "cs2fm0k_16",
+      "origine": "catalogue",
+      "sku": "rr-gen-lampe-25",
+      "x": 1.47,
+      "z": -6.73,
+      "rot": 0,
+      "raison": "Complète l’ensemble travail.",
+      "zoneId": "travail",
+      "usageProgramme": "lampe-bureau",
+      "slotProgramme": "travail:lampe-bureau:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true,
+      "y": 0.95,
+      "kind": "surface_item",
+      "attach_to": {
+        "type": "furniture",
+        "id": "cs2fm0k_0"
+      },
+      "height": 0.95
+    },
+    {
+      "id": "cs2fm0k_12",
+      "origine": "catalogue",
+      "sku": "lst-min-03",
+      "x": -3.23,
+      "z": -2.76,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "suspension",
+      "slotProgramme": "repas:suspension:1",
+      "prioriteProgramme": 2,
+      "obligatoireProgramme": true,
+      "y": 1.65,
+      "height": 1.65,
+      "kind": "ceiling_item",
+      "attach_to": {
+        "type": "furniture",
+        "id": "cs2fm0k_1"
+      }
+    },
+    {
+      "id": "cs2fm0k_25",
+      "origine": "catalogue",
+      "sku": "rr-gen-tableau-160",
+      "x": -5,
+      "z": 2.81,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "tableau-principal",
+      "slotProgramme": "salon:tableau-principal:1",
+      "prioriteProgramme": 3,
+      "obligatoireProgramme": false,
+      "y": 1.475,
+      "kind": "wall_item",
+      "mur": "pan_6",
+      "height": 1.475,
+      "wall_offset": 4.19,
+      "attach_to": {
+        "type": "wall",
+        "id": "pan_6"
+      }
+    },
+    {
+      "id": "cs2fm0k_26",
+      "origine": "catalogue",
+      "sku": "rr-gen-tableau-60",
+      "x": 0,
+      "z": -7,
+      "rot": 0,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "tableau-secondaire",
+      "slotProgramme": "salon:tableau-secondaire:1",
+      "prioriteProgramme": 4,
+      "obligatoireProgramme": false,
+      "y": 1.475,
+      "kind": "wall_item",
+      "mur": "pan_1",
+      "height": 1.475,
+      "wall_offset": 5,
+      "attach_to": {
+        "type": "wall",
+        "id": "pan_1"
+      }
+    },
+    {
+      "id": "cs2fm0k_27",
+      "origine": "catalogue",
+      "sku": "rr-gen-etagere-murale-80",
+      "x": 0,
+      "z": 2.81,
+      "rot": -1.5707963267948966,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "etagere-murale",
+      "slotProgramme": "salon:etagere-murale:1",
+      "prioriteProgramme": 5,
+      "obligatoireProgramme": false,
+      "y": 1.65,
+      "kind": "wall_item",
+      "mur": "pan_4",
+      "height": 1.65,
+      "wall_offset": 5.81,
+      "attach_to": {
+        "type": "wall",
+        "id": "pan_4"
+      }
+    }
+  ],
+  "catalogue": {
+    "rr-gen-repas-210": {
+      "id": "rr-gen-repas-210",
+      "nom": "Table de repas · 8 places",
+      "titre": "Table de repas · 8 places",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        2.1,
+        0.9,
+        0.75
+      ],
+      "st": "rectangulaire",
+      "prix": 520,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "table-repas"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-repas-210.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ],
+      "dimEstimees": false,
+      "stylesEditoriaux": []
+    },
+    "cmb-310": {
+      "id": "cmb-310",
+      "marque": "Maison Corleone",
+      "nom": "Onda",
+      "titre": "Canapé bas modulable en cuir brun chocolat à sept vagues arrondies – Onda",
+      "cat": "Canapé",
+      "fam": "canape",
+      "st": "courbe",
+      "prix": 750,
+      "prixMax": null,
+      "parModule": false,
+      "img": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0818.19.01.jpg?v=1780096851&width=900",
+      "vign": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0818.19.01.jpg?v=1780096851&width=360",
+      "imgs": [
+        "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0818.19.02.jpg?v=1780096851&width=900",
+        "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0818.19.03_1.jpg?v=1780096852&width=900",
+        "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0818.19.03.jpg?v=1780096851&width=900"
+      ],
+      "texte": "Canapé bas de forme organique, composé de sept boudins arrondis cousus en continu et recouverts d'un cuir lisse brun chocolat. Sans accoudoirs ni dossier distinct, il se pose au ras du sol sur une base rembourrée de la même teinte. Sa silhouette symétrique en fait autant un canapé d'appoint qu'une banquette ou un banc long pour un salon contemporain.",
+      "points": [
+        [
+          "Dimensions",
+          "200 × 70 × 40 cm"
+        ],
+        [
+          "Matière",
+          "Cuir"
+        ],
+        [
+          "Coloris",
+          "Brun chocolat"
+        ]
+      ],
+      "url": "https://maisoncorleone.com/products/cmb-310",
+      "dim": [
+        2,
+        0.7,
+        0.4
+      ],
+      "dimsLues": true,
+      "cols": [
+        "#4B2F21"
+      ],
+      "couleurs": [
+        "brun chocolat"
+      ],
+      "fc": "sombre",
+      "mat": "cuir",
+      "metal": "noir",
+      "bois": "",
+      "verre": "",
+      "led": false,
+      "chevets": false,
+      "ext": false,
+      "couchage": null,
+      "look": null,
+      "dimEstimees": false,
+      "stylesEditoriaux": [],
+      "styleVisuel": {
+        "source": "openclip",
+        "image": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0818.19.01.jpg?v=1780096851&width=900",
+        "modele": "ViT-B-32/laion2b_s34b_b79k",
+        "prompts": "realroom-styles-v1:cbfef5be046f",
+        "scores": {
+          "epure": 0.20936,
+          "chaleureux": 0.16687,
+          "classique": 0.15594,
+          "boheme": 0.11672,
+          "artdeco": 0.17589,
+          "japandi": 0.21079,
+          "audacieux": 0.19031,
+          "mediterraneen": 0.15332,
+          "scandinave": 0.18648,
+          "industriel": 0.14484,
+          "contemporain": 0.24845
+        },
+        "aVerifier": true
+      }
+    },
+    "buffet-laque-noire-cuir-matelasse-led-sonia": {
+      "id": "buffet-laque-noire-cuir-matelasse-led-sonia",
+      "marque": "Maison Corleone",
+      "nom": "Sonia",
+      "titre": "Buffet en laque noire galbée et façades cuir matelassé, plateau verre éclairé LED – Sonia",
+      "cat": "Buffet",
+      "fam": "meuble",
+      "st": "",
+      "prix": 600,
+      "prixMax": null,
+      "parModule": false,
+      "img": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0813.08.24.jpg?v=1780095315&width=900",
+      "vign": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0813.08.24.jpg?v=1780095315&width=360",
+      "imgs": [],
+      "texte": "Le buffet Sonia associe une carrosserie en laque noire aux angles galbés à des façades de tiroirs en cuir matelassé surpiqué, dans un buffet compact d'environ 190 cm de long. Pensé pour ranger bijoux, montres et petits objets précieux, il se distingue par son plateau en verre intégrant un ruban LED et par ses serrures à bouton-poussoir encastrées.",
+      "points": [
+        [
+          "Dimensions",
+          "190 × 55 × 88 cm"
+        ],
+        [
+          "Matière",
+          "Cuir"
+        ],
+        [
+          "Coloris",
+          "Noir"
+        ]
+      ],
+      "url": "https://maisoncorleone.com/products/buffet-laque-noire-cuir-matelasse-led-sonia",
+      "dim": [
+        1.9,
+        0.55,
+        0.88
+      ],
+      "dimsLues": true,
+      "cols": [
+        "#1F1E22"
+      ],
+      "couleurs": [
+        "noir"
+      ],
+      "fc": "sombre",
+      "mat": "cuir",
+      "metal": "noir",
+      "bois": "",
+      "verre": "",
+      "led": true,
+      "chevets": false,
+      "ext": false,
+      "couchage": null,
+      "look": null,
+      "dimEstimees": false,
+      "stylesEditoriaux": [],
+      "styleVisuel": {
+        "source": "openclip",
+        "image": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0813.08.24.jpg?v=1780095315&width=900",
+        "modele": "ViT-B-32/laion2b_s34b_b79k",
+        "prompts": "realroom-styles-v1:cbfef5be046f",
+        "scores": {
+          "epure": 0.22786,
+          "chaleureux": 0.17533,
+          "classique": 0.2207,
+          "boheme": 0.14797,
+          "artdeco": 0.25033,
+          "japandi": 0.23872,
+          "audacieux": 0.20641,
+          "mediterraneen": 0.19081,
+          "scandinave": 0.24282,
+          "industriel": 0.24877,
+          "contemporain": 0.2454
+        },
+        "aVerifier": true
+      }
+    },
+    "rr-gen-bureau-100": {
+      "id": "rr-gen-bureau-100",
+      "nom": "Bureau compact · 100 cm",
+      "titre": "Bureau compact · 100 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Bureau",
+      "fam": "bureau",
+      "dim": [
+        1,
+        0.5,
+        0.75
+      ],
+      "st": "bureau",
+      "prix": 170,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "bureau"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-bureau-100.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ],
+      "dimEstimees": false,
+      "stylesEditoriaux": []
+    },
+    "vsc-09": {
+      "id": "vsc-09",
+      "marque": "Maison Corleone",
+      "nom": "Sculpt Chair",
+      "titre": "Fauteuil pivotant en velours chenille vert – Sculpt Chair",
+      "cat": "Fauteuil",
+      "fam": "fauteuil",
+      "st": "pivotant",
+      "prix": 550,
+      "prixMax": null,
+      "parModule": false,
+      "img": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0907.08.50.jpg?v=1780102532&width=900",
+      "vign": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0907.08.50.jpg?v=1780102532&width=360",
+      "imgs": [
+        "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0907.08.51.jpg?v=1780102532&width=900",
+        "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0907.08.48.jpg?v=1780102532&width=900",
+        "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0907.08.50_1.jpg?v=1780102532&width=900"
+      ],
+      "texte": "Ce fauteuil pivotant associe une assise cylindrique et un dossier flottant aux angles arrondis, reliés par une tige métallique chromée visible. La housse en velours chenille vert mousse capte la lumière grâce à sa texture striée. Une pièce compacte, pensée pour un salon, un bureau ou un coin lecture.",
+      "points": [
+        [
+          "Dimensions",
+          "55 × 55 × 78 cm"
+        ],
+        [
+          "Matière",
+          "Velours"
+        ],
+        [
+          "Coloris",
+          "Vert"
+        ]
+      ],
+      "url": "https://maisoncorleone.com/products/vsc-09",
+      "dim": [
+        0.55,
+        0.55,
+        0.78
+      ],
+      "dimsLues": true,
+      "cols": [
+        "#4E7A4A"
+      ],
+      "couleurs": [
+        "vert"
+      ],
+      "fc": "froid",
+      "mat": "velours",
+      "metal": "noir",
+      "bois": "",
+      "verre": "",
+      "led": false,
+      "chevets": false,
+      "ext": false,
+      "couchage": null,
+      "look": null,
+      "dimEstimees": false,
+      "stylesEditoriaux": [],
+      "styleVisuel": {
+        "source": "openclip",
+        "image": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0907.08.50.jpg?v=1780102532&width=900",
+        "modele": "ViT-B-32/laion2b_s34b_b79k",
+        "prompts": "realroom-styles-v1:cbfef5be046f",
+        "scores": {
+          "epure": 0.18948,
+          "chaleureux": 0.16265,
+          "classique": 0.17091,
+          "boheme": 0.13431,
+          "artdeco": 0.25048,
+          "japandi": 0.16224,
+          "audacieux": 0.21484,
+          "mediterraneen": 0.14983,
+          "scandinave": 0.17384,
+          "industriel": 0.11077,
+          "contemporain": 0.23971
+        },
+        "aVerifier": true
+      }
+    },
+    "ce-320": {
+      "id": "ce-320",
+      "marque": "Maison Corleone",
+      "nom": "Fauteuil de salle à manger",
+      "titre": "Fauteuil de salle à manger en bouclette écrue sur roulettes",
+      "cat": "Fauteuil",
+      "fam": "fauteuil",
+      "st": "lounge",
+      "prix": 280,
+      "prixMax": null,
+      "parModule": false,
+      "img": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.39.47.jpg?v=1780096040&width=900",
+      "vign": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.39.47.jpg?v=1780096040&width=360",
+      "imgs": [],
+      "texte": "Fauteuil de salle à manger habillé d'une housse en tissu bouclette épais écru, au dossier haut et droit, monté sur roulettes noires discrètes intégrées aux pieds. Conçu pour les tablées prolongées, il associe maintien lombaire et mobilité facile sur parquet ou carrelage. Hauteur d'assise standard autour de 48 cm.",
+      "points": [
+        [
+          "Dimensions",
+          "45 × 55 × 95 cm"
+        ],
+        [
+          "Matière",
+          "Bouclette"
+        ],
+        [
+          "Coloris",
+          "Écru"
+        ]
+      ],
+      "url": "https://maisoncorleone.com/products/ce-320",
+      "dim": [
+        0.45,
+        0.55,
+        0.95
+      ],
+      "dimsLues": true,
+      "cols": [
+        "#ECE4D3"
+      ],
+      "couleurs": [
+        "écru"
+      ],
+      "fc": "clair",
+      "mat": "boucle",
+      "metal": "noir",
+      "bois": "",
+      "verre": "",
+      "led": false,
+      "chevets": false,
+      "ext": false,
+      "couchage": null,
+      "look": null,
+      "dimEstimees": false,
+      "stylesEditoriaux": [],
+      "styleVisuel": {
+        "source": "openclip",
+        "image": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.39.47.jpg?v=1780096040&width=900",
+        "modele": "ViT-B-32/laion2b_s34b_b79k",
+        "prompts": "realroom-styles-v1:cbfef5be046f",
+        "scores": {
+          "epure": 0.24016,
+          "chaleureux": 0.25886,
+          "classique": 0.25792,
+          "boheme": 0.26256,
+          "artdeco": 0.20895,
+          "japandi": 0.24769,
+          "audacieux": 0.19808,
+          "mediterraneen": 0.32693,
+          "scandinave": 0.24063,
+          "industriel": 0.20445,
+          "contemporain": 0.23863
+        },
+        "aVerifier": true
+      }
+    },
+    "ec-650": {
+      "id": "ec-650",
+      "marque": "Maison Corleone",
+      "nom": "Console d'entrée blanc",
+      "titre": "Console d'entrée en bois laqué motif Grues japonaises sur piètement tourné blanc",
+      "cat": "Console",
+      "fam": "meuble",
+      "st": "",
+      "prix": 650,
+      "prixMax": null,
+      "parModule": false,
+      "img": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.14.08.jpg?v=1780095465&width=900",
+      "vign": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.14.08.jpg?v=1780095465&width=360",
+      "imgs": [],
+      "texte": "Console d'entrée étroite au panneau frontal laqué noir orné d'un décor peint de grues et de bambous, façon estampe japonaise. Portée par un piètement en bois tourné blanc à motifs de boules superposées, elle convient à une entrée, un couloir ou un salon cherchant une pièce d'appoint graphique et verticale.",
+      "points": [
+        [
+          "Dimensions",
+          "70 × 35 × 140 cm"
+        ],
+        [
+          "Matière",
+          "Résine laquée"
+        ],
+        [
+          "Coloris",
+          "Blanc"
+        ]
+      ],
+      "url": "https://maisoncorleone.com/products/ec-650",
+      "dim": [
+        0.7,
+        0.35,
+        1.4
+      ],
+      "dimsLues": true,
+      "cols": [
+        "#F1EEE7"
+      ],
+      "couleurs": [
+        "blanc"
+      ],
+      "fc": "clair",
+      "mat": "laque",
+      "metal": "noir",
+      "bois": "noyer",
+      "verre": "",
+      "led": false,
+      "chevets": false,
+      "ext": false,
+      "couchage": null,
+      "look": null,
+      "dimEstimees": false,
+      "stylesEditoriaux": [],
+      "styleVisuel": {
+        "source": "openclip",
+        "image": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.14.08.jpg?v=1780095465&width=900",
+        "modele": "ViT-B-32/laion2b_s34b_b79k",
+        "prompts": "realroom-styles-v1:cbfef5be046f",
+        "scores": {
+          "epure": 0.19234,
+          "chaleureux": 0.15187,
+          "classique": 0.23256,
+          "boheme": 0.16745,
+          "artdeco": 0.21237,
+          "japandi": 0.18581,
+          "audacieux": 0.20072,
+          "mediterraneen": 0.17795,
+          "scandinave": 0.1857,
+          "industriel": 0.16028,
+          "contemporain": 0.17174
+        },
+        "aVerifier": true
+      }
+    },
+    "rr-gen-chaise-bois": {
+      "id": "rr-gen-chaise-bois",
+      "nom": "Chaise de repas · bois",
+      "titre": "Chaise de repas · bois",
+      "marque": "RealRoom · Générique",
+      "cat": "Chaise",
+      "fam": "chaise",
+      "dim": [
+        0.43,
+        0.47,
+        0.82
+      ],
+      "st": "chaise",
+      "prix": 65,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "chaise-repas"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-chaise-bois.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ],
+      "dimEstimees": false,
+      "stylesEditoriaux": []
+    },
+    "fpf-lamp-7705": {
+      "id": "fpf-lamp-7705",
+      "marque": "Maison Corleone",
+      "nom": "Feather Palm",
+      "titre": "Lampadaire Palmier en plumes naturelles et pied métal doré sculpté",
+      "cat": "Lampadaire",
+      "fam": "lampadaire",
+      "st": "",
+      "prix": 1000,
+      "prixMax": null,
+      "parModule": false,
+      "img": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-1106.04.16.jpg?v=1780105391&width=900",
+      "vign": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-1106.04.16.jpg?v=1780105391&width=360",
+      "imgs": [
+        "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-1106.04.15.jpg?v=1780105392&width=900"
+      ],
+      "texte": "Un pied en métal doré texturé comme une branche noueuse et une couronne de plumes naturelles en corolle. La lumière se tamise à travers le plumage.",
+      "points": [
+        [
+          "Matière",
+          "Métal doré, plumes naturelles"
+        ],
+        [
+          "Hauteur",
+          "Environ 165 cm"
+        ]
+      ],
+      "url": "https://maisoncorleone.com/products/fpf-lamp-7705",
+      "dim": [
+        0.4,
+        0.45,
+        1.65
+      ],
+      "dimsLues": true,
+      "cols": [],
+      "couleurs": [],
+      "fc": "",
+      "mat": "tissu",
+      "metal": "laiton",
+      "bois": "",
+      "verre": "",
+      "led": false,
+      "chevets": false,
+      "ext": false,
+      "couchage": null,
+      "look": {
+        "style": "palmier"
+      },
+      "dimEstimees": false,
+      "stylesEditoriaux": [],
+      "styleVisuel": {
+        "source": "openclip",
+        "image": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-1106.04.16.jpg?v=1780105391&width=900",
+        "modele": "ViT-B-32/laion2b_s34b_b79k",
+        "prompts": "realroom-styles-v1:cbfef5be046f",
+        "scores": {
+          "epure": 0.12402,
+          "chaleureux": 0.14625,
+          "classique": 0.15998,
+          "boheme": 0.20563,
+          "artdeco": 0.15206,
+          "japandi": 0.13044,
+          "audacieux": 0.18608,
+          "mediterraneen": 0.16302,
+          "scandinave": 0.17337,
+          "industriel": 0.11866,
+          "contemporain": 0.13595
+        },
+        "aVerifier": true
+      }
+    },
+    "nordic-table-basse": {
+      "id": "nordic-table-basse",
+      "marque": "Maison Corleone",
+      "nom": "Nordic",
+      "titre": "Table d'appoint effet travertin forme champignon – Nordic",
+      "cat": "Table",
+      "fam": "table",
+      "st": "ronde",
+      "prix": 299,
+      "prixMax": null,
+      "parModule": false,
+      "img": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/O1CN01NsWsL41QxkGdJb4eh__2211563162043-0-cib_4085489c-88e3-439c-bd86-f4bf37c2dd51.jpg?v=1780685459&width=900",
+      "vign": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/O1CN01NsWsL41QxkGdJb4eh__2211563162043-0-cib_4085489c-88e3-439c-bd86-f4bf37c2dd51.jpg?v=1780685459&width=360",
+      "imgs": [
+        "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/O1CN01xNvxlD1QxkGe4uHJ2__2211563162043-0-cib_11735209-c31f-48f7-a5ac-96ac406274d2.jpg?v=1780685458&width=900",
+        "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/O1CN016f6Gwz1QxkGe4ukP8__2211563162043-0-cib_94f0197a-249c-4f42-bb2a-9f751bc2ff15.jpg?v=1780685458&width=900",
+        "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/O1CN01m3IaCj1QxkGeBfyYF__2211563162043-0-cib_2b782fa2-1748-43e6-ab49-282854a14ffa.jpg?v=1780685458&width=900"
+      ],
+      "texte": "La table d'appoint Nordic adopte une silhouette en champignon : un plateau circulaire d'environ 40 cm de diamètre repose sur un piètement conique évasé, le tout réalisé en un seul bloc. Sa finition en composite à base d'oxyde de magnésium imite le grain poreux et les veinures beige-taupe du travertin naturel. Un format compact pensé pour accompagner un canapé bas ou une assise d'appoint.",
+      "points": [
+        [
+          "Dimensions",
+          "40 × 40 × 48 cm"
+        ],
+        [
+          "Matière",
+          "Tissu"
+        ]
+      ],
+      "url": "https://maisoncorleone.com/products/nordic-table-basse",
+      "dim": [
+        0.4,
+        0.4,
+        0.48
+      ],
+      "dimsLues": true,
+      "cols": [],
+      "couleurs": [],
+      "fc": "",
+      "mat": "tissu",
+      "metal": "noir",
+      "bois": "",
+      "verre": "",
+      "led": false,
+      "chevets": false,
+      "ext": false,
+      "couchage": null,
+      "look": null,
+      "dimEstimees": false,
+      "stylesEditoriaux": []
+    },
+    "rr-gen-appoint-35": {
+      "id": "rr-gen-appoint-35",
+      "nom": "Table d’appoint · 35 cm",
+      "titre": "Table d’appoint · 35 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        0.35,
+        0.35,
+        0.5
+      ],
+      "st": "ronde",
+      "prix": 55,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "table-appoint"
+      ],
+      "cols": [
+        "#35332F"
+      ],
+      "couleurs": [
+        "bois noir"
+      ],
+      "mat": "bois noir",
+      "bois": "bois noir",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-appoint-35.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. bois noir.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ],
+      "dimEstimees": false,
+      "stylesEditoriaux": []
+    },
+    "al-480": {
+      "id": "al-480",
+      "marque": "Maison Corleone",
+      "nom": "Muse Botanique",
+      "titre": "Tapisserie murale tuftée en laine – Muse Botanique",
+      "cat": "Tapisserie",
+      "fam": "tapis",
+      "st": "",
+      "prix": 800,
+      "prixMax": null,
+      "parModule": false,
+      "img": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.54.01.jpg?v=1781363077&width=900",
+      "vign": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.54.01.jpg?v=1781363077&width=360",
+      "imgs": [],
+      "texte": "Cette tapisserie murale tuftée en laine associe un portrait féminin stylisé au trait noir et une fleur sculptée en relief, sur un fond noir intégral. Son format généreux, environ 150 x 190 cm, en fait une pièce d'art textile forte pour les intérieurs contemporains, sans cadre ni support rigide.",
+      "points": [
+        [
+          "Dimensions",
+          "150 × 5 × 190 cm"
+        ],
+        [
+          "Matière",
+          "Tissu"
+        ],
+        [
+          "Coloris",
+          "Noir"
+        ]
+      ],
+      "url": "https://maisoncorleone.com/products/al-480",
+      "dim": [
+        1.5,
+        0.05,
+        1.9
+      ],
+      "dimsLues": true,
+      "cols": [
+        "#1F1E22"
+      ],
+      "couleurs": [
+        "noir"
+      ],
+      "fc": "sombre",
+      "mat": "tissu",
+      "metal": "noir",
+      "bois": "",
+      "verre": "",
+      "led": false,
+      "chevets": false,
+      "ext": false,
+      "couchage": null,
+      "look": null,
+      "dimEstimees": false,
+      "stylesEditoriaux": [
+        {
+          "style": "boheme",
+          "score": 0.5,
+          "reference": "ikea-boheme-chambre",
+          "indices": [
+            "textile",
+            "tapis"
+          ],
+          "source": "editorial",
+          "aVerifier": true
+        }
+      ],
+      "styleVisuel": {
+        "source": "openclip",
+        "image": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.54.01.jpg?v=1781363077&width=900",
+        "modele": "ViT-B-32/laion2b_s34b_b79k",
+        "prompts": "realroom-styles-v1:cbfef5be046f",
+        "scores": {
+          "epure": 0.09586,
+          "chaleureux": 0.1131,
+          "classique": 0.12432,
+          "boheme": 0.10748,
+          "artdeco": 0.18273,
+          "japandi": 0.11926,
+          "audacieux": 0.24282,
+          "mediterraneen": 0.08976,
+          "scandinave": 0.13047,
+          "industriel": 0.12043,
+          "contemporain": 0.14447
+        },
+        "aVerifier": true
+      }
+    },
+    "rr-gen-television-43": {
+      "id": "rr-gen-television-43",
+      "nom": "Télévision sur pied · 43 pouces",
+      "titre": "Télévision sur pied · 43 pouces",
+      "marque": "RealRoom · Générique",
+      "cat": "Télévision",
+      "fam": "tv",
+      "dim": [
+        0.97,
+        0.22,
+        0.61
+      ],
+      "st": "ecran",
+      "prix": 290,
+      "diagonaleEcran": 1.0922,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "television"
+      ],
+      "cols": [
+        "#20242B"
+      ],
+      "couleurs": [
+        "écran et métal noir"
+      ],
+      "mat": "écran et métal noir",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-television-43.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. écran et métal noir.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ],
+      "dimEstimees": false,
+      "stylesEditoriaux": []
+    },
+    "rr-gen-lampe-25": {
+      "id": "rr-gen-lampe-25",
+      "nom": "Lampe de table · 25 cm",
+      "titre": "Lampe de table · 25 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Lampe",
+      "fam": "lampe",
+      "dim": [
+        0.25,
+        0.25,
+        0.4
+      ],
+      "st": "lampe",
+      "prix": 45,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "lampe-chevet",
+        "lampe-bureau",
+        "lumiere-salon",
+        "lumiere-lecture"
+      ],
+      "cols": [
+        "#DFD1B9"
+      ],
+      "couleurs": [
+        "lin écru"
+      ],
+      "mat": "lin écru",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-lampe-25.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. lin écru.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ],
+      "dimEstimees": false,
+      "stylesEditoriaux": [
+        {
+          "style": "japandi",
+          "score": 0.5,
+          "reference": "ikea-japandi-chambre",
+          "indices": [
+            "lin",
+            "ecru"
+          ],
+          "source": "editorial",
+          "aVerifier": true
+        },
+        {
+          "style": "epure",
+          "score": 0.5,
+          "reference": "ikea-japandi-chambre",
+          "indices": [
+            "lin",
+            "ecru"
+          ],
+          "source": "editorial",
+          "aVerifier": true
+        }
+      ]
+    },
+    "lst-min-03": {
+      "id": "lst-min-03",
+      "marque": "Maison Corleone",
+      "nom": "Luna Stack",
+      "titre": "Suspension en albâtre naturel à 3 diffuseurs empilés",
+      "cat": "Suspension",
+      "fam": "suspension",
+      "st": "empile",
+      "prix": 200,
+      "prixMax": null,
+      "parModule": false,
+      "img": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-1107.07.06.jpg?v=1780106747&width=900",
+      "vign": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-1107.07.06.jpg?v=1780106747&width=360",
+      "imgs": [
+        "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-1107.07.07.jpg?v=1780106748&width=900"
+      ],
+      "texte": "Trois diffuseurs en albâtre naturel empilés sur une tige en métal noir mat. Chaque pierre a son propre veinage : deux suspensions ne sont jamais identiques.",
+      "points": [
+        [
+          "Matière",
+          "Albâtre naturel, métal noir mat"
+        ],
+        [
+          "Diffuseurs",
+          "Environ 16 cm de diamètre"
+        ],
+        [
+          "Usage",
+          "Chevet ou composition"
+        ]
+      ],
+      "url": "https://maisoncorleone.com/products/lst-min-03",
+      "dim": [
+        0.16,
+        0.16,
+        0.35
+      ],
+      "dimsLues": true,
+      "cols": [
+        "#1F1E22"
+      ],
+      "couleurs": [
+        "noir"
+      ],
+      "fc": "sombre",
+      "mat": "albatre",
+      "metal": "noir",
+      "bois": "",
+      "verre": "albatre",
+      "led": false,
+      "chevets": false,
+      "ext": false,
+      "couchage": null,
+      "look": {
+        "style": "albatre"
+      },
+      "dimEstimees": false,
+      "stylesEditoriaux": [],
+      "styleVisuel": {
+        "source": "openclip",
+        "image": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-1107.07.06.jpg?v=1780106747&width=900",
+        "modele": "ViT-B-32/laion2b_s34b_b79k",
+        "prompts": "realroom-styles-v1:cbfef5be046f",
+        "scores": {
+          "epure": 0.17873,
+          "chaleureux": 0.11612,
+          "classique": 0.12345,
+          "boheme": 0.0967,
+          "artdeco": 0.17111,
+          "japandi": 0.21129,
+          "audacieux": 0.16297,
+          "mediterraneen": 0.10657,
+          "scandinave": 0.21409,
+          "industriel": 0.13321,
+          "contemporain": 0.1889
+        },
+        "aVerifier": true
+      }
+    },
+    "rr-gen-tableau-160": {
+      "id": "rr-gen-tableau-160",
+      "nom": "Tableau abstrait · 160 × 80 cm",
+      "titre": "Tableau abstrait · 160 × 80 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Tableau",
+      "fam": "tableau",
+      "dim": [
+        1.6,
+        0.035,
+        0.8
+      ],
+      "st": "art",
+      "prix": 140,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "tableau-principal",
+        "tableau-secondaire"
+      ],
+      "cols": [
+        "#BA8F72"
+      ],
+      "couleurs": [
+        "cadre chêne, composition écru et argile"
+      ],
+      "mat": "cadre chêne, composition écru et argile",
+      "bois": "cadre chêne, composition écru et argile",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-tableau-160.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. cadre chêne, composition écru et argile.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ],
+      "dimEstimees": false,
+      "stylesEditoriaux": []
+    },
+    "rr-gen-tableau-60": {
+      "id": "rr-gen-tableau-60",
+      "nom": "Tableau abstrait · 60 × 45 cm",
+      "titre": "Tableau abstrait · 60 × 45 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Tableau",
+      "fam": "tableau",
+      "dim": [
+        0.6,
+        0.035,
+        0.45
+      ],
+      "st": "art",
+      "prix": 45,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "tableau-principal",
+        "tableau-secondaire"
+      ],
+      "cols": [
+        "#BA8F72"
+      ],
+      "couleurs": [
+        "cadre chêne, composition écru et argile"
+      ],
+      "mat": "cadre chêne, composition écru et argile",
+      "bois": "cadre chêne, composition écru et argile",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-tableau-60.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. cadre chêne, composition écru et argile.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ],
+      "dimEstimees": false,
+      "stylesEditoriaux": []
+    },
+    "rr-gen-etagere-murale-80": {
+      "id": "rr-gen-etagere-murale-80",
+      "nom": "Étagère murale · 80 cm",
+      "titre": "Étagère murale · 80 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Étagère murale",
+      "fam": "etagere-murale",
+      "dim": [
+        0.8,
+        0.18,
+        0.28
+      ],
+      "st": "etagere-murale",
+      "prix": 65,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "etagere-murale"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-etagere-murale-80.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ],
+      "dimEstimees": false,
+      "stylesEditoriaux": []
+    }
+  },
+  "programme": {
+    "version": "zones-surface-3",
+    "fonction": "salon",
+    "surface": 90,
+    "zones": [
+      {
+        "id": "salon",
+        "type": "salon",
+        "libelle": "Salon",
+        "priorite": 1,
+        "demandee": false,
+        "slots": [
+          {
+            "id": "salon:canape:1",
+            "zone": "salon",
+            "usage": "canape",
+            "obligatoire": true,
+            "demandee": false,
+            "priorite": 1,
+            "largeurCible": 3.2,
+            "largeurMax": 3.8
+          },
+          {
+            "id": "salon:table-basse:1",
+            "zone": "salon",
+            "usage": "table-basse",
+            "obligatoire": true,
+            "demandee": false,
+            "priorite": 1,
+            "largeurCible": 1.4
+          },
+          {
+            "id": "salon:meuble-tv:1",
+            "zone": "salon",
+            "usage": "meuble-tv",
+            "obligatoire": true,
+            "demandee": false,
+            "priorite": 1
+          },
+          {
+            "id": "salon:lumiere-salon:1",
+            "zone": "salon",
+            "usage": "lumiere-salon",
+            "obligatoire": true,
+            "demandee": false,
+            "priorite": 1
+          },
+          {
+            "id": "salon:fauteuil-salon:1",
+            "zone": "salon",
+            "usage": "fauteuil-salon",
+            "obligatoire": false,
+            "demandee": false,
+            "priorite": 3
+          },
+          {
+            "id": "salon:fauteuil-salon:2",
+            "zone": "salon",
+            "usage": "fauteuil-salon",
+            "obligatoire": false,
+            "demandee": false,
+            "priorite": 3
+          },
+          {
+            "id": "salon:tapis:1",
+            "zone": "salon",
+            "usage": "tapis",
+            "obligatoire": false,
+            "demandee": false,
+            "priorite": 3,
+            "largeurCible": 2.5
+          },
+          {
+            "id": "salon:television:1",
+            "zone": "salon",
+            "usage": "television",
+            "obligatoire": true,
+            "priorite": 1,
+            "couche": "finition"
+          },
+          {
+            "id": "salon:tableau-principal:1",
+            "zone": "salon",
+            "usage": "tableau-principal",
+            "obligatoire": false,
+            "priorite": 3,
+            "couche": "finition"
+          },
+          {
+            "id": "salon:tableau-secondaire:1",
+            "zone": "salon",
+            "usage": "tableau-secondaire",
+            "obligatoire": false,
+            "priorite": 4,
+            "couche": "finition"
+          },
+          {
+            "id": "salon:etagere-murale:1",
+            "zone": "salon",
+            "usage": "etagere-murale",
+            "obligatoire": false,
+            "priorite": 5,
+            "couche": "finition"
+          }
+        ],
+        "surfaceMax": 20
+      },
+      {
+        "id": "repas",
+        "type": "repas",
+        "libelle": "Repas",
+        "priorite": 1,
+        "demandee": true,
+        "slots": [
+          {
+            "id": "repas:table-repas:1",
+            "zone": "repas",
+            "usage": "table-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:1",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:2",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:3",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:4",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:5",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:6",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:7",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:8",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:suspension:1",
+            "zone": "repas",
+            "usage": "suspension",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 2,
+            "couche": "finition"
+          }
+        ],
+        "surfaceMax": 16
+      },
+      {
+        "id": "lecture",
+        "type": "lecture",
+        "libelle": "Lecture",
+        "priorite": 1,
+        "demandee": true,
+        "slots": [
+          {
+            "id": "lecture:fauteuil-lecture:1",
+            "zone": "lecture",
+            "usage": "fauteuil-lecture",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "lecture:table-appoint:1",
+            "zone": "lecture",
+            "usage": "table-appoint",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "lecture:lumiere-lecture:1",
+            "zone": "lecture",
+            "usage": "lumiere-lecture",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          }
+        ],
+        "surfaceMax": 8
+      },
+      {
+        "id": "travail",
+        "type": "travail",
+        "libelle": "Travail",
+        "priorite": 1,
+        "demandee": true,
+        "slots": [
+          {
+            "id": "travail:bureau:1",
+            "zone": "travail",
+            "usage": "bureau",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "travail:chaise-bureau:1",
+            "zone": "travail",
+            "usage": "chaise-bureau",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "travail:lampe-bureau:1",
+            "zone": "travail",
+            "usage": "lampe-bureau",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          }
+        ],
+        "surfaceMax": 10
+      },
+      {
+        "id": "rangement",
+        "type": "rangement",
+        "libelle": "Rangement",
+        "priorite": 1,
+        "demandee": true,
+        "slots": [
+          {
+            "id": "rangement:buffet:1",
+            "zone": "rangement",
+            "usage": "buffet",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          }
+        ],
+        "surfaceMax": 8
+      }
+    ],
+    "avertissements": [],
+    "compositionSurface": {
+      "version": "composition-surface-1",
+      "palier": "grand-open-space",
+      "openSpace": true,
+      "cibleZones": 4,
+      "zonesChoisies": 4,
+      "choixExplicites": true,
+      "largeurCirculation": 1.1,
+      "maxM2ParElement": 5,
+      "referencesZones": {
+        "salon": 20,
+        "repas": 16,
+        "lecture": 8,
+        "travail": 10,
+        "couchage": 16,
+        "rangement": 8,
+        "accueil": 8,
+        "bain": 12,
+        "vasque": 8,
+        "assise": 8,
+        "detente": 12
+      }
+    },
+    "focal": {
+      "usage": "television",
+      "sansTV": false
+    },
+    "details": {
+      "muraux": [
+        2,
+        4
+      ]
+    },
+    "manquants": [],
+    "retenus": 28
+  },
+  "planZones": {
+    "version": "zones-surface-3",
+    "statut": "compose",
+    "zones": [
+      {
+        "x0": -4.9799999999999995,
+        "x1": -1.865,
+        "z0": 1.7349999999999999,
+        "z1": 4.36,
+        "id": "salon",
+        "type": "salon",
+        "libelle": "Salon",
+        "rot": 1.5707963267948966,
+        "meubles": [
+          "cs2fm0k_17",
+          "cs2fm0k_19",
+          "cs2fm0k_21",
+          "cs2fm0k_22",
+          "cs2fm0k_20",
+          "cs2fm0k_18",
+          "cs2fm0k_23",
+          "cs2fm0k_24",
+          "cs2fm0k_25",
+          "cs2fm0k_26",
+          "cs2fm0k_27"
+        ]
+      },
+      {
+        "x0": -4.235,
+        "x1": -2.2350000000000003,
+        "z0": -3.8099999999999996,
+        "z1": -1.7099999999999997,
+        "id": "repas",
+        "type": "repas",
+        "libelle": "Repas",
+        "rot": 1.5707963267948966,
+        "meubles": [
+          "cs2fm0k_1",
+          "cs2fm0k_2",
+          "cs2fm0k_3",
+          "cs2fm0k_4",
+          "cs2fm0k_5",
+          "cs2fm0k_6",
+          "cs2fm0k_7",
+          "cs2fm0k_8",
+          "cs2fm0k_9",
+          "cs2fm0k_12"
+        ]
+      },
+      {
+        "x0": 2.1950000000000003,
+        "x1": 3.6700000000000004,
+        "z0": -3.635,
+        "z1": -3.085,
+        "id": "lecture",
+        "type": "lecture",
+        "libelle": "Lecture",
+        "rot": 3.141592653589793,
+        "meubles": [
+          "cs2fm0k_13",
+          "cs2fm0k_14",
+          "cs2fm0k_10"
+        ]
+      },
+      {
+        "x0": 1.22,
+        "x1": 2.2199999999999998,
+        "z0": -6.98,
+        "z1": -5.784999999999999,
+        "id": "travail",
+        "type": "travail",
+        "libelle": "Travail",
+        "rot": 0,
+        "meubles": [
+          "cs2fm0k_0",
+          "cs2fm0k_15",
+          "cs2fm0k_16"
+        ]
+      },
+      {
+        "x0": -4.9799999999999995,
+        "x1": -4.28,
+        "z0": -6.984999999999999,
+        "z1": -6.635,
+        "id": "rangement",
+        "type": "rangement",
+        "libelle": "Rangement",
+        "rot": 0,
+        "meubles": [
+          "cs2fm0k_11"
+        ]
+      }
+    ],
+    "chemins": [
+      {
+        "vers": "salon",
+        "largeur": 1.1,
+        "points": [
+          {
+            "x": -3.48,
+            "z": -6.34
+          },
+          {
+            "x": -3.33,
+            "z": -6.34
+          },
+          {
+            "x": -3.19,
+            "z": -6.34
+          },
+          {
+            "x": -3.04,
+            "z": -6.34
+          },
+          {
+            "x": -2.9,
+            "z": -6.34
+          },
+          {
+            "x": -2.75,
+            "z": -6.34
+          },
+          {
+            "x": -2.61,
+            "z": -6.34
+          },
+          {
+            "x": -2.46,
+            "z": -6.34
+          },
+          {
+            "x": -2.32,
+            "z": -6.34
+          },
+          {
+            "x": -2.17,
+            "z": -6.34
+          },
+          {
+            "x": -2.03,
+            "z": -6.34
+          },
+          {
+            "x": -1.88,
+            "z": -6.34
+          },
+          {
+            "x": -1.74,
+            "z": -6.34
+          },
+          {
+            "x": -1.59,
+            "z": -6.34
+          },
+          {
+            "x": -1.45,
+            "z": -6.34
+          },
+          {
+            "x": -1.3,
+            "z": -6.34
+          },
+          {
+            "x": -1.3,
+            "z": -6.2
+          },
+          {
+            "x": -1.3,
+            "z": -6.05
+          },
+          {
+            "x": -1.3,
+            "z": -5.91
+          },
+          {
+            "x": -1.3,
+            "z": -5.76
+          },
+          {
+            "x": -1.3,
+            "z": -5.61
+          },
+          {
+            "x": -1.3,
+            "z": -5.47
+          },
+          {
+            "x": -1.3,
+            "z": -5.32
+          },
+          {
+            "x": -1.3,
+            "z": -5.18
+          },
+          {
+            "x": -1.3,
+            "z": -5.03
+          },
+          {
+            "x": -1.3,
+            "z": -4.89
+          },
+          {
+            "x": -1.3,
+            "z": -4.74
+          },
+          {
+            "x": -1.3,
+            "z": -4.59
+          },
+          {
+            "x": -1.3,
+            "z": -4.45
+          },
+          {
+            "x": -1.3,
+            "z": -4.3
+          },
+          {
+            "x": -1.3,
+            "z": -4.16
+          },
+          {
+            "x": -1.3,
+            "z": -4.01
+          },
+          {
+            "x": -1.3,
+            "z": -3.86
+          },
+          {
+            "x": -1.3,
+            "z": -3.72
+          },
+          {
+            "x": -1.3,
+            "z": -3.57
+          },
+          {
+            "x": -1.3,
+            "z": -3.43
+          },
+          {
+            "x": -1.3,
+            "z": -3.28
+          },
+          {
+            "x": -1.3,
+            "z": -3.14
+          },
+          {
+            "x": -1.3,
+            "z": -2.99
+          },
+          {
+            "x": -1.3,
+            "z": -2.84
+          },
+          {
+            "x": -1.3,
+            "z": -2.7
+          },
+          {
+            "x": -1.3,
+            "z": -2.55
+          },
+          {
+            "x": -1.3,
+            "z": -2.41
+          },
+          {
+            "x": -1.3,
+            "z": -2.26
+          },
+          {
+            "x": -1.3,
+            "z": -2.11
+          },
+          {
+            "x": -1.3,
+            "z": -1.97
+          },
+          {
+            "x": -1.3,
+            "z": -1.82
+          },
+          {
+            "x": -1.3,
+            "z": -1.68
+          },
+          {
+            "x": -1.3,
+            "z": -1.53
+          },
+          {
+            "x": -1.3,
+            "z": -1.39
+          },
+          {
+            "x": -1.3,
+            "z": -1.24
+          },
+          {
+            "x": -1.3,
+            "z": -1.09
+          },
+          {
+            "x": -1.3,
+            "z": -0.95
+          },
+          {
+            "x": -1.3,
+            "z": -0.8
+          },
+          {
+            "x": -1.3,
+            "z": -0.66
+          },
+          {
+            "x": -1.3,
+            "z": -0.51
+          },
+          {
+            "x": -1.3,
+            "z": -0.36
+          },
+          {
+            "x": -1.3,
+            "z": -0.22
+          },
+          {
+            "x": -1.3,
+            "z": -0.07
+          },
+          {
+            "x": -1.3,
+            "z": 0.07
+          },
+          {
+            "x": -1.3,
+            "z": 0.22
+          },
+          {
+            "x": -1.3,
+            "z": 0.36
+          },
+          {
+            "x": -1.3,
+            "z": 0.51
+          },
+          {
+            "x": -1.3,
+            "z": 0.66
+          },
+          {
+            "x": -1.3,
+            "z": 0.8
+          },
+          {
+            "x": -1.3,
+            "z": 0.95
+          },
+          {
+            "x": -1.3,
+            "z": 1.09
+          },
+          {
+            "x": -1.3,
+            "z": 1.24
+          },
+          {
+            "x": -1.3,
+            "z": 1.39
+          },
+          {
+            "x": -1.3,
+            "z": 1.53
+          },
+          {
+            "x": -1.3,
+            "z": 1.68
+          },
+          {
+            "x": -1.3,
+            "z": 1.82
+          }
+        ]
+      },
+      {
+        "vers": "repas",
+        "largeur": 1.1,
+        "points": [
+          {
+            "x": -3.48,
+            "z": -6.34
+          },
+          {
+            "x": -3.33,
+            "z": -6.34
+          },
+          {
+            "x": -3.19,
+            "z": -6.34
+          },
+          {
+            "x": -3.04,
+            "z": -6.34
+          },
+          {
+            "x": -2.9,
+            "z": -6.34
+          },
+          {
+            "x": -2.75,
+            "z": -6.34
+          },
+          {
+            "x": -2.61,
+            "z": -6.34
+          },
+          {
+            "x": -2.46,
+            "z": -6.34
+          },
+          {
+            "x": -2.32,
+            "z": -6.34
+          },
+          {
+            "x": -2.17,
+            "z": -6.34
+          },
+          {
+            "x": -2.03,
+            "z": -6.34
+          },
+          {
+            "x": -1.88,
+            "z": -6.34
+          },
+          {
+            "x": -1.74,
+            "z": -6.34
+          },
+          {
+            "x": -1.59,
+            "z": -6.34
+          },
+          {
+            "x": -1.59,
+            "z": -6.2
+          },
+          {
+            "x": -1.59,
+            "z": -6.05
+          },
+          {
+            "x": -1.59,
+            "z": -5.91
+          },
+          {
+            "x": -1.59,
+            "z": -5.76
+          },
+          {
+            "x": -1.59,
+            "z": -5.61
+          },
+          {
+            "x": -1.59,
+            "z": -5.47
+          },
+          {
+            "x": -1.59,
+            "z": -5.32
+          },
+          {
+            "x": -1.59,
+            "z": -5.18
+          },
+          {
+            "x": -1.59,
+            "z": -5.03
+          },
+          {
+            "x": -1.59,
+            "z": -4.89
+          },
+          {
+            "x": -1.59,
+            "z": -4.74
+          },
+          {
+            "x": -1.59,
+            "z": -4.59
+          },
+          {
+            "x": -1.59,
+            "z": -4.45
+          },
+          {
+            "x": -1.59,
+            "z": -4.3
+          },
+          {
+            "x": -1.59,
+            "z": -4.16
+          },
+          {
+            "x": -1.59,
+            "z": -4.01
+          },
+          {
+            "x": -1.59,
+            "z": -3.86
+          },
+          {
+            "x": -1.59,
+            "z": -3.72
+          },
+          {
+            "x": -1.59,
+            "z": -3.57
+          },
+          {
+            "x": -1.59,
+            "z": -3.43
+          },
+          {
+            "x": -1.59,
+            "z": -3.28
+          },
+          {
+            "x": -1.59,
+            "z": -3.14
+          },
+          {
+            "x": -1.59,
+            "z": -2.99
+          },
+          {
+            "x": -1.59,
+            "z": -2.84
+          },
+          {
+            "x": -1.59,
+            "z": -2.7
+          },
+          {
+            "x": -1.59,
+            "z": -2.55
+          },
+          {
+            "x": -1.59,
+            "z": -2.41
+          },
+          {
+            "x": -1.59,
+            "z": -2.26
+          },
+          {
+            "x": -1.59,
+            "z": -2.11
+          },
+          {
+            "x": -1.59,
+            "z": -1.97
+          },
+          {
+            "x": -1.59,
+            "z": -1.82
+          },
+          {
+            "x": -1.59,
+            "z": -1.68
+          },
+          {
+            "x": -1.59,
+            "z": -1.53
+          },
+          {
+            "x": -1.59,
+            "z": -1.39
+          },
+          {
+            "x": -1.59,
+            "z": -1.24
+          },
+          {
+            "x": -1.59,
+            "z": -1.09
+          },
+          {
+            "x": -1.74,
+            "z": -1.09
+          },
+          {
+            "x": -1.88,
+            "z": -1.09
+          },
+          {
+            "x": -2.03,
+            "z": -1.09
+          },
+          {
+            "x": -2.17,
+            "z": -1.09
+          },
+          {
+            "x": -2.32,
+            "z": -1.09
+          }
+        ]
+      },
+      {
+        "vers": "lecture",
+        "largeur": 1.1,
+        "points": [
+          {
+            "x": -3.48,
+            "z": -6.34
+          },
+          {
+            "x": -3.33,
+            "z": -6.34
+          },
+          {
+            "x": -3.19,
+            "z": -6.34
+          },
+          {
+            "x": -3.04,
+            "z": -6.34
+          },
+          {
+            "x": -2.9,
+            "z": -6.34
+          },
+          {
+            "x": -2.75,
+            "z": -6.34
+          },
+          {
+            "x": -2.61,
+            "z": -6.34
+          },
+          {
+            "x": -2.46,
+            "z": -6.34
+          },
+          {
+            "x": -2.32,
+            "z": -6.34
+          },
+          {
+            "x": -2.17,
+            "z": -6.34
+          },
+          {
+            "x": -2.03,
+            "z": -6.34
+          },
+          {
+            "x": -1.88,
+            "z": -6.34
+          },
+          {
+            "x": -1.74,
+            "z": -6.34
+          },
+          {
+            "x": -1.59,
+            "z": -6.34
+          },
+          {
+            "x": -1.45,
+            "z": -6.34
+          },
+          {
+            "x": -1.3,
+            "z": -6.34
+          },
+          {
+            "x": -1.16,
+            "z": -6.34
+          },
+          {
+            "x": -1.01,
+            "z": -6.34
+          },
+          {
+            "x": -0.87,
+            "z": -6.34
+          },
+          {
+            "x": -0.72,
+            "z": -6.34
+          },
+          {
+            "x": -0.58,
+            "z": -6.34
+          },
+          {
+            "x": -0.43,
+            "z": -6.34
+          },
+          {
+            "x": -0.29,
+            "z": -6.34
+          },
+          {
+            "x": -0.14,
+            "z": -6.34
+          },
+          {
+            "x": 0,
+            "z": -6.34
+          },
+          {
+            "x": 0.14,
+            "z": -6.34
+          },
+          {
+            "x": 0.29,
+            "z": -6.34
+          },
+          {
+            "x": 0.43,
+            "z": -6.34
+          },
+          {
+            "x": 0.58,
+            "z": -6.34
+          },
+          {
+            "x": 0.58,
+            "z": -6.2
+          },
+          {
+            "x": 0.58,
+            "z": -6.05
+          },
+          {
+            "x": 0.58,
+            "z": -5.91
+          },
+          {
+            "x": 0.58,
+            "z": -5.76
+          },
+          {
+            "x": 0.58,
+            "z": -5.61
+          },
+          {
+            "x": 0.58,
+            "z": -5.47
+          },
+          {
+            "x": 0.58,
+            "z": -5.32
+          },
+          {
+            "x": 0.58,
+            "z": -5.18
+          },
+          {
+            "x": 0.72,
+            "z": -5.18
+          },
+          {
+            "x": 0.87,
+            "z": -5.18
+          },
+          {
+            "x": 1.01,
+            "z": -5.18
+          },
+          {
+            "x": 1.16,
+            "z": -5.18
+          },
+          {
+            "x": 1.3,
+            "z": -5.18
+          },
+          {
+            "x": 1.45,
+            "z": -5.18
+          },
+          {
+            "x": 1.59,
+            "z": -5.18
+          },
+          {
+            "x": 1.59,
+            "z": -5.03
+          },
+          {
+            "x": 1.59,
+            "z": -4.89
+          },
+          {
+            "x": 1.59,
+            "z": -4.74
+          },
+          {
+            "x": 1.59,
+            "z": -4.59
+          },
+          {
+            "x": 1.59,
+            "z": -4.45
+          },
+          {
+            "x": 1.59,
+            "z": -4.3
+          },
+          {
+            "x": 1.59,
+            "z": -4.16
+          },
+          {
+            "x": 1.59,
+            "z": -4.01
+          },
+          {
+            "x": 1.59,
+            "z": -3.86
+          },
+          {
+            "x": 1.59,
+            "z": -3.72
+          },
+          {
+            "x": 1.59,
+            "z": -3.57
+          }
+        ]
+      },
+      {
+        "vers": "travail",
+        "largeur": 1.1,
+        "points": [
+          {
+            "x": -3.48,
+            "z": -6.34
+          },
+          {
+            "x": -3.33,
+            "z": -6.34
+          },
+          {
+            "x": -3.19,
+            "z": -6.34
+          },
+          {
+            "x": -3.04,
+            "z": -6.34
+          },
+          {
+            "x": -2.9,
+            "z": -6.34
+          },
+          {
+            "x": -2.75,
+            "z": -6.34
+          },
+          {
+            "x": -2.61,
+            "z": -6.34
+          },
+          {
+            "x": -2.46,
+            "z": -6.34
+          },
+          {
+            "x": -2.32,
+            "z": -6.34
+          },
+          {
+            "x": -2.17,
+            "z": -6.34
+          },
+          {
+            "x": -2.03,
+            "z": -6.34
+          },
+          {
+            "x": -1.88,
+            "z": -6.34
+          },
+          {
+            "x": -1.74,
+            "z": -6.34
+          },
+          {
+            "x": -1.59,
+            "z": -6.34
+          },
+          {
+            "x": -1.45,
+            "z": -6.34
+          },
+          {
+            "x": -1.3,
+            "z": -6.34
+          },
+          {
+            "x": -1.16,
+            "z": -6.34
+          },
+          {
+            "x": -1.01,
+            "z": -6.34
+          },
+          {
+            "x": -0.87,
+            "z": -6.34
+          },
+          {
+            "x": -0.72,
+            "z": -6.34
+          },
+          {
+            "x": -0.58,
+            "z": -6.34
+          },
+          {
+            "x": -0.43,
+            "z": -6.34
+          },
+          {
+            "x": -0.29,
+            "z": -6.34
+          },
+          {
+            "x": -0.14,
+            "z": -6.34
+          },
+          {
+            "x": 0,
+            "z": -6.34
+          },
+          {
+            "x": 0.14,
+            "z": -6.34
+          },
+          {
+            "x": 0.29,
+            "z": -6.34
+          },
+          {
+            "x": 0.43,
+            "z": -6.34
+          },
+          {
+            "x": 0.58,
+            "z": -6.34
+          },
+          {
+            "x": 0.58,
+            "z": -6.2
+          },
+          {
+            "x": 0.58,
+            "z": -6.05
+          },
+          {
+            "x": 0.58,
+            "z": -5.91
+          },
+          {
+            "x": 0.58,
+            "z": -5.76
+          },
+          {
+            "x": 0.58,
+            "z": -5.61
+          },
+          {
+            "x": 0.58,
+            "z": -5.47
+          },
+          {
+            "x": 0.58,
+            "z": -5.32
+          },
+          {
+            "x": 0.58,
+            "z": -5.18
+          },
+          {
+            "x": 0.72,
+            "z": -5.18
+          },
+          {
+            "x": 0.87,
+            "z": -5.18
+          },
+          {
+            "x": 1.01,
+            "z": -5.18
+          },
+          {
+            "x": 1.16,
+            "z": -5.18
+          },
+          {
+            "x": 1.3,
+            "z": -5.18
+          }
+        ]
+      },
+      {
+        "vers": "rangement",
+        "largeur": 1.1,
+        "points": [
+          {
+            "x": -3.48,
+            "z": -6.34
+          },
+          {
+            "x": -3.62,
+            "z": -6.34
+          },
+          {
+            "x": -3.62,
+            "z": -6.2
+          },
+          {
+            "x": -3.62,
+            "z": -6.05
+          },
+          {
+            "x": -3.77,
+            "z": -6.05
+          },
+          {
+            "x": -3.91,
+            "z": -6.05
+          },
+          {
+            "x": -4.06,
+            "z": -6.05
+          },
+          {
+            "x": -4.2,
+            "z": -6.05
+          },
+          {
+            "x": -4.35,
+            "z": -6.05
+          }
+        ]
+      }
+    ],
+    "circulation": {
+      "largeur": 1.1,
+      "portesConnues": true,
+      "portesBloquees": 0,
+      "inaccessibles": [],
+      "chemins": [
+        {
+          "vers": "salon",
+          "largeur": 1.1,
+          "points": [
+            {
+              "x": -3.48,
+              "z": -6.34
+            },
+            {
+              "x": -3.33,
+              "z": -6.34
+            },
+            {
+              "x": -3.19,
+              "z": -6.34
+            },
+            {
+              "x": -3.04,
+              "z": -6.34
+            },
+            {
+              "x": -2.9,
+              "z": -6.34
+            },
+            {
+              "x": -2.75,
+              "z": -6.34
+            },
+            {
+              "x": -2.61,
+              "z": -6.34
+            },
+            {
+              "x": -2.46,
+              "z": -6.34
+            },
+            {
+              "x": -2.32,
+              "z": -6.34
+            },
+            {
+              "x": -2.17,
+              "z": -6.34
+            },
+            {
+              "x": -2.03,
+              "z": -6.34
+            },
+            {
+              "x": -1.88,
+              "z": -6.34
+            },
+            {
+              "x": -1.74,
+              "z": -6.34
+            },
+            {
+              "x": -1.59,
+              "z": -6.34
+            },
+            {
+              "x": -1.45,
+              "z": -6.34
+            },
+            {
+              "x": -1.3,
+              "z": -6.34
+            },
+            {
+              "x": -1.3,
+              "z": -6.2
+            },
+            {
+              "x": -1.3,
+              "z": -6.05
+            },
+            {
+              "x": -1.3,
+              "z": -5.91
+            },
+            {
+              "x": -1.3,
+              "z": -5.76
+            },
+            {
+              "x": -1.3,
+              "z": -5.61
+            },
+            {
+              "x": -1.3,
+              "z": -5.47
+            },
+            {
+              "x": -1.3,
+              "z": -5.32
+            },
+            {
+              "x": -1.3,
+              "z": -5.18
+            },
+            {
+              "x": -1.3,
+              "z": -5.03
+            },
+            {
+              "x": -1.3,
+              "z": -4.89
+            },
+            {
+              "x": -1.3,
+              "z": -4.74
+            },
+            {
+              "x": -1.3,
+              "z": -4.59
+            },
+            {
+              "x": -1.3,
+              "z": -4.45
+            },
+            {
+              "x": -1.3,
+              "z": -4.3
+            },
+            {
+              "x": -1.3,
+              "z": -4.16
+            },
+            {
+              "x": -1.3,
+              "z": -4.01
+            },
+            {
+              "x": -1.3,
+              "z": -3.86
+            },
+            {
+              "x": -1.3,
+              "z": -3.72
+            },
+            {
+              "x": -1.3,
+              "z": -3.57
+            },
+            {
+              "x": -1.3,
+              "z": -3.43
+            },
+            {
+              "x": -1.3,
+              "z": -3.28
+            },
+            {
+              "x": -1.3,
+              "z": -3.14
+            },
+            {
+              "x": -1.3,
+              "z": -2.99
+            },
+            {
+              "x": -1.3,
+              "z": -2.84
+            },
+            {
+              "x": -1.3,
+              "z": -2.7
+            },
+            {
+              "x": -1.3,
+              "z": -2.55
+            },
+            {
+              "x": -1.3,
+              "z": -2.41
+            },
+            {
+              "x": -1.3,
+              "z": -2.26
+            },
+            {
+              "x": -1.3,
+              "z": -2.11
+            },
+            {
+              "x": -1.3,
+              "z": -1.97
+            },
+            {
+              "x": -1.3,
+              "z": -1.82
+            },
+            {
+              "x": -1.3,
+              "z": -1.68
+            },
+            {
+              "x": -1.3,
+              "z": -1.53
+            },
+            {
+              "x": -1.3,
+              "z": -1.39
+            },
+            {
+              "x": -1.3,
+              "z": -1.24
+            },
+            {
+              "x": -1.3,
+              "z": -1.09
+            },
+            {
+              "x": -1.3,
+              "z": -0.95
+            },
+            {
+              "x": -1.3,
+              "z": -0.8
+            },
+            {
+              "x": -1.3,
+              "z": -0.66
+            },
+            {
+              "x": -1.3,
+              "z": -0.51
+            },
+            {
+              "x": -1.3,
+              "z": -0.36
+            },
+            {
+              "x": -1.3,
+              "z": -0.22
+            },
+            {
+              "x": -1.3,
+              "z": -0.07
+            },
+            {
+              "x": -1.3,
+              "z": 0.07
+            },
+            {
+              "x": -1.3,
+              "z": 0.22
+            },
+            {
+              "x": -1.3,
+              "z": 0.36
+            },
+            {
+              "x": -1.3,
+              "z": 0.51
+            },
+            {
+              "x": -1.3,
+              "z": 0.66
+            },
+            {
+              "x": -1.3,
+              "z": 0.8
+            },
+            {
+              "x": -1.3,
+              "z": 0.95
+            },
+            {
+              "x": -1.3,
+              "z": 1.09
+            },
+            {
+              "x": -1.3,
+              "z": 1.24
+            },
+            {
+              "x": -1.3,
+              "z": 1.39
+            },
+            {
+              "x": -1.3,
+              "z": 1.53
+            },
+            {
+              "x": -1.3,
+              "z": 1.68
+            },
+            {
+              "x": -1.3,
+              "z": 1.82
+            }
+          ]
+        },
+        {
+          "vers": "repas",
+          "largeur": 1.1,
+          "points": [
+            {
+              "x": -3.48,
+              "z": -6.34
+            },
+            {
+              "x": -3.33,
+              "z": -6.34
+            },
+            {
+              "x": -3.19,
+              "z": -6.34
+            },
+            {
+              "x": -3.04,
+              "z": -6.34
+            },
+            {
+              "x": -2.9,
+              "z": -6.34
+            },
+            {
+              "x": -2.75,
+              "z": -6.34
+            },
+            {
+              "x": -2.61,
+              "z": -6.34
+            },
+            {
+              "x": -2.46,
+              "z": -6.34
+            },
+            {
+              "x": -2.32,
+              "z": -6.34
+            },
+            {
+              "x": -2.17,
+              "z": -6.34
+            },
+            {
+              "x": -2.03,
+              "z": -6.34
+            },
+            {
+              "x": -1.88,
+              "z": -6.34
+            },
+            {
+              "x": -1.74,
+              "z": -6.34
+            },
+            {
+              "x": -1.59,
+              "z": -6.34
+            },
+            {
+              "x": -1.59,
+              "z": -6.2
+            },
+            {
+              "x": -1.59,
+              "z": -6.05
+            },
+            {
+              "x": -1.59,
+              "z": -5.91
+            },
+            {
+              "x": -1.59,
+              "z": -5.76
+            },
+            {
+              "x": -1.59,
+              "z": -5.61
+            },
+            {
+              "x": -1.59,
+              "z": -5.47
+            },
+            {
+              "x": -1.59,
+              "z": -5.32
+            },
+            {
+              "x": -1.59,
+              "z": -5.18
+            },
+            {
+              "x": -1.59,
+              "z": -5.03
+            },
+            {
+              "x": -1.59,
+              "z": -4.89
+            },
+            {
+              "x": -1.59,
+              "z": -4.74
+            },
+            {
+              "x": -1.59,
+              "z": -4.59
+            },
+            {
+              "x": -1.59,
+              "z": -4.45
+            },
+            {
+              "x": -1.59,
+              "z": -4.3
+            },
+            {
+              "x": -1.59,
+              "z": -4.16
+            },
+            {
+              "x": -1.59,
+              "z": -4.01
+            },
+            {
+              "x": -1.59,
+              "z": -3.86
+            },
+            {
+              "x": -1.59,
+              "z": -3.72
+            },
+            {
+              "x": -1.59,
+              "z": -3.57
+            },
+            {
+              "x": -1.59,
+              "z": -3.43
+            },
+            {
+              "x": -1.59,
+              "z": -3.28
+            },
+            {
+              "x": -1.59,
+              "z": -3.14
+            },
+            {
+              "x": -1.59,
+              "z": -2.99
+            },
+            {
+              "x": -1.59,
+              "z": -2.84
+            },
+            {
+              "x": -1.59,
+              "z": -2.7
+            },
+            {
+              "x": -1.59,
+              "z": -2.55
+            },
+            {
+              "x": -1.59,
+              "z": -2.41
+            },
+            {
+              "x": -1.59,
+              "z": -2.26
+            },
+            {
+              "x": -1.59,
+              "z": -2.11
+            },
+            {
+              "x": -1.59,
+              "z": -1.97
+            },
+            {
+              "x": -1.59,
+              "z": -1.82
+            },
+            {
+              "x": -1.59,
+              "z": -1.68
+            },
+            {
+              "x": -1.59,
+              "z": -1.53
+            },
+            {
+              "x": -1.59,
+              "z": -1.39
+            },
+            {
+              "x": -1.59,
+              "z": -1.24
+            },
+            {
+              "x": -1.59,
+              "z": -1.09
+            },
+            {
+              "x": -1.74,
+              "z": -1.09
+            },
+            {
+              "x": -1.88,
+              "z": -1.09
+            },
+            {
+              "x": -2.03,
+              "z": -1.09
+            },
+            {
+              "x": -2.17,
+              "z": -1.09
+            },
+            {
+              "x": -2.32,
+              "z": -1.09
+            }
+          ]
+        },
+        {
+          "vers": "lecture",
+          "largeur": 1.1,
+          "points": [
+            {
+              "x": -3.48,
+              "z": -6.34
+            },
+            {
+              "x": -3.33,
+              "z": -6.34
+            },
+            {
+              "x": -3.19,
+              "z": -6.34
+            },
+            {
+              "x": -3.04,
+              "z": -6.34
+            },
+            {
+              "x": -2.9,
+              "z": -6.34
+            },
+            {
+              "x": -2.75,
+              "z": -6.34
+            },
+            {
+              "x": -2.61,
+              "z": -6.34
+            },
+            {
+              "x": -2.46,
+              "z": -6.34
+            },
+            {
+              "x": -2.32,
+              "z": -6.34
+            },
+            {
+              "x": -2.17,
+              "z": -6.34
+            },
+            {
+              "x": -2.03,
+              "z": -6.34
+            },
+            {
+              "x": -1.88,
+              "z": -6.34
+            },
+            {
+              "x": -1.74,
+              "z": -6.34
+            },
+            {
+              "x": -1.59,
+              "z": -6.34
+            },
+            {
+              "x": -1.45,
+              "z": -6.34
+            },
+            {
+              "x": -1.3,
+              "z": -6.34
+            },
+            {
+              "x": -1.16,
+              "z": -6.34
+            },
+            {
+              "x": -1.01,
+              "z": -6.34
+            },
+            {
+              "x": -0.87,
+              "z": -6.34
+            },
+            {
+              "x": -0.72,
+              "z": -6.34
+            },
+            {
+              "x": -0.58,
+              "z": -6.34
+            },
+            {
+              "x": -0.43,
+              "z": -6.34
+            },
+            {
+              "x": -0.29,
+              "z": -6.34
+            },
+            {
+              "x": -0.14,
+              "z": -6.34
+            },
+            {
+              "x": 0,
+              "z": -6.34
+            },
+            {
+              "x": 0.14,
+              "z": -6.34
+            },
+            {
+              "x": 0.29,
+              "z": -6.34
+            },
+            {
+              "x": 0.43,
+              "z": -6.34
+            },
+            {
+              "x": 0.58,
+              "z": -6.34
+            },
+            {
+              "x": 0.58,
+              "z": -6.2
+            },
+            {
+              "x": 0.58,
+              "z": -6.05
+            },
+            {
+              "x": 0.58,
+              "z": -5.91
+            },
+            {
+              "x": 0.58,
+              "z": -5.76
+            },
+            {
+              "x": 0.58,
+              "z": -5.61
+            },
+            {
+              "x": 0.58,
+              "z": -5.47
+            },
+            {
+              "x": 0.58,
+              "z": -5.32
+            },
+            {
+              "x": 0.58,
+              "z": -5.18
+            },
+            {
+              "x": 0.72,
+              "z": -5.18
+            },
+            {
+              "x": 0.87,
+              "z": -5.18
+            },
+            {
+              "x": 1.01,
+              "z": -5.18
+            },
+            {
+              "x": 1.16,
+              "z": -5.18
+            },
+            {
+              "x": 1.3,
+              "z": -5.18
+            },
+            {
+              "x": 1.45,
+              "z": -5.18
+            },
+            {
+              "x": 1.59,
+              "z": -5.18
+            },
+            {
+              "x": 1.59,
+              "z": -5.03
+            },
+            {
+              "x": 1.59,
+              "z": -4.89
+            },
+            {
+              "x": 1.59,
+              "z": -4.74
+            },
+            {
+              "x": 1.59,
+              "z": -4.59
+            },
+            {
+              "x": 1.59,
+              "z": -4.45
+            },
+            {
+              "x": 1.59,
+              "z": -4.3
+            },
+            {
+              "x": 1.59,
+              "z": -4.16
+            },
+            {
+              "x": 1.59,
+              "z": -4.01
+            },
+            {
+              "x": 1.59,
+              "z": -3.86
+            },
+            {
+              "x": 1.59,
+              "z": -3.72
+            },
+            {
+              "x": 1.59,
+              "z": -3.57
+            }
+          ]
+        },
+        {
+          "vers": "travail",
+          "largeur": 1.1,
+          "points": [
+            {
+              "x": -3.48,
+              "z": -6.34
+            },
+            {
+              "x": -3.33,
+              "z": -6.34
+            },
+            {
+              "x": -3.19,
+              "z": -6.34
+            },
+            {
+              "x": -3.04,
+              "z": -6.34
+            },
+            {
+              "x": -2.9,
+              "z": -6.34
+            },
+            {
+              "x": -2.75,
+              "z": -6.34
+            },
+            {
+              "x": -2.61,
+              "z": -6.34
+            },
+            {
+              "x": -2.46,
+              "z": -6.34
+            },
+            {
+              "x": -2.32,
+              "z": -6.34
+            },
+            {
+              "x": -2.17,
+              "z": -6.34
+            },
+            {
+              "x": -2.03,
+              "z": -6.34
+            },
+            {
+              "x": -1.88,
+              "z": -6.34
+            },
+            {
+              "x": -1.74,
+              "z": -6.34
+            },
+            {
+              "x": -1.59,
+              "z": -6.34
+            },
+            {
+              "x": -1.45,
+              "z": -6.34
+            },
+            {
+              "x": -1.3,
+              "z": -6.34
+            },
+            {
+              "x": -1.16,
+              "z": -6.34
+            },
+            {
+              "x": -1.01,
+              "z": -6.34
+            },
+            {
+              "x": -0.87,
+              "z": -6.34
+            },
+            {
+              "x": -0.72,
+              "z": -6.34
+            },
+            {
+              "x": -0.58,
+              "z": -6.34
+            },
+            {
+              "x": -0.43,
+              "z": -6.34
+            },
+            {
+              "x": -0.29,
+              "z": -6.34
+            },
+            {
+              "x": -0.14,
+              "z": -6.34
+            },
+            {
+              "x": 0,
+              "z": -6.34
+            },
+            {
+              "x": 0.14,
+              "z": -6.34
+            },
+            {
+              "x": 0.29,
+              "z": -6.34
+            },
+            {
+              "x": 0.43,
+              "z": -6.34
+            },
+            {
+              "x": 0.58,
+              "z": -6.34
+            },
+            {
+              "x": 0.58,
+              "z": -6.2
+            },
+            {
+              "x": 0.58,
+              "z": -6.05
+            },
+            {
+              "x": 0.58,
+              "z": -5.91
+            },
+            {
+              "x": 0.58,
+              "z": -5.76
+            },
+            {
+              "x": 0.58,
+              "z": -5.61
+            },
+            {
+              "x": 0.58,
+              "z": -5.47
+            },
+            {
+              "x": 0.58,
+              "z": -5.32
+            },
+            {
+              "x": 0.58,
+              "z": -5.18
+            },
+            {
+              "x": 0.72,
+              "z": -5.18
+            },
+            {
+              "x": 0.87,
+              "z": -5.18
+            },
+            {
+              "x": 1.01,
+              "z": -5.18
+            },
+            {
+              "x": 1.16,
+              "z": -5.18
+            },
+            {
+              "x": 1.3,
+              "z": -5.18
+            }
+          ]
+        },
+        {
+          "vers": "rangement",
+          "largeur": 1.1,
+          "points": [
+            {
+              "x": -3.48,
+              "z": -6.34
+            },
+            {
+              "x": -3.62,
+              "z": -6.34
+            },
+            {
+              "x": -3.62,
+              "z": -6.2
+            },
+            {
+              "x": -3.62,
+              "z": -6.05
+            },
+            {
+              "x": -3.77,
+              "z": -6.05
+            },
+            {
+              "x": -3.91,
+              "z": -6.05
+            },
+            {
+              "x": -4.06,
+              "z": -6.05
+            },
+            {
+              "x": -4.2,
+              "z": -6.05
+            },
+            {
+              "x": -4.35,
+              "z": -6.05
+            }
+          ]
+        }
+      ],
+      "valide": true
+    },
+    "largeurCirculation": 1.1,
+    "score": 26.9,
+    "manquants": [],
+    "statistiques": {
+      "candidats": 301,
+      "combinaisons": 10149,
+      "plansVerifies": 35,
+      "reprisesEspaces": 2
+    },
+    "avertissements": [],
+    "alternativesCompactes": [
+      {
+        "id": "cs2fm0k_13",
+        "initial": "abbraccio",
+        "retenu": "ce-320"
+      },
+      {
+        "id": "cs2fm0k_15",
+        "initial": "abbraccio",
+        "retenu": "vsc-09"
+      },
+      {
+        "id": "cs2fm0k_17",
+        "initial": "canap-modulable-vert-collection-opulence-tactile",
+        "retenu": "cmb-310"
+      },
+      {
+        "id": "cs2fm0k_21",
+        "initial": "abbraccio",
+        "retenu": "ce-320"
+      },
+      {
+        "id": "cs2fm0k_22",
+        "initial": "abbraccio",
+        "retenu": "ce-320"
+      }
+    ],
+    "audit": {
+      "valide": true,
+      "problemes": [],
+      "circulation": {
+        "largeur": 1.1,
+        "portesConnues": true,
+        "portesBloquees": 0,
+        "inaccessibles": [],
+        "chemins": [
+          {
+            "vers": "salon",
+            "largeur": 1.1,
+            "points": [
+              {
+                "x": -3.48,
+                "z": -6.34
+              },
+              {
+                "x": -3.33,
+                "z": -6.34
+              },
+              {
+                "x": -3.19,
+                "z": -6.34
+              },
+              {
+                "x": -3.04,
+                "z": -6.34
+              },
+              {
+                "x": -2.9,
+                "z": -6.34
+              },
+              {
+                "x": -2.75,
+                "z": -6.34
+              },
+              {
+                "x": -2.61,
+                "z": -6.34
+              },
+              {
+                "x": -2.46,
+                "z": -6.34
+              },
+              {
+                "x": -2.32,
+                "z": -6.34
+              },
+              {
+                "x": -2.17,
+                "z": -6.34
+              },
+              {
+                "x": -2.03,
+                "z": -6.34
+              },
+              {
+                "x": -1.88,
+                "z": -6.34
+              },
+              {
+                "x": -1.74,
+                "z": -6.34
+              },
+              {
+                "x": -1.59,
+                "z": -6.34
+              },
+              {
+                "x": -1.45,
+                "z": -6.34
+              },
+              {
+                "x": -1.3,
+                "z": -6.34
+              },
+              {
+                "x": -1.3,
+                "z": -6.2
+              },
+              {
+                "x": -1.3,
+                "z": -6.05
+              },
+              {
+                "x": -1.3,
+                "z": -5.91
+              },
+              {
+                "x": -1.3,
+                "z": -5.76
+              },
+              {
+                "x": -1.3,
+                "z": -5.61
+              },
+              {
+                "x": -1.3,
+                "z": -5.47
+              },
+              {
+                "x": -1.3,
+                "z": -5.32
+              },
+              {
+                "x": -1.3,
+                "z": -5.18
+              },
+              {
+                "x": -1.3,
+                "z": -5.03
+              },
+              {
+                "x": -1.3,
+                "z": -4.89
+              },
+              {
+                "x": -1.3,
+                "z": -4.74
+              },
+              {
+                "x": -1.3,
+                "z": -4.59
+              },
+              {
+                "x": -1.3,
+                "z": -4.45
+              },
+              {
+                "x": -1.3,
+                "z": -4.3
+              },
+              {
+                "x": -1.3,
+                "z": -4.16
+              },
+              {
+                "x": -1.3,
+                "z": -4.01
+              },
+              {
+                "x": -1.3,
+                "z": -3.86
+              },
+              {
+                "x": -1.3,
+                "z": -3.72
+              },
+              {
+                "x": -1.3,
+                "z": -3.57
+              },
+              {
+                "x": -1.3,
+                "z": -3.43
+              },
+              {
+                "x": -1.3,
+                "z": -3.28
+              },
+              {
+                "x": -1.3,
+                "z": -3.14
+              },
+              {
+                "x": -1.3,
+                "z": -2.99
+              },
+              {
+                "x": -1.3,
+                "z": -2.84
+              },
+              {
+                "x": -1.3,
+                "z": -2.7
+              },
+              {
+                "x": -1.3,
+                "z": -2.55
+              },
+              {
+                "x": -1.3,
+                "z": -2.41
+              },
+              {
+                "x": -1.3,
+                "z": -2.26
+              },
+              {
+                "x": -1.3,
+                "z": -2.11
+              },
+              {
+                "x": -1.3,
+                "z": -1.97
+              },
+              {
+                "x": -1.3,
+                "z": -1.82
+              },
+              {
+                "x": -1.3,
+                "z": -1.68
+              },
+              {
+                "x": -1.3,
+                "z": -1.53
+              },
+              {
+                "x": -1.3,
+                "z": -1.39
+              },
+              {
+                "x": -1.3,
+                "z": -1.24
+              },
+              {
+                "x": -1.3,
+                "z": -1.09
+              },
+              {
+                "x": -1.3,
+                "z": -0.95
+              },
+              {
+                "x": -1.3,
+                "z": -0.8
+              },
+              {
+                "x": -1.3,
+                "z": -0.66
+              },
+              {
+                "x": -1.3,
+                "z": -0.51
+              },
+              {
+                "x": -1.3,
+                "z": -0.36
+              },
+              {
+                "x": -1.3,
+                "z": -0.22
+              },
+              {
+                "x": -1.3,
+                "z": -0.07
+              },
+              {
+                "x": -1.3,
+                "z": 0.07
+              },
+              {
+                "x": -1.3,
+                "z": 0.22
+              },
+              {
+                "x": -1.3,
+                "z": 0.36
+              },
+              {
+                "x": -1.3,
+                "z": 0.51
+              },
+              {
+                "x": -1.3,
+                "z": 0.66
+              },
+              {
+                "x": -1.3,
+                "z": 0.8
+              },
+              {
+                "x": -1.3,
+                "z": 0.95
+              },
+              {
+                "x": -1.3,
+                "z": 1.09
+              },
+              {
+                "x": -1.3,
+                "z": 1.24
+              },
+              {
+                "x": -1.3,
+                "z": 1.39
+              },
+              {
+                "x": -1.3,
+                "z": 1.53
+              },
+              {
+                "x": -1.3,
+                "z": 1.68
+              },
+              {
+                "x": -1.3,
+                "z": 1.82
+              }
+            ]
+          },
+          {
+            "vers": "repas",
+            "largeur": 1.1,
+            "points": [
+              {
+                "x": -3.48,
+                "z": -6.34
+              },
+              {
+                "x": -3.33,
+                "z": -6.34
+              },
+              {
+                "x": -3.19,
+                "z": -6.34
+              },
+              {
+                "x": -3.04,
+                "z": -6.34
+              },
+              {
+                "x": -2.9,
+                "z": -6.34
+              },
+              {
+                "x": -2.75,
+                "z": -6.34
+              },
+              {
+                "x": -2.61,
+                "z": -6.34
+              },
+              {
+                "x": -2.46,
+                "z": -6.34
+              },
+              {
+                "x": -2.32,
+                "z": -6.34
+              },
+              {
+                "x": -2.17,
+                "z": -6.34
+              },
+              {
+                "x": -2.03,
+                "z": -6.34
+              },
+              {
+                "x": -1.88,
+                "z": -6.34
+              },
+              {
+                "x": -1.74,
+                "z": -6.34
+              },
+              {
+                "x": -1.59,
+                "z": -6.34
+              },
+              {
+                "x": -1.59,
+                "z": -6.2
+              },
+              {
+                "x": -1.59,
+                "z": -6.05
+              },
+              {
+                "x": -1.59,
+                "z": -5.91
+              },
+              {
+                "x": -1.59,
+                "z": -5.76
+              },
+              {
+                "x": -1.59,
+                "z": -5.61
+              },
+              {
+                "x": -1.59,
+                "z": -5.47
+              },
+              {
+                "x": -1.59,
+                "z": -5.32
+              },
+              {
+                "x": -1.59,
+                "z": -5.18
+              },
+              {
+                "x": -1.59,
+                "z": -5.03
+              },
+              {
+                "x": -1.59,
+                "z": -4.89
+              },
+              {
+                "x": -1.59,
+                "z": -4.74
+              },
+              {
+                "x": -1.59,
+                "z": -4.59
+              },
+              {
+                "x": -1.59,
+                "z": -4.45
+              },
+              {
+                "x": -1.59,
+                "z": -4.3
+              },
+              {
+                "x": -1.59,
+                "z": -4.16
+              },
+              {
+                "x": -1.59,
+                "z": -4.01
+              },
+              {
+                "x": -1.59,
+                "z": -3.86
+              },
+              {
+                "x": -1.59,
+                "z": -3.72
+              },
+              {
+                "x": -1.59,
+                "z": -3.57
+              },
+              {
+                "x": -1.59,
+                "z": -3.43
+              },
+              {
+                "x": -1.59,
+                "z": -3.28
+              },
+              {
+                "x": -1.59,
+                "z": -3.14
+              },
+              {
+                "x": -1.59,
+                "z": -2.99
+              },
+              {
+                "x": -1.59,
+                "z": -2.84
+              },
+              {
+                "x": -1.59,
+                "z": -2.7
+              },
+              {
+                "x": -1.59,
+                "z": -2.55
+              },
+              {
+                "x": -1.59,
+                "z": -2.41
+              },
+              {
+                "x": -1.59,
+                "z": -2.26
+              },
+              {
+                "x": -1.59,
+                "z": -2.11
+              },
+              {
+                "x": -1.59,
+                "z": -1.97
+              },
+              {
+                "x": -1.59,
+                "z": -1.82
+              },
+              {
+                "x": -1.59,
+                "z": -1.68
+              },
+              {
+                "x": -1.59,
+                "z": -1.53
+              },
+              {
+                "x": -1.59,
+                "z": -1.39
+              },
+              {
+                "x": -1.59,
+                "z": -1.24
+              },
+              {
+                "x": -1.59,
+                "z": -1.09
+              },
+              {
+                "x": -1.74,
+                "z": -1.09
+              },
+              {
+                "x": -1.88,
+                "z": -1.09
+              },
+              {
+                "x": -2.03,
+                "z": -1.09
+              },
+              {
+                "x": -2.17,
+                "z": -1.09
+              },
+              {
+                "x": -2.32,
+                "z": -1.09
+              }
+            ]
+          },
+          {
+            "vers": "lecture",
+            "largeur": 1.1,
+            "points": [
+              {
+                "x": -3.48,
+                "z": -6.34
+              },
+              {
+                "x": -3.33,
+                "z": -6.34
+              },
+              {
+                "x": -3.19,
+                "z": -6.34
+              },
+              {
+                "x": -3.04,
+                "z": -6.34
+              },
+              {
+                "x": -2.9,
+                "z": -6.34
+              },
+              {
+                "x": -2.75,
+                "z": -6.34
+              },
+              {
+                "x": -2.61,
+                "z": -6.34
+              },
+              {
+                "x": -2.46,
+                "z": -6.34
+              },
+              {
+                "x": -2.32,
+                "z": -6.34
+              },
+              {
+                "x": -2.17,
+                "z": -6.34
+              },
+              {
+                "x": -2.03,
+                "z": -6.34
+              },
+              {
+                "x": -1.88,
+                "z": -6.34
+              },
+              {
+                "x": -1.74,
+                "z": -6.34
+              },
+              {
+                "x": -1.59,
+                "z": -6.34
+              },
+              {
+                "x": -1.45,
+                "z": -6.34
+              },
+              {
+                "x": -1.3,
+                "z": -6.34
+              },
+              {
+                "x": -1.16,
+                "z": -6.34
+              },
+              {
+                "x": -1.01,
+                "z": -6.34
+              },
+              {
+                "x": -0.87,
+                "z": -6.34
+              },
+              {
+                "x": -0.72,
+                "z": -6.34
+              },
+              {
+                "x": -0.58,
+                "z": -6.34
+              },
+              {
+                "x": -0.43,
+                "z": -6.34
+              },
+              {
+                "x": -0.29,
+                "z": -6.34
+              },
+              {
+                "x": -0.14,
+                "z": -6.34
+              },
+              {
+                "x": 0,
+                "z": -6.34
+              },
+              {
+                "x": 0.14,
+                "z": -6.34
+              },
+              {
+                "x": 0.29,
+                "z": -6.34
+              },
+              {
+                "x": 0.43,
+                "z": -6.34
+              },
+              {
+                "x": 0.58,
+                "z": -6.34
+              },
+              {
+                "x": 0.58,
+                "z": -6.2
+              },
+              {
+                "x": 0.58,
+                "z": -6.05
+              },
+              {
+                "x": 0.58,
+                "z": -5.91
+              },
+              {
+                "x": 0.58,
+                "z": -5.76
+              },
+              {
+                "x": 0.58,
+                "z": -5.61
+              },
+              {
+                "x": 0.58,
+                "z": -5.47
+              },
+              {
+                "x": 0.58,
+                "z": -5.32
+              },
+              {
+                "x": 0.58,
+                "z": -5.18
+              },
+              {
+                "x": 0.72,
+                "z": -5.18
+              },
+              {
+                "x": 0.87,
+                "z": -5.18
+              },
+              {
+                "x": 1.01,
+                "z": -5.18
+              },
+              {
+                "x": 1.16,
+                "z": -5.18
+              },
+              {
+                "x": 1.3,
+                "z": -5.18
+              },
+              {
+                "x": 1.45,
+                "z": -5.18
+              },
+              {
+                "x": 1.59,
+                "z": -5.18
+              },
+              {
+                "x": 1.59,
+                "z": -5.03
+              },
+              {
+                "x": 1.59,
+                "z": -4.89
+              },
+              {
+                "x": 1.59,
+                "z": -4.74
+              },
+              {
+                "x": 1.59,
+                "z": -4.59
+              },
+              {
+                "x": 1.59,
+                "z": -4.45
+              },
+              {
+                "x": 1.59,
+                "z": -4.3
+              },
+              {
+                "x": 1.59,
+                "z": -4.16
+              },
+              {
+                "x": 1.59,
+                "z": -4.01
+              },
+              {
+                "x": 1.59,
+                "z": -3.86
+              },
+              {
+                "x": 1.59,
+                "z": -3.72
+              },
+              {
+                "x": 1.59,
+                "z": -3.57
+              }
+            ]
+          },
+          {
+            "vers": "travail",
+            "largeur": 1.1,
+            "points": [
+              {
+                "x": -3.48,
+                "z": -6.34
+              },
+              {
+                "x": -3.33,
+                "z": -6.34
+              },
+              {
+                "x": -3.19,
+                "z": -6.34
+              },
+              {
+                "x": -3.04,
+                "z": -6.34
+              },
+              {
+                "x": -2.9,
+                "z": -6.34
+              },
+              {
+                "x": -2.75,
+                "z": -6.34
+              },
+              {
+                "x": -2.61,
+                "z": -6.34
+              },
+              {
+                "x": -2.46,
+                "z": -6.34
+              },
+              {
+                "x": -2.32,
+                "z": -6.34
+              },
+              {
+                "x": -2.17,
+                "z": -6.34
+              },
+              {
+                "x": -2.03,
+                "z": -6.34
+              },
+              {
+                "x": -1.88,
+                "z": -6.34
+              },
+              {
+                "x": -1.74,
+                "z": -6.34
+              },
+              {
+                "x": -1.59,
+                "z": -6.34
+              },
+              {
+                "x": -1.45,
+                "z": -6.34
+              },
+              {
+                "x": -1.3,
+                "z": -6.34
+              },
+              {
+                "x": -1.16,
+                "z": -6.34
+              },
+              {
+                "x": -1.01,
+                "z": -6.34
+              },
+              {
+                "x": -0.87,
+                "z": -6.34
+              },
+              {
+                "x": -0.72,
+                "z": -6.34
+              },
+              {
+                "x": -0.58,
+                "z": -6.34
+              },
+              {
+                "x": -0.43,
+                "z": -6.34
+              },
+              {
+                "x": -0.29,
+                "z": -6.34
+              },
+              {
+                "x": -0.14,
+                "z": -6.34
+              },
+              {
+                "x": 0,
+                "z": -6.34
+              },
+              {
+                "x": 0.14,
+                "z": -6.34
+              },
+              {
+                "x": 0.29,
+                "z": -6.34
+              },
+              {
+                "x": 0.43,
+                "z": -6.34
+              },
+              {
+                "x": 0.58,
+                "z": -6.34
+              },
+              {
+                "x": 0.58,
+                "z": -6.2
+              },
+              {
+                "x": 0.58,
+                "z": -6.05
+              },
+              {
+                "x": 0.58,
+                "z": -5.91
+              },
+              {
+                "x": 0.58,
+                "z": -5.76
+              },
+              {
+                "x": 0.58,
+                "z": -5.61
+              },
+              {
+                "x": 0.58,
+                "z": -5.47
+              },
+              {
+                "x": 0.58,
+                "z": -5.32
+              },
+              {
+                "x": 0.58,
+                "z": -5.18
+              },
+              {
+                "x": 0.72,
+                "z": -5.18
+              },
+              {
+                "x": 0.87,
+                "z": -5.18
+              },
+              {
+                "x": 1.01,
+                "z": -5.18
+              },
+              {
+                "x": 1.16,
+                "z": -5.18
+              },
+              {
+                "x": 1.3,
+                "z": -5.18
+              }
+            ]
+          },
+          {
+            "vers": "rangement",
+            "largeur": 1.1,
+            "points": [
+              {
+                "x": -3.48,
+                "z": -6.34
+              },
+              {
+                "x": -3.62,
+                "z": -6.34
+              },
+              {
+                "x": -3.62,
+                "z": -6.2
+              },
+              {
+                "x": -3.62,
+                "z": -6.05
+              },
+              {
+                "x": -3.77,
+                "z": -6.05
+              },
+              {
+                "x": -3.91,
+                "z": -6.05
+              },
+              {
+                "x": -4.06,
+                "z": -6.05
+              },
+              {
+                "x": -4.2,
+                "z": -6.05
+              },
+              {
+                "x": -4.35,
+                "z": -6.05
+              }
+            ]
+          }
+        ],
+        "valide": true
+      },
+      "confort": {
+        "passageCible": 0.9,
+        "score": {
+          "version": "realroom-2026-10-v3",
+          "total": 99,
+          "contraintes": 0,
+          "cout": 1.06,
+          "criteres": [
+            {
+              "id": "geometrie",
+              "note": 100,
+              "problemes": 0,
+              "poids": 4
+            },
+            {
+              "id": "circulation",
+              "note": 100,
+              "problemes": 0,
+              "poids": 3
+            },
+            {
+              "id": "usage",
+              "note": 100,
+              "problemes": 0,
+              "poids": 3
+            },
+            {
+              "id": "relations",
+              "note": 100,
+              "penalite": 0,
+              "poids": 1
+            },
+            {
+              "id": "orientation",
+              "note": 100,
+              "penalite": 0,
+              "poids": 1
+            },
+            {
+              "id": "conversation",
+              "note": 100,
+              "penalite": 0,
+              "poids": 0.6
+            },
+            {
+              "id": "equilibre",
+              "note": 100,
+              "penalite": 0,
+              "poids": 0.35
+            },
+            {
+              "id": "alignement",
+              "note": 100,
+              "penalite": 0,
+              "poids": 0.25
+            },
+            {
+              "id": "symetrie",
+              "note": null,
+              "penalite": 0,
+              "poids": 0
+            },
+            {
+              "id": "tapisLumiere",
+              "note": 98,
+              "penalite": 3.52,
+              "poids": 0.3
+            }
+          ],
+          "preferences": {
+            "style": "neutre",
+            "styles": [
+              "neutre"
+            ],
+            "composition": "equilibre",
+            "palette": [],
+            "matieres": [],
+            "resume": ""
+          },
+          "incomplet": false
+        },
+        "circulation": true,
+        "acces": true,
+        "ouvertures": true,
+        "alertes": [],
+        "mesuresEstimees": true
+      }
+    }
+  },
+  "densite": {
+    "version": "composition-surface-1",
+    "score": -4,
+    "regles": [
+      {
+        "id": "mur-mort",
+        "points": -2,
+        "zone": "pan_2"
+      },
+      {
+        "id": "mur-mort",
+        "points": -2,
+        "zone": "pan_5"
+      }
+    ],
+    "elements": 23,
+    "cibleElements": 18,
+    "zonesVie": 4,
+    "cibleZones": 4,
+    "openSpace": true,
+    "choixExplicites": true,
+    "tauxEmpriseIndicatif": 10,
+    "repartition": {
+      "distanceMax": 2.5,
+      "proportionEloignee": 0,
+      "score": 0
+    },
+    "echelle": {
+      "surface": 90,
+      "unite": "m",
+      "metrique": false,
+      "controleTerrain": false,
+      "aVerifier": true,
+      "indices": [],
+      "redimensionnement": false
+    },
+    "aCompleter": false
+  }
+}

@@ -2,6 +2,7 @@ import { route, json, exiger, ErreurHTTP } from '@/lib/http.js';
 import { piece, majPhotos, publique } from '@/lib/projets.js';
 import { enregistrer, typeReel } from '@/lib/stockage.js';
 import { LIMITES, ROLES_PHOTO } from '@/lib/config.js';
+import { placePhoto } from '@/lib/references.js';
 
 export const maxDuration = 30;
 
@@ -15,17 +16,15 @@ export const POST = route(async (request, { params }) => {
   if (!fichier || typeof fichier.arrayBuffer !== 'function') throw new ErreurHTTP(400, 'photo');
   if (fichier.size > LIMITES.photoOctetsMax) throw new ErreurHTTP(413, 'trop-gros');
   const role = ROLES_PHOTO.includes(f.get('role')) ? f.get('role') : 'detail';
-  // une seule photo par rôle principal : elle remplace l'ancienne ; sinon, 8 photos au plus
-  const remplace = liste => (role !== 'detail' ? liste.findIndex(x => x.role === role) : -1);
-  if (remplace(p.photos || []) < 0 && (p.photos || []).length >= LIMITES.photosParPiece) throw new ErreurHTTP(409, 'limite-photos');
+  if (!placePhoto(p.photos || [], role, LIMITES).possible) throw new ErreurHTTP(409, 'limite-photos');
   const octets = Buffer.from(await fichier.arrayBuffer());
   const type = typeReel(octets);
   if (!type) throw new ErreurHTTP(415, 'format');
   const ref = await enregistrer(u.id, 'photos', octets, type);
   const photo = { ...ref, role, largeur: Math.round(+f.get('largeur')) || null, hauteur: Math.round(+f.get('hauteur')) || null };
   const n = await majPhotos(u.id, id, liste => {
-    const photos = [...liste], i = remplace(photos);
-    if (i < 0 && photos.length >= LIMITES.photosParPiece) throw new ErreurHTTP(409, 'limite-photos');
+    const photos = [...liste], { remplace: i, possible } = placePhoto(photos, role, LIMITES);
+    if (!possible) throw new ErreurHTTP(409, 'limite-photos');
     const retirees = i >= 0 ? [photos[i]] : [];
     if (i >= 0) photos[i] = photo; else photos.push(photo);
     // l'ordre compte : la vue depuis l'entrée d'abord

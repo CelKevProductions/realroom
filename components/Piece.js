@@ -9,6 +9,7 @@ import { Titre, useEntree } from '@/components/Mouvement.js';
 import Croquis from '@/components/Croquis.js';
 import Photos from '@/components/piece/Photos.js';
 import Atelier from '@/components/piece/Atelier.js';
+import PlanPiece from '@/components/piece/PlanPiece.js';
 
 export default function Piece({ lang, t, initiale, rendusInitiaux, credits, couts, services }) {
   const tp = t.piece;
@@ -17,6 +18,7 @@ export default function Piece({ lang, t, initiale, rendusInitiaux, credits, cout
   const [rendus, setRendus] = useState(rendusInitiaux);
   const [solde, setSolde] = useState(credits);
   const [forcerPhotos, setForcerPhotos] = useState(false);
+  const [planImporte, setPlanImporte] = useState(false);
   const [analyse, setAnalyse] = useState(initiale.etat === 'analyse');
   // analyse lancée ailleurs (autre onglet, page quittée puis rouverte) : on suit son état
   const [suivi, setSuivi] = useState(initiale.etat === 'analyse');
@@ -61,8 +63,12 @@ export default function Piece({ lang, t, initiale, rendusInitiaux, credits, cout
 
   if (enAtelier) {
     return (
-      <Atelier lang={lang} t={t} piece={piece} setPiece={setPiece} rendus={rendus} setRendus={setRendus} solde={solde} setSolde={setSolde} couts={couts} services={services}
+      <><Atelier lang={lang} t={t} piece={piece} setPiece={setPiece} rendus={rendus} setRendus={setRendus} solde={solde} setSolde={setSolde} couts={couts} services={services}
         retourPhotos={() => setForcerPhotos(true)} />
+        {planImporte && <PlanPiece modele={piece.modele} items={piece.agencement || []} produits={{}} lang={lang} onFermer={() => setPlanImporte(false)} onSauver={async geometrie => {
+          const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { geometrie } });
+          if (!r.ok) return false; setPiece(r.piece); return true;
+        }} />}</>
     );
   }
   return (
@@ -90,7 +96,8 @@ export default function Piece({ lang, t, initiale, rendusInitiaux, credits, cout
           <p className="discret">{tp.analyseDuree}</p>
         </div>
       ) : (
-        <Photos lang={lang} t={t} piece={piece} setPiece={setPiece} analyser={analyser} attente={analyse || !services.analyse} />
+        <Photos lang={lang} t={t} piece={piece} setPiece={setPiece} analyser={analyser} attente={analyse || !services.analyse}
+          onImport={() => { setForcerPhotos(false); setPlanImporte(true); }} onOuvrir={() => setForcerPhotos(false)} />
       )}
     </div>
   );

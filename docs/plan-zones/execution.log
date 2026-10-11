@@ -1,0 +1,24 @@
+chambre · 9 m² : 1/4, plan valide, composition partielle · 72 ms
+chambre · 10,5 m² : 5/6, plan valide, composition partielle · 15 ms
+chambre · 12,25 m² · deux portes : 1/6, plan valide, composition partielle · 39 ms
+chambre · 14 m² : 5/8, plan valide, composition complète · 64 ms
+chambre · 16 m² · deux portes : 4/8, plan valide, composition complète · 100 ms
+chambre · 20 m² : 10/11, plan valide, composition complète · 301 ms
+chambre · L · 12 m² : 1/6, plan valide, composition partielle · 156 ms
+chambre · L · 16 m² · deux portes : 4/8, plan à vérifier, composition partielle · 285 ms
+chambre · Oblique · 15 m² : 5/8, plan valide, composition complète · 51 ms
+chambre · Décroché · 15 m² : 5/8, plan valide, composition complète · 58 ms
+salon · Référence 20 m² : 11/11, plan valide, composition complète · 98 ms
+salon · 3.5 × 4 : 5/11, plan valide, composition partielle · 49 ms
+salon · 4 × 4 : 9/11, plan à vérifier, composition partielle · 124 ms
+salon · 4 × 5 : 11/11, plan valide, composition complète · 84 ms
+salon · 5 × 5 : 9/14, plan valide, composition partielle · 584 ms
+salon · 5 × 6 : 14/14, plan valide, composition complète · 159 ms
+salon · 6 × 6 : 15/15, plan valide, composition complète · 320 ms
+salon · 6 × 7 : 15/15, plan valide, composition complète · 360 ms
+salon · 7 × 8 : 16/17, plan valide, composition complète · 772 ms
+salon · L · 12 m² : 0/10, plan à vérifier, composition partielle · 14 ms
+salon · L · 16 m² · deux portes : 6/11, plan valide, composition partielle · 37 ms
+salon · Oblique · 15 m² : 9/11, plan à vérifier, composition partielle · 108 ms
+salon · Décroché · 15 m² : 6/11, plan valide, composition partielle · 48 ms
+{"chambres":{"cas":10,"geometrieValide":10,"planValide":9,"compositionComplete":5,"toutMobilierRetenu":0},"salons":{"cas":13,"geometrieValide":13,"planValide":10,"compositionComplete":6,"toutMobilierRetenu":5},"programmes":28}

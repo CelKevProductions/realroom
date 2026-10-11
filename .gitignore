@@ -13,3 +13,5 @@ __pycache__/
 .DS_Store
 tests/harnais/galerie.html
 .photos/
+
+/public/pdf/

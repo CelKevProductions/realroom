@@ -1,0 +1,3 @@
+# À installer dans un environnement CPU séparé, pas dans les fonctions Vercel.
+open_clip_torch==3.3.0
+Pillow>=11.3,<13

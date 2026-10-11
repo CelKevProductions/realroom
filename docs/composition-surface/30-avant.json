@@ -1,0 +1,5003 @@
+{
+  "source": "fixture synthétique",
+  "version": "65fd5c8",
+  "modele": {
+    "dims": {
+      "largeur": 6,
+      "profondeur": 5,
+      "hauteur": 2.6,
+      "estimees": false
+    },
+    "murs": {
+      "entree": {
+        "ouvertures": [
+          {
+            "type": "porte",
+            "position": 0.2,
+            "largeur": 0.9,
+            "hauteur": 2.05,
+            "allege": 0
+          }
+        ]
+      },
+      "fond": {
+        "ouvertures": [
+          {
+            "type": "fenetre",
+            "position": 0,
+            "largeur": 1.1,
+            "hauteur": 1.2,
+            "allege": 0.95
+          }
+        ]
+      },
+      "gauche": {
+        "ouvertures": []
+      },
+      "droite": {
+        "ouvertures": []
+      }
+    }
+  },
+  "catalogue": {
+    "canape": {
+      "fam": "canape",
+      "nom": "Canapé compact trois places",
+      "dim": [
+        2.1,
+        0.82,
+        0.8
+      ],
+      "prix": 800,
+      "id": "canape",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "fauteuil": {
+      "fam": "fauteuil",
+      "nom": "Fauteuil de lecture",
+      "dim": [
+        0.65,
+        0.65,
+        0.85
+      ],
+      "prix": 180,
+      "id": "fauteuil",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "basse": {
+      "fam": "table",
+      "nom": "Table basse",
+      "dim": [
+        0.7,
+        0.45,
+        0.4
+      ],
+      "prix": 100,
+      "id": "basse",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "tv": {
+      "fam": "meuble",
+      "nom": "Meuble TV",
+      "dim": [
+        1.1,
+        0.35,
+        0.5
+      ],
+      "prix": 150,
+      "id": "tv",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "repas": {
+      "fam": "table",
+      "nom": "Table de repas quatre personnes",
+      "dim": [
+        1,
+        0.7,
+        0.75
+      ],
+      "prix": 220,
+      "id": "repas",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "repas6": {
+      "fam": "table",
+      "nom": "Table de repas six personnes",
+      "dim": [
+        1.6,
+        0.8,
+        0.75
+      ],
+      "prix": 260,
+      "id": "repas6",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "repas8": {
+      "fam": "table",
+      "nom": "Table de repas huit personnes",
+      "dim": [
+        2.2,
+        0.9,
+        0.75
+      ],
+      "prix": 300,
+      "id": "repas8",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "chaise": {
+      "fam": "chaise",
+      "nom": "Chaise de repas",
+      "dim": [
+        0.42,
+        0.42,
+        0.8
+      ],
+      "prix": 55,
+      "id": "chaise",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "lampadaire": {
+      "fam": "lampadaire",
+      "nom": "Lampadaire",
+      "dim": [
+        0.25,
+        0.25,
+        1.6
+      ],
+      "prix": 90,
+      "id": "lampadaire",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "suspension": {
+      "fam": "suspension",
+      "nom": "Suspension",
+      "dim": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "prix": 80,
+      "id": "suspension",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "lit": {
+      "fam": "lit",
+      "nom": "Lit double",
+      "dim": [
+        1.6,
+        2,
+        1
+      ],
+      "prix": 500,
+      "id": "lit",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "chevet": {
+      "fam": "table",
+      "nom": "Chevet",
+      "dim": [
+        0.45,
+        0.4,
+        0.5
+      ],
+      "prix": 60,
+      "id": "chevet",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "armoire": {
+      "fam": "armoire",
+      "nom": "Armoire",
+      "dim": [
+        1.4,
+        0.55,
+        2
+      ],
+      "prix": 350,
+      "id": "armoire",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "buffet": {
+      "fam": "buffet",
+      "nom": "Buffet",
+      "dim": [
+        1.2,
+        0.4,
+        0.8
+      ],
+      "prix": 160,
+      "id": "buffet",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "bureau": {
+      "fam": "bureau",
+      "nom": "Bureau",
+      "dim": [
+        1.2,
+        0.6,
+        0.75
+      ],
+      "prix": 180,
+      "id": "bureau",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "siege": {
+      "fam": "chaise",
+      "nom": "Chaise de bureau",
+      "dim": [
+        0.5,
+        0.5,
+        0.85
+      ],
+      "prix": 70,
+      "id": "siege",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "lampe": {
+      "fam": "lampe",
+      "nom": "Lampe de table",
+      "dim": [
+        0.15,
+        0.15,
+        0.35
+      ],
+      "prix": 30,
+      "id": "lampe",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "baignoire": {
+      "fam": "baignoire",
+      "nom": "Baignoire îlot",
+      "dim": [
+        1.6,
+        0.7,
+        0.6
+      ],
+      "prix": 500,
+      "id": "baignoire",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "murale": {
+      "fam": "baignoire",
+      "nom": "Baignoire murale",
+      "dim": [
+        1.5,
+        0.65,
+        0.6
+      ],
+      "prix": 400,
+      "id": "murale",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "vasque": {
+      "fam": "vasque",
+      "nom": "Double vasque",
+      "dim": [
+        1.2,
+        0.5,
+        0.8
+      ],
+      "prix": 300,
+      "id": "vasque",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "miroir": {
+      "fam": "miroir",
+      "nom": "Miroir",
+      "dim": [
+        0.6,
+        0.06,
+        0.8
+      ],
+      "prix": 50,
+      "id": "miroir",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "console": {
+      "fam": "console",
+      "nom": "Console",
+      "dim": [
+        0.8,
+        0.35,
+        0.8
+      ],
+      "prix": 100,
+      "id": "console",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "banc": {
+      "fam": "banc",
+      "nom": "Banc",
+      "dim": [
+        1,
+        0.35,
+        0.5
+      ],
+      "prix": 80,
+      "id": "banc",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "jardin": {
+      "fam": "salon-jardin",
+      "nom": "Ensemble salon de jardin avec table",
+      "dim": [
+        2.4,
+        1.8,
+        0.8
+      ],
+      "prix": 650,
+      "ext": true,
+      "id": "jardin",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "tableExt": {
+      "fam": "table",
+      "nom": "Table de repas extérieure",
+      "dim": [
+        1.4,
+        0.8,
+        0.75
+      ],
+      "prix": 220,
+      "ext": true,
+      "id": "tableExt",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "chaiseExt": {
+      "fam": "chaise",
+      "nom": "Chaise extérieure",
+      "dim": [
+        0.45,
+        0.45,
+        0.85
+      ],
+      "prix": 60,
+      "ext": true,
+      "id": "chaiseExt",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "transat": {
+      "fam": "transat",
+      "nom": "Transat",
+      "dim": [
+        0.65,
+        1.8,
+        0.8
+      ],
+      "prix": 150,
+      "ext": true,
+      "id": "transat",
+      "cols": [
+        "beige"
+      ],
+      "st": "contemporain"
+    },
+    "rr-gen-basse-compacte-60": {
+      "id": "rr-gen-basse-compacte-60",
+      "nom": "Table basse compacte · 60 × 40 cm",
+      "titre": "Table basse compacte · 60 × 40 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        0.6,
+        0.4,
+        0.38
+      ],
+      "st": "ovale",
+      "prix": 85,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "table-basse"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-basse-compacte-60.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-basse-ronde-60": {
+      "id": "rr-gen-basse-ronde-60",
+      "nom": "Table basse ronde · 60 cm",
+      "titre": "Table basse ronde · 60 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        0.6,
+        0.6,
+        0.38
+      ],
+      "st": "ronde",
+      "prix": 90,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "table-basse"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-basse-ronde-60.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-basse-ronde-80": {
+      "id": "rr-gen-basse-ronde-80",
+      "nom": "Table basse ronde · 80 cm",
+      "titre": "Table basse ronde · 80 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        0.8,
+        0.8,
+        0.38
+      ],
+      "st": "ronde",
+      "prix": 140,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "table-basse"
+      ],
+      "cols": [
+        "#DED2BD"
+      ],
+      "couleurs": [
+        "travertin"
+      ],
+      "mat": "travertin",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-basse-ronde-80.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. travertin.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-basse-ovale-100": {
+      "id": "rr-gen-basse-ovale-100",
+      "nom": "Table basse ovale · 100 cm",
+      "titre": "Table basse ovale · 100 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        1,
+        0.55,
+        0.38
+      ],
+      "st": "ovale",
+      "prix": 160,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "table-basse"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-basse-ovale-100.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-basse-120": {
+      "id": "rr-gen-basse-120",
+      "nom": "Table basse · 120 cm",
+      "titre": "Table basse · 120 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        1.2,
+        0.6,
+        0.4
+      ],
+      "st": "rectangulaire",
+      "prix": 190,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "table-basse"
+      ],
+      "cols": [
+        "#78614D"
+      ],
+      "couleurs": [
+        "noyer"
+      ],
+      "mat": "noyer",
+      "bois": "noyer",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-basse-120.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. noyer.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-basse-140": {
+      "id": "rr-gen-basse-140",
+      "nom": "Grande table basse · 140 cm",
+      "titre": "Grande table basse · 140 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        1.4,
+        0.7,
+        0.4
+      ],
+      "st": "rectangulaire",
+      "prix": 240,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "table-basse"
+      ],
+      "cols": [
+        "#35332F"
+      ],
+      "couleurs": [
+        "bois noir"
+      ],
+      "mat": "bois noir",
+      "bois": "bois noir",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-basse-140.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. bois noir.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-appoint-35": {
+      "id": "rr-gen-appoint-35",
+      "nom": "Table d’appoint · 35 cm",
+      "titre": "Table d’appoint · 35 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        0.35,
+        0.35,
+        0.5
+      ],
+      "st": "ronde",
+      "prix": 55,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "table-appoint"
+      ],
+      "cols": [
+        "#35332F"
+      ],
+      "couleurs": [
+        "bois noir"
+      ],
+      "mat": "bois noir",
+      "bois": "bois noir",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-appoint-35.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. bois noir.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-appoint-45": {
+      "id": "rr-gen-appoint-45",
+      "nom": "Table d’appoint · 45 cm",
+      "titre": "Table d’appoint · 45 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        0.45,
+        0.45,
+        0.52
+      ],
+      "st": "ronde",
+      "prix": 75,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "table-appoint"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-appoint-45.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-chevet-35": {
+      "id": "rr-gen-chevet-35",
+      "nom": "Chevet compact · 35 cm",
+      "titre": "Chevet compact · 35 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        0.35,
+        0.35,
+        0.5
+      ],
+      "st": "chevet",
+      "prix": 70,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "chevet"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-chevet-35.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-chevet-45": {
+      "id": "rr-gen-chevet-45",
+      "nom": "Chevet à tiroir · 45 cm",
+      "titre": "Chevet à tiroir · 45 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        0.45,
+        0.4,
+        0.52
+      ],
+      "st": "chevet",
+      "prix": 100,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "chevet"
+      ],
+      "cols": [
+        "#78614D"
+      ],
+      "couleurs": [
+        "noyer"
+      ],
+      "mat": "noyer",
+      "bois": "noyer",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-chevet-45.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. noyer.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-repas-100": {
+      "id": "rr-gen-repas-100",
+      "nom": "Table de repas · 4 places",
+      "titre": "Table de repas · 4 places",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        1,
+        0.7,
+        0.75
+      ],
+      "st": "rectangulaire",
+      "prix": 220,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "table-repas"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-repas-100.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-repas-160": {
+      "id": "rr-gen-repas-160",
+      "nom": "Table de repas · 6 places",
+      "titre": "Table de repas · 6 places",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        1.6,
+        0.85,
+        0.75
+      ],
+      "st": "rectangulaire",
+      "prix": 380,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "table-repas"
+      ],
+      "cols": [
+        "#78614D"
+      ],
+      "couleurs": [
+        "noyer"
+      ],
+      "mat": "noyer",
+      "bois": "noyer",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-repas-160.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. noyer.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-repas-210": {
+      "id": "rr-gen-repas-210",
+      "nom": "Table de repas · 8 places",
+      "titre": "Table de repas · 8 places",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        2.1,
+        0.9,
+        0.75
+      ],
+      "st": "rectangulaire",
+      "prix": 520,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "table-repas"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-repas-210.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-chaise-bois": {
+      "id": "rr-gen-chaise-bois",
+      "nom": "Chaise de repas · bois",
+      "titre": "Chaise de repas · bois",
+      "marque": "RealRoom · Générique",
+      "cat": "Chaise",
+      "fam": "chaise",
+      "dim": [
+        0.43,
+        0.47,
+        0.82
+      ],
+      "st": "chaise",
+      "prix": 65,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "chaise-repas"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-chaise-bois.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-chaise-tissu": {
+      "id": "rr-gen-chaise-tissu",
+      "nom": "Chaise de repas · tissu",
+      "titre": "Chaise de repas · tissu",
+      "marque": "RealRoom · Générique",
+      "cat": "Chaise",
+      "fam": "chaise",
+      "dim": [
+        0.48,
+        0.52,
+        0.84
+      ],
+      "st": "chaise",
+      "prix": 90,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "chaise-repas"
+      ],
+      "cols": [
+        "#D9CBB9"
+      ],
+      "couleurs": [
+        "tissu beige"
+      ],
+      "mat": "tissu beige",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-chaise-tissu.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. tissu beige.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-chaise-noire": {
+      "id": "rr-gen-chaise-noire",
+      "nom": "Chaise de repas · noire",
+      "titre": "Chaise de repas · noire",
+      "marque": "RealRoom · Générique",
+      "cat": "Chaise",
+      "fam": "chaise",
+      "dim": [
+        0.45,
+        0.5,
+        0.82
+      ],
+      "st": "chaise",
+      "prix": 80,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "chaise-repas"
+      ],
+      "cols": [
+        "#35332F"
+      ],
+      "couleurs": [
+        "bois noir"
+      ],
+      "mat": "bois noir",
+      "bois": "bois noir",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-chaise-noire.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. bois noir.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-bureau-100": {
+      "id": "rr-gen-bureau-100",
+      "nom": "Bureau compact · 100 cm",
+      "titre": "Bureau compact · 100 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Bureau",
+      "fam": "bureau",
+      "dim": [
+        1,
+        0.5,
+        0.75
+      ],
+      "st": "bureau",
+      "prix": 170,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "bureau"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-bureau-100.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-bureau-140": {
+      "id": "rr-gen-bureau-140",
+      "nom": "Bureau · 140 cm",
+      "titre": "Bureau · 140 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Bureau",
+      "fam": "bureau",
+      "dim": [
+        1.4,
+        0.65,
+        0.75
+      ],
+      "st": "bureau",
+      "prix": 260,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "bureau"
+      ],
+      "cols": [
+        "#78614D"
+      ],
+      "couleurs": [
+        "noyer"
+      ],
+      "mat": "noyer",
+      "bois": "noyer",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-bureau-140.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. noyer.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-chaise-bureau": {
+      "id": "rr-gen-chaise-bureau",
+      "nom": "Chaise de bureau",
+      "titre": "Chaise de bureau",
+      "marque": "RealRoom · Générique",
+      "cat": "Chaise",
+      "fam": "chaise",
+      "dim": [
+        0.56,
+        0.57,
+        0.95
+      ],
+      "st": "bureau",
+      "prix": 130,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "chaise-bureau"
+      ],
+      "cols": [
+        "#A89A89"
+      ],
+      "couleurs": [
+        "tissu taupe"
+      ],
+      "mat": "tissu taupe",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-chaise-bureau.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. tissu taupe.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-tv-100": {
+      "id": "rr-gen-tv-100",
+      "nom": "Meuble TV compact · 100 cm",
+      "titre": "Meuble TV compact · 100 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Meuble TV",
+      "fam": "meuble",
+      "dim": [
+        1,
+        0.35,
+        0.45
+      ],
+      "st": "tv",
+      "prix": 180,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "meuble-tv"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-tv-100.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-tv-160": {
+      "id": "rr-gen-tv-160",
+      "nom": "Meuble TV · 160 cm",
+      "titre": "Meuble TV · 160 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Meuble TV",
+      "fam": "meuble",
+      "dim": [
+        1.6,
+        0.4,
+        0.5
+      ],
+      "st": "tv",
+      "prix": 290,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "meuble-tv"
+      ],
+      "cols": [
+        "#78614D"
+      ],
+      "couleurs": [
+        "noyer"
+      ],
+      "mat": "noyer",
+      "bois": "noyer",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-tv-160.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. noyer.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-buffet-100": {
+      "id": "rr-gen-buffet-100",
+      "nom": "Buffet compact · 100 cm",
+      "titre": "Buffet compact · 100 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Buffet",
+      "fam": "buffet",
+      "dim": [
+        1,
+        0.4,
+        0.8
+      ],
+      "st": "buffet",
+      "prix": 230,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "buffet"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-buffet-100.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-buffet-160": {
+      "id": "rr-gen-buffet-160",
+      "nom": "Buffet · 160 cm",
+      "titre": "Buffet · 160 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Buffet",
+      "fam": "buffet",
+      "dim": [
+        1.6,
+        0.45,
+        0.85
+      ],
+      "st": "buffet",
+      "prix": 390,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "buffet"
+      ],
+      "cols": [
+        "#78614D"
+      ],
+      "couleurs": [
+        "noyer"
+      ],
+      "mat": "noyer",
+      "bois": "noyer",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-buffet-160.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. noyer.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-armoire-80": {
+      "id": "rr-gen-armoire-80",
+      "nom": "Armoire compacte · 80 cm",
+      "titre": "Armoire compacte · 80 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Armoire",
+      "fam": "armoire",
+      "dim": [
+        0.8,
+        0.55,
+        2
+      ],
+      "st": "armoire",
+      "prix": 320,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "armoire"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-armoire-80.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-armoire-120": {
+      "id": "rr-gen-armoire-120",
+      "nom": "Armoire · 120 cm",
+      "titre": "Armoire · 120 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Armoire",
+      "fam": "armoire",
+      "dim": [
+        1.2,
+        0.6,
+        2.1
+      ],
+      "st": "armoire",
+      "prix": 490,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "armoire"
+      ],
+      "cols": [
+        "#E8E2D8"
+      ],
+      "couleurs": [
+        "bois blanc"
+      ],
+      "mat": "bois blanc",
+      "bois": "bois blanc",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-armoire-120.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. bois blanc.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-commode-80": {
+      "id": "rr-gen-commode-80",
+      "nom": "Commode · 80 cm",
+      "titre": "Commode · 80 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Commode",
+      "fam": "commode",
+      "dim": [
+        0.8,
+        0.42,
+        0.8
+      ],
+      "st": "commode",
+      "prix": 220,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "commode",
+        "buffet"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-commode-80.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-etagere-60": {
+      "id": "rr-gen-etagere-60",
+      "nom": "Bibliothèque compacte · 60 cm",
+      "titre": "Bibliothèque compacte · 60 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Bibliothèque",
+      "fam": "etagere",
+      "dim": [
+        0.6,
+        0.3,
+        1.8
+      ],
+      "st": "etagere",
+      "prix": 140,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "etagere"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-etagere-60.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-etagere-100": {
+      "id": "rr-gen-etagere-100",
+      "nom": "Bibliothèque · 100 cm",
+      "titre": "Bibliothèque · 100 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Bibliothèque",
+      "fam": "etagere",
+      "dim": [
+        1,
+        0.32,
+        1.8
+      ],
+      "st": "etagere",
+      "prix": 230,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "etagere"
+      ],
+      "cols": [
+        "#78614D"
+      ],
+      "couleurs": [
+        "noyer"
+      ],
+      "mat": "noyer",
+      "bois": "noyer",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-etagere-100.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. noyer.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-console-80": {
+      "id": "rr-gen-console-80",
+      "nom": "Console compacte · 80 cm",
+      "titre": "Console compacte · 80 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Console",
+      "fam": "console",
+      "dim": [
+        0.8,
+        0.28,
+        0.8
+      ],
+      "st": "console",
+      "prix": 110,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "console"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-console-80.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-console-120": {
+      "id": "rr-gen-console-120",
+      "nom": "Console · 120 cm",
+      "titre": "Console · 120 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Console",
+      "fam": "console",
+      "dim": [
+        1.2,
+        0.35,
+        0.8
+      ],
+      "st": "console",
+      "prix": 170,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "console"
+      ],
+      "cols": [
+        "#78614D"
+      ],
+      "couleurs": [
+        "noyer"
+      ],
+      "mat": "noyer",
+      "bois": "noyer",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-console-120.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. noyer.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-banc-90": {
+      "id": "rr-gen-banc-90",
+      "nom": "Banc compact · 90 cm",
+      "titre": "Banc compact · 90 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Banc",
+      "fam": "banc",
+      "dim": [
+        0.9,
+        0.35,
+        0.45
+      ],
+      "st": "banc",
+      "prix": 100,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "banc"
+      ],
+      "cols": [
+        "#D9CBB9"
+      ],
+      "couleurs": [
+        "tissu beige"
+      ],
+      "mat": "tissu beige",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-banc-90.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. tissu beige.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-banc-120": {
+      "id": "rr-gen-banc-120",
+      "nom": "Banc · 120 cm",
+      "titre": "Banc · 120 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Banc",
+      "fam": "banc",
+      "dim": [
+        1.2,
+        0.4,
+        0.45
+      ],
+      "st": "banc",
+      "prix": 160,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "banc"
+      ],
+      "cols": [
+        "#A89A89"
+      ],
+      "couleurs": [
+        "tissu taupe"
+      ],
+      "mat": "tissu taupe",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-banc-120.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. tissu taupe.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-tapis-120": {
+      "id": "rr-gen-tapis-120",
+      "nom": "Tapis · 120 × 180 cm",
+      "titre": "Tapis · 120 × 180 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Tapis",
+      "fam": "tapis",
+      "dim": [
+        1.2,
+        1.8,
+        0.015
+      ],
+      "st": "tapis",
+      "prix": 80,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "tapis"
+      ],
+      "cols": [
+        "#DCCFBA"
+      ],
+      "couleurs": [
+        "tissu écru"
+      ],
+      "mat": "tissu écru",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-tapis-120.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. tissu écru.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-tapis-160": {
+      "id": "rr-gen-tapis-160",
+      "nom": "Tapis · 160 × 230 cm",
+      "titre": "Tapis · 160 × 230 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Tapis",
+      "fam": "tapis",
+      "dim": [
+        1.6,
+        2.3,
+        0.015
+      ],
+      "st": "tapis",
+      "prix": 130,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "tapis"
+      ],
+      "cols": [
+        "#BFAF97"
+      ],
+      "couleurs": [
+        "tissu beige"
+      ],
+      "mat": "tissu beige",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-tapis-160.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. tissu beige.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-tapis-200": {
+      "id": "rr-gen-tapis-200",
+      "nom": "Tapis · 200 × 300 cm",
+      "titre": "Tapis · 200 × 300 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Tapis",
+      "fam": "tapis",
+      "dim": [
+        2,
+        3,
+        0.015
+      ],
+      "st": "tapis",
+      "prix": 220,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "tapis"
+      ],
+      "cols": [
+        "#DCCFBA"
+      ],
+      "couleurs": [
+        "tissu écru"
+      ],
+      "mat": "tissu écru",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-tapis-200.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. tissu écru.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-lampe-25": {
+      "id": "rr-gen-lampe-25",
+      "nom": "Lampe de table · 25 cm",
+      "titre": "Lampe de table · 25 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Lampe",
+      "fam": "lampe",
+      "dim": [
+        0.25,
+        0.25,
+        0.4
+      ],
+      "st": "lampe",
+      "prix": 45,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "lampe-chevet",
+        "lampe-bureau",
+        "lumiere-salon",
+        "lumiere-lecture"
+      ],
+      "cols": [
+        "#DFD1B9"
+      ],
+      "couleurs": [
+        "lin écru"
+      ],
+      "mat": "lin écru",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-lampe-25.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. lin écru.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-lampe-32": {
+      "id": "rr-gen-lampe-32",
+      "nom": "Lampe de table · 32 cm",
+      "titre": "Lampe de table · 32 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Lampe",
+      "fam": "lampe",
+      "dim": [
+        0.32,
+        0.32,
+        0.5
+      ],
+      "st": "lampe",
+      "prix": 70,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "lampe-chevet",
+        "lampe-bureau",
+        "lumiere-salon",
+        "lumiere-lecture"
+      ],
+      "cols": [
+        "#DFD1B9"
+      ],
+      "couleurs": [
+        "lin écru"
+      ],
+      "mat": "lin écru",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-lampe-32.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. lin écru.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-lampadaire": {
+      "id": "rr-gen-lampadaire",
+      "nom": "Lampadaire de lecture",
+      "titre": "Lampadaire de lecture",
+      "marque": "RealRoom · Générique",
+      "cat": "Lampadaire",
+      "fam": "lampadaire",
+      "dim": [
+        0.34,
+        0.34,
+        1.55
+      ],
+      "st": "lampadaire",
+      "prix": 100,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "lumiere-salon",
+        "lumiere-lecture"
+      ],
+      "cols": [
+        "#35332F"
+      ],
+      "couleurs": [
+        "métal noir"
+      ],
+      "mat": "métal noir",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-lampadaire.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. métal noir.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-miroir-60": {
+      "id": "rr-gen-miroir-60",
+      "nom": "Miroir · 60 × 80 cm",
+      "titre": "Miroir · 60 × 80 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Miroir",
+      "fam": "miroir",
+      "dim": [
+        0.6,
+        0.035,
+        0.8
+      ],
+      "st": "miroir",
+      "prix": 80,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "miroir"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "verre et chêne"
+      ],
+      "mat": "verre et chêne",
+      "bois": "verre et chêne",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-miroir-60.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. verre et chêne.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-plante-90": {
+      "id": "rr-gen-plante-90",
+      "nom": "Plante en pot · 90 cm",
+      "titre": "Plante en pot · 90 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Plante",
+      "fam": "plante",
+      "dim": [
+        0.4,
+        0.4,
+        0.9
+      ],
+      "st": "plante",
+      "prix": 50,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "plante"
+      ],
+      "cols": [
+        "#667A54"
+      ],
+      "couleurs": [
+        "végétation"
+      ],
+      "mat": "végétation",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-plante-90.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. végétation.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-plante-150": {
+      "id": "rr-gen-plante-150",
+      "nom": "Plante en pot · 150 cm",
+      "titre": "Plante en pot · 150 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Plante",
+      "fam": "plante",
+      "dim": [
+        0.55,
+        0.55,
+        1.5
+      ],
+      "st": "plante",
+      "prix": 90,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "plante"
+      ],
+      "cols": [
+        "#667A54"
+      ],
+      "couleurs": [
+        "végétation"
+      ],
+      "mat": "végétation",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-plante-150.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. végétation.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-portemanteau": {
+      "id": "rr-gen-portemanteau",
+      "nom": "Portemanteau sur pied",
+      "titre": "Portemanteau sur pied",
+      "marque": "RealRoom · Générique",
+      "cat": "Portemanteau",
+      "fam": "portemanteau",
+      "dim": [
+        0.55,
+        0.28,
+        1.7
+      ],
+      "st": "portemanteau",
+      "prix": 70,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "portemanteau"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-portemanteau.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-pouf-45": {
+      "id": "rr-gen-pouf-45",
+      "nom": "Pouf · 45 cm",
+      "titre": "Pouf · 45 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Pouf",
+      "fam": "pouf",
+      "dim": [
+        0.45,
+        0.45,
+        0.42
+      ],
+      "st": "pouf",
+      "prix": 60,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "pouf"
+      ],
+      "cols": [
+        "#D9CBB9"
+      ],
+      "couleurs": [
+        "tissu beige"
+      ],
+      "mat": "tissu beige",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-pouf-45.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. tissu beige.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-fauteuil-compact": {
+      "id": "rr-gen-fauteuil-compact",
+      "nom": "Fauteuil compact",
+      "titre": "Fauteuil compact",
+      "marque": "RealRoom · Générique",
+      "cat": "Fauteuil",
+      "fam": "fauteuil",
+      "dim": [
+        0.65,
+        0.65,
+        0.8
+      ],
+      "st": "fauteuil",
+      "prix": 230,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "fauteuil-salon",
+        "fauteuil-lecture"
+      ],
+      "cols": [
+        "#D9CBB9"
+      ],
+      "couleurs": [
+        "tissu beige"
+      ],
+      "mat": "tissu beige",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-fauteuil-compact.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. tissu beige.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-television-32": {
+      "id": "rr-gen-television-32",
+      "nom": "Télévision sur pied · 32 pouces",
+      "titre": "Télévision sur pied · 32 pouces",
+      "marque": "RealRoom · Générique",
+      "cat": "Télévision",
+      "fam": "tv",
+      "dim": [
+        0.73,
+        0.18,
+        0.46
+      ],
+      "st": "ecran",
+      "prix": 190,
+      "diagonaleEcran": 0.8128,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "television"
+      ],
+      "cols": [
+        "#20242B"
+      ],
+      "couleurs": [
+        "écran et métal noir"
+      ],
+      "mat": "écran et métal noir",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-television-32.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. écran et métal noir.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-television-43": {
+      "id": "rr-gen-television-43",
+      "nom": "Télévision sur pied · 43 pouces",
+      "titre": "Télévision sur pied · 43 pouces",
+      "marque": "RealRoom · Générique",
+      "cat": "Télévision",
+      "fam": "tv",
+      "dim": [
+        0.97,
+        0.22,
+        0.61
+      ],
+      "st": "ecran",
+      "prix": 290,
+      "diagonaleEcran": 1.0922,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "television"
+      ],
+      "cols": [
+        "#20242B"
+      ],
+      "couleurs": [
+        "écran et métal noir"
+      ],
+      "mat": "écran et métal noir",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-television-43.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. écran et métal noir.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-television-55": {
+      "id": "rr-gen-television-55",
+      "nom": "Télévision sur pied · 55 pouces",
+      "titre": "Télévision sur pied · 55 pouces",
+      "marque": "RealRoom · Générique",
+      "cat": "Télévision",
+      "fam": "tv",
+      "dim": [
+        1.24,
+        0.25,
+        0.77
+      ],
+      "st": "ecran",
+      "prix": 420,
+      "diagonaleEcran": 1.397,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "television"
+      ],
+      "cols": [
+        "#20242B"
+      ],
+      "couleurs": [
+        "écran et métal noir"
+      ],
+      "mat": "écran et métal noir",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-television-55.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. écran et métal noir.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-television-murale-43": {
+      "id": "rr-gen-television-murale-43",
+      "nom": "Télévision murale · 43 pouces",
+      "titre": "Télévision murale · 43 pouces",
+      "marque": "RealRoom · Générique",
+      "cat": "Télévision murale",
+      "fam": "tv-murale",
+      "dim": [
+        0.97,
+        0.055,
+        0.55
+      ],
+      "st": "ecran-mural",
+      "prix": 320,
+      "diagonaleEcran": 1.0922,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "television"
+      ],
+      "cols": [
+        "#20242B"
+      ],
+      "couleurs": [
+        "écran et métal noir"
+      ],
+      "mat": "écran et métal noir",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-television-murale-43.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. écran et métal noir.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-television-murale-55": {
+      "id": "rr-gen-television-murale-55",
+      "nom": "Télévision murale · 55 pouces",
+      "titre": "Télévision murale · 55 pouces",
+      "marque": "RealRoom · Générique",
+      "cat": "Télévision murale",
+      "fam": "tv-murale",
+      "dim": [
+        1.24,
+        0.055,
+        0.7
+      ],
+      "st": "ecran-mural",
+      "prix": 450,
+      "diagonaleEcran": 1.397,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "television"
+      ],
+      "cols": [
+        "#20242B"
+      ],
+      "couleurs": [
+        "écran et métal noir"
+      ],
+      "mat": "écran et métal noir",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-television-murale-55.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. écran et métal noir.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-tableau-60": {
+      "id": "rr-gen-tableau-60",
+      "nom": "Tableau abstrait · 60 × 45 cm",
+      "titre": "Tableau abstrait · 60 × 45 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Tableau",
+      "fam": "tableau",
+      "dim": [
+        0.6,
+        0.035,
+        0.45
+      ],
+      "st": "art",
+      "prix": 45,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "tableau-principal",
+        "tableau-secondaire"
+      ],
+      "cols": [
+        "#BA8F72"
+      ],
+      "couleurs": [
+        "cadre chêne, composition écru et argile"
+      ],
+      "mat": "cadre chêne, composition écru et argile",
+      "bois": "cadre chêne, composition écru et argile",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-tableau-60.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. cadre chêne, composition écru et argile.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-tableau-90": {
+      "id": "rr-gen-tableau-90",
+      "nom": "Tableau abstrait · 90 × 60 cm",
+      "titre": "Tableau abstrait · 90 × 60 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Tableau",
+      "fam": "tableau",
+      "dim": [
+        0.9,
+        0.035,
+        0.6
+      ],
+      "st": "art",
+      "prix": 70,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "tableau-principal",
+        "tableau-secondaire"
+      ],
+      "cols": [
+        "#BA8F72"
+      ],
+      "couleurs": [
+        "cadre chêne, composition écru et argile"
+      ],
+      "mat": "cadre chêne, composition écru et argile",
+      "bois": "cadre chêne, composition écru et argile",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-tableau-90.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. cadre chêne, composition écru et argile.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-tableau-120": {
+      "id": "rr-gen-tableau-120",
+      "nom": "Tableau abstrait · 120 × 60 cm",
+      "titre": "Tableau abstrait · 120 × 60 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Tableau",
+      "fam": "tableau",
+      "dim": [
+        1.2,
+        0.035,
+        0.6
+      ],
+      "st": "art",
+      "prix": 95,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "tableau-principal",
+        "tableau-secondaire"
+      ],
+      "cols": [
+        "#BA8F72"
+      ],
+      "couleurs": [
+        "cadre chêne, composition écru et argile"
+      ],
+      "mat": "cadre chêne, composition écru et argile",
+      "bois": "cadre chêne, composition écru et argile",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-tableau-120.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. cadre chêne, composition écru et argile.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-tableau-160": {
+      "id": "rr-gen-tableau-160",
+      "nom": "Tableau abstrait · 160 × 80 cm",
+      "titre": "Tableau abstrait · 160 × 80 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Tableau",
+      "fam": "tableau",
+      "dim": [
+        1.6,
+        0.035,
+        0.8
+      ],
+      "st": "art",
+      "prix": 140,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "tableau-principal",
+        "tableau-secondaire"
+      ],
+      "cols": [
+        "#BA8F72"
+      ],
+      "couleurs": [
+        "cadre chêne, composition écru et argile"
+      ],
+      "mat": "cadre chêne, composition écru et argile",
+      "bois": "cadre chêne, composition écru et argile",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-tableau-160.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. cadre chêne, composition écru et argile.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    },
+    "rr-gen-etagere-murale-80": {
+      "id": "rr-gen-etagere-murale-80",
+      "nom": "Étagère murale · 80 cm",
+      "titre": "Étagère murale · 80 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Étagère murale",
+      "fam": "etagere-murale",
+      "dim": [
+        0.8,
+        0.18,
+        0.28
+      ],
+      "st": "etagere-murale",
+      "prix": 65,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "etagere-murale"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-etagere-murale-80.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ]
+    }
+  },
+  "items": [
+    {
+      "id": "c1bxfgrj_11",
+      "origine": "catalogue",
+      "sku": "rr-gen-tapis-120",
+      "x": 2.07,
+      "z": 1.04,
+      "rot": 3.141592653589793,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "tapis",
+      "slotProgramme": "salon:tapis:1",
+      "prioriteProgramme": 3,
+      "obligatoireProgramme": false
+    },
+    {
+      "id": "c1bxfgrj_0",
+      "origine": "catalogue",
+      "sku": "canape",
+      "x": 1.92,
+      "z": 2.08,
+      "rot": 3.141592653589793,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "canape",
+      "slotProgramme": "salon:canape:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c1bxfgrj_3",
+      "origine": "catalogue",
+      "sku": "repas",
+      "x": 0,
+      "z": -1.18,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "table-repas",
+      "slotProgramme": "repas:table-repas:1",
+      "prioriteProgramme": 2,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c1bxfgrj_10",
+      "origine": "catalogue",
+      "sku": "fauteuil",
+      "x": 1.19,
+      "z": 1.04,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "fauteuil-salon",
+      "slotProgramme": "salon:fauteuil-salon:1",
+      "prioriteProgramme": 3,
+      "obligatoireProgramme": false
+    },
+    {
+      "id": "c1bxfgrj_16",
+      "origine": "catalogue",
+      "sku": "fauteuil",
+      "x": -1.96,
+      "z": -2.16,
+      "rot": 0,
+      "raison": "Complète l’ensemble lecture.",
+      "zoneId": "lecture",
+      "usageProgramme": "fauteuil-lecture",
+      "slotProgramme": "lecture:fauteuil-lecture:1",
+      "prioriteProgramme": 3,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c1bxfgrj_2",
+      "origine": "catalogue",
+      "sku": "tv",
+      "x": 1.93,
+      "z": -0.39,
+      "rot": 0,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "meuble-tv",
+      "slotProgramme": "salon:meuble-tv:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c1bxfgrj_8",
+      "origine": "catalogue",
+      "sku": "basse",
+      "x": -1.17,
+      "z": -2.16,
+      "rot": 0,
+      "raison": "Complète l’ensemble lecture.",
+      "zoneId": "lecture",
+      "usageProgramme": "table-appoint",
+      "slotProgramme": "lecture:table-appoint:1",
+      "prioriteProgramme": 3,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c1bxfgrj_1",
+      "origine": "catalogue",
+      "sku": "chevet",
+      "x": 2.07,
+      "z": 1.04,
+      "rot": 3.141592653589793,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "table-basse",
+      "slotProgramme": "salon:table-basse:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c1bxfgrj_4",
+      "origine": "catalogue",
+      "sku": "chaise",
+      "x": 0.64,
+      "z": -0.93,
+      "rot": -1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "chaise-repas",
+      "slotProgramme": "repas:chaise-repas:1",
+      "prioriteProgramme": 2,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c1bxfgrj_5",
+      "origine": "catalogue",
+      "sku": "chaise",
+      "x": 0.64,
+      "z": -1.43,
+      "rot": -1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "chaise-repas",
+      "slotProgramme": "repas:chaise-repas:2",
+      "prioriteProgramme": 2,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c1bxfgrj_6",
+      "origine": "catalogue",
+      "sku": "chaise",
+      "x": -0.64,
+      "z": -0.93,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "chaise-repas",
+      "slotProgramme": "repas:chaise-repas:3",
+      "prioriteProgramme": 2,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c1bxfgrj_7",
+      "origine": "catalogue",
+      "sku": "chaise",
+      "x": -0.64,
+      "z": -1.43,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "chaise-repas",
+      "slotProgramme": "repas:chaise-repas:4",
+      "prioriteProgramme": 2,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c1bxfgrj_9",
+      "origine": "catalogue",
+      "sku": "lampadaire",
+      "x": 2.85,
+      "z": 0.89,
+      "rot": 3.141592653589793,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "lumiere-salon",
+      "slotProgramme": "salon:lumiere-salon:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c1bxfgrj_12",
+      "origine": "catalogue",
+      "sku": "rr-gen-television-43",
+      "x": 1.93,
+      "z": -0.39,
+      "rot": 0,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "television",
+      "slotProgramme": "salon:television:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true,
+      "y": 0.805,
+      "kind": "surface_item",
+      "attach_to": {
+        "type": "furniture",
+        "id": "c1bxfgrj_2"
+      },
+      "height": 0.805
+    },
+    {
+      "id": "c1bxfgrj_17",
+      "origine": "catalogue",
+      "sku": "lampe",
+      "x": -1.17,
+      "z": -2.16,
+      "rot": 0,
+      "raison": "Complète l’ensemble lecture.",
+      "zoneId": "lecture",
+      "usageProgramme": "lumiere-lecture",
+      "slotProgramme": "lecture:lumiere-lecture:1",
+      "prioriteProgramme": 3,
+      "obligatoireProgramme": true,
+      "y": 0.575,
+      "kind": "surface_item",
+      "attach_to": {
+        "type": "furniture",
+        "id": "c1bxfgrj_8"
+      },
+      "height": 0.575
+    },
+    {
+      "id": "c1bxfgrj_13",
+      "origine": "catalogue",
+      "sku": "rr-gen-tableau-120",
+      "x": 1.92,
+      "z": 2.5,
+      "rot": 3.141592653589793,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "tableau-principal",
+      "slotProgramme": "salon:tableau-principal:1",
+      "prioriteProgramme": 3,
+      "obligatoireProgramme": false,
+      "y": 1.475,
+      "kind": "wall_item",
+      "mur": "entree",
+      "height": 1.475,
+      "wall_offset": 1.08,
+      "attach_to": {
+        "type": "wall",
+        "id": "entree"
+      }
+    },
+    {
+      "id": "c1bxfgrj_14",
+      "origine": "catalogue",
+      "sku": "rr-gen-tableau-60",
+      "x": -1.5,
+      "z": -2.5,
+      "rot": 0,
+      "raison": "Complète l’ensemble salon.",
+      "zoneId": "salon",
+      "usageProgramme": "tableau-secondaire",
+      "slotProgramme": "salon:tableau-secondaire:1",
+      "prioriteProgramme": 4,
+      "obligatoireProgramme": false,
+      "y": 1.475,
+      "kind": "wall_item",
+      "mur": "fond",
+      "height": 1.475,
+      "wall_offset": 1.5,
+      "attach_to": {
+        "type": "wall",
+        "id": "fond"
+      }
+    },
+    {
+      "id": "c1bxfgrj_15",
+      "origine": "catalogue",
+      "sku": "suspension",
+      "x": 0,
+      "z": -1.18,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble repas.",
+      "zoneId": "repas",
+      "usageProgramme": "suspension",
+      "slotProgramme": "repas:suspension:1",
+      "prioriteProgramme": 2,
+      "obligatoireProgramme": true,
+      "y": 1.625,
+      "height": 1.625,
+      "kind": "ceiling_item",
+      "attach_to": {
+        "type": "furniture",
+        "id": "c1bxfgrj_3"
+      }
+    }
+  ],
+  "proposition": {
+    "mode": "tout",
+    "envies": "Salon chaleureux",
+    "budget": 15000,
+    "garder": [],
+    "confort": {
+      "passageCible": 0.9,
+      "score": {
+        "version": "realroom-2026-10-v3",
+        "total": 99,
+        "contraintes": 0,
+        "cout": 5.49,
+        "criteres": [
+          {
+            "id": "geometrie",
+            "note": 100,
+            "problemes": 0,
+            "poids": 4
+          },
+          {
+            "id": "circulation",
+            "note": 100,
+            "problemes": 0,
+            "poids": 3
+          },
+          {
+            "id": "usage",
+            "note": 98,
+            "problemes": 0,
+            "poids": 3
+          },
+          {
+            "id": "relations",
+            "note": 99,
+            "penalite": 1.6,
+            "poids": 1
+          },
+          {
+            "id": "orientation",
+            "note": 100,
+            "penalite": 0,
+            "poids": 1
+          },
+          {
+            "id": "conversation",
+            "note": 100,
+            "penalite": 0,
+            "poids": 0.6
+          },
+          {
+            "id": "equilibre",
+            "note": 100,
+            "penalite": 0,
+            "poids": 0.35
+          },
+          {
+            "id": "alignement",
+            "note": 100,
+            "penalite": 0,
+            "poids": 0.2
+          },
+          {
+            "id": "symetrie",
+            "note": null,
+            "penalite": 0,
+            "poids": 0
+          },
+          {
+            "id": "tapisLumiere",
+            "note": 100,
+            "penalite": 0,
+            "poids": 1.2
+          }
+        ],
+        "preferences": {
+          "style": "chaleureux",
+          "styles": [
+            "chaleureux"
+          ],
+          "composition": "equilibre",
+          "palette": [],
+          "matieres": [],
+          "resume": ""
+        },
+        "incomplet": false
+      },
+      "circulation": true,
+      "acces": true,
+      "ouvertures": true,
+      "alertes": [],
+      "mesuresEstimees": false
+    },
+    "preferences": {
+      "style": "chaleureux",
+      "styles": [
+        "chaleureux"
+      ],
+      "composition": "equilibre",
+      "palette": [],
+      "matieres": [],
+      "resume": ""
+    },
+    "recherche": {
+      "methode": "recuit-simule",
+      "iterations": 384,
+      "acceptationsMoinsBonnes": 24,
+      "candidatsVerifies": 0,
+      "patronsEssayes": []
+    },
+    "selectionBudget": {
+      "methode": "sac-a-dos-emplacements",
+      "emplacements": 18,
+      "candidats": 18,
+      "retenus": 18,
+      "cout": 2620,
+      "prixComplets": true,
+      "plafond": 15000,
+      "approximation": true,
+      "substitutions": []
+    },
+    "placement": {
+      "source": "programme-de-vie",
+      "departSemantique": true,
+      "compositionsTestees": 0
+    },
+    "programme": {
+      "version": "zones-hauteur-2",
+      "fonction": "salon",
+      "surface": 30,
+      "zones": [
+        {
+          "id": "salon",
+          "type": "salon",
+          "libelle": "Salon",
+          "priorite": 1,
+          "demandee": false,
+          "slots": [
+            {
+              "id": "salon:canape:1",
+              "zone": "salon",
+              "usage": "canape",
+              "obligatoire": true,
+              "demandee": false,
+              "priorite": 1
+            },
+            {
+              "id": "salon:table-basse:1",
+              "zone": "salon",
+              "usage": "table-basse",
+              "obligatoire": true,
+              "demandee": false,
+              "priorite": 1
+            },
+            {
+              "id": "salon:meuble-tv:1",
+              "zone": "salon",
+              "usage": "meuble-tv",
+              "obligatoire": true,
+              "demandee": false,
+              "priorite": 1
+            },
+            {
+              "id": "salon:lumiere-salon:1",
+              "zone": "salon",
+              "usage": "lumiere-salon",
+              "obligatoire": true,
+              "demandee": false,
+              "priorite": 1
+            },
+            {
+              "id": "salon:fauteuil-salon:1",
+              "zone": "salon",
+              "usage": "fauteuil-salon",
+              "obligatoire": false,
+              "demandee": false,
+              "priorite": 3
+            },
+            {
+              "id": "salon:tapis:1",
+              "zone": "salon",
+              "usage": "tapis",
+              "obligatoire": false,
+              "demandee": false,
+              "priorite": 3
+            },
+            {
+              "id": "salon:television:1",
+              "zone": "salon",
+              "usage": "television",
+              "obligatoire": true,
+              "priorite": 1,
+              "couche": "finition"
+            },
+            {
+              "id": "salon:tableau-principal:1",
+              "zone": "salon",
+              "usage": "tableau-principal",
+              "obligatoire": false,
+              "priorite": 3,
+              "couche": "finition"
+            },
+            {
+              "id": "salon:tableau-secondaire:1",
+              "zone": "salon",
+              "usage": "tableau-secondaire",
+              "obligatoire": false,
+              "priorite": 4,
+              "couche": "finition"
+            }
+          ]
+        },
+        {
+          "id": "repas",
+          "type": "repas",
+          "libelle": "Repas",
+          "priorite": 2,
+          "demandee": false,
+          "slots": [
+            {
+              "id": "repas:table-repas:1",
+              "zone": "repas",
+              "usage": "table-repas",
+              "obligatoire": true,
+              "demandee": false,
+              "priorite": 2
+            },
+            {
+              "id": "repas:chaise-repas:1",
+              "zone": "repas",
+              "usage": "chaise-repas",
+              "obligatoire": true,
+              "demandee": false,
+              "priorite": 2
+            },
+            {
+              "id": "repas:chaise-repas:2",
+              "zone": "repas",
+              "usage": "chaise-repas",
+              "obligatoire": true,
+              "demandee": false,
+              "priorite": 2
+            },
+            {
+              "id": "repas:chaise-repas:3",
+              "zone": "repas",
+              "usage": "chaise-repas",
+              "obligatoire": true,
+              "demandee": false,
+              "priorite": 2
+            },
+            {
+              "id": "repas:chaise-repas:4",
+              "zone": "repas",
+              "usage": "chaise-repas",
+              "obligatoire": true,
+              "demandee": false,
+              "priorite": 2
+            },
+            {
+              "id": "repas:suspension:1",
+              "zone": "repas",
+              "usage": "suspension",
+              "obligatoire": true,
+              "demandee": false,
+              "priorite": 2,
+              "couche": "finition"
+            }
+          ]
+        },
+        {
+          "id": "lecture",
+          "type": "lecture",
+          "libelle": "Lecture",
+          "priorite": 3,
+          "demandee": false,
+          "slots": [
+            {
+              "id": "lecture:fauteuil-lecture:1",
+              "zone": "lecture",
+              "usage": "fauteuil-lecture",
+              "obligatoire": true,
+              "demandee": false,
+              "priorite": 3
+            },
+            {
+              "id": "lecture:table-appoint:1",
+              "zone": "lecture",
+              "usage": "table-appoint",
+              "obligatoire": true,
+              "demandee": false,
+              "priorite": 3
+            },
+            {
+              "id": "lecture:lumiere-lecture:1",
+              "zone": "lecture",
+              "usage": "lumiere-lecture",
+              "obligatoire": true,
+              "demandee": false,
+              "priorite": 3
+            }
+          ]
+        }
+      ],
+      "avertissements": [],
+      "focal": {
+        "usage": "television",
+        "sansTV": false
+      },
+      "details": {
+        "muraux": [
+          2,
+          4
+        ]
+      },
+      "manquants": [],
+      "retenus": 18
+    },
+    "planZones": {
+      "version": "zones-1",
+      "statut": "compose",
+      "zones": [
+        {
+          "x0": 0.865,
+          "x1": 2.975,
+          "z0": -0.565,
+          "z1": 2.48,
+          "id": "salon",
+          "type": "salon",
+          "libelle": "Salon",
+          "rot": 3.141592653589793,
+          "meubles": [
+            "c1bxfgrj_11",
+            "c1bxfgrj_0",
+            "c1bxfgrj_10",
+            "c1bxfgrj_2",
+            "c1bxfgrj_1",
+            "c1bxfgrj_9",
+            "c1bxfgrj_12",
+            "c1bxfgrj_13",
+            "c1bxfgrj_14"
+          ]
+        },
+        {
+          "x0": -0.85,
+          "x1": 0.85,
+          "z0": -1.68,
+          "z1": -0.6799999999999999,
+          "id": "repas",
+          "type": "repas",
+          "libelle": "Repas",
+          "rot": 1.5707963267948966,
+          "meubles": [
+            "c1bxfgrj_3",
+            "c1bxfgrj_4",
+            "c1bxfgrj_5",
+            "c1bxfgrj_6",
+            "c1bxfgrj_7",
+            "c1bxfgrj_15"
+          ]
+        },
+        {
+          "x0": -2.285,
+          "x1": -0.82,
+          "z0": -2.4850000000000003,
+          "z1": -1.8350000000000002,
+          "id": "lecture",
+          "type": "lecture",
+          "libelle": "Lecture",
+          "rot": 0,
+          "meubles": [
+            "c1bxfgrj_16",
+            "c1bxfgrj_8",
+            "c1bxfgrj_17"
+          ]
+        }
+      ],
+      "chemins": [
+        {
+          "vers": "salon",
+          "largeur": 0.9,
+          "points": [
+            {
+              "x": 0.15,
+              "z": 1.85
+            },
+            {
+              "x": 0.25,
+              "z": 1.85
+            },
+            {
+              "x": 0.35,
+              "z": 1.85
+            }
+          ]
+        },
+        {
+          "vers": "repas",
+          "largeur": 0.9,
+          "points": [
+            {
+              "x": 0.15,
+              "z": 1.85
+            },
+            {
+              "x": 0.05,
+              "z": 1.85
+            },
+            {
+              "x": -0.05,
+              "z": 1.85
+            },
+            {
+              "x": -0.15,
+              "z": 1.85
+            },
+            {
+              "x": -0.25,
+              "z": 1.85
+            },
+            {
+              "x": -0.35,
+              "z": 1.85
+            },
+            {
+              "x": -0.45,
+              "z": 1.85
+            },
+            {
+              "x": -0.55,
+              "z": 1.85
+            },
+            {
+              "x": -0.65,
+              "z": 1.85
+            },
+            {
+              "x": -0.75,
+              "z": 1.85
+            },
+            {
+              "x": -0.85,
+              "z": 1.85
+            },
+            {
+              "x": -0.95,
+              "z": 1.85
+            },
+            {
+              "x": -1.05,
+              "z": 1.85
+            },
+            {
+              "x": -1.15,
+              "z": 1.85
+            },
+            {
+              "x": -1.25,
+              "z": 1.85
+            },
+            {
+              "x": -1.35,
+              "z": 1.85
+            },
+            {
+              "x": -1.35,
+              "z": 1.75
+            },
+            {
+              "x": -1.35,
+              "z": 1.65
+            },
+            {
+              "x": -1.35,
+              "z": 1.55
+            },
+            {
+              "x": -1.35,
+              "z": 1.45
+            },
+            {
+              "x": -1.35,
+              "z": 1.35
+            },
+            {
+              "x": -1.35,
+              "z": 1.25
+            },
+            {
+              "x": -1.35,
+              "z": 1.15
+            },
+            {
+              "x": -1.35,
+              "z": 1.05
+            },
+            {
+              "x": -1.35,
+              "z": 0.95
+            },
+            {
+              "x": -1.35,
+              "z": 0.85
+            },
+            {
+              "x": -1.35,
+              "z": 0.75
+            },
+            {
+              "x": -1.35,
+              "z": 0.65
+            },
+            {
+              "x": -1.35,
+              "z": 0.55
+            },
+            {
+              "x": -1.35,
+              "z": 0.45
+            },
+            {
+              "x": -1.35,
+              "z": 0.35
+            },
+            {
+              "x": -1.35,
+              "z": 0.25
+            },
+            {
+              "x": -1.35,
+              "z": 0.15
+            },
+            {
+              "x": -1.35,
+              "z": 0.05
+            },
+            {
+              "x": -1.35,
+              "z": -0.05
+            },
+            {
+              "x": -1.35,
+              "z": -0.15
+            },
+            {
+              "x": -1.35,
+              "z": -0.25
+            },
+            {
+              "x": -1.35,
+              "z": -0.35
+            },
+            {
+              "x": -1.35,
+              "z": -0.45
+            },
+            {
+              "x": -1.35,
+              "z": -0.55
+            },
+            {
+              "x": -1.35,
+              "z": -0.65
+            },
+            {
+              "x": -1.35,
+              "z": -0.75
+            }
+          ]
+        },
+        {
+          "vers": "lecture",
+          "largeur": 0.9,
+          "points": [
+            {
+              "x": 0.15,
+              "z": 1.85
+            },
+            {
+              "x": 0.05,
+              "z": 1.85
+            },
+            {
+              "x": -0.05,
+              "z": 1.85
+            },
+            {
+              "x": -0.15,
+              "z": 1.85
+            },
+            {
+              "x": -0.25,
+              "z": 1.85
+            },
+            {
+              "x": -0.35,
+              "z": 1.85
+            },
+            {
+              "x": -0.45,
+              "z": 1.85
+            },
+            {
+              "x": -0.55,
+              "z": 1.85
+            },
+            {
+              "x": -0.65,
+              "z": 1.85
+            },
+            {
+              "x": -0.75,
+              "z": 1.85
+            },
+            {
+              "x": -0.85,
+              "z": 1.85
+            },
+            {
+              "x": -0.95,
+              "z": 1.85
+            },
+            {
+              "x": -1.05,
+              "z": 1.85
+            },
+            {
+              "x": -1.15,
+              "z": 1.85
+            },
+            {
+              "x": -1.25,
+              "z": 1.85
+            },
+            {
+              "x": -1.35,
+              "z": 1.85
+            },
+            {
+              "x": -1.35,
+              "z": 1.75
+            },
+            {
+              "x": -1.35,
+              "z": 1.65
+            },
+            {
+              "x": -1.35,
+              "z": 1.55
+            },
+            {
+              "x": -1.35,
+              "z": 1.45
+            },
+            {
+              "x": -1.35,
+              "z": 1.35
+            },
+            {
+              "x": -1.35,
+              "z": 1.25
+            },
+            {
+              "x": -1.35,
+              "z": 1.15
+            },
+            {
+              "x": -1.35,
+              "z": 1.05
+            },
+            {
+              "x": -1.35,
+              "z": 0.95
+            },
+            {
+              "x": -1.35,
+              "z": 0.85
+            },
+            {
+              "x": -1.35,
+              "z": 0.75
+            },
+            {
+              "x": -1.35,
+              "z": 0.65
+            },
+            {
+              "x": -1.35,
+              "z": 0.55
+            },
+            {
+              "x": -1.35,
+              "z": 0.45
+            },
+            {
+              "x": -1.35,
+              "z": 0.35
+            },
+            {
+              "x": -1.35,
+              "z": 0.25
+            },
+            {
+              "x": -1.35,
+              "z": 0.15
+            },
+            {
+              "x": -1.35,
+              "z": 0.05
+            },
+            {
+              "x": -1.35,
+              "z": -0.05
+            },
+            {
+              "x": -1.35,
+              "z": -0.15
+            },
+            {
+              "x": -1.35,
+              "z": -0.25
+            },
+            {
+              "x": -1.35,
+              "z": -0.35
+            },
+            {
+              "x": -1.35,
+              "z": -0.45
+            },
+            {
+              "x": -1.35,
+              "z": -0.55
+            },
+            {
+              "x": -1.35,
+              "z": -0.65
+            },
+            {
+              "x": -1.35,
+              "z": -0.75
+            },
+            {
+              "x": -1.35,
+              "z": -0.85
+            },
+            {
+              "x": -1.35,
+              "z": -0.95
+            },
+            {
+              "x": -1.35,
+              "z": -1.05
+            },
+            {
+              "x": -1.35,
+              "z": -1.15
+            },
+            {
+              "x": -1.35,
+              "z": -1.25
+            },
+            {
+              "x": -1.35,
+              "z": -1.35
+            }
+          ]
+        }
+      ],
+      "circulation": {
+        "largeur": 0.9,
+        "portesConnues": true,
+        "portesBloquees": 0,
+        "inaccessibles": [],
+        "chemins": [
+          {
+            "vers": "salon",
+            "largeur": 0.9,
+            "points": [
+              {
+                "x": 0.15,
+                "z": 1.85
+              },
+              {
+                "x": 0.25,
+                "z": 1.85
+              },
+              {
+                "x": 0.35,
+                "z": 1.85
+              }
+            ]
+          },
+          {
+            "vers": "repas",
+            "largeur": 0.9,
+            "points": [
+              {
+                "x": 0.15,
+                "z": 1.85
+              },
+              {
+                "x": 0.05,
+                "z": 1.85
+              },
+              {
+                "x": -0.05,
+                "z": 1.85
+              },
+              {
+                "x": -0.15,
+                "z": 1.85
+              },
+              {
+                "x": -0.25,
+                "z": 1.85
+              },
+              {
+                "x": -0.35,
+                "z": 1.85
+              },
+              {
+                "x": -0.45,
+                "z": 1.85
+              },
+              {
+                "x": -0.55,
+                "z": 1.85
+              },
+              {
+                "x": -0.65,
+                "z": 1.85
+              },
+              {
+                "x": -0.75,
+                "z": 1.85
+              },
+              {
+                "x": -0.85,
+                "z": 1.85
+              },
+              {
+                "x": -0.95,
+                "z": 1.85
+              },
+              {
+                "x": -1.05,
+                "z": 1.85
+              },
+              {
+                "x": -1.15,
+                "z": 1.85
+              },
+              {
+                "x": -1.25,
+                "z": 1.85
+              },
+              {
+                "x": -1.35,
+                "z": 1.85
+              },
+              {
+                "x": -1.35,
+                "z": 1.75
+              },
+              {
+                "x": -1.35,
+                "z": 1.65
+              },
+              {
+                "x": -1.35,
+                "z": 1.55
+              },
+              {
+                "x": -1.35,
+                "z": 1.45
+              },
+              {
+                "x": -1.35,
+                "z": 1.35
+              },
+              {
+                "x": -1.35,
+                "z": 1.25
+              },
+              {
+                "x": -1.35,
+                "z": 1.15
+              },
+              {
+                "x": -1.35,
+                "z": 1.05
+              },
+              {
+                "x": -1.35,
+                "z": 0.95
+              },
+              {
+                "x": -1.35,
+                "z": 0.85
+              },
+              {
+                "x": -1.35,
+                "z": 0.75
+              },
+              {
+                "x": -1.35,
+                "z": 0.65
+              },
+              {
+                "x": -1.35,
+                "z": 0.55
+              },
+              {
+                "x": -1.35,
+                "z": 0.45
+              },
+              {
+                "x": -1.35,
+                "z": 0.35
+              },
+              {
+                "x": -1.35,
+                "z": 0.25
+              },
+              {
+                "x": -1.35,
+                "z": 0.15
+              },
+              {
+                "x": -1.35,
+                "z": 0.05
+              },
+              {
+                "x": -1.35,
+                "z": -0.05
+              },
+              {
+                "x": -1.35,
+                "z": -0.15
+              },
+              {
+                "x": -1.35,
+                "z": -0.25
+              },
+              {
+                "x": -1.35,
+                "z": -0.35
+              },
+              {
+                "x": -1.35,
+                "z": -0.45
+              },
+              {
+                "x": -1.35,
+                "z": -0.55
+              },
+              {
+                "x": -1.35,
+                "z": -0.65
+              },
+              {
+                "x": -1.35,
+                "z": -0.75
+              }
+            ]
+          },
+          {
+            "vers": "lecture",
+            "largeur": 0.9,
+            "points": [
+              {
+                "x": 0.15,
+                "z": 1.85
+              },
+              {
+                "x": 0.05,
+                "z": 1.85
+              },
+              {
+                "x": -0.05,
+                "z": 1.85
+              },
+              {
+                "x": -0.15,
+                "z": 1.85
+              },
+              {
+                "x": -0.25,
+                "z": 1.85
+              },
+              {
+                "x": -0.35,
+                "z": 1.85
+              },
+              {
+                "x": -0.45,
+                "z": 1.85
+              },
+              {
+                "x": -0.55,
+                "z": 1.85
+              },
+              {
+                "x": -0.65,
+                "z": 1.85
+              },
+              {
+                "x": -0.75,
+                "z": 1.85
+              },
+              {
+                "x": -0.85,
+                "z": 1.85
+              },
+              {
+                "x": -0.95,
+                "z": 1.85
+              },
+              {
+                "x": -1.05,
+                "z": 1.85
+              },
+              {
+                "x": -1.15,
+                "z": 1.85
+              },
+              {
+                "x": -1.25,
+                "z": 1.85
+              },
+              {
+                "x": -1.35,
+                "z": 1.85
+              },
+              {
+                "x": -1.35,
+                "z": 1.75
+              },
+              {
+                "x": -1.35,
+                "z": 1.65
+              },
+              {
+                "x": -1.35,
+                "z": 1.55
+              },
+              {
+                "x": -1.35,
+                "z": 1.45
+              },
+              {
+                "x": -1.35,
+                "z": 1.35
+              },
+              {
+                "x": -1.35,
+                "z": 1.25
+              },
+              {
+                "x": -1.35,
+                "z": 1.15
+              },
+              {
+                "x": -1.35,
+                "z": 1.05
+              },
+              {
+                "x": -1.35,
+                "z": 0.95
+              },
+              {
+                "x": -1.35,
+                "z": 0.85
+              },
+              {
+                "x": -1.35,
+                "z": 0.75
+              },
+              {
+                "x": -1.35,
+                "z": 0.65
+              },
+              {
+                "x": -1.35,
+                "z": 0.55
+              },
+              {
+                "x": -1.35,
+                "z": 0.45
+              },
+              {
+                "x": -1.35,
+                "z": 0.35
+              },
+              {
+                "x": -1.35,
+                "z": 0.25
+              },
+              {
+                "x": -1.35,
+                "z": 0.15
+              },
+              {
+                "x": -1.35,
+                "z": 0.05
+              },
+              {
+                "x": -1.35,
+                "z": -0.05
+              },
+              {
+                "x": -1.35,
+                "z": -0.15
+              },
+              {
+                "x": -1.35,
+                "z": -0.25
+              },
+              {
+                "x": -1.35,
+                "z": -0.35
+              },
+              {
+                "x": -1.35,
+                "z": -0.45
+              },
+              {
+                "x": -1.35,
+                "z": -0.55
+              },
+              {
+                "x": -1.35,
+                "z": -0.65
+              },
+              {
+                "x": -1.35,
+                "z": -0.75
+              },
+              {
+                "x": -1.35,
+                "z": -0.85
+              },
+              {
+                "x": -1.35,
+                "z": -0.95
+              },
+              {
+                "x": -1.35,
+                "z": -1.05
+              },
+              {
+                "x": -1.35,
+                "z": -1.15
+              },
+              {
+                "x": -1.35,
+                "z": -1.25
+              },
+              {
+                "x": -1.35,
+                "z": -1.35
+              }
+            ]
+          }
+        ],
+        "valide": true
+      },
+      "score": 21.87,
+      "manquants": [],
+      "statistiques": {
+        "candidats": 216,
+        "combinaisons": 6408,
+        "plansVerifies": 46
+      },
+      "avertissements": [],
+      "audit": {
+        "valide": true,
+        "problemes": [],
+        "circulation": {
+          "largeur": 0.9,
+          "portesConnues": true,
+          "portesBloquees": 0,
+          "inaccessibles": [],
+          "chemins": [
+            {
+              "vers": "salon",
+              "largeur": 0.9,
+              "points": [
+                {
+                  "x": 0.15,
+                  "z": 1.85
+                },
+                {
+                  "x": 0.25,
+                  "z": 1.85
+                },
+                {
+                  "x": 0.35,
+                  "z": 1.85
+                }
+              ]
+            },
+            {
+              "vers": "repas",
+              "largeur": 0.9,
+              "points": [
+                {
+                  "x": 0.15,
+                  "z": 1.85
+                },
+                {
+                  "x": 0.05,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.05,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.15,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.25,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.35,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.45,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.55,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.65,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.75,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.85,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.95,
+                  "z": 1.85
+                },
+                {
+                  "x": -1.05,
+                  "z": 1.85
+                },
+                {
+                  "x": -1.15,
+                  "z": 1.85
+                },
+                {
+                  "x": -1.25,
+                  "z": 1.85
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.85
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.75
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.65
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.55
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.45
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.35
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.25
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.15
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.05
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.95
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.85
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.75
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.65
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.55
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.45
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.35
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.25
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.15
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.05
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.05
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.15
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.25
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.35
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.45
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.55
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.65
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.75
+                }
+              ]
+            },
+            {
+              "vers": "lecture",
+              "largeur": 0.9,
+              "points": [
+                {
+                  "x": 0.15,
+                  "z": 1.85
+                },
+                {
+                  "x": 0.05,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.05,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.15,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.25,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.35,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.45,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.55,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.65,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.75,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.85,
+                  "z": 1.85
+                },
+                {
+                  "x": -0.95,
+                  "z": 1.85
+                },
+                {
+                  "x": -1.05,
+                  "z": 1.85
+                },
+                {
+                  "x": -1.15,
+                  "z": 1.85
+                },
+                {
+                  "x": -1.25,
+                  "z": 1.85
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.85
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.75
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.65
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.55
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.45
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.35
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.25
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.15
+                },
+                {
+                  "x": -1.35,
+                  "z": 1.05
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.95
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.85
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.75
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.65
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.55
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.45
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.35
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.25
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.15
+                },
+                {
+                  "x": -1.35,
+                  "z": 0.05
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.05
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.15
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.25
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.35
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.45
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.55
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.65
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.75
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.85
+                },
+                {
+                  "x": -1.35,
+                  "z": -0.95
+                },
+                {
+                  "x": -1.35,
+                  "z": -1.05
+                },
+                {
+                  "x": -1.35,
+                  "z": -1.15
+                },
+                {
+                  "x": -1.35,
+                  "z": -1.25
+                },
+                {
+                  "x": -1.35,
+                  "z": -1.35
+                }
+              ]
+            }
+          ],
+          "valide": true
+        },
+        "confort": {
+          "passageCible": 0.9,
+          "score": {
+            "version": "realroom-2026-10-v3",
+            "total": 99,
+            "contraintes": 0,
+            "cout": 5.49,
+            "criteres": [
+              {
+                "id": "geometrie",
+                "note": 100,
+                "problemes": 0,
+                "poids": 4
+              },
+              {
+                "id": "circulation",
+                "note": 100,
+                "problemes": 0,
+                "poids": 3
+              },
+              {
+                "id": "usage",
+                "note": 98,
+                "problemes": 0,
+                "poids": 3
+              },
+              {
+                "id": "relations",
+                "note": 99,
+                "penalite": 1.6,
+                "poids": 1
+              },
+              {
+                "id": "orientation",
+                "note": 100,
+                "penalite": 0,
+                "poids": 1
+              },
+              {
+                "id": "conversation",
+                "note": 100,
+                "penalite": 0,
+                "poids": 0.6
+              },
+              {
+                "id": "equilibre",
+                "note": 100,
+                "penalite": 0,
+                "poids": 0.35
+              },
+              {
+                "id": "alignement",
+                "note": 100,
+                "penalite": 0,
+                "poids": 0.25
+              },
+              {
+                "id": "symetrie",
+                "note": null,
+                "penalite": 0,
+                "poids": 0
+              },
+              {
+                "id": "tapisLumiere",
+                "note": 100,
+                "penalite": 0,
+                "poids": 0.3
+              }
+            ],
+            "preferences": {
+              "style": "neutre",
+              "styles": [
+                "neutre"
+              ],
+              "composition": "equilibre",
+              "palette": [],
+              "matieres": [],
+              "resume": ""
+            },
+            "incomplet": false
+          },
+          "circulation": true,
+          "acces": true,
+          "ouvertures": true,
+          "alertes": [],
+          "mesuresEstimees": false
+        }
+      }
+    },
+    "finition": {
+      "version": "composition-hauteur-1",
+      "manquants": [],
+      "audit": [],
+      "score": 34,
+      "regles": [
+        {
+          "id": "focal-visible",
+          "points": 6,
+          "ids": [
+            "c1bxfgrj_12"
+          ]
+        },
+        {
+          "id": "tv-face-canape",
+          "points": 5,
+          "ids": [
+            "c1bxfgrj_12",
+            "c1bxfgrj_0"
+          ]
+        },
+        {
+          "id": "lumiere-zone",
+          "points": 4,
+          "ids": [
+            "c1bxfgrj_9"
+          ]
+        },
+        {
+          "id": "lumiere-zone",
+          "points": 4,
+          "ids": [
+            "c1bxfgrj_15"
+          ]
+        },
+        {
+          "id": "lumiere-zone",
+          "points": 4,
+          "ids": [
+            "c1bxfgrj_17"
+          ]
+        },
+        {
+          "id": "suspension-centree",
+          "points": 5,
+          "ids": [
+            "c1bxfgrj_15",
+            "c1bxfgrj_3"
+          ]
+        },
+        {
+          "id": "mur-principal",
+          "points": 4,
+          "ids": [
+            "c1bxfgrj_13"
+          ]
+        },
+        {
+          "id": "tableau-proportionne",
+          "points": 4,
+          "ids": [
+            "c1bxfgrj_13",
+            "c1bxfgrj_0"
+          ]
+        },
+        {
+          "id": "mur-vide",
+          "points": -2,
+          "ids": []
+        }
+      ],
+      "focal": "c1bxfgrj_12",
+      "nombreMuraux": 2,
+      "cibleMuraux": [
+        2,
+        4
+      ],
+      "tvDistance": {
+        "metres": 2.47,
+        "diagonale": 1.092,
+        "rapportDiagonale": 2.262,
+        "indicatif": true
+      }
+    },
+    "concept": "",
+    "conseils": [],
+    "alertes": [],
+    "date": "2026-10-11T17:26:49.463Z"
+  }
+}
