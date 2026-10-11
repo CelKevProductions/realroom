@@ -1,0 +1,3253 @@
+{
+  "modele": {
+    "dims": {
+      "largeur": 10,
+      "profondeur": 14,
+      "hauteur": 2.7,
+      "estimees": true
+    },
+    "contour": [
+      [
+        -5,
+        -7
+      ],
+      [
+        5,
+        -7
+      ],
+      [
+        5,
+        -3
+      ],
+      [
+        0,
+        -3
+      ],
+      [
+        0,
+        7
+      ],
+      [
+        -5,
+        7
+      ]
+    ],
+    "murs": {
+      "pan_1": {
+        "ouvertures": [
+          {
+            "type": "porte",
+            "position": -3.5,
+            "largeur": 0.9,
+            "hauteur": 2.04,
+            "allege": 0
+          }
+        ],
+        "couleur": "#EFEAE2",
+        "observe": true
+      },
+      "pan_2": {
+        "ouvertures": [],
+        "couleur": "#EFEAE2",
+        "observe": true
+      },
+      "pan_3": {
+        "ouvertures": [
+          {
+            "type": "fenetre",
+            "position": 0,
+            "largeur": 1.4,
+            "hauteur": 1.2,
+            "allege": 0.9
+          }
+        ],
+        "couleur": "#EFEAE2",
+        "observe": true
+      },
+      "pan_4": {
+        "ouvertures": [],
+        "couleur": "#EFEAE2",
+        "observe": true
+      },
+      "pan_5": {
+        "ouvertures": [
+          {
+            "type": "porte",
+            "position": 0,
+            "largeur": 0.9,
+            "hauteur": 2.04,
+            "allege": 0
+          }
+        ],
+        "couleur": "#EFEAE2",
+        "observe": true
+      },
+      "pan_6": {
+        "ouvertures": [
+          {
+            "type": "fenetre",
+            "position": 3,
+            "largeur": 1.4,
+            "hauteur": 1.2,
+            "allege": 0.9
+          }
+        ],
+        "couleur": "#EFEAE2",
+        "observe": true
+      }
+    },
+    "sol": {
+      "matiere": "parquet",
+      "couleur": "#C7AD86"
+    }
+  },
+  "items": [
+    {
+      "id": "c19y3uu1_0",
+      "origine": "catalogue",
+      "sku": "rr-gen-bureau-100",
+      "x": -4.73,
+      "z": 3.49,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble travail.",
+      "zoneId": "travail",
+      "usageProgramme": "bureau",
+      "slotProgramme": "travail:bureau:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c19y3uu1_13",
+      "origine": "catalogue",
+      "sku": "rr-gen-chaise-bureau",
+      "x": -4.04,
+      "z": 3.49,
+      "rot": -1.5707963267948966,
+      "raison": "Version plus compacte pour aménager les espaces choisis.",
+      "zoneId": "travail",
+      "usageProgramme": "chaise-bureau",
+      "slotProgramme": "travail:chaise-bureau:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c19y3uu1_12",
+      "origine": "catalogue",
+      "sku": "ce-320",
+      "x": -4.39,
+      "z": -3.28,
+      "rot": -1.5700000000000003,
+      "raison": "Version plus compacte pour aménager les espaces choisis.",
+      "zoneId": "lecture",
+      "usageProgramme": "fauteuil-lecture",
+      "slotProgramme": "lecture:fauteuil-lecture:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c19y3uu1_10",
+      "origine": "catalogue",
+      "sku": "ec-650",
+      "x": 4.13,
+      "z": -3.19,
+      "rot": 3.141592653589793,
+      "raison": "Complète l’ensemble rangement.",
+      "zoneId": "rangement",
+      "usageProgramme": "buffet",
+      "slotProgramme": "rangement:buffet:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c19y3uu1_9",
+      "origine": "catalogue",
+      "sku": "rr-gen-appoint-35",
+      "x": -4.39,
+      "z": -3.8,
+      "rot": -1.5700000000000003,
+      "raison": "Complète l’ensemble lecture.",
+      "zoneId": "lecture",
+      "usageProgramme": "table-appoint",
+      "slotProgramme": "lecture:table-appoint:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true
+    },
+    {
+      "id": "c19y3uu1_14",
+      "origine": "catalogue",
+      "sku": "rr-gen-lampe-25",
+      "x": -4.73,
+      "z": 3.74,
+      "rot": 1.5707963267948966,
+      "raison": "Complète l’ensemble travail.",
+      "zoneId": "travail",
+      "usageProgramme": "lampe-bureau",
+      "slotProgramme": "travail:lampe-bureau:1",
+      "prioriteProgramme": 1,
+      "obligatoireProgramme": true,
+      "y": 0.95,
+      "kind": "surface_item",
+      "attach_to": {
+        "type": "furniture",
+        "id": "c19y3uu1_0"
+      },
+      "height": 0.95
+    }
+  ],
+  "catalogue": {
+    "rr-gen-bureau-100": {
+      "id": "rr-gen-bureau-100",
+      "nom": "Bureau compact · 100 cm",
+      "titre": "Bureau compact · 100 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Bureau",
+      "fam": "bureau",
+      "dim": [
+        1,
+        0.5,
+        0.75
+      ],
+      "st": "bureau",
+      "prix": 170,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "bureau"
+      ],
+      "cols": [
+        "#C7AD86"
+      ],
+      "couleurs": [
+        "chêne clair"
+      ],
+      "mat": "chêne clair",
+      "bois": "chêne clair",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-bureau-100.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. chêne clair.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ],
+      "dimEstimees": false,
+      "stylesEditoriaux": []
+    },
+    "rr-gen-chaise-bureau": {
+      "id": "rr-gen-chaise-bureau",
+      "nom": "Chaise de bureau",
+      "titre": "Chaise de bureau",
+      "marque": "RealRoom · Générique",
+      "cat": "Chaise",
+      "fam": "chaise",
+      "dim": [
+        0.56,
+        0.57,
+        0.95
+      ],
+      "st": "bureau",
+      "prix": 130,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "chaise-bureau"
+      ],
+      "cols": [
+        "#A89A89"
+      ],
+      "couleurs": [
+        "tissu taupe"
+      ],
+      "mat": "tissu taupe",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-chaise-bureau.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. tissu taupe.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ],
+      "dimEstimees": false,
+      "stylesEditoriaux": []
+    },
+    "ce-320": {
+      "id": "ce-320",
+      "marque": "Maison Corleone",
+      "nom": "Fauteuil de salle à manger",
+      "titre": "Fauteuil de salle à manger en bouclette écrue sur roulettes",
+      "cat": "Fauteuil",
+      "fam": "fauteuil",
+      "st": "lounge",
+      "prix": 280,
+      "prixMax": null,
+      "parModule": false,
+      "img": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.39.47.jpg?v=1780096040&width=900",
+      "vign": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.39.47.jpg?v=1780096040&width=360",
+      "imgs": [],
+      "texte": "Fauteuil de salle à manger habillé d'une housse en tissu bouclette épais écru, au dossier haut et droit, monté sur roulettes noires discrètes intégrées aux pieds. Conçu pour les tablées prolongées, il associe maintien lombaire et mobilité facile sur parquet ou carrelage. Hauteur d'assise standard autour de 48 cm.",
+      "points": [
+        [
+          "Dimensions",
+          "45 × 55 × 95 cm"
+        ],
+        [
+          "Matière",
+          "Bouclette"
+        ],
+        [
+          "Coloris",
+          "Écru"
+        ]
+      ],
+      "url": "https://maisoncorleone.com/products/ce-320",
+      "dim": [
+        0.45,
+        0.55,
+        0.95
+      ],
+      "dimsLues": true,
+      "cols": [
+        "#ECE4D3"
+      ],
+      "couleurs": [
+        "écru"
+      ],
+      "fc": "clair",
+      "mat": "boucle",
+      "metal": "noir",
+      "bois": "",
+      "verre": "",
+      "led": false,
+      "chevets": false,
+      "ext": false,
+      "couchage": null,
+      "look": null,
+      "dimEstimees": false,
+      "stylesEditoriaux": [],
+      "styleVisuel": {
+        "source": "openclip",
+        "image": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.39.47.jpg?v=1780096040&width=900",
+        "modele": "ViT-B-32/laion2b_s34b_b79k",
+        "prompts": "realroom-styles-v1:cbfef5be046f",
+        "scores": {
+          "epure": 0.24016,
+          "chaleureux": 0.25886,
+          "classique": 0.25792,
+          "boheme": 0.26256,
+          "artdeco": 0.20895,
+          "japandi": 0.24769,
+          "audacieux": 0.19808,
+          "mediterraneen": 0.32693,
+          "scandinave": 0.24063,
+          "industriel": 0.20445,
+          "contemporain": 0.23863
+        },
+        "aVerifier": true
+      }
+    },
+    "ec-650": {
+      "id": "ec-650",
+      "marque": "Maison Corleone",
+      "nom": "Console d'entrée blanc",
+      "titre": "Console d'entrée en bois laqué motif Grues japonaises sur piètement tourné blanc",
+      "cat": "Console",
+      "fam": "meuble",
+      "st": "",
+      "prix": 650,
+      "prixMax": null,
+      "parModule": false,
+      "img": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.14.08.jpg?v=1780095465&width=900",
+      "vign": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.14.08.jpg?v=1780095465&width=360",
+      "imgs": [],
+      "texte": "Console d'entrée étroite au panneau frontal laqué noir orné d'un décor peint de grues et de bambous, façon estampe japonaise. Portée par un piètement en bois tourné blanc à motifs de boules superposées, elle convient à une entrée, un couloir ou un salon cherchant une pièce d'appoint graphique et verticale.",
+      "points": [
+        [
+          "Dimensions",
+          "70 × 35 × 140 cm"
+        ],
+        [
+          "Matière",
+          "Résine laquée"
+        ],
+        [
+          "Coloris",
+          "Blanc"
+        ]
+      ],
+      "url": "https://maisoncorleone.com/products/ec-650",
+      "dim": [
+        0.7,
+        0.35,
+        1.4
+      ],
+      "dimsLues": true,
+      "cols": [
+        "#F1EEE7"
+      ],
+      "couleurs": [
+        "blanc"
+      ],
+      "fc": "clair",
+      "mat": "laque",
+      "metal": "noir",
+      "bois": "noyer",
+      "verre": "",
+      "led": false,
+      "chevets": false,
+      "ext": false,
+      "couchage": null,
+      "look": null,
+      "dimEstimees": false,
+      "stylesEditoriaux": [],
+      "styleVisuel": {
+        "source": "openclip",
+        "image": "https://cdn.shopify.com/s/files/1/0938/1055/7195/files/2026-04-0817.14.08.jpg?v=1780095465&width=900",
+        "modele": "ViT-B-32/laion2b_s34b_b79k",
+        "prompts": "realroom-styles-v1:cbfef5be046f",
+        "scores": {
+          "epure": 0.19234,
+          "chaleureux": 0.15187,
+          "classique": 0.23256,
+          "boheme": 0.16745,
+          "artdeco": 0.21237,
+          "japandi": 0.18581,
+          "audacieux": 0.20072,
+          "mediterraneen": 0.17795,
+          "scandinave": 0.1857,
+          "industriel": 0.16028,
+          "contemporain": 0.17174
+        },
+        "aVerifier": true
+      }
+    },
+    "rr-gen-appoint-35": {
+      "id": "rr-gen-appoint-35",
+      "nom": "Table d’appoint · 35 cm",
+      "titre": "Table d’appoint · 35 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Table",
+      "fam": "table",
+      "dim": [
+        0.35,
+        0.35,
+        0.5
+      ],
+      "st": "ronde",
+      "prix": 55,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "table-appoint"
+      ],
+      "cols": [
+        "#35332F"
+      ],
+      "couleurs": [
+        "bois noir"
+      ],
+      "mat": "bois noir",
+      "bois": "bois noir",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-appoint-35.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. bois noir.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ],
+      "dimEstimees": false,
+      "stylesEditoriaux": []
+    },
+    "rr-gen-lampe-25": {
+      "id": "rr-gen-lampe-25",
+      "nom": "Lampe de table · 25 cm",
+      "titre": "Lampe de table · 25 cm",
+      "marque": "RealRoom · Générique",
+      "cat": "Lampe",
+      "fam": "lampe",
+      "dim": [
+        0.25,
+        0.25,
+        0.4
+      ],
+      "st": "lampe",
+      "prix": 45,
+      "generique": true,
+      "prixEstime": true,
+      "usagesGeneriques": [
+        "lampe-chevet",
+        "lampe-bureau",
+        "lumiere-salon",
+        "lumiere-lecture"
+      ],
+      "cols": [
+        "#DFD1B9"
+      ],
+      "couleurs": [
+        "lin écru"
+      ],
+      "mat": "lin écru",
+      "bois": "",
+      "metal": "noir",
+      "chevets": false,
+      "ext": false,
+      "dimsLues": true,
+      "vign": "/generiques/rr-gen-lampe-25.svg",
+      "img": null,
+      "url": null,
+      "texte": "Modèle générique pour préparer votre projet. Budget indicatif à confirmer auprès du vendeur choisi. lin écru.",
+      "points": [
+        [
+          "Modèle",
+          "Objet générique de projet"
+        ],
+        [
+          "Budget",
+          "Estimation indicative, sans offre de vente"
+        ]
+      ],
+      "dimEstimees": false,
+      "stylesEditoriaux": [
+        {
+          "style": "japandi",
+          "score": 0.5,
+          "reference": "ikea-japandi-chambre",
+          "indices": [
+            "lin",
+            "ecru"
+          ],
+          "source": "editorial",
+          "aVerifier": true
+        },
+        {
+          "style": "epure",
+          "score": 0.5,
+          "reference": "ikea-japandi-chambre",
+          "indices": [
+            "lin",
+            "ecru"
+          ],
+          "source": "editorial",
+          "aVerifier": true
+        }
+      ]
+    }
+  },
+  "programme": {
+    "version": "zones-surface-3",
+    "fonction": "salon",
+    "surface": 90,
+    "zones": [
+      {
+        "id": "salon",
+        "type": "salon",
+        "libelle": "Salon",
+        "priorite": 1,
+        "demandee": false,
+        "slots": [
+          {
+            "id": "salon:canape:1",
+            "zone": "salon",
+            "usage": "canape",
+            "obligatoire": true,
+            "demandee": false,
+            "priorite": 1,
+            "largeurCible": 3.2,
+            "largeurMax": 3.8
+          },
+          {
+            "id": "salon:table-basse:1",
+            "zone": "salon",
+            "usage": "table-basse",
+            "obligatoire": true,
+            "demandee": false,
+            "priorite": 1,
+            "largeurCible": 1.4
+          },
+          {
+            "id": "salon:meuble-tv:1",
+            "zone": "salon",
+            "usage": "meuble-tv",
+            "obligatoire": true,
+            "demandee": false,
+            "priorite": 1
+          },
+          {
+            "id": "salon:lumiere-salon:1",
+            "zone": "salon",
+            "usage": "lumiere-salon",
+            "obligatoire": true,
+            "demandee": false,
+            "priorite": 1
+          },
+          {
+            "id": "salon:fauteuil-salon:1",
+            "zone": "salon",
+            "usage": "fauteuil-salon",
+            "obligatoire": false,
+            "demandee": false,
+            "priorite": 3
+          },
+          {
+            "id": "salon:fauteuil-salon:2",
+            "zone": "salon",
+            "usage": "fauteuil-salon",
+            "obligatoire": false,
+            "demandee": false,
+            "priorite": 3
+          },
+          {
+            "id": "salon:tapis:1",
+            "zone": "salon",
+            "usage": "tapis",
+            "obligatoire": false,
+            "demandee": false,
+            "priorite": 3,
+            "largeurCible": 2.5
+          },
+          {
+            "id": "salon:television:1",
+            "zone": "salon",
+            "usage": "television",
+            "obligatoire": true,
+            "priorite": 1,
+            "couche": "finition"
+          },
+          {
+            "id": "salon:tableau-principal:1",
+            "zone": "salon",
+            "usage": "tableau-principal",
+            "obligatoire": false,
+            "priorite": 3,
+            "couche": "finition"
+          },
+          {
+            "id": "salon:tableau-secondaire:1",
+            "zone": "salon",
+            "usage": "tableau-secondaire",
+            "obligatoire": false,
+            "priorite": 4,
+            "couche": "finition"
+          },
+          {
+            "id": "salon:etagere-murale:1",
+            "zone": "salon",
+            "usage": "etagere-murale",
+            "obligatoire": false,
+            "priorite": 5,
+            "couche": "finition"
+          }
+        ],
+        "surfaceMax": 20
+      },
+      {
+        "id": "repas",
+        "type": "repas",
+        "libelle": "Repas",
+        "priorite": 1,
+        "demandee": true,
+        "slots": [
+          {
+            "id": "repas:table-repas:1",
+            "zone": "repas",
+            "usage": "table-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:1",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:2",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:3",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:4",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:5",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:6",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:7",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:chaise-repas:8",
+            "zone": "repas",
+            "usage": "chaise-repas",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "repas:suspension:1",
+            "zone": "repas",
+            "usage": "suspension",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 2,
+            "couche": "finition"
+          }
+        ],
+        "surfaceMax": 16
+      },
+      {
+        "id": "lecture",
+        "type": "lecture",
+        "libelle": "Lecture",
+        "priorite": 1,
+        "demandee": true,
+        "slots": [
+          {
+            "id": "lecture:fauteuil-lecture:1",
+            "zone": "lecture",
+            "usage": "fauteuil-lecture",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "lecture:table-appoint:1",
+            "zone": "lecture",
+            "usage": "table-appoint",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "lecture:lumiere-lecture:1",
+            "zone": "lecture",
+            "usage": "lumiere-lecture",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          }
+        ],
+        "surfaceMax": 8
+      },
+      {
+        "id": "travail",
+        "type": "travail",
+        "libelle": "Travail",
+        "priorite": 1,
+        "demandee": true,
+        "slots": [
+          {
+            "id": "travail:bureau:1",
+            "zone": "travail",
+            "usage": "bureau",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "travail:chaise-bureau:1",
+            "zone": "travail",
+            "usage": "chaise-bureau",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          },
+          {
+            "id": "travail:lampe-bureau:1",
+            "zone": "travail",
+            "usage": "lampe-bureau",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          }
+        ],
+        "surfaceMax": 10
+      },
+      {
+        "id": "rangement",
+        "type": "rangement",
+        "libelle": "Rangement",
+        "priorite": 1,
+        "demandee": true,
+        "slots": [
+          {
+            "id": "rangement:buffet:1",
+            "zone": "rangement",
+            "usage": "buffet",
+            "obligatoire": true,
+            "demandee": true,
+            "priorite": 1
+          }
+        ],
+        "surfaceMax": 8
+      }
+    ],
+    "avertissements": [],
+    "compositionSurface": {
+      "version": "composition-surface-1",
+      "palier": "grand-open-space",
+      "openSpace": true,
+      "cibleZones": 4,
+      "zonesChoisies": 4,
+      "choixExplicites": true,
+      "largeurCirculation": 1.1,
+      "maxM2ParElement": 5,
+      "referencesZones": {
+        "salon": 20,
+        "repas": 16,
+        "lecture": 8,
+        "travail": 10,
+        "couchage": 16,
+        "rangement": 8,
+        "accueil": 8,
+        "bain": 12,
+        "vasque": 8,
+        "assise": 8,
+        "detente": 12
+      }
+    },
+    "focal": {
+      "usage": "television",
+      "sansTV": false
+    },
+    "details": {
+      "muraux": [
+        2,
+        4
+      ]
+    },
+    "manquants": [
+      {
+        "id": "salon:canape:1",
+        "zone": "salon",
+        "usage": "canape",
+        "obligatoire": true,
+        "demandee": false,
+        "priorite": 1,
+        "largeurCible": 3.2,
+        "largeurMax": 3.8,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "salon:table-basse:1",
+        "zone": "salon",
+        "usage": "table-basse",
+        "obligatoire": true,
+        "demandee": false,
+        "priorite": 1,
+        "largeurCible": 1.4,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "salon:meuble-tv:1",
+        "zone": "salon",
+        "usage": "meuble-tv",
+        "obligatoire": true,
+        "demandee": false,
+        "priorite": 1,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "salon:lumiere-salon:1",
+        "zone": "salon",
+        "usage": "lumiere-salon",
+        "obligatoire": true,
+        "demandee": false,
+        "priorite": 1,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "salon:fauteuil-salon:1",
+        "zone": "salon",
+        "usage": "fauteuil-salon",
+        "obligatoire": false,
+        "demandee": false,
+        "priorite": 3,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "salon:fauteuil-salon:2",
+        "zone": "salon",
+        "usage": "fauteuil-salon",
+        "obligatoire": false,
+        "demandee": false,
+        "priorite": 3,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "salon:tapis:1",
+        "zone": "salon",
+        "usage": "tapis",
+        "obligatoire": false,
+        "demandee": false,
+        "priorite": 3,
+        "largeurCible": 2.5,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "salon:television:1",
+        "zone": "salon",
+        "usage": "television",
+        "obligatoire": true,
+        "priorite": 1,
+        "couche": "finition",
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "salon:tableau-principal:1",
+        "zone": "salon",
+        "usage": "tableau-principal",
+        "obligatoire": false,
+        "priorite": 3,
+        "couche": "finition",
+        "motif": "mur-ou-hauteur"
+      },
+      {
+        "id": "salon:tableau-secondaire:1",
+        "zone": "salon",
+        "usage": "tableau-secondaire",
+        "obligatoire": false,
+        "priorite": 4,
+        "couche": "finition",
+        "motif": "mur-ou-hauteur"
+      },
+      {
+        "id": "salon:etagere-murale:1",
+        "zone": "salon",
+        "usage": "etagere-murale",
+        "obligatoire": false,
+        "priorite": 5,
+        "couche": "finition",
+        "motif": "mur-ou-hauteur"
+      },
+      {
+        "id": "repas:table-repas:1",
+        "zone": "repas",
+        "usage": "table-repas",
+        "obligatoire": true,
+        "demandee": true,
+        "priorite": 1,
+        "motif": "catalogue"
+      },
+      {
+        "id": "repas:chaise-repas:1",
+        "zone": "repas",
+        "usage": "chaise-repas",
+        "obligatoire": true,
+        "demandee": true,
+        "priorite": 1,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "repas:chaise-repas:2",
+        "zone": "repas",
+        "usage": "chaise-repas",
+        "obligatoire": true,
+        "demandee": true,
+        "priorite": 1,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "repas:chaise-repas:3",
+        "zone": "repas",
+        "usage": "chaise-repas",
+        "obligatoire": true,
+        "demandee": true,
+        "priorite": 1,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "repas:chaise-repas:4",
+        "zone": "repas",
+        "usage": "chaise-repas",
+        "obligatoire": true,
+        "demandee": true,
+        "priorite": 1,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "repas:chaise-repas:5",
+        "zone": "repas",
+        "usage": "chaise-repas",
+        "obligatoire": true,
+        "demandee": true,
+        "priorite": 1,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "repas:chaise-repas:6",
+        "zone": "repas",
+        "usage": "chaise-repas",
+        "obligatoire": true,
+        "demandee": true,
+        "priorite": 1,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "repas:chaise-repas:7",
+        "zone": "repas",
+        "usage": "chaise-repas",
+        "obligatoire": true,
+        "demandee": true,
+        "priorite": 1,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "repas:chaise-repas:8",
+        "zone": "repas",
+        "usage": "chaise-repas",
+        "obligatoire": true,
+        "demandee": true,
+        "priorite": 1,
+        "motif": "surface-ou-acces"
+      },
+      {
+        "id": "repas:suspension:1",
+        "zone": "repas",
+        "usage": "suspension",
+        "obligatoire": true,
+        "demandee": true,
+        "priorite": 2,
+        "couche": "finition",
+        "motif": "mur-ou-hauteur"
+      },
+      {
+        "id": "lecture:lumiere-lecture:1",
+        "zone": "lecture",
+        "usage": "lumiere-lecture",
+        "obligatoire": true,
+        "demandee": true,
+        "priorite": 1,
+        "motif": "budget"
+      }
+    ],
+    "retenus": 6
+  },
+  "planZones": {
+    "version": "zones-surface-3",
+    "statut": "compose",
+    "zones": [
+      {
+        "x0": -4.6651790863161695,
+        "x1": -4.11482091368383,
+        "z0": -3.9751393016874492,
+        "z1": -3.0547810814948853,
+        "id": "lecture",
+        "type": "lecture",
+        "libelle": "Lecture",
+        "rot": -1.57,
+        "meubles": [
+          "c19y3uu1_12",
+          "c19y3uu1_9"
+        ]
+      },
+      {
+        "x0": -4.98,
+        "x1": -3.755,
+        "z0": 2.99,
+        "z1": 3.99,
+        "id": "travail",
+        "type": "travail",
+        "libelle": "Travail",
+        "rot": 1.5707963267948966,
+        "meubles": [
+          "c19y3uu1_0",
+          "c19y3uu1_13",
+          "c19y3uu1_14"
+        ]
+      },
+      {
+        "x0": 3.78,
+        "x1": 4.4799999999999995,
+        "z0": -3.365,
+        "z1": -3.0149999999999997,
+        "id": "rangement",
+        "type": "rangement",
+        "libelle": "Rangement",
+        "rot": 3.141592653589793,
+        "meubles": [
+          "c19y3uu1_10"
+        ]
+      }
+    ],
+    "chemins": [
+      {
+        "vers": "lecture",
+        "largeur": 1.1,
+        "points": [
+          {
+            "x": -3.48,
+            "z": -6.34
+          },
+          {
+            "x": -3.62,
+            "z": -6.34
+          },
+          {
+            "x": -3.77,
+            "z": -6.34
+          },
+          {
+            "x": -3.91,
+            "z": -6.34
+          },
+          {
+            "x": -4.06,
+            "z": -6.34
+          },
+          {
+            "x": -4.2,
+            "z": -6.34
+          },
+          {
+            "x": -4.2,
+            "z": -6.2
+          },
+          {
+            "x": -4.2,
+            "z": -6.05
+          },
+          {
+            "x": -4.2,
+            "z": -5.91
+          },
+          {
+            "x": -4.2,
+            "z": -5.76
+          },
+          {
+            "x": -4.2,
+            "z": -5.61
+          },
+          {
+            "x": -4.2,
+            "z": -5.47
+          },
+          {
+            "x": -4.2,
+            "z": -5.32
+          },
+          {
+            "x": -4.2,
+            "z": -5.18
+          },
+          {
+            "x": -4.2,
+            "z": -5.03
+          },
+          {
+            "x": -4.2,
+            "z": -4.89
+          },
+          {
+            "x": -4.2,
+            "z": -4.74
+          },
+          {
+            "x": -4.2,
+            "z": -4.59
+          }
+        ]
+      },
+      {
+        "vers": "travail",
+        "largeur": 1.1,
+        "points": [
+          {
+            "x": -3.48,
+            "z": -6.34
+          },
+          {
+            "x": -3.33,
+            "z": -6.34
+          },
+          {
+            "x": -3.19,
+            "z": -6.34
+          },
+          {
+            "x": -3.19,
+            "z": -6.2
+          },
+          {
+            "x": -3.19,
+            "z": -6.05
+          },
+          {
+            "x": -3.19,
+            "z": -5.91
+          },
+          {
+            "x": -3.19,
+            "z": -5.76
+          },
+          {
+            "x": -3.19,
+            "z": -5.61
+          },
+          {
+            "x": -3.19,
+            "z": -5.47
+          },
+          {
+            "x": -3.19,
+            "z": -5.32
+          },
+          {
+            "x": -3.19,
+            "z": -5.18
+          },
+          {
+            "x": -3.19,
+            "z": -5.03
+          },
+          {
+            "x": -3.19,
+            "z": -4.89
+          },
+          {
+            "x": -3.19,
+            "z": -4.74
+          },
+          {
+            "x": -3.19,
+            "z": -4.59
+          },
+          {
+            "x": -3.19,
+            "z": -4.45
+          },
+          {
+            "x": -3.19,
+            "z": -4.3
+          },
+          {
+            "x": -3.19,
+            "z": -4.16
+          },
+          {
+            "x": -3.19,
+            "z": -4.01
+          },
+          {
+            "x": -3.19,
+            "z": -3.86
+          },
+          {
+            "x": -3.19,
+            "z": -3.72
+          },
+          {
+            "x": -3.19,
+            "z": -3.57
+          },
+          {
+            "x": -3.19,
+            "z": -3.43
+          },
+          {
+            "x": -3.19,
+            "z": -3.28
+          },
+          {
+            "x": -3.19,
+            "z": -3.14
+          },
+          {
+            "x": -3.19,
+            "z": -2.99
+          },
+          {
+            "x": -3.19,
+            "z": -2.84
+          },
+          {
+            "x": -3.19,
+            "z": -2.7
+          },
+          {
+            "x": -3.19,
+            "z": -2.55
+          },
+          {
+            "x": -3.19,
+            "z": -2.41
+          },
+          {
+            "x": -3.19,
+            "z": -2.26
+          },
+          {
+            "x": -3.19,
+            "z": -2.11
+          },
+          {
+            "x": -3.19,
+            "z": -1.97
+          },
+          {
+            "x": -3.19,
+            "z": -1.82
+          },
+          {
+            "x": -3.19,
+            "z": -1.68
+          },
+          {
+            "x": -3.19,
+            "z": -1.53
+          },
+          {
+            "x": -3.19,
+            "z": -1.39
+          },
+          {
+            "x": -3.19,
+            "z": -1.24
+          },
+          {
+            "x": -3.19,
+            "z": -1.09
+          },
+          {
+            "x": -3.19,
+            "z": -0.95
+          },
+          {
+            "x": -3.19,
+            "z": -0.8
+          },
+          {
+            "x": -3.19,
+            "z": -0.66
+          },
+          {
+            "x": -3.19,
+            "z": -0.51
+          },
+          {
+            "x": -3.19,
+            "z": -0.36
+          },
+          {
+            "x": -3.19,
+            "z": -0.22
+          },
+          {
+            "x": -3.19,
+            "z": -0.07
+          },
+          {
+            "x": -3.19,
+            "z": 0.07
+          },
+          {
+            "x": -3.19,
+            "z": 0.22
+          },
+          {
+            "x": -3.19,
+            "z": 0.36
+          },
+          {
+            "x": -3.19,
+            "z": 0.51
+          },
+          {
+            "x": -3.19,
+            "z": 0.66
+          },
+          {
+            "x": -3.19,
+            "z": 0.8
+          },
+          {
+            "x": -3.19,
+            "z": 0.95
+          },
+          {
+            "x": -3.19,
+            "z": 1.09
+          },
+          {
+            "x": -3.19,
+            "z": 1.24
+          },
+          {
+            "x": -3.19,
+            "z": 1.39
+          },
+          {
+            "x": -3.19,
+            "z": 1.53
+          },
+          {
+            "x": -3.19,
+            "z": 1.68
+          },
+          {
+            "x": -3.19,
+            "z": 1.82
+          },
+          {
+            "x": -3.19,
+            "z": 1.97
+          },
+          {
+            "x": -3.19,
+            "z": 2.11
+          },
+          {
+            "x": -3.19,
+            "z": 2.26
+          },
+          {
+            "x": -3.19,
+            "z": 2.41
+          },
+          {
+            "x": -3.19,
+            "z": 2.55
+          },
+          {
+            "x": -3.19,
+            "z": 2.7
+          },
+          {
+            "x": -3.19,
+            "z": 2.84
+          },
+          {
+            "x": -3.19,
+            "z": 2.99
+          },
+          {
+            "x": -3.19,
+            "z": 3.14
+          }
+        ]
+      },
+      {
+        "vers": "rangement",
+        "largeur": 1.1,
+        "points": [
+          {
+            "x": -3.48,
+            "z": -6.34
+          },
+          {
+            "x": -3.33,
+            "z": -6.34
+          },
+          {
+            "x": -3.19,
+            "z": -6.34
+          },
+          {
+            "x": -3.04,
+            "z": -6.34
+          },
+          {
+            "x": -2.9,
+            "z": -6.34
+          },
+          {
+            "x": -2.75,
+            "z": -6.34
+          },
+          {
+            "x": -2.61,
+            "z": -6.34
+          },
+          {
+            "x": -2.46,
+            "z": -6.34
+          },
+          {
+            "x": -2.32,
+            "z": -6.34
+          },
+          {
+            "x": -2.17,
+            "z": -6.34
+          },
+          {
+            "x": -2.03,
+            "z": -6.34
+          },
+          {
+            "x": -1.88,
+            "z": -6.34
+          },
+          {
+            "x": -1.74,
+            "z": -6.34
+          },
+          {
+            "x": -1.59,
+            "z": -6.34
+          },
+          {
+            "x": -1.45,
+            "z": -6.34
+          },
+          {
+            "x": -1.3,
+            "z": -6.34
+          },
+          {
+            "x": -1.16,
+            "z": -6.34
+          },
+          {
+            "x": -1.01,
+            "z": -6.34
+          },
+          {
+            "x": -0.87,
+            "z": -6.34
+          },
+          {
+            "x": -0.72,
+            "z": -6.34
+          },
+          {
+            "x": -0.58,
+            "z": -6.34
+          },
+          {
+            "x": -0.43,
+            "z": -6.34
+          },
+          {
+            "x": -0.29,
+            "z": -6.34
+          },
+          {
+            "x": -0.14,
+            "z": -6.34
+          },
+          {
+            "x": 0,
+            "z": -6.34
+          },
+          {
+            "x": 0.14,
+            "z": -6.34
+          },
+          {
+            "x": 0.29,
+            "z": -6.34
+          },
+          {
+            "x": 0.43,
+            "z": -6.34
+          },
+          {
+            "x": 0.58,
+            "z": -6.34
+          },
+          {
+            "x": 0.72,
+            "z": -6.34
+          },
+          {
+            "x": 0.87,
+            "z": -6.34
+          },
+          {
+            "x": 1.01,
+            "z": -6.34
+          },
+          {
+            "x": 1.16,
+            "z": -6.34
+          },
+          {
+            "x": 1.3,
+            "z": -6.34
+          },
+          {
+            "x": 1.45,
+            "z": -6.34
+          },
+          {
+            "x": 1.59,
+            "z": -6.34
+          },
+          {
+            "x": 1.74,
+            "z": -6.34
+          },
+          {
+            "x": 1.88,
+            "z": -6.34
+          },
+          {
+            "x": 2.03,
+            "z": -6.34
+          },
+          {
+            "x": 2.17,
+            "z": -6.34
+          },
+          {
+            "x": 2.32,
+            "z": -6.34
+          },
+          {
+            "x": 2.46,
+            "z": -6.34
+          },
+          {
+            "x": 2.61,
+            "z": -6.34
+          },
+          {
+            "x": 2.75,
+            "z": -6.34
+          },
+          {
+            "x": 2.9,
+            "z": -6.34
+          },
+          {
+            "x": 3.04,
+            "z": -6.34
+          },
+          {
+            "x": 3.19,
+            "z": -6.34
+          },
+          {
+            "x": 3.19,
+            "z": -6.2
+          },
+          {
+            "x": 3.19,
+            "z": -6.05
+          },
+          {
+            "x": 3.19,
+            "z": -5.91
+          },
+          {
+            "x": 3.19,
+            "z": -5.76
+          },
+          {
+            "x": 3.19,
+            "z": -5.61
+          },
+          {
+            "x": 3.19,
+            "z": -5.47
+          },
+          {
+            "x": 3.19,
+            "z": -5.32
+          },
+          {
+            "x": 3.19,
+            "z": -5.18
+          },
+          {
+            "x": 3.19,
+            "z": -5.03
+          },
+          {
+            "x": 3.19,
+            "z": -4.89
+          },
+          {
+            "x": 3.19,
+            "z": -4.74
+          },
+          {
+            "x": 3.19,
+            "z": -4.59
+          },
+          {
+            "x": 3.19,
+            "z": -4.45
+          },
+          {
+            "x": 3.19,
+            "z": -4.3
+          },
+          {
+            "x": 3.19,
+            "z": -4.16
+          },
+          {
+            "x": 3.19,
+            "z": -4.01
+          },
+          {
+            "x": 3.19,
+            "z": -3.86
+          },
+          {
+            "x": 3.19,
+            "z": -3.72
+          },
+          {
+            "x": 3.19,
+            "z": -3.57
+          }
+        ]
+      }
+    ],
+    "circulation": {
+      "largeur": 1.1,
+      "portesConnues": true,
+      "portesBloquees": 0,
+      "inaccessibles": [],
+      "chemins": [
+        {
+          "vers": "lecture",
+          "largeur": 1.1,
+          "points": [
+            {
+              "x": -3.48,
+              "z": -6.34
+            },
+            {
+              "x": -3.62,
+              "z": -6.34
+            },
+            {
+              "x": -3.77,
+              "z": -6.34
+            },
+            {
+              "x": -3.91,
+              "z": -6.34
+            },
+            {
+              "x": -4.06,
+              "z": -6.34
+            },
+            {
+              "x": -4.2,
+              "z": -6.34
+            },
+            {
+              "x": -4.2,
+              "z": -6.2
+            },
+            {
+              "x": -4.2,
+              "z": -6.05
+            },
+            {
+              "x": -4.2,
+              "z": -5.91
+            },
+            {
+              "x": -4.2,
+              "z": -5.76
+            },
+            {
+              "x": -4.2,
+              "z": -5.61
+            },
+            {
+              "x": -4.2,
+              "z": -5.47
+            },
+            {
+              "x": -4.2,
+              "z": -5.32
+            },
+            {
+              "x": -4.2,
+              "z": -5.18
+            },
+            {
+              "x": -4.2,
+              "z": -5.03
+            },
+            {
+              "x": -4.2,
+              "z": -4.89
+            },
+            {
+              "x": -4.2,
+              "z": -4.74
+            },
+            {
+              "x": -4.2,
+              "z": -4.59
+            }
+          ]
+        },
+        {
+          "vers": "travail",
+          "largeur": 1.1,
+          "points": [
+            {
+              "x": -3.48,
+              "z": -6.34
+            },
+            {
+              "x": -3.33,
+              "z": -6.34
+            },
+            {
+              "x": -3.19,
+              "z": -6.34
+            },
+            {
+              "x": -3.19,
+              "z": -6.2
+            },
+            {
+              "x": -3.19,
+              "z": -6.05
+            },
+            {
+              "x": -3.19,
+              "z": -5.91
+            },
+            {
+              "x": -3.19,
+              "z": -5.76
+            },
+            {
+              "x": -3.19,
+              "z": -5.61
+            },
+            {
+              "x": -3.19,
+              "z": -5.47
+            },
+            {
+              "x": -3.19,
+              "z": -5.32
+            },
+            {
+              "x": -3.19,
+              "z": -5.18
+            },
+            {
+              "x": -3.19,
+              "z": -5.03
+            },
+            {
+              "x": -3.19,
+              "z": -4.89
+            },
+            {
+              "x": -3.19,
+              "z": -4.74
+            },
+            {
+              "x": -3.19,
+              "z": -4.59
+            },
+            {
+              "x": -3.19,
+              "z": -4.45
+            },
+            {
+              "x": -3.19,
+              "z": -4.3
+            },
+            {
+              "x": -3.19,
+              "z": -4.16
+            },
+            {
+              "x": -3.19,
+              "z": -4.01
+            },
+            {
+              "x": -3.19,
+              "z": -3.86
+            },
+            {
+              "x": -3.19,
+              "z": -3.72
+            },
+            {
+              "x": -3.19,
+              "z": -3.57
+            },
+            {
+              "x": -3.19,
+              "z": -3.43
+            },
+            {
+              "x": -3.19,
+              "z": -3.28
+            },
+            {
+              "x": -3.19,
+              "z": -3.14
+            },
+            {
+              "x": -3.19,
+              "z": -2.99
+            },
+            {
+              "x": -3.19,
+              "z": -2.84
+            },
+            {
+              "x": -3.19,
+              "z": -2.7
+            },
+            {
+              "x": -3.19,
+              "z": -2.55
+            },
+            {
+              "x": -3.19,
+              "z": -2.41
+            },
+            {
+              "x": -3.19,
+              "z": -2.26
+            },
+            {
+              "x": -3.19,
+              "z": -2.11
+            },
+            {
+              "x": -3.19,
+              "z": -1.97
+            },
+            {
+              "x": -3.19,
+              "z": -1.82
+            },
+            {
+              "x": -3.19,
+              "z": -1.68
+            },
+            {
+              "x": -3.19,
+              "z": -1.53
+            },
+            {
+              "x": -3.19,
+              "z": -1.39
+            },
+            {
+              "x": -3.19,
+              "z": -1.24
+            },
+            {
+              "x": -3.19,
+              "z": -1.09
+            },
+            {
+              "x": -3.19,
+              "z": -0.95
+            },
+            {
+              "x": -3.19,
+              "z": -0.8
+            },
+            {
+              "x": -3.19,
+              "z": -0.66
+            },
+            {
+              "x": -3.19,
+              "z": -0.51
+            },
+            {
+              "x": -3.19,
+              "z": -0.36
+            },
+            {
+              "x": -3.19,
+              "z": -0.22
+            },
+            {
+              "x": -3.19,
+              "z": -0.07
+            },
+            {
+              "x": -3.19,
+              "z": 0.07
+            },
+            {
+              "x": -3.19,
+              "z": 0.22
+            },
+            {
+              "x": -3.19,
+              "z": 0.36
+            },
+            {
+              "x": -3.19,
+              "z": 0.51
+            },
+            {
+              "x": -3.19,
+              "z": 0.66
+            },
+            {
+              "x": -3.19,
+              "z": 0.8
+            },
+            {
+              "x": -3.19,
+              "z": 0.95
+            },
+            {
+              "x": -3.19,
+              "z": 1.09
+            },
+            {
+              "x": -3.19,
+              "z": 1.24
+            },
+            {
+              "x": -3.19,
+              "z": 1.39
+            },
+            {
+              "x": -3.19,
+              "z": 1.53
+            },
+            {
+              "x": -3.19,
+              "z": 1.68
+            },
+            {
+              "x": -3.19,
+              "z": 1.82
+            },
+            {
+              "x": -3.19,
+              "z": 1.97
+            },
+            {
+              "x": -3.19,
+              "z": 2.11
+            },
+            {
+              "x": -3.19,
+              "z": 2.26
+            },
+            {
+              "x": -3.19,
+              "z": 2.41
+            },
+            {
+              "x": -3.19,
+              "z": 2.55
+            },
+            {
+              "x": -3.19,
+              "z": 2.7
+            },
+            {
+              "x": -3.19,
+              "z": 2.84
+            },
+            {
+              "x": -3.19,
+              "z": 2.99
+            },
+            {
+              "x": -3.19,
+              "z": 3.14
+            }
+          ]
+        },
+        {
+          "vers": "rangement",
+          "largeur": 1.1,
+          "points": [
+            {
+              "x": -3.48,
+              "z": -6.34
+            },
+            {
+              "x": -3.33,
+              "z": -6.34
+            },
+            {
+              "x": -3.19,
+              "z": -6.34
+            },
+            {
+              "x": -3.04,
+              "z": -6.34
+            },
+            {
+              "x": -2.9,
+              "z": -6.34
+            },
+            {
+              "x": -2.75,
+              "z": -6.34
+            },
+            {
+              "x": -2.61,
+              "z": -6.34
+            },
+            {
+              "x": -2.46,
+              "z": -6.34
+            },
+            {
+              "x": -2.32,
+              "z": -6.34
+            },
+            {
+              "x": -2.17,
+              "z": -6.34
+            },
+            {
+              "x": -2.03,
+              "z": -6.34
+            },
+            {
+              "x": -1.88,
+              "z": -6.34
+            },
+            {
+              "x": -1.74,
+              "z": -6.34
+            },
+            {
+              "x": -1.59,
+              "z": -6.34
+            },
+            {
+              "x": -1.45,
+              "z": -6.34
+            },
+            {
+              "x": -1.3,
+              "z": -6.34
+            },
+            {
+              "x": -1.16,
+              "z": -6.34
+            },
+            {
+              "x": -1.01,
+              "z": -6.34
+            },
+            {
+              "x": -0.87,
+              "z": -6.34
+            },
+            {
+              "x": -0.72,
+              "z": -6.34
+            },
+            {
+              "x": -0.58,
+              "z": -6.34
+            },
+            {
+              "x": -0.43,
+              "z": -6.34
+            },
+            {
+              "x": -0.29,
+              "z": -6.34
+            },
+            {
+              "x": -0.14,
+              "z": -6.34
+            },
+            {
+              "x": 0,
+              "z": -6.34
+            },
+            {
+              "x": 0.14,
+              "z": -6.34
+            },
+            {
+              "x": 0.29,
+              "z": -6.34
+            },
+            {
+              "x": 0.43,
+              "z": -6.34
+            },
+            {
+              "x": 0.58,
+              "z": -6.34
+            },
+            {
+              "x": 0.72,
+              "z": -6.34
+            },
+            {
+              "x": 0.87,
+              "z": -6.34
+            },
+            {
+              "x": 1.01,
+              "z": -6.34
+            },
+            {
+              "x": 1.16,
+              "z": -6.34
+            },
+            {
+              "x": 1.3,
+              "z": -6.34
+            },
+            {
+              "x": 1.45,
+              "z": -6.34
+            },
+            {
+              "x": 1.59,
+              "z": -6.34
+            },
+            {
+              "x": 1.74,
+              "z": -6.34
+            },
+            {
+              "x": 1.88,
+              "z": -6.34
+            },
+            {
+              "x": 2.03,
+              "z": -6.34
+            },
+            {
+              "x": 2.17,
+              "z": -6.34
+            },
+            {
+              "x": 2.32,
+              "z": -6.34
+            },
+            {
+              "x": 2.46,
+              "z": -6.34
+            },
+            {
+              "x": 2.61,
+              "z": -6.34
+            },
+            {
+              "x": 2.75,
+              "z": -6.34
+            },
+            {
+              "x": 2.9,
+              "z": -6.34
+            },
+            {
+              "x": 3.04,
+              "z": -6.34
+            },
+            {
+              "x": 3.19,
+              "z": -6.34
+            },
+            {
+              "x": 3.19,
+              "z": -6.2
+            },
+            {
+              "x": 3.19,
+              "z": -6.05
+            },
+            {
+              "x": 3.19,
+              "z": -5.91
+            },
+            {
+              "x": 3.19,
+              "z": -5.76
+            },
+            {
+              "x": 3.19,
+              "z": -5.61
+            },
+            {
+              "x": 3.19,
+              "z": -5.47
+            },
+            {
+              "x": 3.19,
+              "z": -5.32
+            },
+            {
+              "x": 3.19,
+              "z": -5.18
+            },
+            {
+              "x": 3.19,
+              "z": -5.03
+            },
+            {
+              "x": 3.19,
+              "z": -4.89
+            },
+            {
+              "x": 3.19,
+              "z": -4.74
+            },
+            {
+              "x": 3.19,
+              "z": -4.59
+            },
+            {
+              "x": 3.19,
+              "z": -4.45
+            },
+            {
+              "x": 3.19,
+              "z": -4.3
+            },
+            {
+              "x": 3.19,
+              "z": -4.16
+            },
+            {
+              "x": 3.19,
+              "z": -4.01
+            },
+            {
+              "x": 3.19,
+              "z": -3.86
+            },
+            {
+              "x": 3.19,
+              "z": -3.72
+            },
+            {
+              "x": 3.19,
+              "z": -3.57
+            }
+          ]
+        }
+      ],
+      "valide": true
+    },
+    "largeurCirculation": 1.1,
+    "score": -130.48,
+    "manquants": [
+      {
+        "zone": "salon",
+        "motif": "surface-ou-acces",
+        "meubles": [
+          "c19y3uu1_15",
+          "c19y3uu1_16",
+          "c19y3uu1_17",
+          "c19y3uu1_18",
+          "c19y3uu1_19",
+          "c19y3uu1_20",
+          "c19y3uu1_21",
+          "c19y3uu1_22"
+        ]
+      },
+      {
+        "zone": "repas",
+        "motif": "surface-ou-acces",
+        "meubles": [
+          "c19y3uu1_1",
+          "c19y3uu1_2",
+          "c19y3uu1_3",
+          "c19y3uu1_4",
+          "c19y3uu1_5",
+          "c19y3uu1_6",
+          "c19y3uu1_7",
+          "c19y3uu1_8"
+        ]
+      }
+    ],
+    "statistiques": {
+      "candidats": 171,
+      "combinaisons": 5815,
+      "plansVerifies": 37,
+      "reprisesEspaces": 2
+    },
+    "avertissements": [],
+    "alternativesCompactes": [
+      {
+        "id": "c19y3uu1_12",
+        "initial": "abbraccio",
+        "retenu": "ce-320"
+      },
+      {
+        "id": "c19y3uu1_13",
+        "initial": "abbraccio",
+        "retenu": "rr-gen-chaise-bureau"
+      }
+    ],
+    "audit": {
+      "valide": true,
+      "problemes": [],
+      "circulation": {
+        "largeur": 1.1,
+        "portesConnues": true,
+        "portesBloquees": 0,
+        "inaccessibles": [],
+        "chemins": [
+          {
+            "vers": "lecture",
+            "largeur": 1.1,
+            "points": [
+              {
+                "x": -3.48,
+                "z": -6.34
+              },
+              {
+                "x": -3.62,
+                "z": -6.34
+              },
+              {
+                "x": -3.77,
+                "z": -6.34
+              },
+              {
+                "x": -3.91,
+                "z": -6.34
+              },
+              {
+                "x": -4.06,
+                "z": -6.34
+              },
+              {
+                "x": -4.2,
+                "z": -6.34
+              },
+              {
+                "x": -4.2,
+                "z": -6.2
+              },
+              {
+                "x": -4.2,
+                "z": -6.05
+              },
+              {
+                "x": -4.2,
+                "z": -5.91
+              },
+              {
+                "x": -4.2,
+                "z": -5.76
+              },
+              {
+                "x": -4.2,
+                "z": -5.61
+              },
+              {
+                "x": -4.2,
+                "z": -5.47
+              },
+              {
+                "x": -4.2,
+                "z": -5.32
+              },
+              {
+                "x": -4.2,
+                "z": -5.18
+              },
+              {
+                "x": -4.2,
+                "z": -5.03
+              },
+              {
+                "x": -4.2,
+                "z": -4.89
+              },
+              {
+                "x": -4.2,
+                "z": -4.74
+              },
+              {
+                "x": -4.2,
+                "z": -4.59
+              }
+            ]
+          },
+          {
+            "vers": "travail",
+            "largeur": 1.1,
+            "points": [
+              {
+                "x": -3.48,
+                "z": -6.34
+              },
+              {
+                "x": -3.33,
+                "z": -6.34
+              },
+              {
+                "x": -3.19,
+                "z": -6.34
+              },
+              {
+                "x": -3.19,
+                "z": -6.2
+              },
+              {
+                "x": -3.19,
+                "z": -6.05
+              },
+              {
+                "x": -3.19,
+                "z": -5.91
+              },
+              {
+                "x": -3.19,
+                "z": -5.76
+              },
+              {
+                "x": -3.19,
+                "z": -5.61
+              },
+              {
+                "x": -3.19,
+                "z": -5.47
+              },
+              {
+                "x": -3.19,
+                "z": -5.32
+              },
+              {
+                "x": -3.19,
+                "z": -5.18
+              },
+              {
+                "x": -3.19,
+                "z": -5.03
+              },
+              {
+                "x": -3.19,
+                "z": -4.89
+              },
+              {
+                "x": -3.19,
+                "z": -4.74
+              },
+              {
+                "x": -3.19,
+                "z": -4.59
+              },
+              {
+                "x": -3.19,
+                "z": -4.45
+              },
+              {
+                "x": -3.19,
+                "z": -4.3
+              },
+              {
+                "x": -3.19,
+                "z": -4.16
+              },
+              {
+                "x": -3.19,
+                "z": -4.01
+              },
+              {
+                "x": -3.19,
+                "z": -3.86
+              },
+              {
+                "x": -3.19,
+                "z": -3.72
+              },
+              {
+                "x": -3.19,
+                "z": -3.57
+              },
+              {
+                "x": -3.19,
+                "z": -3.43
+              },
+              {
+                "x": -3.19,
+                "z": -3.28
+              },
+              {
+                "x": -3.19,
+                "z": -3.14
+              },
+              {
+                "x": -3.19,
+                "z": -2.99
+              },
+              {
+                "x": -3.19,
+                "z": -2.84
+              },
+              {
+                "x": -3.19,
+                "z": -2.7
+              },
+              {
+                "x": -3.19,
+                "z": -2.55
+              },
+              {
+                "x": -3.19,
+                "z": -2.41
+              },
+              {
+                "x": -3.19,
+                "z": -2.26
+              },
+              {
+                "x": -3.19,
+                "z": -2.11
+              },
+              {
+                "x": -3.19,
+                "z": -1.97
+              },
+              {
+                "x": -3.19,
+                "z": -1.82
+              },
+              {
+                "x": -3.19,
+                "z": -1.68
+              },
+              {
+                "x": -3.19,
+                "z": -1.53
+              },
+              {
+                "x": -3.19,
+                "z": -1.39
+              },
+              {
+                "x": -3.19,
+                "z": -1.24
+              },
+              {
+                "x": -3.19,
+                "z": -1.09
+              },
+              {
+                "x": -3.19,
+                "z": -0.95
+              },
+              {
+                "x": -3.19,
+                "z": -0.8
+              },
+              {
+                "x": -3.19,
+                "z": -0.66
+              },
+              {
+                "x": -3.19,
+                "z": -0.51
+              },
+              {
+                "x": -3.19,
+                "z": -0.36
+              },
+              {
+                "x": -3.19,
+                "z": -0.22
+              },
+              {
+                "x": -3.19,
+                "z": -0.07
+              },
+              {
+                "x": -3.19,
+                "z": 0.07
+              },
+              {
+                "x": -3.19,
+                "z": 0.22
+              },
+              {
+                "x": -3.19,
+                "z": 0.36
+              },
+              {
+                "x": -3.19,
+                "z": 0.51
+              },
+              {
+                "x": -3.19,
+                "z": 0.66
+              },
+              {
+                "x": -3.19,
+                "z": 0.8
+              },
+              {
+                "x": -3.19,
+                "z": 0.95
+              },
+              {
+                "x": -3.19,
+                "z": 1.09
+              },
+              {
+                "x": -3.19,
+                "z": 1.24
+              },
+              {
+                "x": -3.19,
+                "z": 1.39
+              },
+              {
+                "x": -3.19,
+                "z": 1.53
+              },
+              {
+                "x": -3.19,
+                "z": 1.68
+              },
+              {
+                "x": -3.19,
+                "z": 1.82
+              },
+              {
+                "x": -3.19,
+                "z": 1.97
+              },
+              {
+                "x": -3.19,
+                "z": 2.11
+              },
+              {
+                "x": -3.19,
+                "z": 2.26
+              },
+              {
+                "x": -3.19,
+                "z": 2.41
+              },
+              {
+                "x": -3.19,
+                "z": 2.55
+              },
+              {
+                "x": -3.19,
+                "z": 2.7
+              },
+              {
+                "x": -3.19,
+                "z": 2.84
+              },
+              {
+                "x": -3.19,
+                "z": 2.99
+              },
+              {
+                "x": -3.19,
+                "z": 3.14
+              }
+            ]
+          },
+          {
+            "vers": "rangement",
+            "largeur": 1.1,
+            "points": [
+              {
+                "x": -3.48,
+                "z": -6.34
+              },
+              {
+                "x": -3.33,
+                "z": -6.34
+              },
+              {
+                "x": -3.19,
+                "z": -6.34
+              },
+              {
+                "x": -3.04,
+                "z": -6.34
+              },
+              {
+                "x": -2.9,
+                "z": -6.34
+              },
+              {
+                "x": -2.75,
+                "z": -6.34
+              },
+              {
+                "x": -2.61,
+                "z": -6.34
+              },
+              {
+                "x": -2.46,
+                "z": -6.34
+              },
+              {
+                "x": -2.32,
+                "z": -6.34
+              },
+              {
+                "x": -2.17,
+                "z": -6.34
+              },
+              {
+                "x": -2.03,
+                "z": -6.34
+              },
+              {
+                "x": -1.88,
+                "z": -6.34
+              },
+              {
+                "x": -1.74,
+                "z": -6.34
+              },
+              {
+                "x": -1.59,
+                "z": -6.34
+              },
+              {
+                "x": -1.45,
+                "z": -6.34
+              },
+              {
+                "x": -1.3,
+                "z": -6.34
+              },
+              {
+                "x": -1.16,
+                "z": -6.34
+              },
+              {
+                "x": -1.01,
+                "z": -6.34
+              },
+              {
+                "x": -0.87,
+                "z": -6.34
+              },
+              {
+                "x": -0.72,
+                "z": -6.34
+              },
+              {
+                "x": -0.58,
+                "z": -6.34
+              },
+              {
+                "x": -0.43,
+                "z": -6.34
+              },
+              {
+                "x": -0.29,
+                "z": -6.34
+              },
+              {
+                "x": -0.14,
+                "z": -6.34
+              },
+              {
+                "x": 0,
+                "z": -6.34
+              },
+              {
+                "x": 0.14,
+                "z": -6.34
+              },
+              {
+                "x": 0.29,
+                "z": -6.34
+              },
+              {
+                "x": 0.43,
+                "z": -6.34
+              },
+              {
+                "x": 0.58,
+                "z": -6.34
+              },
+              {
+                "x": 0.72,
+                "z": -6.34
+              },
+              {
+                "x": 0.87,
+                "z": -6.34
+              },
+              {
+                "x": 1.01,
+                "z": -6.34
+              },
+              {
+                "x": 1.16,
+                "z": -6.34
+              },
+              {
+                "x": 1.3,
+                "z": -6.34
+              },
+              {
+                "x": 1.45,
+                "z": -6.34
+              },
+              {
+                "x": 1.59,
+                "z": -6.34
+              },
+              {
+                "x": 1.74,
+                "z": -6.34
+              },
+              {
+                "x": 1.88,
+                "z": -6.34
+              },
+              {
+                "x": 2.03,
+                "z": -6.34
+              },
+              {
+                "x": 2.17,
+                "z": -6.34
+              },
+              {
+                "x": 2.32,
+                "z": -6.34
+              },
+              {
+                "x": 2.46,
+                "z": -6.34
+              },
+              {
+                "x": 2.61,
+                "z": -6.34
+              },
+              {
+                "x": 2.75,
+                "z": -6.34
+              },
+              {
+                "x": 2.9,
+                "z": -6.34
+              },
+              {
+                "x": 3.04,
+                "z": -6.34
+              },
+              {
+                "x": 3.19,
+                "z": -6.34
+              },
+              {
+                "x": 3.19,
+                "z": -6.2
+              },
+              {
+                "x": 3.19,
+                "z": -6.05
+              },
+              {
+                "x": 3.19,
+                "z": -5.91
+              },
+              {
+                "x": 3.19,
+                "z": -5.76
+              },
+              {
+                "x": 3.19,
+                "z": -5.61
+              },
+              {
+                "x": 3.19,
+                "z": -5.47
+              },
+              {
+                "x": 3.19,
+                "z": -5.32
+              },
+              {
+                "x": 3.19,
+                "z": -5.18
+              },
+              {
+                "x": 3.19,
+                "z": -5.03
+              },
+              {
+                "x": 3.19,
+                "z": -4.89
+              },
+              {
+                "x": 3.19,
+                "z": -4.74
+              },
+              {
+                "x": 3.19,
+                "z": -4.59
+              },
+              {
+                "x": 3.19,
+                "z": -4.45
+              },
+              {
+                "x": 3.19,
+                "z": -4.3
+              },
+              {
+                "x": 3.19,
+                "z": -4.16
+              },
+              {
+                "x": 3.19,
+                "z": -4.01
+              },
+              {
+                "x": 3.19,
+                "z": -3.86
+              },
+              {
+                "x": 3.19,
+                "z": -3.72
+              },
+              {
+                "x": 3.19,
+                "z": -3.57
+              }
+            ]
+          }
+        ],
+        "valide": true
+      },
+      "confort": {
+        "passageCible": 0.9,
+        "score": {
+          "version": "realroom-2026-10-v3",
+          "total": 100,
+          "contraintes": 0,
+          "cout": 0.02,
+          "criteres": [
+            {
+              "id": "geometrie",
+              "note": 100,
+              "problemes": 0,
+              "poids": 4
+            },
+            {
+              "id": "circulation",
+              "note": 100,
+              "problemes": 0,
+              "poids": 3
+            },
+            {
+              "id": "usage",
+              "note": 100,
+              "problemes": 0,
+              "poids": 3
+            },
+            {
+              "id": "relations",
+              "note": 100,
+              "penalite": 0,
+              "poids": 1
+            },
+            {
+              "id": "orientation",
+              "note": 100,
+              "penalite": 0,
+              "poids": 1
+            },
+            {
+              "id": "conversation",
+              "note": null,
+              "penalite": 0,
+              "poids": 0.6
+            },
+            {
+              "id": "equilibre",
+              "note": 100,
+              "penalite": 0,
+              "poids": 0.35
+            },
+            {
+              "id": "alignement",
+              "note": 100,
+              "penalite": 0.1,
+              "poids": 0.25
+            },
+            {
+              "id": "symetrie",
+              "note": null,
+              "penalite": 0,
+              "poids": 0
+            },
+            {
+              "id": "tapisLumiere",
+              "note": 100,
+              "penalite": 0,
+              "poids": 0.3
+            }
+          ],
+          "preferences": {
+            "style": "neutre",
+            "styles": [
+              "neutre"
+            ],
+            "composition": "equilibre",
+            "palette": [],
+            "matieres": [],
+            "resume": ""
+          },
+          "incomplet": false
+        },
+        "circulation": true,
+        "acces": true,
+        "ouvertures": true,
+        "alertes": [],
+        "mesuresEstimees": true
+      }
+    }
+  },
+  "densite": {
+    "version": "composition-surface-1",
+    "score": -153,
+    "regles": [
+      {
+        "id": "mobilier-insuffisant",
+        "points": -60,
+        "cible": 18,
+        "actuel": 6
+      },
+      {
+        "id": "espaces-concentres",
+        "points": -35,
+        "cible": 0.15,
+        "actuel": 0.5
+      },
+      {
+        "id": "zone-principale-absente",
+        "points": -20,
+        "cible": 1,
+        "actuel": 0
+      },
+      {
+        "id": "open-space-incomplet",
+        "points": -30,
+        "cible": 3,
+        "actuel": 2
+      },
+      {
+        "id": "mur-mort",
+        "points": -2,
+        "zone": "pan_1"
+      },
+      {
+        "id": "mur-mort",
+        "points": -2,
+        "zone": "pan_2"
+      },
+      {
+        "id": "mur-mort",
+        "points": -2,
+        "zone": "pan_4"
+      },
+      {
+        "id": "mur-mort",
+        "points": -2,
+        "zone": "pan_5"
+      }
+    ],
+    "elements": 6,
+    "cibleElements": 18,
+    "zonesVie": 2,
+    "cibleZones": 4,
+    "openSpace": true,
+    "choixExplicites": true,
+    "tauxEmpriseIndicatif": 2,
+    "repartition": {
+      "distanceMax": 2.5,
+      "proportionEloignee": 0.5,
+      "score": -35
+    },
+    "echelle": {
+      "surface": 90,
+      "unite": "m",
+      "metrique": false,
+      "controleTerrain": false,
+      "aVerifier": true,
+      "indices": [],
+      "redimensionnement": false
+    },
+    "aCompleter": true
+  }
+}

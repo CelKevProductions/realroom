@@ -13,6 +13,7 @@ import {champsDepuisScan} from '../lib/scan.js';
 import {PRODUITS} from '../lib/catalogue.js';
 import {lireDXF} from '../lib/plans.js';
 import {segmentsDe} from '../lib/contour.js';
+import { salonConcave } from './fixtures/salons-catalogue.js';
 
 const RACINE = path.resolve(import.meta.dirname, '..');
 const PORT = Number(process.env.PORT || 3117);
@@ -341,7 +342,7 @@ essai('90 m² : zones, densité et passage enregistrés ; le repli retire le nou
   scan.openings.forEach(o => { o.transform[12] *= 2.5; o.transform[14] *= 1.8; });
   const id = pc.piece.id;
   assert.equal((await api(`/api/pieces/${id}/scan`, { method: 'POST', corps: { scan } })).statut, 200);
-  const choix = { mode: 'tout', envies: 'Salon chaleureux', budget: 15000, garder: [], aRemplacer: [], langue: 'fr' };
+  const choix = { mode: 'tout', envies: '', espaces: ['repas', 'lecture', 'travail', 'rangement'], placesRepas: 8, budget: 0, garder: [], aRemplacer: [], langue: 'fr' };
   const r = await api(`/api/pieces/${id}/amenager`, { method: 'POST', corps: choix });
   assert.equal(r.statut, 200, JSON.stringify(r));
   const p = r.piece.proposition;
@@ -349,6 +350,8 @@ essai('90 m² : zones, densité et passage enregistrés ; le repli retire le nou
   assert.ok(p.densite.zonesVie >= 3); assert.ok(r.piece.agencement.length >= 20);
   assert.equal(p.planZones.audit.valide, true); assert.equal(p.planZones.audit.circulation.largeur, 1.1);
   assert.equal(r.piece.agencement.filter(it => it.usageProgramme === 'chaise-repas').length, 8);
+  assert.equal(r.piece.agencement.filter(it => it.usageProgramme === 'table-repas').length, 1);
+  assert.deepEqual(p.programme.manquants.filter(s => s.obligatoire), []);
   const relu = await api(`/api/pieces/${id}`);
   assert.deepEqual(relu.piece.proposition.densite, p.densite);
   assert.deepEqual(relu.piece.agencement, r.piece.agencement);
@@ -356,6 +359,32 @@ essai('90 m² : zones, densité et passage enregistrés ; le repli retire le nou
   assert.equal(repli.statut, 200, JSON.stringify(repli));
   assert.equal(repli.piece.proposition.densite, undefined);
   assert.equal(repli.piece.proposition.programme.compositionSurface, undefined);
+});
+
+essai('séjour en L : brief vide, sans plafond, huit places et quatre activités sauvegardées', async () => {
+  const api = client(); await api.connexion('concave@composition.test');
+  const pr = await api('/api/projets', { method: 'POST', corps: { nom: 'Séjour synthétique en L' } });
+  const pc = await api(`/api/projets/${pr.projet.id}/pieces`, { method: 'POST', corps: { nom: 'Séjour', fonction: 'salon' } });
+  const modele = salonConcave();
+  const scan = { version: scanAndroid().version, source: 'plan-dessine', unit: 'm',
+    floorCorners: modele.contour.map(([x, z]) => [x, 0, z]), ceilingHeight: modele.dims.hauteur,
+    openings: segmentsDe(modele).flatMap(pan => modele.murs[pan.id].ouvertures.map(o => ({ type: o.type,
+      a: pan.centre.map((v, i) => v + (o.position - o.largeur / 2) * pan.d[i]),
+      b: pan.centre.map((v, i) => v + (o.position + o.largeur / 2) * pan.d[i]) }))) };
+  const id = pc.piece.id;
+  const releve = await api(`/api/pieces/${id}/scan`, { method: 'POST', corps: { scan } });
+  assert.equal(releve.statut, 200, JSON.stringify(releve));
+  const choix = { mode: 'tout', envies: '', espaces: ['repas', 'lecture', 'travail', 'rangement'], placesRepas: 8, budget: 0, garder: [], aRemplacer: [], langue: 'fr' };
+  const r = await api(`/api/pieces/${id}/amenager`, { method: 'POST', corps: choix });
+  assert.equal(r.statut, 200, JSON.stringify(r));
+  assert.equal(r.piece.agencement.filter(it => it.usageProgramme === 'table-repas').length, 1);
+  assert.equal(r.piece.agencement.filter(it => it.usageProgramme === 'chaise-repas').length, 8);
+  assert.equal(r.piece.proposition.densite.zonesVie, 4);
+  assert.deepEqual(r.piece.proposition.programme.manquants.filter(s => s.obligatoire), []);
+  assert.equal(r.piece.proposition.planZones.audit.valide, true);
+  const relu = await api(`/api/pieces/${id}`);
+  assert.deepEqual(relu.piece.agencement, r.piece.agencement);
+  assert.deepEqual(relu.piece.modele, releve.piece.modele);
 });
 
 essai('rendu guidé : caméra, nuit, photo indépendante, concurrence et référence conservée', async () => {

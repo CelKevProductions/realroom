@@ -27,7 +27,7 @@ export const POST = route(async (request, { params }) => {
   await compter('amenager:' + u.id, Infinity, 864e5);
   if (!payant) await compter('amenagements-du-jour', Infinity, 864e5);
   const prep = preparerAmenagement(p.agencement || [], b);
-  const cands = candidats({ dims: p.modele.dims, fonction: p.fonction, envies: prep.envies, budget: prep.budget });
+  const cands = candidats({ modele: p.modele, fonction: p.fonction, ...prep });
   const inspirations = [];
   for (const photo of (p.photos || []).filter(ph => ph.role === 'inspiration').slice(0, LIMITES.inspirationsParPiece)) {
     const dataUri = await enDataUri(photo);

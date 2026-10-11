@@ -34,7 +34,7 @@ export const POST = route(async request => {
   if (!quota) throw new ErreurHTTP(429, 'limite-demo');
   const { piece: p, choix, inspirations, langue } = b;
   const prep = preparerAmenagement(p.agencement, { ...choix, langue });
-  const cands = candidats({ dims: p.modele.dims, fonction: p.fonction, envies: prep.envies, budget: prep.budget });
+  const cands = candidats({ modele: p.modele, fonction: p.fonction, ...prep });
   let r;
   try {
     r = await proposerAmenagement({ piece: { ...versClaude(p.modele, prep.base, PRODUITS), notes_client: p.notes }, fonction: p.fonction, mode: prep.mode, envies: prep.envies, espaces: prep.espaces, placesRepas: prep.placesRepas, compositionSurface: prep.compositionSurface, compositionDetails: prep.compositionDetails, budget: prep.budget, garder: prep.garder, aRemplacer: prep.aRemplacer, candidats: cands, inspirations, langue }, { reel: true, maxTokens: 12000 });

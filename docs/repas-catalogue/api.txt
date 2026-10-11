@@ -1,0 +1,34 @@
+▲ Next.js 16.3.6
+- Local:         http://127.0.0.1:3267
+- Network:       http://127.0.0.1:3267
+✓ Ready in 162ms
+✓ Running next.config.mjs took 23ms
+▲ Next.js 16.3.6
+- Local:         http://127.0.0.1:3268
+- Network:       http://127.0.0.1:3268
+✓ Ready in 175ms
+✓ Running next.config.mjs took 23ms
+Aménagement IA démo indisponible D-02
+▲ Next.js 16.3.6
+- Local:         http://127.0.0.1:3268
+- Network:       http://127.0.0.1:3268
+✓ Ready in 138ms
+✓ Running next.config.mjs took 36ms
+Aménagement IA démo indisponible D-07
+ok   clé absente ou refusée : refus explicite sans attente ni remplacement du plan
+ok   la démo anonyme appelle le moteur IA, conserve les choix et limite les appels avant le fournisseur
+ok   un corps JSON qui n’est pas un objet donne 400
+ok   crédits offerts une seule fois par adresse (étiquettes, points Gmail, compte supprimé)
+ok   10 codes faux dans la journée, depuis un même réseau, bloquent l’adresse pour ce réseau
+ok   photos envoyées en parallèle : aucune perdue, plafond de 8 tenu, aucun fichier orphelin
+ok   rendu puis visite 3D : crédits débités, résultat sans lien interne, pièce supprimée = fichiers supprimés
+ok   achat simulé local : crédits ajoutés ; route introuvable sans session
+ok   crédits offerts plafonnés par domaine (hors grands fournisseurs), sans toucher aux autres
+ok   réaménagement relancé : budget, style, meuble gardé et déplacement enregistré conservés
+ok   salon : les idées modifiées créent une table et quatre chaises, enregistrées après rechargement
+ok   90 m² : zones, densité et passage enregistrés ; le repli retire le nouveau palier
+ok   séjour en L : brief vide, sans plafond, huit places et quatre activités sauvegardées
+ok   rendu guidé : caméra, nuit, photo indépendante, concurrence et référence conservée
+ok   hauteurs et attaches : TV et tableau gardent leur pose après sauvegarde et rechargement
+ok   les pages RealRoom, Maison Corleone et relevé mobile sont servies
+OK
