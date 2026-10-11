@@ -14,7 +14,7 @@ Les tests navigateur utilisent une base PGlite et des fournisseurs simulés isol
 
 ## Données réelles et limites
 
-Le DXF Lagarsoft fourni est lu localement : 8 coins, 2 portes, environ 13,14 m². Les pièces privées, la vidéo du client et les captures fournies ne figurent pas dans Git. Les guides livrés sont des animations originales.
+Les rapports publiés reposent sur les fixtures synthétiques. Les guides livrés sont des animations originales.
 
 Les capteurs et le bandeau système Android restent à essayer sur un téléphone WebXR compatible. Le contrat accepte les polygones simples de 3 à 32 coins : concaves, obliques, triangulaires ou avec décrochement, mais pas les contours croisés, trous intérieurs ni plusieurs niveaux de sol. Lagarsoft exige un appareil Apple LiDAR compatible ; il ne devient pas une application Android ni une permission RoomPlan de Safari.
 

@@ -465,6 +465,8 @@ html:has(.atelier), body:has(.atelier) { overflow: hidden; width: 100%; }
 .plan-vie__details { margin-top: 8px; max-width: 31em; }
 .plan-vie__details summary { cursor: pointer; font-size: .82rem; }
 .plan-vie__details p { margin-top: 8px; overflow-wrap: anywhere; }
+.plan-vie__manquants { list-style: none; padding: 0; margin: 10px 0 0; font-size: .78rem; line-height: 1.5; }
+.plan-vie__manquants li { padding: 8px 0; border-top: 1px solid currentColor; overflow-wrap: anywhere; }
 .corriger summary { cursor: pointer; font-size: .875rem; color: var(--graphite); list-style: none; }
 .corriger summary::-webkit-details-marker { display: none; }
 .corriger summary::before { content: '+'; display: inline-block; width: 1em; font-family: var(--m); }

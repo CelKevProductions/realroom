@@ -58,6 +58,7 @@ export function demandeAmenagement(t, piece, choix = {}, produits, langue) {
     envies: prop?.envies ?? composerEnvies(t, choix, produits),
     budget: prop?.budget ?? choix.budget ?? 0,
     garder: prop?.garder ?? aGarder(piece, choix),
+    ...(prop?.espaces ? { espaces: prop.espaces } : {}), ...(prop?.placesRepas ? { placesRepas: prop.placesRepas } : {}),
     aRemplacer: [], langue
   };
 }

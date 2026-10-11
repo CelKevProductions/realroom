@@ -121,7 +121,7 @@ essai('clé absente ou refusée : refus explicite sans attente ni remplacement d
 essai('la démo anonyme appelle le moteur IA, conserve les choix et limite les appels avant le fournisseur', async () => {
   const api = client(), piece = { ...champsDepuisScan(scanApple()), fonction: 'chambre', notes: 'Conserver le lit' };
   const modele = structuredClone(piece.modele);
-  const corps = demandeDemoIA(piece, { mode: 'tout', budget: 2000, envies: 'Chambre épurée', garder: [piece.agencement[0].id] }, 'fr');
+  const corps = demandeDemoIA(piece, { mode: 'tout', budget: 2000, envies: 'Chambre épurée', espaces: ['lecture'], placesRepas: 4, garder: [piece.agencement[0].id] }, 'fr');
   const envoyer = (ip = '192.0.2.1', b = corps, headers = {}) => api('/api/demo/amenager', { method: 'POST', corps: b, headers: { 'x-forwarded-for': ip, ...headers } });
   assert.equal((await api('/api/moi')).connecte, false);
   assert.deepEqual(await api('/api/demo/amenager'), { statut: 200, disponible: true, simulation: false });
@@ -133,6 +133,7 @@ essai('la démo anonyme appelle le moteur IA, conserve les choix et limite les a
     assert.equal(r.proposition.concept, 'Proposition IA du fournisseur de test.');
     assert.equal(r.proposition.budget, 2000); assert.equal(r.proposition.envies, corps.choix.envies);
     assert.deepEqual(r.proposition.garder, corps.choix.garder);
+    assert.deepEqual(r.proposition.espaces, ['lecture']); assert.equal(r.proposition.placesRepas, 4);
     assert.ok(r.agencement.some(it => it.id === piece.agencement[0].id && it.garde !== false));
     const total = r.agencement.filter(it => it.origine === 'catalogue' && it.garde !== false).reduce((n, it) => n + PRODUITS[it.sku].prix, 0);
     assert.ok(total <= 2000); assert.deepEqual(piece.modele, modele); assert.equal(r.piece, undefined);
@@ -292,10 +293,12 @@ essai('réaménagement relancé : budget, style, meuble gardé et déplacement e
   const enregistrement = await api(`/api/pieces/${id}`, { method: 'PATCH', corps: { agencement: deplace } });
   assert.equal(enregistrement.statut, 200);
   const prop = enregistrement.piece.proposition;
-  const suivante = await api(`/api/pieces/${id}/amenager`, { method: 'POST', corps: { mode: 'tout', envies: prop.envies, budget: prop.budget, garder: prop.garder, aRemplacer: [], langue: 'fr' } });
+  const suivantesEnvies = 'Style scandinave, bois clair. Un coin bureau près de la fenêtre.';
+  const suivante = await api(`/api/pieces/${id}/amenager`, { method: 'POST', corps: { mode: 'tout', envies: suivantesEnvies, espaces: ['travail'], placesRepas: 4, budget: prop.budget, garder: prop.garder, aRemplacer: [], langue: 'fr' } });
   assert.equal(suivante.statut, 200, JSON.stringify(suivante));
   assert.equal(suivante.piece.proposition.budget, choix.budget);
-  assert.equal(suivante.piece.proposition.envies, choix.envies);
+  assert.equal(suivante.piece.proposition.envies, suivantesEnvies);
+  assert.deepEqual(suivante.piece.proposition.espaces, ['travail']); assert.equal(suivante.piece.proposition.placesRepas, 4);
   assert.ok(suivante.piece.proposition.garder.includes(lit.id));
   assert.ok(suivante.piece.proposition.preferences.styles.includes('scandinave'));
   assert.deepEqual(suivante.piece.modele, scan.piece.modele, 'réaménager ne refait pas le scan');
@@ -305,6 +308,27 @@ essai('réaménagement relancé : budget, style, meuble gardé et déplacement e
   assert.equal((await api('/api/moi')).credits, moi.credits, 'aucun rendu image généré ou débité');
   const recharge = await api(`/api/pieces/${id}`);
   assert.deepEqual(recharge.piece.agencement, suivante.piece.agencement, 'le nouvel aménagement est enregistré');
+});
+
+essai('salon : les idées modifiées créent une table et quatre chaises, enregistrées après rechargement', async () => {
+  const api = client(); await api.connexion('repas@brief.test');
+  const pr = await api('/api/projets', { method: 'POST', corps: { nom: 'Espaces de vie' } });
+  const pc = await api(`/api/projets/${pr.projet.id}/pieces`, { method: 'POST', corps: { nom: 'Salon', fonction: 'salon' } });
+  const scan = scanApple(); scan.objects = [];
+  scan.walls.forEach((w, i) => { w.size[0] = i < 2 ? 8 : 6; w.transform[12] *= 2; w.transform[14] *= 1.2; });
+  scan.openings.forEach(o => { o.transform[12] *= 2; o.transform[14] *= 1.2; });
+  const id = pc.piece.id, releve = await api(`/api/pieces/${id}/scan`, { method: 'POST', corps: { scan } });
+  assert.equal(releve.statut, 200);
+  const choix = { mode: 'tout', envies: 'Une table à manger près de la fenêtre, bois clair.', espaces: ['repas'], placesRepas: 4, budget: 15000, garder: [], aRemplacer: [], langue: 'fr' };
+  const r = await api(`/api/pieces/${id}/amenager`, { method: 'POST', corps: choix });
+  assert.equal(r.statut, 200, JSON.stringify(r));
+  assert.equal(r.piece.agencement.filter(it => it.usageProgramme === 'table-repas').length, 1);
+  assert.equal(r.piece.agencement.filter(it => it.usageProgramme === 'chaise-repas').length, 4);
+  assert.deepEqual(r.piece.proposition.espaces, ['repas']); assert.equal(r.piece.proposition.placesRepas, 4);
+  assert.ok(!r.piece.proposition.programme.manquants.some(s => ['table-repas', 'chaise-repas'].includes(s.usage)));
+  const recharge = await api(`/api/pieces/${id}`);
+  assert.deepEqual(recharge.piece.agencement, r.piece.agencement); assert.equal(recharge.piece.proposition.envies, choix.envies);
+  assert.deepEqual(recharge.piece.modele, releve.piece.modele);
 });
 
 essai('rendu guidé : caméra, nuit, photo indépendante, concurrence et référence conservée', async () => {

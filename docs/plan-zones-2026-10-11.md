@@ -41,9 +41,9 @@ Un plan partiel admissible peut manquer d’un lit, d’un coin repas ou d’un 
 
 Les sept programmes sont également testés à 4, 8, 14 et 30 m² : 28 inventaires, avec vérification des usages, quantités et garde-fous. Ce contrôle des inventaires ne constitue pas une validation de toutes les installations techniques.
 
-Le grand DXF client a été exercé localement avec le vrai catalogue, sans appel IA payant. Le contour et les ouvertures restent intacts ; la composition obtient des ensembles salon/repas/lecture/rangement. Les chaises manquantes sont signalées. Les mesures locales sont de l’ordre de cinq secondes pour cette recherche ; elles ne garantissent pas le temps de réponse du fournisseur ou d’un téléphone. Le fichier client et ses coordonnées ne sont pas versionnés.
+Les temps mesurés sur les fixtures synthétiques ne garantissent pas le temps de réponse du fournisseur ou d’un téléphone.
 
-Validation : **154 tests unitaires réussis**, build Next réussi et **12 scénarios API réussis** avec le DXF privé et le fournisseur de test. Le premier essai API sur le port précédent a rencontré des compteurs déjà utilisés ; le passage isolé sur le port 3217 réussit. Le journal du fournisseur confirme trois appels de test, sans service payant.
+Validation du programme : **154 tests unitaires réussis** et build Next réussi. Pour la validation API actuelle sur fixtures synthétiques avec fournisseur simulé, voir [le rapport du réaménagement](brief-reamenagement-2026-10-11.md).
 
 La comparaison métrique a été inspectée visuellement. Aucune nouvelle session navigateur complète ni capture AR réelle n’a été exécutée pour cette modification. L’accès Vercel du connecteur reste insuffisant pour inspecter les fonctions en ligne ; le statut du déploiement est vérifié via GitHub.
 
@@ -63,7 +63,7 @@ node scripts/valider-zones.mjs
 python3 scripts/illustrer-zones.py
 ```
 
-Pour régénérer aussi l’ancien placement, créer un worktree détaché du commit `9099770`, puis passer son chemin dans `BASELINE_ZONES` au script de validation. `DXF_REGRESSION` accepte le chemin local d’un plan privé pour les essais API ; aucun fichier client n’est requis dans le dépôt.
+Pour régénérer aussi l’ancien placement, créer un worktree détaché du commit `9099770`, puis passer son chemin dans `BASELINE_ZONES` au script de validation. Les essais publiés utilisent les fixtures synthétiques.
 
 ## Interface et diffusion
 

@@ -10,6 +10,7 @@ import Catalogue from '@/components/piece/Catalogue.js';
 import CameraPhoto from '@/components/piece/CameraPhoto.js';
 import {prixMobilier,nomCategorie,noteGeneriques} from '@/components/prixMobilier.js';
 import PlanVie from '@/components/piece/PlanVie.js';
+import BriefReamenagement from '@/components/piece/BriefReamenagement.js';
 import { texte as texteRealRoom, prix } from '@/lib/i18n.js';
 import { estMural, estSuspendu, estAdosse, placerAuMur, demiEmpreinte, resoudre, ANGLES } from '@/lib/agencement.js';
 import { deplacerAvecAttaches } from '@/lib/finition.js';
@@ -44,6 +45,8 @@ export default function Scene({ t, lang, demo, piece: initiale, choix, rendus: r
   const [pret, setPret] = useState(false);
   const [large, setLarge] = useState(true);
   const [attente, setAttente] = useState(false);
+  const [brief, setBrief] = useState(null);
+  const [dernierBrief, setDernierBrief] = useState(null);
   const reamenagement = useRef(false);
   const editeur = useRef(null);
   const station = useRef(null);
@@ -255,18 +258,21 @@ export default function Scene({ t, lang, demo, piece: initiale, choix, rendus: r
     if (vue === 'dessus') aCadrer.current = id;
   }
 
-  async function reamenager() {
+  async function reamenager(demande) {
     if (reamenagement.current || !produits) return;
     reamenagement.current = true;
+    setDernierBrief(demande);
+    setBrief(null);
     setAttente(true);
     try {
       await vider();
       const r = await api(`/api/pieces/${piece.id}/amenager`, {
         method: 'POST',
-        corps: demandeAmenagement(t, piece, choix, produits, lang)
+        corps: demande
       });
       if (!r.ok) throw r;
       setPiece(r.piece);
+      setDernierBrief(null);
       setItems(r.piece.agencement || []);
       onMaj?.(r.piece);
       setSelection(null);
@@ -417,7 +423,7 @@ export default function Scene({ t, lang, demo, piece: initiale, choix, rendus: r
           <button type="button" className="mc-btn" onClick={() => ouvrirCatalogue('', null)} disabled={attente}>
             <Icone d={I.plus} /><span>{ts.ajouter}</span>
           </button>
-          <button type="button" className="mc-btn mc-btn--plein" onClick={reamenager} disabled={attente} title={ts.reamenagerAide}>
+          <button type="button" className="mc-btn mc-btn--plein" onClick={() => setBrief(dernierBrief || demandeAmenagement(t, piece, choix, produits, lang))} disabled={attente} title={ts.reamenagerAide}>
             {attente ? <span className="mc-rouage" aria-hidden="true" /> : <Icone d={I.echanger} />}<span>{attente ? ts.reamenagement : ts.reamenager}</span>
           </button>
         </div>
@@ -452,6 +458,7 @@ export default function Scene({ t, lang, demo, piece: initiale, choix, rendus: r
           capturer={capturer} lireVue={lireVue} surVue={surVue} avant={vider} demarrer={rendu.demarrer} lang={lang} onPiece={setPiece} fermer={fermerRendu} />
       )}
       {toast && <div key={toast.n} className="mc-toast" role="status">{toast.texte}</div>}
+      {brief && <BriefReamenagement piece={piece} demande={brief} lang={lang} onFermer={() => setBrief(null)} onValider={reamenager} />}
     </div>
   );
 }

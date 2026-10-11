@@ -36,7 +36,7 @@ Les cotes ont un pas libre, les murs portent des lettres. Les écrans fixes ne c
 
 `tests/unitaires/plans.test.js` contrôle unités absentes/manuelles, mm, DXF R12/moderne, plusieurs pièces, ouvertures obliques, courbes refusées, export, caméra dans un L et repli. `tests/unitaires/protocole.test.js` contrôle la référence complète et la proposition de cinq meubles. `tests/parcours-guide.mjs` contrôle QR décodé, six vidéos, import/sauvegarde/relecture, PDF/échelle/tracé, angle sans photo refusé sans débit, persistance de l'angle et budget libre sur les deux tailles d'écran Maison Corleone. Les rendus des tests API sont simulés ; cela valide l'intégration et les crédits, pas la fidélité du fournisseur de génération.
 
-Le banc, ses limites et les choix critiques du protocole sont dans [DECISIONS.md](../DECISIONS.md) et [validation-ameublement.json](validation-ameublement.json). Les capteurs physiques Android doivent encore être vérifiés sur un appareil compatible. L'export DXF Lagarsoft réel fourni est vérifié ; l'application native RealRoom conservée dans le dépôt est une alternative et n'est pas requise pour ce parcours.
+Le banc, ses limites et les choix critiques du protocole sont dans [DECISIONS.md](../DECISIONS.md) et [validation-ameublement.json](validation-ameublement.json). Les capteurs physiques Android doivent encore être vérifiés sur un appareil compatible. L'application native RealRoom conservée dans le dépôt est une alternative et n'est pas requise pour ce parcours.
 
 Les corrections et les limites de la dernière passe DXF sont décrites dans [le rapport des imports](qa-parcours-2026-10-10/report.md).
 

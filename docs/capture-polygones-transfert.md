@@ -12,7 +12,7 @@ Les commandes gardent au moins 96 px / 12 % de hauteur de viewport sous elles en
 
 [RoomPlan](https://developer.apple.com/augmented-reality/roomplan/) est un framework Swift natif, pas une API HTTP ni une permission de caméra Safari. Il requiert un [appareil avec LiDAR](https://developer.apple.com/documentation/RoomPlan/RoomCaptureSession/isSupported).
 
-Le parcours principal est désormais **Scan Apple → Lagarsoft → DXF**, avec QR App Store et tutoriel animé. L'export réel fourni est validé : huit coins, deux portes, unités mètres. Aucun export JSON spécifique d'une application tierce n'est promis. La hauteur, les volumes du mobilier et le sens de porte sont à compléter après le DXF 2D. Voir [le parcours guidé](parcours-guide.md).
+Le parcours principal est désormais **Scan Apple → Lagarsoft → DXF**, avec QR App Store et tutoriel animé. Le parseur est testé avec des exports DXF synthétiques métriques. Aucun export JSON spécifique d'une application tierce n'est promis. La hauteur, les volumes du mobilier et le sens de porte sont à compléter après le DXF 2D. Voir [le parcours guidé](parcours-guide.md).
 
 L'adaptateur JSON Apple `CapturedRoom` est conservé dans une section avancée, avec le contrat `realroom-scan-v1`. Sa compatibilité est testée avec l'encodeur Swift RealRoom ; champs inconnus, maillage et photos privées sont éliminés. USDZ/OBJ/GLB seuls ne deviennent pas un plan paramétrique. RoomPlan reste natif, et le DXF Lagarsoft évite la publication d'une application RealRoom sur l'App Store.
 
@@ -40,4 +40,4 @@ Les indices enrichissent les étiquettes textuelles des produits et apportent un
 
 ## Vérifications
 
-101 tests unitaires, compilation Next.js, parcours complet `tests/plan.mjs` et parcours QR/polygones `TRANSFERTS_SEULS=1 node tests/plan.mjs`. Le QR PNG est décodé par une bibliothèque indépendante, avec son URL réelle ; le téléphone est un second navigateur sans cookie du compte. Les tests contrôlent lecture/envoi séparés, envoi concurrent unique, expiration, rejet de contours invalides, persistance, lit effectivement retenu dans un L et parcours ordinateur/mobile dans les deux éditions. Les capteurs physiques Android restent à vérifier sur appareil ; le DXF Lagarsoft réel fourni est validé. Les tests du nouveau parcours sont décrits dans `parcours-guide.md`.
+101 tests unitaires, compilation Next.js, parcours complet `tests/plan.mjs` et parcours QR/polygones `TRANSFERTS_SEULS=1 node tests/plan.mjs`. Le QR PNG est décodé par une bibliothèque indépendante, avec son URL réelle ; le téléphone est un second navigateur sans cookie du compte. Les tests contrôlent lecture/envoi séparés, envoi concurrent unique, expiration, rejet de contours invalides, persistance, lit effectivement retenu dans un L et parcours ordinateur/mobile dans les deux éditions. Les capteurs physiques Android restent à vérifier sur appareil. Les tests du nouveau parcours sont décrits dans `parcours-guide.md`.

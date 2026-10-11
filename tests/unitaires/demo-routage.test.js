@@ -21,11 +21,12 @@ test('les deux démos vérifient la disponibilité avant l’appel IA ; un refus
   for (const chemin of ['/fr/demo/pieces/r_demo_salon', '/fr/maison-corleone/demo']) {
     location.pathname = chemin;
     const avant = appels.length;
-    const r = await api('/api/pieces/r_demo_salon/amenager', { method: 'POST', corps: { mode: 'tout', budget: 1234, envies: 'Épuré' } });
+    const r = await api('/api/pieces/r_demo_salon/amenager', { method: 'POST', corps: { mode: 'tout', budget: 1234, envies: 'Épuré', espaces: ['repas', 'lecture'], placesRepas: 4 } });
     assert.equal(r.ok, true); assert.equal(r.piece.proposition.moteur.type, 'ia');
     assert.equal(appels.length, avant + 2); assert.deepEqual(appels.slice(avant).map(a => a.method), ['GET', 'POST']);
     assert.ok(appels.slice(avant).every(a => a.url === '/api/demo/amenager'));
     assert.equal(appels.at(-1).corps.choix.budget, 1234);
+    assert.deepEqual(appels.at(-1).corps.choix.espaces, ['repas', 'lecture']); assert.equal(appels.at(-1).corps.choix.placesRepas, 4);
     const moi = await api('/api/moi');
     assert.equal(moi.email, 'demo@realroom.app'); assert.equal(appels.length, avant + 2);
   }

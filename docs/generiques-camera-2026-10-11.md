@@ -25,9 +25,9 @@ Le déplacement conserve la hauteur et le champ de vision, normalise les diagona
 ## Vérification
 
 - 164 tests unitaires réussis, aucun échec ni test ignoré. Les contrôles ajoutés couvrent les 44 modèles et leurs dimensions réelles, les usages autorisés, la sélection, le budget, les déplacements dans un contour concave, le clavier et le cadrage figé.
-- 12 scénarios API réussis sur le port isolé 3237, fournisseur simulé : sauvegarde d’un objet générique, rejet des données produit forgées, caméra libre et aspect conservés dans le rendu, concurrence, références privées et nettoyage. Le DXF fourni reste local.
+- La validation API actuelle sur fixtures synthétiques couvre sauvegarde des objets génériques, rejet des données produit forgées, caméra et aspect conservés, concurrence, références et nettoyage : voir [le rapport du réaménagement](brief-reamenagement-2026-10-11.md).
 - Build Next/Turbopack réussi, 48 pages générées ; `git diff --check` réussi.
-- Essai local du grand DXF avec le vrai catalogue, budget de 12 000 € : 16 éléments, dont six chaises et sept objets génériques, pour 6 873,99 € de produits et provisions. Quatre ensembles salon/repas/lecture/rangement ; audit d’accès et géométrie admissible. Les compléments non logés restent signalés. Ce test appelle directement la composition, sans fournisseur IA payant, et ne prédit pas toutes les propositions en ligne.
+- Les contrôles du catalogue et du budget décrits ici reposent sur les fixtures synthétiques de test.
 - Les vignettes ont été produites depuis les mêmes géométries Three.js puis plusieurs exemples inspectés après rendu local. Un test API a révélé une redirection de `/generiques/` vers une route de langue ; le matcher du proxy exclut désormais ce dossier public. La série API complète passe après correction.
 
 La session navigateur demeure bloquée par « Failed to bind socket: Operation not permitted ». Aucun nouvel essai interactif navigateur, fournisseur réel ou matériel AR n’est revendiqué. Les contrôles fonctionnels exécutés sont unitaires, API et build.

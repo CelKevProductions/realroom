@@ -10,6 +10,7 @@ import CameraPhoto from './CameraPhoto.js';
 import {prixMobilier,nomCategorie,noteGeneriques} from '@/components/prixMobilier.js';
 import Confort from '@/components/piece/Confort.js';
 import PlanVie from '@/components/piece/PlanVie.js';
+import BriefReamenagement from '@/components/piece/BriefReamenagement.js';
 import Inspirations from '@/components/piece/Inspirations.js';
 import Resultat from '@/components/piece/Resultat.js';
 import Tuto from '@/components/Tuto.js';
@@ -44,6 +45,9 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const [cat, setCat] = useState({ ouvert: false, famille: '', remplace: null });
   const [opacite, setOpacite] = useState(0);
   const [attente, setAttente] = useState(false);
+  const [brief, setBrief] = useState(null);
+  const [espaces, setEspaces] = useState(piece.proposition?.espaces);
+  const [placesRepas, setPlacesRepas] = useState(piece.proposition?.placesRepas);
   const [inspirationOccupe, setInspirationOccupe] = useState(false);
   const [toast, setToast] = useState(null);
   const [mode, setMode] = useState((piece.proposition && piece.proposition.mode) || 'tout');
@@ -200,14 +204,16 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     setOnglet('meubles');
     if (vue === 'dessus') aCadrer.current = id;
   }
-  async function proposer() {
+  async function proposer(demande) {
     if (inspirationOccupe || reamenagement.current || !services.analyse) return;
     reamenagement.current = true;
+    setBrief(null);
+    setEnvies(demande.envies); setBudget(demande.budget); setEspaces(demande.espaces); setPlacesRepas(demande.placesRepas);
     setAttente(true);
     setOnglet('meubles');
     try {
       await vider();
-      const r = await api(`/api/pieces/${piece.id}/amenager`, { method: 'POST', corps: { mode, envies, budget: +budget || 0, garder: [...garder], aRemplacer: [...aRemplacer], langue: lang } });
+      const r = await api(`/api/pieces/${piece.id}/amenager`, { method: 'POST', corps: demande });
       if (!r.ok) throw r;
       setPiece(r.piece);
       setSelection(null);
@@ -401,7 +407,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
           <button type="button" className="btn btn--clair" onClick={() => ouvrirCatalogue('', null)} disabled={!produits || attente}>
             <span className="plus" aria-hidden="true" />{tp.ajouterMeuble}
           </button>
-          <button type="button" className="btn btn--plein" onClick={proposer} disabled={attente || inspirationOccupe || !services.analyse} title={tp.reamenagerAide}>
+          <button type="button" className="btn btn--plein" onClick={() => setBrief({ mode, envies, budget: +budget || 0, garder: [...garder], aRemplacer: [...aRemplacer], espaces, placesRepas, langue: lang })} disabled={attente || inspirationOccupe || !services.analyse} title={tp.reamenagerAide}>
             {attente && <span className="rouage rouage--petit" aria-hidden="true" />}{attente ? tp.proposition : tp.reamenager}
           </button>
           {attente && <p role="status">{tp.reamenagerAide}</p>}
@@ -425,6 +431,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       {produits && <Catalogue lang={lang} t={t} produits={produits} libelles={libelles} dims={piece.modele.dims} exterieur={piece.fonction === 'terrasse'} famille={cat.famille} ouvert={cat.ouvert}
         fermer={() => setCat({ ouvert: false, famille: '', remplace: null })} choisir={choisirProduit} action={cat.remplace ? tp.catalogue.choisir : tp.catalogue.ajouter} />}
       {toast && <div key={toast.n} className={'toast' + (toast.erreur ? ' toast--erreur' : '')} role="status">{toast.texte}</div>}
+      {brief && <BriefReamenagement piece={piece} demande={brief} lang={lang} onFermer={() => setBrief(null)} onValider={proposer} />}
     </div>
   );
 }

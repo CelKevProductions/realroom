@@ -34,7 +34,7 @@ export const POST = route(async (request, { params }) => {
     if (dataUri) inspirations.push({ dataUri });
   }
   const { proposition } = await proposerAmenagement({
-    piece: { ...versClaude(p.modele, prep.base, PRODUITS), notes_client: p.notes || '' }, fonction: p.fonction, mode: prep.mode, envies: prep.envies, budget: prep.budget,
+    piece: { ...versClaude(p.modele, prep.base, PRODUITS), notes_client: p.notes || '' }, fonction: p.fonction, mode: prep.mode, envies: prep.envies, espaces: prep.espaces, placesRepas: prep.placesRepas, budget: prep.budget,
     garder: prep.garder, aRemplacer: prep.aRemplacer, candidats: cands, inspirations, langue: b.langue === 'en' ? 'en' : 'fr'
   });
   const { agencement, proposition: prop } = appliquerProposition({ modele: p.modele, fonction: p.fonction, prep, proposition, produits: PRODUITS, candidats: cands });
