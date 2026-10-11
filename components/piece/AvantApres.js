@@ -2,11 +2,11 @@
 // Curseur avant / après : la vraie photo, puis le rendu par-dessus
 import { useState } from 'react';
 
-export default function AvantApres({ avant, apres, libelles, etiquette }) {
+export default function AvantApres({ avant, apres, libelles, etiquette, largeur=4, hauteur=3 }) {
   const [k, setK] = useState(55);
   return (
-    <div className="avant-apres">
-      <img src={avant} alt={libelles.avant} />
+    <div className="avant-apres" style={{aspectRatio: `${largeur} / ${hauteur}`}}>
+      <img src={avant} alt={libelles.avant} width={largeur} height={hauteur} />
       <div className="avant-apres__apres" style={{ clipPath: `inset(0 0 0 ${k}%)` }}>
         <img src={apres} alt={libelles.apres} />
       </div>

@@ -1,5 +1,6 @@
 // Démo sans compte : les projets, pièces, rendus et crédits du visiteur vivent dans son navigateur
-// (sessionStorage : la démo repart de zéro quand l'onglet se ferme). Rien n'est envoyé au serveur.
+// (sessionStorage : la démo repart de zéro quand l'onglet se ferme). L'aménagement envoie le plan,
+// le brief et les seules inspirations choisies au moteur IA, sans enregistrer de projet serveur.
 import { pieceDepuisAnalyse } from '@/lib/amenagement.js';
 import { simulerAnalyse } from '@/lib/simulation.js';
 import { CREDITS } from '@/lib/config.js';
@@ -91,15 +92,15 @@ export function publique(p) {
     modele: p.modele, agencement: p.agencement || [], proposition: p.proposition, erreur: p.erreur, maj_le: p.maj_le
   };
 }
-export const renduPublic = r => ({ id: r.id, type: r.type, etat: r.etat, credits: r.credits, resultat: r.resultat, erreur: r.erreur, cree_le: r.cree_le, fini_le: r.fini_le, source: r.source || null });
+export const renduPublic = r => ({ id: r.id, type: r.type, angle: r.angle || 'entree', vue:r.vue||null,ambiance:r.ambiance||'jour',reference:r.reference||null,referenceLargeur:r.referenceLargeur,referenceHauteur:r.referenceHauteur,etat: r.etat, credits: r.credits, resultat: r.resultat, erreur: r.erreur, cree_le: r.cree_le, fini_le: r.fini_le, source: r.source || null });
 export const rendusDe = idPiece => lire().rendus.filter(r => r.piece_id === idPiece).sort((a, b) => (a.cree_le < b.cree_le ? 1 : -1)).map(renduPublic);
 
 export function listeProjets() {
   const e = lire();
   return e.projets.slice().sort((a, b) => (a.maj_le < b.maj_le ? 1 : -1)).map(p => {
     const pieces = e.pieces.filter(x => x.projet_id === p.id);
-    const apercu = pieces.find(x => x.photos.length);
-    return { id: p.id, nom: p.nom, nb: pieces.length, apercu: apercu ? apercu.photos[0].url : null };
+    const apercu = pieces.flatMap(x => x.photos).find(photo => photo.role !== 'inspiration');
+    return { id: p.id, nom: p.nom, nb: pieces.length, apercu: apercu?.url || null };
   });
 }
 

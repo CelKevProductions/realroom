@@ -1,11 +1,16 @@
 'use client';
 // L'atelier : la maquette 3D de la pièce et son panneau en trois temps
-// (1 aménager, 2 meubles, 3 résultat). Une action principale par temps, toujours en bas du panneau.
+// (1 aménager, 2 meubles, 3 résultat). Ajout et réaménagement restent accessibles en haut du panneau.
 // Choisir un meuble dans la liste : la caméra glisse jusqu'à lui et en fait le tour.
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { api } from '@/components/api.js';
 import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
+import CameraPhoto from './CameraPhoto.js';
+import {prixMobilier,nomCategorie,noteGeneriques} from '@/components/prixMobilier.js';
+import Confort from '@/components/piece/Confort.js';
+import PlanVie from '@/components/piece/PlanVie.js';
+import Inspirations from '@/components/piece/Inspirations.js';
 import Resultat from '@/components/piece/Resultat.js';
 import Tuto from '@/components/Tuto.js';
 import { apparaitre, deplier, animer } from '@/components/Mouvement.js';
@@ -38,19 +43,25 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const [cat, setCat] = useState({ ouvert: false, famille: '', remplace: null });
   const [opacite, setOpacite] = useState(0);
   const [attente, setAttente] = useState(false);
+  const [inspirationOccupe, setInspirationOccupe] = useState(false);
   const [toast, setToast] = useState(null);
   const [mode, setMode] = useState((piece.proposition && piece.proposition.mode) || 'tout');
   const [envies, setEnvies] = useState((piece.proposition && piece.proposition.envies) || '');
   const [budget, setBudget] = useState((piece.proposition && piece.proposition.budget) || '');
-  const [garder, setGarder] = useState(() => new Set());
+  const [garder, setGarder] = useState(() => new Set(piece.proposition?.garder || []));
   const [aRemplacer, setARemplacer] = useState(() => new Set());
   const [dims, setDims] = useState(piece.modele.dims);
   const editeur = useRef(null);
   const outils = useRef(null);
   const panneau = useRef(null);
   const sauvegarde = useRef(null);
+  const ecritures = useRef(Promise.resolve(true));
+  const reamenagement = useRef(false);
   const aCadrer = useRef(null);
   const premierOnglet = useRef(true);
+  const lireVue = useCallback(() => editeur.current?.pointDeVue(), []);
+  const surVue = useCallback(v => { setSelection(null); setOpacite(0); editeur.current?.choisirVue(v); setVue('photo'); }, []);
+  const surMouvement=useCallback(c=>{if(c)setOpacite(0);editeur.current?.deplacerCamera(c);},[]);
 
   useEffect(() => { chargerCatalogue().then(c => { setProduits(c.produits); setLibelles(c.libelles || {}); }); }, []);
   useEffect(() => { setItems(piece.agencement || []); }, [piece.agencement]);
@@ -67,15 +78,33 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   }, [onglet]);
 
   // enregistrement différé des modifications faites à la main
-  const enregistrer = useCallback(liste => {
-    clearTimeout(sauvegarde.current);
-    sauvegarde.current = setTimeout(async () => {
+  const ecrire = useCallback(liste => {
+    const tache = ecritures.current.catch(() => false).then(async () => {
       const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { agencement: liste } });
       if (!r.ok) dire(t.erreurs.generique, true);
-    }, 700);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [piece.id]);
-  const modifier = useCallback(f => setItems(l => { const n = f(l); enregistrer(n); return n; }), [enregistrer]);
+      return r.ok;
+    });
+    ecritures.current = tache;
+    return tache;
+  }, [piece.id, t.erreurs.generique]);
+  const enregistrer = useCallback(liste => {
+    clearTimeout(sauvegarde.current);
+    sauvegarde.current = setTimeout(() => { ecrire(liste).catch(() => dire(t.erreurs.generique, true)); }, 700);
+  }, [ecrire, t.erreurs.generique]);
+  const modifier = useCallback(f => {
+    if (reamenagement.current) return;
+    setItems(l => { const n = f(l); enregistrer(n); return n; });
+  }, [enregistrer]);
+  const vider = useCallback(async () => {
+    clearTimeout(sauvegarde.current);
+    if (!(await ecrire(items))) throw new Error('sauvegarde');
+  }, [ecrire, items]);
+  async function ouvrirPhotos() {
+    clearTimeout(sauvegarde.current);
+    const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { agencement: items } });
+    if (!r.ok) { dire(t.erreurs.generique, true); return; }
+    setPiece(r.piece); retourPhotos();
+  }
 
   // barre d'outils qui suit le meuble choisi à l'écran
   useEffect(() => {
@@ -171,19 +200,37 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     if (vue === 'dessus') aCadrer.current = id;
   }
   async function proposer() {
+    if (inspirationOccupe || reamenagement.current || !services.analyse) return;
+    reamenagement.current = true;
     setAttente(true);
-    const r = await api(`/api/pieces/${piece.id}/amenager`, { method: 'POST', corps: { mode, envies, budget: +budget || 0, garder: [...garder], aRemplacer: [...aRemplacer], langue: lang } });
-    setAttente(false);
-    if (!r.ok) { dire(r.erreur === 'limite' ? t.connexion.erreurs.limite : t.erreurs.generique, true); return; }
-    setPiece(r.piece);
-    setSelection(null);
     setOnglet('meubles');
-    // la nouvelle pièce se dévoile : la caméra fait un lent quart de tour
-    if (vue === 'dessus' && editeur.current) editeur.current.balayer();
+    try {
+      await vider();
+      const r = await api(`/api/pieces/${piece.id}/amenager`, { method: 'POST', corps: { mode, envies, budget: +budget || 0, garder: [...garder], aRemplacer: [...aRemplacer], langue: lang } });
+      if (!r.ok) throw r;
+      setPiece(r.piece);
+      setSelection(null);
+      aCadrer.current = null;
+      dire(tp.reamenage);
+      // la nouvelle pièce se dévoile : la caméra fait un lent quart de tour
+      if (vue === 'dessus') editeur.current?.balayer();
+    } catch (e) {
+      dire(t.demo.erreurs[e?.erreur] || (e?.erreur === 'limite' ? t.connexion.erreurs.limite : t.erreurs.generique), true);
+    } finally {
+      reamenagement.current = false;
+      setAttente(false);
+    }
   }
   async function appliquerDims() {
     const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { dims } });
     if (r.ok) setPiece(r.piece); else dire(t.erreurs.generique, true);
+  }
+  async function corrigerPlan(geometrie) {
+    clearTimeout(sauvegarde.current);
+    const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { geometrie, agencement: items } });
+    if (!r.ok) return false;
+    setPiece(r.piece); setDims(r.piece.modele.dims); setSelection(null);
+    return true;
   }
 
   const existants = items.filter(it => it.origine === 'existant');
@@ -206,9 +253,9 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
           {catalogue && p.vign ? <img src={p.vign} alt="" loading="lazy" /> : <span className="pastille" style={{ background: (p.cols && p.cols[0]) || undefined }} />}
           <span className="ligne-meuble__texte">
             <b>{p.nom}</b>
-            <small>{catalogue ? p.cat : it.garde === false ? tp.retire : tp.existant} <span className="chiffre">{cm(p.dim[0])}×{cm(p.dim[1])}</span></small>
+            <small>{catalogue ? nomCategorie(p,lang) : it.garde === false ? tp.retire : tp.existant} <span className="chiffre">{cm(p.dim[0])}×{cm(p.dim[1])}</span></small>
           </span>
-          <span className="prix">{catalogue ? (p.prix > 0 ? prix(p.prix * 100, lang) : tp.surDevis) : ''}</span>
+          <span className="prix">{catalogue ? prixMobilier(p,lang,tp.surDevis) : ''}</span>
         </button>
         {actif && (
           <Depliant>
@@ -229,7 +276,8 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   // ---------- les trois temps du panneau : contenu, puis action principale en pied ----------
   const amenager = (
     <>
-      <div className="panneau__corps" role="tabpanel">
+      <div className="panneau__corps" role="tabpanel" inert={attente || undefined}>
+        <Confort modele={piece.modele} items={items} produits={produits} lang={lang} onCorriger={corrigerPlan} />
         <fieldset className="champ champ--groupe">
           <legend>{tp.modeTitre}</legend>
           <div className="choix-fonction choix-fonction--liste">
@@ -263,6 +311,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         <label className="champ"><span>{tp.budget}</span>
           <span className="unite" data-unite="€"><input className="saisie" inputMode="numeric" value={budget} onChange={e => setBudget(e.target.value.replace(/\D/g, ''))} /></span>
         </label>
+        <Inspirations piece={piece} setPiece={setPiece} lang={lang} demo={services.simulation} onOccupe={setInspirationOccupe} />
         <details className="corriger">
           <summary>{tp.corriger}</summary>
           <div className="corriger__corps">
@@ -275,15 +324,10 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
             </div>
             <div className="rangee">
               <button className="btn btn--clair btn--petit" onClick={appliquerDims}>{tp.appliquer}</button>
-              <button className="btn btn--lien btn--petit" onClick={retourPhotos}>{tp.relancer}</button>
+              <button className="btn btn--lien btn--petit" onClick={ouvrirPhotos}>{tp.relancer}</button>
             </div>
           </div>
         </details>
-      </div>
-      <div className="panneau__pied">
-        <button className="btn btn--plein btn--large btn--bloc" onClick={proposer} disabled={attente || !services.analyse}>
-          {attente ? <><span className="rouage rouage--petit" /> {tp.proposition}</> : tp.proposer}
-        </button>
       </div>
     </>
   );
@@ -291,11 +335,12 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const prop = piece.proposition;
   const meubles = (
     <>
-      <div className="panneau__corps" role="tabpanel">
+      <div className="panneau__corps" role="tabpanel" inert={attente || undefined}>
         {prop && prop.concept && (
           <div className="concept">
-            <b>{tp.concept}</b>
+            <b>{tp.concept}{prop.moteur?.type === 'ia' ? ' · ' + t.demo.ia : ''}</b>
             <p>{prop.concept}</p>
+            <PlanVie proposition={prop} langue={lang} />
             {prop.conseils && prop.conseils.length > 0 && <><b className="concept__sous">{tp.conseils}</b><ul>{prop.conseils.map(c => <li key={c}>{c}</li>)}</ul></>}
             {prop.alertes && prop.alertes.length > 0 && <><b className="concept__sous">{tp.alertes}</b><ul>{prop.alertes.map(c => <li key={c}>{c}</li>)}</ul></>}
           </div>
@@ -304,7 +349,8 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
           <section className="groupe">
             <h3 className="sous-titre">{tp.proposes} <span className="chiffre">{nouveaux.length}</span></h3>
             <div className="liste-meubles">{nouveaux.map(ligne)}</div>
-            <div className="total"><span>{tp.total}</span><b>{prix(total * 100, lang)}</b></div>
+            <div className="total"><span>{nouveaux.some(it=>produitDe(it)?.generique)?(lang==='fr'?'Total estimé':'Estimated total'):tp.total}</span><b>{prix(total * 100, lang)}</b></div>
+            {nouveaux.some(it=>produitDe(it)?.generique)&&<p className="avis avis--note">{noteGeneriques(lang)}</p>}
           </section>
         )}
         {existants.length > 0 && (
@@ -315,27 +361,25 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         )}
       </div>
       <div className="panneau__pied">
-        <button className="btn btn--clair btn--bloc" onClick={() => ouvrirCatalogue('', null)} disabled={!produits}>
-          <span className="plus" aria-hidden="true" />{tp.ajouterMeuble}
-        </button>
         {/* l'étape suivante, dite clairement : la photo réaliste par IA */}
-        <button className="btn btn--plein btn--bloc" onClick={() => setOnglet('resultat')}>{tp.versRendu}</button>
+        <button className="btn btn--plein btn--bloc" onClick={() => setOnglet('resultat')} disabled={attente}>{tp.versRendu}</button>
       </div>
     </>
   );
 
   return (
     <div className="atelier">
-      <div className="atelier__scene">
-        <Editeur3D ref={editeur} modele={piece.modele} items={items} selection={selection} vue={vue}
+      <div className="atelier__scene" inert={attente || undefined} aria-busy={attente}>
+        <Editeur3D ref={editeur} modele={piece.modele} items={items} selection={selection} vue={vue} navigationActive={!attente&&!cat.ouvert&&onglet!=='resultat'} surNavigation={()=>setOpacite(0)}
           surSelection={surSelection} surDeplacement={surDeplacement} surCadre={setCadre} erreurWebgl={t.erreurs.webgl} />
         {vue === 'photo' && photo && <div className="calque-photo" style={{ backgroundImage: `url(${photo.url})`, opacity: opacite }} />}
         <div className="vues">
           <div className="segment" role="group">
-            {['dessus', 'photo'].map(v => <button key={v} aria-pressed={vue === v} onClick={() => setVue(v)}>{tp.vues[v]}</button>)}
+            {['dessus', 'photo'].map(v => <button key={v} aria-pressed={vue === v} onClick={() => {setSelection(null);setVue(v);}}>{tp.vues[v]}</button>)}
           </div>
           {cadre && vue === 'dessus' && <button className="btn btn--clair btn--petit" onClick={() => { setSelection(null); editeur.current && editeur.current.ensemble(); }}>{tp.ensemble}</button>}
         </div>
+        {vue === 'photo' && <div className="camera-photo"><CameraPhoto modele={piece.modele} lang={lang} surChoisir={surVue} surMouvement={surMouvement} disabled={attente||cat.ouvert||onglet==='resultat'}/><small>{lang==='fr'?'Flèches : se déplacer · Glisser : regarder autour.':'Arrows: move · Drag: look around.'}</small></div>}
         {vue === 'photo' && photo && (
           <label className="opacite">{tp.comparer}<input type="range" min="0" max="1" step=".05" value={opacite} onChange={e => setOpacite(+e.target.value)} /></label>
         )}
@@ -352,9 +396,18 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       </div>
 
       <aside className="atelier__panneau" ref={panneau}>
+        <div className="atelier__actions" role="group" aria-label={tp.ameublement}>
+          <button type="button" className="btn btn--clair" onClick={() => ouvrirCatalogue('', null)} disabled={!produits || attente}>
+            <span className="plus" aria-hidden="true" />{tp.ajouterMeuble}
+          </button>
+          <button type="button" className="btn btn--plein" onClick={proposer} disabled={attente || inspirationOccupe || !services.analyse} title={tp.reamenagerAide}>
+            {attente && <span className="rouage rouage--petit" aria-hidden="true" />}{attente ? tp.proposition : tp.reamenager}
+          </button>
+          {attente && <p role="status">{tp.reamenagerAide}</p>}
+        </div>
         <div className="onglets" role="tablist">
           {ONGLETS.map((o, i) => (
-            <button key={o} role="tab" aria-selected={onglet === o} onClick={() => setOnglet(o)}>
+            <button key={o} role="tab" aria-selected={onglet === o} onClick={() => setOnglet(o)} disabled={attente}>
               <span className="onglets__num">{i + 1}</span>
               <span className="onglets__nom">{tp.panneau[o]}</span>
             </button>
@@ -364,7 +417,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         {onglet === 'meubles' && meubles}
         {onglet === 'resultat' && (
           <Resultat lang={lang} t={t} piece={{ ...piece, agencement: items }} rendus={rendus} setRendus={setRendus} solde={solde} setSolde={setSolde} couts={couts} services={services}
-            capturer={o => editeur.current && editeur.current.capture(o)} />
+            capturer={o => editeur.current && editeur.current.capture(o)} lireVue={lireVue} surVue={surVue} avant={vider} setPiece={setPiece} />
         )}
       </aside>
 

@@ -7,12 +7,16 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { api } from '@/components/api.js';
 import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
+import CameraPhoto from '@/components/piece/CameraPhoto.js';
+import {prixMobilier,nomCategorie,noteGeneriques} from '@/components/prixMobilier.js';
+import PlanVie from '@/components/piece/PlanVie.js';
 import { texte as texteRealRoom, prix } from '@/lib/i18n.js';
 import { estMural, estSuspendu, estAdosse, placerAuMur, demiEmpreinte, resoudre, ANGLES } from '@/lib/agencement.js';
 import Marque from '@/components/maison/Embleme.js';
 import Fiche from '@/components/maison/Fiche.js';
 import Rendu from '@/components/maison/Rendu.js';
 import { remplir } from '@/components/maison/textes.js';
+import { demandeAmenagement } from '@/components/maison/demande.js';
 import { Fleche, Icone, I, lienBoutique } from '@/components/maison/icones.js';
 import { initGsap, gsap, lettres, entreeTitre, entreeScript, dechiffrer, monter, reduit } from '@/components/maison/anim.js';
 
@@ -20,10 +24,10 @@ const pad2 = n => String(n).padStart(2, '0');
 const cm = v => Math.round(v * 100);
 const DECALAGE = .17;   // la pièce se range à droite de la station (écrans larges)
 
-export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusInitiaux, credits, setCredits, profil, nbPieces, onNouvelle, onMesPieces, onDeconnexion }) {
+export default function Scene({ t, lang, demo, piece: initiale, choix, rendus: rendusInitiaux, credits, setCredits, profil, nbPieces, onNouvelle, onMesPieces, onDeconnexion, onPhotos, onMaj }) {
   const ts = t.scene;
   const tr = useMemo(() => texteRealRoom(lang), [lang]);
-  const [piece] = useState(initiale);
+  const [piece, setPiece] = useState(initiale);
   const [items, setItems] = useState(initiale.agencement || []);
   const [rendus, setRendus] = useState(rendusInitiaux || []);
   const [selection, setSelection] = useState(null);
@@ -38,11 +42,14 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
   const [toast, setToast] = useState(null);
   const [pret, setPret] = useState(false);
   const [large, setLarge] = useState(true);
+  const [attente, setAttente] = useState(false);
+  const reamenagement = useRef(false);
   const editeur = useRef(null);
   const station = useRef(null);
   const outils = useRef(null);
   const points = useRef({});
   const sauvegarde = useRef({ h: 0, liste: null });
+  const ecritures = useRef(Promise.resolve(true));
   const aCadrer = useRef(null);
   const arrivee = useRef(true);
 
@@ -58,24 +65,42 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
   useEffect(() => { if (!toast) return; const h = setTimeout(() => setToast(null), 3600); return () => clearTimeout(h); }, [toast]);
 
   // ---------- enregistrement différé des modifications ----------
-  const ecrire = useCallback(async liste => {
-    const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { agencement: liste } });
-    if (!r.ok) dire(ts.erreur, true);
+  const ecrire = useCallback(liste => {
+    // Un ancien déplacement ne doit pas arriver après le nouvel aménagement.
+    const tache = ecritures.current.catch(() => false).then(async () => {
+      const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { agencement: liste } });
+      if (!r.ok) dire(ts.erreur, true);
+      return r.ok;
+    });
+    ecritures.current = tache;
+    return tache;
   }, [piece.id, ts.erreur]);
   const enregistrer = useCallback(liste => {
     clearTimeout(sauvegarde.current.h);
     sauvegarde.current.liste = liste;
-    sauvegarde.current.h = setTimeout(() => { const l = sauvegarde.current.liste; sauvegarde.current.liste = null; if (l) ecrire(l); }, 700);
+    sauvegarde.current.h = setTimeout(() => {
+      const l = sauvegarde.current.liste;
+      sauvegarde.current.liste = null;
+      if (l) {
+        const tache = ecrire(l);
+        const reprendre = () => { if (ecritures.current === tache && !sauvegarde.current.liste) sauvegarde.current.liste = l; };
+        tache.then(ok => { if (!ok) reprendre(); }).catch(reprendre);
+      }
+    }, 700);
   }, [ecrire]);
   // avant un rendu ou en quittant la pièce : ce qui attend part tout de suite
   const vider = useCallback(async () => {
     clearTimeout(sauvegarde.current.h);
     const l = sauvegarde.current.liste;
     sauvegarde.current.liste = null;
-    if (l) await ecrire(l);
+    if (l && !(await ecrire(l))) {sauvegarde.current.liste = l;throw new Error('sauvegarde');}
+    if (!(await ecritures.current)) throw new Error('sauvegarde');
   }, [ecrire]);
-  useEffect(() => () => { vider(); }, [vider]);
-  const modifier = useCallback(f => setItems(l => { const n = f(l); enregistrer(n); return n; }), [enregistrer]);
+  useEffect(() => () => { vider().catch(()=>{}); }, [vider]);
+  const modifier = useCallback(f => {
+    if (reamenagement.current) return;
+    setItems(l => { const n = f(l); enregistrer(n); return n; });
+  }, [enregistrer]);
 
   const produitDe = useCallback(it => (it.sku ? produits && produits[it.sku] : it.p), [produits]);
   const nouveaux = useMemo(() => items.filter(it => it.origine === 'catalogue' && it.garde !== false && produitDe(it)), [items, produitDe]);
@@ -93,9 +118,9 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
   // ---------- éditeur prêt : la pièce se range, les points apparaissent ----------
   useEffect(() => {
     if (!pret || !editeur.current) return;
-    editeur.current.decalage(large && !fiche ? DECALAGE : 0, 0, arrivee.current);
+    editeur.current.decalage(large && !fiche && vue !== 'photo' ? DECALAGE : 0, 0, arrivee.current);
     arrivee.current = false;
-  }, [pret, large, fiche]);
+  }, [pret, large, fiche, vue]);
   useEffect(() => { if (pret && editeur.current) editeur.current.ambiance(soir ? 1 : 0, 1700); }, [soir, pret]);
   useLayoutEffect(() => {
     if (!pret || reduit()) return;
@@ -201,6 +226,7 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
   }
   // ajout ou échange : le nouveau meuble prend la place (et le rôle) de l'ancien
   function choisirProduit(p) {
+    if (reamenagement.current) return;
     const { largeur: L, profondeur: P } = piece.modele.dims;
     const ancien = cat.remplace && items.find(x => x.id === cat.remplace);
     const id = 'c' + Date.now().toString(36);
@@ -228,14 +254,44 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
     if (vue === 'dessus') aCadrer.current = id;
   }
 
+  async function reamenager() {
+    if (reamenagement.current || !produits) return;
+    reamenagement.current = true;
+    setAttente(true);
+    try {
+      await vider();
+      const r = await api(`/api/pieces/${piece.id}/amenager`, {
+        method: 'POST',
+        corps: demandeAmenagement(t, piece, choix, produits, lang)
+      });
+      if (!r.ok) throw r;
+      setPiece(r.piece);
+      setItems(r.piece.agencement || []);
+      onMaj?.(r.piece);
+      setSelection(null);
+      setFiche(null);
+      aCadrer.current = null;
+      if (vue === 'dessus') editeur.current?.ensemble();
+      dire(ts.reamenage);
+    } catch (e) {
+      dire(tr.demo.erreurs[e?.erreur] || (e?.erreur === 'limite' ? t.chargement.limiteJour : e?.erreur === 'limite-mc' ? t.chargement.limite : e?.statut === 503 ? t.chargement.service : ts.erreur), true);
+    } finally {
+      reamenagement.current = false;
+      setAttente(false);
+    }
+  }
+
   // ---------- rendu réaliste ----------
   const ouvrirRendu = () => setRendu({ demarrer: !renduEnCours && credits > 0, n: Date.now() });
   const fermerRendu = useCallback(() => setRendu(null), []);
   const capturer = useCallback(o => (editeur.current ? editeur.current.capture(o) : null), []);
-  const quitter = f => async () => { await vider(); f(); };
+  const lireVue = useCallback(() => editeur.current?.pointDeVue(), []);
+  const surVue = useCallback(v => { setSelection(null); editeur.current?.choisirVue(v); setVue('photo'); }, []);
+  const surMouvement=useCallback(c=>editeur.current?.deplacerCamera(c),[]);
+  const quitter = f => async () => { try {await vider(); f();}catch(_){} };
 
   // ---------- station ----------
-  const prixDe = p => (p && p.prix > 0 ? prix(p.prix * 100, lang) : ts.surDevis);
+  const prixDe = p => prixMobilier(p,lang,ts.surDevis);
   let contenu;
   if (choisi && pChoisi) {
     const catalogue = choisi.origine === 'catalogue';
@@ -245,7 +301,7 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
       <>
         <p className="mc-pill mc-station__pill"><i /><span key={pill} data-label={pill}>{pill}</span></p>
         <h2 className="mc-station__titre mc-display">{pChoisi.nom}</h2>
-        <p className="mc-station__script mc-script">{catalogue ? String(pChoisi.cat || '').toLowerCase() : choisi.garde === false ? ts.retireEtat.toLowerCase() : ts.gardeEtat.toLowerCase()}</p>
+        <p className="mc-station__script mc-script">{catalogue ? nomCategorie(pChoisi,lang).toLowerCase() : choisi.garde === false ? ts.retireEtat.toLowerCase() : ts.gardeEtat.toLowerCase()}</p>
         {(choisi.raison || (catalogue && pChoisi.titre)) && <p className="mc-station__texte">{choisi.raison || pChoisi.titre}</p>}
         <ul className="mc-station__donnees mc-mono">
           {pChoisi.dim && <li>{remplir(ts.dims, { l: cm(pChoisi.dim[0]), p: cm(pChoisi.dim[1]), h: cm(pChoisi.dim[2]) })}</li>}
@@ -266,8 +322,8 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
       </>
     );
   } else {
-    const pill = `${ts.proposition} · ${remplir(ts.pieces, { n: nouveaux.length })}`;
     const prop = piece.proposition;
+    const pill = `${ts.proposition}${prop?.moteur?.type === 'ia' ? ' · ' + tr.demo.ia : ''} · ${remplir(ts.pieces, { n: nouveaux.length })}`;
     const offerts = remplir(credits > 1 ? ts.offertsPl : ts.offerts, { n: credits });
     contenu = (
       <>
@@ -275,6 +331,7 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
         <h1 className="mc-station__titre mc-display">{remplir(ts.titre, { piece: t.fonctions[piece.fonction] || piece.nom })}</h1>
         <p className="mc-station__script mc-script">{ts.script}</p>
         <p className="mc-station__texte">{(prop && prop.concept) || ts.concept}</p>
+        <PlanVie proposition={prop} langue={lang} />
         {nouveaux.length > 0 ? (
           <ol className="mc-station__liste">
             {nouveaux.map((it, i) => {
@@ -283,7 +340,7 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
                 <li key={it.id}>
                   <button type="button" className="mc-ligne-piece" onClick={() => choisir(it.id)} onMouseEnter={() => points.current[it.id] && points.current[it.id].classList.add('is-actif')} onMouseLeave={() => points.current[it.id] && points.current[it.id].classList.remove('is-actif')}>
                     <em>{pad2(i + 1)}</em>
-                    <span className="mc-ligne-piece__txt"><small>{p.cat}</small><b>{p.nom}</b></span>
+                    <span className="mc-ligne-piece__txt"><small>{nomCategorie(p,lang)}</small><b>{p.nom}</b></span>
                     <span className="mc-ligne-piece__prix">{prixDe(p)}</span>
                   </button>
                 </li>
@@ -295,13 +352,13 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
           <li>{remplir(ts.maquette, { l: String(piece.modele.dims.largeur).replace('.', lang === 'fr' ? ',' : '.'), p: String(piece.modele.dims.profondeur).replace('.', lang === 'fr' ? ',' : '.') })}</li>
           {existants.length > 0 && <li>{remplir(ts.gardes, { n: gardes })}</li>}
         </ul>
-        <p className="mc-station__total"><small className="mc-mono">{ts.total}</small>{prix(total * 100, lang)}</p>
+        <p className="mc-station__total"><small className="mc-mono">{nouveaux.some(it=>produitDe(it)?.generique)?(lang==='fr'?'Total estimé':'Estimated total'):ts.total}</small>{prix(total * 100, lang)}</p>
+        {nouveaux.some(it=>produitDe(it)?.generique)&&<p className="mc-note">{noteGeneriques(lang)}</p>}
         <div className="mc-station__actions">
           <button type="button" className="mc-rendu-btn" onClick={ouvrirRendu} disabled={!credits && !renduEnCours && !finis.length}>
             {credits > 0 || renduEnCours ? <>{ts.rendu} <i>· {offerts}</i></> : finis.length ? ts.renduVoir : ts.plusDeRendu}
           </button>
           {finis.length > 0 && credits > 0 && <button type="button" className="mc-lien" onClick={() => setRendu({ demarrer: false, n: Date.now() })}>{ts.renduVoir}</button>}
-          <button type="button" className="mc-lien" onClick={() => ouvrirCatalogue('', null)} disabled={!produits}>+ {ts.ajouter}</button>
         </div>
       </>
     );
@@ -310,8 +367,8 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
   const bonjour = profil && profil.prenom ? profil.prenom : null;
   return (
     <div className={'mc-piece mc-fixe' + (soir ? ' is-soir' : '') + (fiche ? ' a-fiche' : '')}>
-      <div className="mc-piece__scene">
-        <Editeur3D ref={editeur} modele={piece.modele} items={items} selection={selection} vue={vue} fond="#E6E0D4" fondSoir="#1E160E"
+      <div className="mc-piece__scene" inert={attente || undefined} aria-busy={attente}>
+        <Editeur3D ref={editeur} modele={piece.modele} items={items} selection={selection} vue={vue} navigationActive={!attente&&!rendu&&!cat.ouvert&&!fiche} fond="#E6E0D4" fondSoir="#1E160E"
           surSelection={surSelection} surDeplacement={surDeplacement} surCadre={setCadre} surPret={() => setPret(true)} erreurWebgl={ts.erreur} />
         <div className="mc-points">
           {nouveaux.map((it, i) => {
@@ -348,15 +405,27 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
         <p className="mc-piece__nom">{t.marque}</p>
         <p className="mc-mono">{t.service}{bonjour ? ' · ' + bonjour : ''}{demo ? ' · ' + tr.demo.badge : ''}</p>
         <nav className="mc-piece__menu">
-          <button type="button" onClick={quitter(onNouvelle)}>{ts.nouvelle}</button>
-          {nbPieces > 1 && <button type="button" onClick={quitter(onMesPieces)}>{ts.mesPieces}</button>}
-          <button type="button" onClick={quitter(onDeconnexion)}>{demo ? ts.recommencer : t.nav.deconnexion}</button>
+          <button type="button" onClick={quitter(onNouvelle)} disabled={attente}>{ts.nouvelle}</button>
+          {nbPieces > 1 && <button type="button" onClick={quitter(onMesPieces)} disabled={attente}>{ts.mesPieces}</button>}
+          <button type="button" onClick={quitter(onDeconnexion)} disabled={attente}>{demo ? ts.recommencer : t.nav.deconnexion}</button>
         </nav>
       </header>
 
-      {produits && <section className={'mc-station' + (choisi ? ' mc-station--meuble' : '')} key={cleStation} ref={station} aria-live="polite">{contenu}</section>}
+      {produits && <section className={'mc-station' + (choisi ? ' mc-station--meuble' : '')} ref={station}>
+        <div className="mc-ameublement" role="group" aria-label={ts.ameublement}>
+          <button type="button" className="mc-btn" onClick={() => ouvrirCatalogue('', null)} disabled={attente}>
+            <Icone d={I.plus} /><span>{ts.ajouter}</span>
+          </button>
+          <button type="button" className="mc-btn mc-btn--plein" onClick={reamenager} disabled={attente} title={ts.reamenagerAide}>
+            {attente ? <span className="mc-rouage" aria-hidden="true" /> : <Icone d={I.echanger} />}<span>{attente ? ts.reamenagement : ts.reamenager}</span>
+          </button>
+        </div>
+        <div className="mc-station__contenu" key={cleStation} inert={attente || undefined} aria-live="polite">{contenu}</div>
+        {attente && <p className="mc-reamenagement" role="status">{ts.reamenagerAide}</p>}
+      </section>}
 
-      <div className="mc-commandes">
+      <div className="mc-commandes" inert={attente || undefined}>
+        {vue === 'photo' && <div className="mc-camera"><CameraPhoto modele={piece.modele} lang={lang} surChoisir={surVue} surMouvement={surMouvement} disabled={attente||!!rendu||cat.ouvert||!!fiche}/><small>{lang==='fr'?'Flèches : se déplacer · Glisser : regarder autour.':'Arrows: move · Drag: look around.'}</small></div>}
         {cadre && vue === 'dessus' && !choisi && <button type="button" className="mc-segment mc-segment--seul" onClick={ensemble}><span>{ts.ensemble}</span></button>}
         <div className="mc-segment" role="group" aria-label={ts.jour + ' / ' + ts.soir}>
           <button type="button" aria-pressed={!soir} onClick={() => setSoir(false)}>{ts.jour}</button>
@@ -379,7 +448,7 @@ export default function Scene({ t, lang, demo, piece: initiale, rendus: rendusIn
       )}
       {rendu && (
         <Rendu key={rendu.n} t={t} piece={{ ...piece, agencement: items }} rendus={rendus} setRendus={setRendus} credits={credits} setCredits={setCredits}
-          capturer={capturer} avant={vider} demarrer={rendu.demarrer} fermer={fermerRendu} />
+          capturer={capturer} lireVue={lireVue} surVue={surVue} avant={vider} demarrer={rendu.demarrer} lang={lang} onPiece={setPiece} fermer={fermerRendu} />
       )}
       {toast && <div key={toast.n} className="mc-toast" role="status">{toast.texte}</div>}
     </div>

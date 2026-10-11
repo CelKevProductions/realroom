@@ -24,7 +24,7 @@ test('une base de la version 1 est migrée : codes par empreinte, profils Maison
   const { sql, une } = await import('../../lib/db.js');
   await sql("INSERT INTO codes (cle, empreinte, expire_le) VALUES ('code:abc', 'y', now())");
   assert.equal((await une("SELECT credits FROM utilisateurs WHERE id = 'u_ancien'")).credits, 7);
-  assert.equal((await une("SELECT valeur FROM meta WHERE cle = 'schema'")).valeur, '3');
+  assert.equal((await une("SELECT valeur FROM meta WHERE cle = 'schema'")).valeur, '4');
   assert.ok((await une("SELECT to_regclass('public.bienvenues') AS t")).t);
   // version 3 : profils des clients Maison Corleone (édition gratuite)
   assert.ok((await une("SELECT to_regclass('public.profils_mc') AS t")).t);

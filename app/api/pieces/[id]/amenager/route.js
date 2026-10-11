@@ -7,6 +7,7 @@ import { proposerAmenagement } from '@/lib/claude.js';
 import { versClaude } from '@/lib/piece.js';
 import { preparerAmenagement, appliquerProposition } from '@/lib/amenagement.js';
 import { PRODUITS, candidats } from '@/lib/catalogue.js';
+import { enDataUri } from '@/lib/stockage.js';
 
 export const maxDuration = 300;
 
@@ -27,11 +28,16 @@ export const POST = route(async (request, { params }) => {
   if (!payant) await compter('amenagements-du-jour', Infinity, 864e5);
   const prep = preparerAmenagement(p.agencement || [], b);
   const cands = candidats({ dims: p.modele.dims, fonction: p.fonction, envies: prep.envies, budget: prep.budget });
+  const inspirations = [];
+  for (const photo of (p.photos || []).filter(ph => ph.role === 'inspiration').slice(0, LIMITES.inspirationsParPiece)) {
+    const dataUri = await enDataUri(photo);
+    if (dataUri) inspirations.push({ dataUri });
+  }
   const { proposition } = await proposerAmenagement({
-    piece: versClaude(p.modele, prep.base, PRODUITS), fonction: p.fonction, mode: prep.mode, envies: prep.envies, budget: prep.budget,
-    garder: prep.garder, aRemplacer: prep.aRemplacer, candidats: cands, langue: b.langue === 'en' ? 'en' : 'fr'
+    piece: { ...versClaude(p.modele, prep.base, PRODUITS), notes_client: p.notes || '' }, fonction: p.fonction, mode: prep.mode, envies: prep.envies, budget: prep.budget,
+    garder: prep.garder, aRemplacer: prep.aRemplacer, candidats: cands, inspirations, langue: b.langue === 'en' ? 'en' : 'fr'
   });
-  const { agencement, proposition: prop } = appliquerProposition({ modele: p.modele, prep, proposition, produits: PRODUITS });
+  const { agencement, proposition: prop } = appliquerProposition({ modele: p.modele, fonction: p.fonction, prep, proposition, produits: PRODUITS, candidats: cands });
   const n = await majPiece(u.id, id, { agencement, proposition: prop });
   return json({ piece: publique(n) });
 });

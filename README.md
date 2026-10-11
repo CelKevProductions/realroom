@@ -1,6 +1,6 @@
 # RealRoom · un service KPW
 
-Le client photographie une pièce (ou tout un logement) et donne des mesures approximatives. RealRoom la reproduit en maquette 3D avec ses meubles actuels (Claude lit les photos). Il propose ensuite un aménagement avec de vrais meubles du catalogue Maison Corleone : automatiquement selon la fonction de la pièce, ou d'après les envies du client. Enfin, il en tire un rendu photo réaliste de la vraie pièce (fal.ai, Nano Banana Pro) et une visite 3D (World Labs, Marble). Les générations se paient en crédits (Stripe).
+Le client relève une pièce par photos guidées, par 3 à 32 coins au sol avec WebXR/ARCore sur Android compatible, ou par import JSON Apple RoomPlan/LiDAR (application tierce existante ou compagnon natif). Un QR code permet le transfert temporaire depuis le téléphone. RealRoom affiche un plan polygonal à vérifier et une maquette 3D avec les meubles existants. Il propose ensuite un aménagement avec de vrais meubles du catalogue Maison Corleone : selon la fonction, le style et le budget, avec patrons paramétriques et recherche géométrique. Enfin, une photo d’entrée sert au rendu photo réaliste (fal.ai, Nano Banana Pro), puis à la visite 3D (World Labs, Marble). Les générations se paient en crédits (Stripe). Le compagnon iOS compile en CI macOS pour simulateur et appareil sans signature ; son export Swift est testé avec l'import du site. Il n'est pas encore distribué et les captures matérielles restent à valider sur appareil.
 
 ## Pile
 
@@ -23,6 +23,13 @@ Le client photographie une pièce (ou tout un logement) et donne des mesures app
 | `app/api` | Routes : connexion, projets, pièces, photos, analyse, aménagement, rendus, crédits, webhook Stripe |
 | `lib` | Serveur : base, sessions, stockage, crédits, Claude, fal.ai / Marble, Stripe, catalogue, agencement |
 | `lib/agencement.js` | Repère de la pièce, empreintes au sol, solveur (dans la pièce, sans chevauchement, portes libres). Il tourne aussi dans le navigateur. |
+| `lib/geometrie.js`, `components/piece/PlanPiece.js` | Plan 2D corrigeable : mesures confirmées, ouvertures et tailles des meubles existants, enregistrement commun à l’API et à la démo. |
+| `lib/confort.js` | Score expliqué, recuit simulé reproductible, accès et circulation ; jusqu’à trois dispositions aux mêmes produits et prix. |
+| `lib/references.js` | Sources, préférences de composition et inspirations, séparées du relevé métrique. |
+| `lib/scan.js`, `components/piece/Acquisition.js`, `moteur/releveAR.js` | Contrat métrique validé, aperçu/import commun aux deux éditions, coins au sol WebXR/ARCore. Android ne reconnaît pas automatiquement mobilier et ouvertures. |
+| `native/ios` | Compagnon RoomPlan Swift/Xcode : murs, ouvertures et objets ; export JSON sans vidéo, images ni maillage. Compilation CI et contrat Swift/JavaScript vérifiés ; signature, distribution et essais LiDAR restent à faire sur appareil. |
+| `lib/composition.js`, `lib/patrons.js`, `lib/budget.js` | Choix sémantiques séparés des coordonnées, neuf départs paramétriques et sac à dos par emplacement avec alternatives éligibles du même usage. |
+| `lib/profils.js`, `lib/styles-index.js`, `scripts/styles_catalogue.py` | Onze styles combinables, profil neutre et indices visuels OpenCLIP calculés hors ligne sur les photos publiques du catalogue ; repli textuel si l'image n'est pas indexée. |
 | `moteur` | Moteur 3D du navigateur |
 | `components` | Interface React |
 | `outils`, `scripts` | Catalogue (export Shopify, familles et dimensions), assemblage des maquettes |
@@ -33,11 +40,13 @@ Le client photographie une pièce (ou tout un logement) et donne des mesures app
 ```bash
 npm install
 npm run build
-REALROOM_SIMULATION=1 REALROOM_ESSAIS=1 npm start   # sans aucune clé : analyse, aménagement, rendus et paiement simulés
+REALROOM_SIMULATION=1 REALROOM_ESSAIS=1 npm start   # services des comptes simulés ; démo d'aménagement exige une clé IA
 # ou, pendant le développement : REALROOM_SIMULATION=1 npm run dev
 ```
 
 En local seulement (jamais sur Vercel) : sans `RESEND_API_KEY`, le code de connexion s'affiche sur la page, et sans Stripe l'achat de crédits est simulé. Sans `DATABASE_URL`, la base est créée dans `.data/pglite`.
+
+Les démos `/fr/demo` et `/fr/maison-corleone/demo` appellent réellement l'IA pour aménager via `/api/demo/amenager`. Fournir `FAL_KEY` ou `ANTHROPIC_API_KEY` côté serveur ; sur Vercel, donner aussi à la preview sa propre base et son propre `SESSION_SECRET`. Le plan et les inspirations choisies sont transmis au moteur, sans compte ni débit de crédit image. Par défaut : dix demandes par IP et trente au total sur 24 h, configurables via `.env.example`. Sans ces services, l'interface conserve la pièce et affiche une indisponibilité, sans proposition simulée. `GET /api/demo/amenager` expose la disponibilité de configuration, sans tester le fournisseur ni révéler de clé.
 
 ## Mise en ligne (Vercel)
 
@@ -58,7 +67,7 @@ En local seulement (jamais sur Vercel) : sans `RESEND_API_KEY`, le code de conne
 
 ## Édition Maison Corleone (« Chez vous »)
 
-`/fr/maison-corleone` : l'aménagement offert aux clients de maisoncorleone.com, avec leur compte client de la boutique. Préchargement (celui de la visite privée, aux couleurs de la boutique), intro 3D dirigée par le défilement (`moteur/intro.js`), parcours guidé (pièce, budget, style, priorité, photos), chargement 3D (`moteur/chargeur.js`), puis la pièce en 3D avec l'éditeur de RealRoom. Deux rendus photo réalistes offerts par client, une seule fois. Démo sans compte : `/fr/maison-corleone/demo` (tout dans le navigateur, analyse et rendus simulés). Code : `components/maison`, `lib/maison.js`, `app/api/mc`.
+`/fr/maison-corleone` : l'aménagement offert aux clients de maisoncorleone.com, avec leur compte client de la boutique. Préchargement (celui de la visite privée, aux couleurs de la boutique), intro 3D dirigée par le défilement (`moteur/intro.js`), parcours guidé (pièce, budget, style, priorité, photos ou relevé métrique), chargement 3D (`moteur/chargeur.js`), puis la pièce en 3D avec l'éditeur de RealRoom. Les scans passent par le même plan correctif, le score et le moteur de disposition. Avec un scan, la photo d’entrée peut être ajoutée seulement au moment du rendu, sans refaire la proposition. Deux rendus photo réalistes offerts par client, une seule fois. Démo sans compte : `/fr/maison-corleone/demo` (stockage navigateur, aménagement IA serveur ; analyse photo et rendus simulés). Code : `components/maison`, `lib/maison.js`, `app/api/mc`.
 
 Connexion : comptes clients Shopify (Customer Account API, OAuth 2.0 / OpenID Connect).
 
@@ -105,9 +114,16 @@ Les pièces choisies à la main (`outils/sources/produits.js`) gardent leur maqu
 
 ```bash
 npm test                                   # solveur d'agencement, crédits (base PGlite temporaire)
+npm run build && node tests/plan.mjs        # plan, scans, inspirations, score, reprise du rendu : API/base/UI, desktop/mobile
 npm run build && npm run test:api          # cas limites de l'API : envois simultanés, crédits offerts, codes faux…
 python3 tests/e2e.py                       # parcours complet, services simulés (aussi : mobile)
 python3 tests/maison.py compte             # édition Maison Corleone : connexion simulée, parcours guidé, pièce 3D, rendu
 python3 tests/maison.py demo-mobile        # sa démo, sans serveur (aussi : demo-desktop ; --mouvement joue les animations)
 python3 tests/harnais/essai-editeur.py     # moteur 3D seul (après : npx esbuild tests/harnais/editeur.js --bundle …)
 ```
+
+Plan d’amélioration du relevé et du placement : [docs/plan-mistral-realroom.md](docs/plan-mistral-realroom.md).
+
+Construction et limites du compagnon Apple : [native/ios/README.md](native/ios/README.md). Les fixtures de scan des tests sont synthétiques : elles ne valident ni la précision ARCore/LiDAR ni la compilation Swift.
+
+Le détail du scan polygonal, de l’import Apple, du transfert QR et des références de style figure dans [capture-polygones-transfert.md](docs/capture-polygones-transfert.md).

@@ -6,6 +6,9 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { api } from '@/components/api.js';
 import { reduireImage } from '@/components/piece/image.js';
+import Inspirations from '@/components/piece/Inspirations.js';
+import Acquisition from '@/components/piece/Acquisition.js';
+import PlanPiece from '@/components/piece/PlanPiece.js';
 import { prix } from '@/lib/i18n.js';
 import Marque from '@/components/maison/Embleme.js';
 import { Fleche } from '@/components/maison/icones.js';
@@ -22,7 +25,7 @@ function Montant({ valeur, lang, libre }) {
   const el = useRef(null);
   const affiche = useRef(0);
   useLayoutEffect(() => {
-    const ecrire = v => { if (el.current) el.current.textContent = v ? prix(Math.round(v / 50) * 50 * 100, lang, 0) : libre; };
+    const ecrire = v => { if (el.current) el.current.textContent = v ? prix(Math.round(v * 100), lang, Number.isInteger(valeur) ? 0 : 2) : libre; };
     if (!valeur || !affiche.current || reduit()) { affiche.current = valeur; ecrire(valeur); return; }
     const o = { v: affiche.current };
     const tw = gsap.to(o, { v: valeur, duration: .6, ease: 'power3.out', onUpdate: () => ecrire(o.v), onComplete: () => { affiche.current = valeur; } });
@@ -33,12 +36,13 @@ function Montant({ valeur, lang, libre }) {
 
 export default function Parcours({
   t, lang, demo, etapeInitiale, connecte, profil, connexion, message, raison, choix, setChoix,
-  piece, setPiece, assurerPiece, produits, onConnecteDemo, onOuvrirPiece, onLancer, onDeconnexion
+  piece, setPiece, assurerPiece, produits, onConnecteDemo, onOuvrirPiece, onLancer, onDeconnexion, photoPourRendu = false
 }) {
   const [etape, setEtape] = useState(etapeInitiale);
   const [envoi, setEnvoi] = useState({});
   const [erreurPhoto, setErreurPhoto] = useState('');
   const [avisStyle, setAvisStyle] = useState('');
+  const [modeCapture, setModeCapture] = useState('photos'), [plan, setPlan] = useState(false);
   const [dims, setDims] = useState(() => ({ largeur: (piece && piece.dims && piece.dims.largeur) || '', profondeur: (piece && piece.dims && piece.dims.profondeur) || '' }));
   const corps = useRef(null);
   const occupe = useRef(false);
@@ -73,13 +77,19 @@ export default function Parcours({
   useEffect(() => { if (!avisStyle) return; const h = setTimeout(() => setAvisStyle(''), 2600); return () => clearTimeout(h); }, [avisStyle]);
 
   const precedente = etape === 'piece' ? (connecte ? (pieces.length ? 'reprise' : null) : 'compte') : num > 0 ? ETAPES[num - 1] : null;
-  const peutContinuer = etape === 'piece' ? !!choix.fonction
+  const peutContinuer = !Object.values(envoi).some(Boolean) && (etape === 'piece' ? !!choix.fonction
     : etape === 'priorite' ? choix.priorites.length > 0
-      : etape === 'photos' ? !!photo('entree') && !Object.values(envoi).some(Boolean)
-        : true;
-  function continuer() {
+      : etape === 'photos' ? (!!photo('entree') || !!piece?.modele?.capture) && !plan
+        : true);
+  async function continuer() {
     if (!peutContinuer) return;
-    if (etape === 'photos') { onLancer(dims); return; }
+    if (etape === 'photos') {
+      setErreurPhoto(''); setEnvoi(e => ({ ...e, precisions: true }));
+      try { if (await onLancer(dims, choix.notes ?? piece?.notes ?? '') === false) setErreurPhoto(t.photos.erreurDetails); }
+      catch (_) { setErreurPhoto(t.photos.erreurDetails); }
+      finally { setEnvoi(e => ({ ...e, precisions: false })); }
+      return;
+    }
     aller(ETAPES[num + 1]);
   }
 
@@ -217,7 +227,8 @@ export default function Parcours({
         {question(t.budget)}
         <div className="mc-reponses">
           <div className="mc-budget">
-            <p className="mc-budget__valeur" aria-live="polite"><Montant valeur={choix.budget} lang={lang} libre={t.budget.libre} />{choix.budget > 0 && <small>{t.budget.environ}</small>}</p>
+            <p className="mc-budget__valeur" aria-live="polite"><Montant valeur={choix.budget} lang={lang} libre={t.budget.libre} />{choix.budget > 0 && <small>{lang==='fr'?'plafond de votre sélection':'your selection limit'}</small>}</p>
+            <label className="mc-budget__saisie"><span className="mc-mono">{lang==='fr'?'Mon budget (€)':'My budget (€)'}</span><input type="number" inputMode="decimal" min="0" max="1000000" step=".01" placeholder="2500" value={choix.budget||''} onChange={e=>{const n=Number(e.target.value);if(Number.isFinite(n)&&n>=0&&n<=1e6)setChoix(c=>({...c,budget:n}));}}/><small>{lang==='fr'?'Saisissez votre plafond ou choisissez « Sans limite ».':'Enter your spending limit or choose “No limit”.'}</small></label>
             <div className={'mc-curseur' + (choix.budget ? '' : ' is-libre')}>
               <span className="mc-curseur__rail" />
               <span className="mc-curseur__plein" style={{ width: pct + '%' }} />
@@ -247,6 +258,7 @@ export default function Parcours({
             <input className="mc-champ-libre" type="text" maxLength={300} placeholder={t.style.champ} aria-label={t.style.champ} value={choix.texte}
               onChange={e => setChoix(c => ({ ...c, texte: e.target.value }))} />
           </div>
+          <Inspirations piece={piece} setPiece={setPiece} assurerPiece={assurerPiece} lang={lang} demo={demo} onOccupe={v => setEnvoi(e => ({ ...e, inspiration: v }))} />
           {suggestions.length > 0 && (
             <div className="mc-suggestions">
               <p className="mc-suggestions__tete"><span className="mc-mono">{t.style.suggestions}</span><small>{t.style.coupsAide}</small></p>
@@ -292,8 +304,12 @@ export default function Parcours({
       <>
         {question(t.photos)}
         <div className="mc-reponses">
+          <Acquisition piece={piece} setPiece={setPiece} assurerPiece={assurerPiece} lang={lang}
+            onMode={setModeCapture} onOccupe={v => setEnvoi(e => ({ ...e, scan: v }))}
+            onImport={() => { setDims({ largeur: '', profondeur: '' }); setPlan(true); }} />
+          {piece?.modele?.capture && <button type="button" className="mc-btn" onClick={() => setPlan(true)}>{lang === 'en' ? 'Check metric room plan' : 'Vérifier le plan métrique'}</button>}
           <div className="mc-photos">
-            <div className="mc-photo-principale">
+            <div className="mc-photo-principale" hidden={modeCapture !== 'photos'}>
               {p0 ? (
                 <>
                   <img src={p0.url} alt={t.photos.principale} />
@@ -312,19 +328,20 @@ export default function Parcours({
               )}
               {envoi.entree && <div className="mc-envoi"><i /></div>}
             </div>
-            <div className="mc-photos__autres">
+            <div className="mc-photos__autres" hidden={modeCapture !== 'photos'}>
               {['fond', 'gauche', 'droite'].map(role => {
                 const p = photo(role);
                 return (
                   <label key={role} className={'mc-photo-mini' + (p ? ' is-pleine' : '')}>
-                    {p ? <img src={p.url} alt="" /> : <span>+ {t.photos.autre}</span>}
-                    <input type="file" accept="image/*" aria-label={t.photos.autre} onChange={e => envoyer(role, e.target.files[0])} />
+                    {p ? <img src={p.url} alt={t.photos.angles[role]} /> : <span>+ {t.photos.angles[role]}</span>}
+                    <input type="file" accept="image/*" aria-label={t.photos.angles[role]} onChange={e => envoyer(role, e.target.files[0])} />
                     {envoi[role] && <span className="mc-envoi"><i /></span>}
                   </label>
                 );
               })}
             </div>
-            <details className="mc-dims">
+            {modeCapture === 'photos' && <p className="mc-photos__aide">{t.photos.precision}</p>}
+            <details className="mc-dims" hidden={modeCapture !== 'photos' || !!piece?.modele?.capture}>
               <summary className="mc-mono">{t.photos.dims}</summary>
               <div className="mc-dims__champs">
                 {['largeur', 'profondeur'].map(k => (
@@ -333,9 +350,14 @@ export default function Parcours({
                   </label>
                 ))}
               </div>
+              <p className="mc-photos__aide">{t.photos.repereDims}</p>
             </details>
+            <label className="mc-photo-notes"><span className="mc-mono">{t.photos.notes}</span>
+              <textarea className="mc-champ-libre" maxLength={1000} rows={3} value={choix.notes ?? piece?.notes ?? ''}
+                placeholder={t.photos.notesAide} onChange={e => setChoix(c => ({ ...c, notes: e.target.value }))} />
+            </label>
             {erreurPhoto && <p className="mc-avis" role="alert">{erreurPhoto}</p>}
-            {!p0 && !envoi.entree && <p className="mc-photos__aide">{t.photos.manque}</p>}
+            {!p0 && !envoi.entree && !piece?.modele?.capture && modeCapture === 'photos' && <p className="mc-photos__aide">{t.photos.manque}</p>}
           </div>
         </div>
       </>
@@ -345,6 +367,12 @@ export default function Parcours({
   const bonjour = profil && profil.prenom ? remplir(t.nav.bonjour, { p: profil.prenom }) : t.nav.connecte;
   return (
     <div className="mc-guide mc-fixe">
+      {plan && piece?.modele && <PlanPiece modele={piece.modele} items={piece.agencement || []} produits={produits || {}} lang={lang}
+        onFermer={() => setPlan(false)} onSauver={async geometrie => {
+          const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { geometrie } });
+          if (!r.ok) return false;
+          setPiece(r.piece); return true;
+        }} />}
       <Marque label={t.scene.boutique} />
       <header className="mc-guide__tete">
         {demo ? <span className="mc-pill">{t.nav.demoCourt}</span> : connecte && <span className="mc-guide__compte mc-mono">{bonjour}</span>}
@@ -361,7 +389,7 @@ export default function Parcours({
             <span style={{ transform: `scaleX(${(num + 1) / ETAPES.length})` }} />
             <em className="mc-mono">{remplir(t.nav.etape, { n: num + 1, t: ETAPES.length })}</em>
           </div>
-          <button type="button" className="mc-btn mc-btn--plein" disabled={!peutContinuer} onClick={continuer}>{etape === 'photos' ? t.photos.lancer : t.nav.continuer}<Fleche /></button>
+          <button type="button" className="mc-btn mc-btn--plein" disabled={!peutContinuer || (etape === 'photos' && photoPourRendu && !photo('entree'))} onClick={continuer}>{etape === 'photos' ? photoPourRendu ? (lang === 'en' ? 'Return to my room' : 'Revenir à ma pièce') : t.photos.lancer : t.nav.continuer}<Fleche /></button>
         </footer>
       )}
     </div>

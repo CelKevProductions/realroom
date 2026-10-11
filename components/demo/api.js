@@ -1,14 +1,19 @@
 // Démo sans compte : réponses de l'API servies dans le navigateur, avec les mêmes formes que les
-// vraies routes (app/api). L'analyse et l'aménagement sont simulés (lib/simulation.js) mais passent
-// par le même solveur ; le « rendu » est la vue de la maquette, la visite 3D est simulée.
+// vraies routes (app/api). L'aménagement appelle réellement l'IA côté serveur et le même solveur ;
+// l'analyse photo, le rendu (vue de la maquette), la visite 3D et les paiements sont simulés.
 import { lire, ecrire, remettreAZero, piece as pieceDe, projet as projetDe, publique, renduPublic, rendusDe, listeProjets, projetComplet, id as nouvelId } from '@/components/demo/magasin.js';
 import { chargerCatalogue } from '@/components/catalogueClient.js';
-import { simulerAnalyse, simulerAmenagement } from '@/lib/simulation.js';
-import { pieceDepuisAnalyse, preparerAmenagement, appliquerProposition } from '@/lib/amenagement.js';
-import { choisirCandidats } from '@/lib/selection.js';
-import { versClaude, dimsValides } from '@/lib/piece.js';
-import { resoudre, verifier } from '@/lib/agencement.js';
+import { simulerAnalyse } from '@/lib/simulation.js';
+import { pieceDepuisAnalyse } from '@/lib/amenagement.js';
+import { dimsValides } from '@/lib/piece.js';
+import { moteurGuideActif } from '@/lib/moteur-guide.js';
+import { amenagerParIA } from './ia.js';
+import { verifier } from '@/lib/agencement.js';
+import { corrigerPiece, mesuresConfirmees } from '@/lib/geometrie.js';
 import { CREDITS, PACKS, FONCTIONS, ROLES_PHOTO, LIMITES } from '@/lib/config.js';
+import { placePhoto } from '@/lib/references.js';
+import { champsDepuisScan, ErreurScan } from '@/lib/scan.js';
+import {optionsRendu} from '@/lib/rendu-options.js';
 
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const maintenant = () => new Date().toISOString();
@@ -105,6 +110,16 @@ export async function repondre(url, { method = 'GET', corps, formulaire } = {}) 
         if (method === 'PATCH') return ok(await modifier(p, corps || {}));
       }
       if (sous === 'photos') return ok({ piece: publique(await photos(p, method, u, formulaire)) });
+      if (sous === 'scan' && method === 'POST') {
+        if (p.etat === 'analyse') return non('en-cours', 409);
+        if (p.modele && corps?.remplacer !== true) return non('scan-remplacement', 409);
+        if (p.modele && corps?.revision !== p.maj_le) return non('scan-conflit', 409);
+        let champs;
+        try { champs = champsDepuisScan(corps?.scan); }
+        catch (e) { if (e instanceof ErreurScan) return non(e.code, 400); throw e; }
+        ecrire(() => { Object.assign(p, champs); toucher(p); });
+        return ok({ piece: publique(p) });
+      }
       if (sous === 'analyse') return analyser(p, langue);
       if (sous === 'amenager') return amenager(p, corps || {}, langue);
       if (sous === 'rendus') {
@@ -132,12 +147,13 @@ async function modifier(p, b) {
     if (b.dims) {
       const d = dimsValides(b.dims);
       p.dims = d;
-      if (p.modele) {
-        p.modele = { ...p.modele, dims: { ...p.modele.dims, ...Object.fromEntries(Object.entries(d).filter(([, v]) => v)) } };
-        p.agencement = resoudre(p.modele, p.agencement || [], produits, { jeu: 0 }).items;
-      }
     }
-    if (Array.isArray(b.agencement) && p.modele) p.agencement = b.agencement.slice(0, 80);
+    if ((b.dims || b.geometrie) && p.modele) {
+      Object.assign(p, corrigerPiece(p.modele, Array.isArray(b.agencement) ? b.agencement.slice(0, 80) : p.agencement || [], b.geometrie || { dims: b.dims }, produits));
+      p.dims = mesuresConfirmees(p.modele);
+      if (p.proposition) p.proposition = { ...p.proposition, confort: null };
+    }
+    if (Array.isArray(b.agencement) && p.modele && !b.dims && !b.geometrie) p.agencement = b.agencement.slice(0, 80);
     if (b.vue && p.modele) p.modele = { ...p.modele, vue: { ...p.modele.vue, ...b.vue } };
     toucher(p);
     if (p.modele) alertes = verifier(p.modele, p.agencement || [], produits);
@@ -155,10 +171,11 @@ async function photos(p, method, u, formulaire) {
   const fichier = formulaire && formulaire.get('photo');
   if (!fichier || typeof fichier.arrayBuffer !== 'function') throw erreur(400, 'photo');
   const role = ROLES_PHOTO.includes(formulaire.get('role')) ? formulaire.get('role') : 'detail';
-  const i = role !== 'detail' ? p.photos.findIndex(f => f.role === role) : -1;
-  if (i < 0 && p.photos.length >= LIMITES.photosParPiece) throw erreur(409, 'limite-photos');
+  if (!placePhoto(p.photos, role, LIMITES).possible) throw erreur(409, 'limite-photos');
   const photo = { url: await lireFichier(fichier), role, largeur: Math.round(+formulaire.get('largeur')) || null, hauteur: Math.round(+formulaire.get('hauteur')) || null };
   ecrire(() => {
+    const { remplace: i, possible } = placePhoto(p.photos, role, LIMITES);
+    if (!possible) throw erreur(409, 'limite-photos');
     if (i >= 0) p.photos[i] = photo; else p.photos.push(photo);
     p.photos.sort((a, b) => ROLES_PHOTO.indexOf(a.role) - ROLES_PHOTO.indexOf(b.role));
     toucher(p);
@@ -179,13 +196,10 @@ async function analyser(p, langue) {
 
 async function amenager(p, b, langue) {
   if (!p.modele) return non('pas-de-modele', 409);
-  await pause(1600);
-  const produits = (await chargerCatalogue()).produits;
-  const prep = preparerAmenagement(p.agencement || [], b);
-  // démo : un choix plus large que pour Claude, pour que la proposition simulée trouve des pièces qui tiennent
-  const cands = choisirCandidats(produits, { dims: p.modele.dims, fonction: p.fonction, envies: prep.envies, budget: prep.budget, parFamille: 30 });
-  const { proposition } = simulerAmenagement({ piece: versClaude(p.modele, prep.base, produits), mode: prep.mode, aRemplacer: prep.aRemplacer, candidats: cands, langue, demo: true });
-  const r = appliquerProposition({ modele: p.modele, prep, proposition, produits });
+  const revision = p.maj_le;
+  const r = await amenagerParIA(p, { ...b, moteurGuide: moteurGuideActif(b.moteurGuide) }, langue);
+  if (!r.ok) return r;
+  if (pieceDe(p.id) !== p || p.maj_le !== revision) return non('amenagement-conflit', 409);
   ecrire(() => { p.agencement = r.agencement; p.proposition = r.proposition; toucher(p); });
   return ok({ piece: publique(p) });
 }
@@ -195,16 +209,18 @@ async function generer(p, b) {
   const monde = b.type === 'monde';
   const cout = monde ? CREDITS.monde : CREDITS.rendu;
   let source = null;
+  let options=null;
   if (monde) {
     source = lire().rendus.find(r => r.id === b.rendu && r.piece_id === p.id && r.type === 'image' && r.etat === 'fini');
     if (!source) return non('rendu', 400);
   } else {
     if (!/^data:image\/jpeg;base64,/.test(String(b.capture || ''))) return non('capture', 400);
-    if (!p.photos.some(f => f.role === 'entree')) return non('photo-entree', 400);
+    try{options=optionsRendu(p,b);}catch(e){return non(e.code,400);}
+    if(lire().rendus.some(r=>r.type==='image'&&r.etat==='en_cours'))return non('rendu-en-cours',409);
   }
   if (lire().credits < cout) return non('credits', 402);
   const r = {
-    id: nouvelId('g_'), piece_id: p.id, type: monde ? 'monde' : 'image', etat: 'en_cours', credits: cout, source: source ? source.id : null,
+    id: nouvelId('g_'), piece_id: p.id, type: monde ? 'monde' : 'image', angle: monde ? null : options.angle,vue:options?.vue,ambiance:options?.ambiance,reference:options?.photo?.url||null,referenceLargeur:options?.photo?.largeur,referenceHauteur:options?.photo?.hauteur, etat: 'en_cours', credits: cout, source: source ? source.id : null,
     capture: monde ? null : b.capture, resultat: null, erreur: null, cree_le: maintenant(), fini_le: null, pret_a: Date.now() + (monde ? 5000 : 3000)
   };
   ecrire(e => {

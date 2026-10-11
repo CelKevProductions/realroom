@@ -50,6 +50,7 @@ p { margin: 0; }
 :focus-visible { outline: 2px solid var(--rouille); outline-offset: 2px; }
 ::selection { background: var(--encre); color: var(--platre); }
 dialog:not([open]) { display: none !important; }
+.mc [hidden], .etape-photos [hidden] { display: none !important; }
 .visuel-masque { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* chiffres d'atelier : cotes, prix, crédits */
@@ -366,11 +367,16 @@ dialog.tuto { width: min(520px, 100% - 24px); }
 @keyframes progres { 0% { transform: scaleX(0); } 60% { transform: scaleX(1); } 100% { transform: scaleX(1); opacity: 0; } }
 
 /* ---------- atelier : maquette 3D et panneau ---------- */
-.atelier { display: grid; grid-template-columns: minmax(0, 1fr) 400px; height: calc(100svh - var(--haut-entete, var(--entete))); border-top: 1px solid var(--trait); }
+html:has(.atelier), body:has(.atelier) { overflow: hidden; width: 100%; }
+.atelier { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px); width: 100%; min-width: 0; min-height: 0; overflow: hidden; height: calc(100dvh - var(--haut-entete, var(--entete))); border-top: 1px solid var(--trait); }
 .atelier__scene { position: relative; min-height: 0; background: #EFEBE3; overflow: hidden; }
 .atelier__scene canvas { width: 100%; height: 100%; touch-action: none; }
 .atelier__scene canvas.is-deplace { cursor: grabbing !important; }
-.atelier__panneau { border-left: 1px solid var(--trait); background: var(--platre); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0; }
+.atelier__panneau { border-left: 1px solid var(--trait); background: var(--platre); display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; min-width: 0; min-height: 0; overflow: hidden; }
+.atelier__actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 8px; padding: 12px; border-bottom: 1px solid var(--trait); }
+.atelier__actions .btn { min-width: 0; min-height: 48px; padding: 8px 10px; font-size: .8rem; white-space: normal; line-height: 1.35; }
+.atelier__actions .plus, .atelier__actions .rouage { flex-shrink: 0; }
+.atelier__actions p { grid-column: 1 / -1; font-size: .75rem; color: var(--graphite); }
 .onglets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--trait); }
 .onglets button { position: relative; display: grid; gap: 2px; justify-items: start; border: 0; background: none; padding: 14px 16px 13px; text-align: left; cursor: pointer; color: var(--gris); transition: color .2s; }
 .onglets button + button { border-left: 1px solid var(--trait); }
@@ -381,13 +387,16 @@ dialog.tuto { width: min(520px, 100% - 24px); }
 .onglets__num { font: .72rem var(--m); }
 .onglets button[aria-selected='true'] .onglets__num { color: var(--rouille); }
 .onglets__nom { font-weight: 600; font-size: .95rem; }
-.panneau__corps { overflow-y: auto; overscroll-behavior: contain; padding: 22px 20px 28px; display: grid; gap: 20px; align-content: start; }
+.panneau__corps { min-width: 0; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; padding: 22px 20px 28px; display: grid; gap: 20px; align-content: start; }
+.panneau__corps > * { min-width: 0; }
 .panneau__pied { padding: 14px 20px 16px; border-top: 1px solid var(--trait); background: var(--platre); display: grid; gap: 8px; }
 .panneau__pied:empty { display: none; }
 .panneau__intro { color: var(--graphite); font-size: .92rem; }
 
 /* commandes posées sur la scène */
 .vues { position: absolute; top: 14px; left: 14px; z-index: 3; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.camera-photo { position: absolute; top: 72px; left: 14px; z-index: 3; width: min(310px, calc(100% - 28px)); padding: 10px; border: 1px solid var(--trait); border-radius: 8px; background: var(--platre); }
+.camera-photo small { display: block; margin-top: 5px; font-size: .75rem; color: var(--graphite); }
 .segment { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--platre); border: 1px solid var(--trait); }
 .vues .btn--clair { background: var(--platre); }
 .segment button[disabled] { opacity: .4; cursor: not-allowed; }
@@ -406,10 +415,12 @@ dialog.tuto { width: min(520px, 100% - 24px); }
 .guide-scene .btn--clair { background: var(--platre); }
 .app-page__actions { display: flex; align-items: center; gap: 14px; }
 @media (max-width: 900px) {
-  .atelier { grid-template-columns: 1fr; grid-template-rows: 42svh minmax(0, 1fr); }
-  .atelier__panneau { border-left: 0; border-top: 1px solid var(--trait); grid-template-rows: auto minmax(0, 1fr) auto; }
+  .atelier { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(140px, 40%) minmax(0, 1fr); }
+  .atelier__panneau { border-left: 0; border-top: 1px solid var(--trait); }
   .aide-scene { display: none; }
   .vues { top: 10px; left: 10px; }
+  .camera-photo { top: 62px; left: 10px; padding: 6px 9px; width: min(300px, calc(100% - 20px)); }
+  .camera-photo small { display: none; }
   .guide-scene { top: 10px; right: 10px; }
   .opacite { left: 10px; bottom: 10px; }
   /* onglets sur une ligne, pied plus serré */
@@ -448,6 +459,12 @@ dialog.tuto { width: min(520px, 100% - 24px); }
 .concept .concept__sous { font: 600 .82rem/1.3 var(--d); margin-top: 4px; }
 .concept p { color: var(--graphite); font-size: .92rem; }
 .concept ul { margin: 0; padding-left: 18px; color: var(--graphite); font-size: .88rem; display: grid; gap: 4px; }
+.plan-vie { min-width: 0; font-size: .82rem; line-height: 1.5; }
+.plan-vie__zones { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+.plan-vie__zones span { border: 1px solid currentColor; border-radius: 20px; padding: 3px 10px; opacity: .8; }
+.plan-vie__details { margin-top: 8px; max-width: 31em; }
+.plan-vie__details summary { cursor: pointer; font-size: .82rem; }
+.plan-vie__details p { margin-top: 8px; overflow-wrap: anywhere; }
 .corriger summary { cursor: pointer; font-size: .875rem; color: var(--graphite); list-style: none; }
 .corriger summary::-webkit-details-marker { display: none; }
 .corriger summary::before { content: '+'; display: inline-block; width: 1em; font-family: var(--m); }
@@ -511,7 +528,7 @@ dialog.catalogue::backdrop { background: rgba(18, 18, 17, .42); transition: back
 
 /* ---------- résultat : avant / après ---------- */
 .avant-apres { position: relative; overflow: hidden; background: var(--calque); user-select: none; touch-action: pan-y; border: 1px solid var(--trait); }
-.avant-apres img { width: 100%; display: block; }
+.avant-apres img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .avant-apres__apres { position: absolute; inset: 0; overflow: hidden; }
 .avant-apres__apres img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .avant-apres__poignee { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--platre); pointer-events: none; }
@@ -574,3 +591,4 @@ html[data-mvt] [data-entree]:not(.is-entre):not([data-entree='trait']), html[dat
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
+.catalogue__sources{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}
