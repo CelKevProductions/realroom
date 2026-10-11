@@ -1,19 +1,19 @@
 ▲ Next.js 16.3.6
 - Local:         http://127.0.0.1:3237
 - Network:       http://127.0.0.1:3237
-✓ Ready in 182ms
-✓ Running next.config.mjs took 30ms
+✓ Ready in 191ms
+✓ Running next.config.mjs took 27ms
 ▲ Next.js 16.3.6
 - Local:         http://127.0.0.1:3238
 - Network:       http://127.0.0.1:3238
-✓ Ready in 149ms
-✓ Running next.config.mjs took 25ms
+✓ Ready in 169ms
+✓ Running next.config.mjs took 24ms
 Aménagement IA démo indisponible D-02
 ▲ Next.js 16.3.6
 - Local:         http://127.0.0.1:3238
 - Network:       http://127.0.0.1:3238
-✓ Ready in 162ms
-✓ Running next.config.mjs took 33ms
+✓ Ready in 134ms
+✓ Running next.config.mjs took 25ms
 Aménagement IA démo indisponible D-07
 ok   clé absente ou refusée : refus explicite sans attente ni remplacement du plan
 ok   la démo anonyme appelle le moteur IA, conserve les choix et limite les appels avant le fournisseur

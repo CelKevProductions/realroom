@@ -1,6 +1,6 @@
 # Composition à l’échelle et multi-zonage — 11 octobre 2026
 
-Les deux consignes de composition ont été lues intégralement et confrontées au code. Les corrections sont sur la branche `codex/realroom-plan-optimisation-2026-10-09`, PR nº 2, en prévisualisation. Les tests fonctionnels passent ; le classement visuel à 30 m² reste sensible à l’ordre des images et ne valide pas encore la préférence systématique demandée.
+Les deux consignes de composition ont été lues intégralement et confrontées au code. Les corrections sont sur la branche `codex/realroom-plan-optimisation-2026-10-09`, PR nº 2, en prévisualisation. Les tests fonctionnels passent ; les deux comparaisons finales à 30 m² et celles à 90 m² préfèrent la version corrigée, dans les deux ordres d’affichage. Ce résultat porte sur les références documentées, pas sur toute pièce possible.
 
 ## Diagnostic et échelle
 
@@ -26,7 +26,7 @@ Avant le réaménagement, le dialogue partagé demande les idées, les espaces �
 
 Ce sont des hypothèses éditoriales, documentées dans `DECISIONS.md`, et des inventaires cibles : un catalogue, un budget ou un accès impossible laisse un manque explicite. Le buffet du séjour à partir de 28 m² répond à l’absence de rangement et aux murs libres relevés pendant la comparaison. Aucun espace décoché n’est réactivé pour atteindre une quantité.
 
-Références d’emprise des ensembles : salon 16 m², salon open-space 20, repas 16, lecture 8, travail 10. Les candidats dépassant 1,5 fois la référence sont écartés. Les chemins passent entre les emprises des ensembles. La largeur macro est 0,90 m, puis 1,10 m au-delà de 40 m² ; les contrôles micro des accès restent actifs.
+Références d’emprise des ensembles : salon 16 m², salon open-space 20, repas 16, lecture 8, travail 10. Les candidats dépassant 1,5 fois la référence sont écartés. Les chemins passent entre les emprises des ensembles. À plus de 20 m², la séparation minimale entre ensembles est de 0,80 m ; elle passe à 1,10 m en open-space. La largeur des chemins macro est 0,90 m, puis 1,10 m au-delà de 40 m² ; les contrôles micro des accès restent actifs. Cette séparation empêche notamment le fauteuil de lecture de se confondre avec le groupe repas.
 
 La recherche conserve jusqu’à 144 candidats par groupe en séjour intermédiaire, 104 en grand open-space, puis au plus 64 états. Elle préserve les variantes localement cohérentes et différentes orientations/positions du dernier groupe, pour ne pas perdre un rangement accessible. Trois reprises au plus essaient les alternatives compactes et le retrait des facultatifs. Le budget admet 40 emplacements de salon avec 4 096 états bornés ; son repli conserve la limite précédente de 24. Les produits gardés restent fixes et le plafond budgétaire reste contraignant.
 
@@ -90,12 +90,12 @@ Les figures utilisent les vrais maillages/dimensions et un tampon de profondeur 
 | Surface | Ordre avant/après | Ordre après/avant | Conclusion limitée |
 |---|---|---|---|
 | 10 m² | Après préféré, densité équilibrée | Après préféré, densité équilibrée | Pas d’encombrement décrit. Sortie directe tronquée après le verdict. |
-| 30 m² | Avant préféré | Après préféré | **Préférence systématique non validée.** Les deux disposent de trois activités réelles ; le modèle n’en distingue parfois que deux. |
+| 30 m² | Après préféré, densité équilibrée | Après préféré, densité équilibrée | Les deux dernières critiques distinguent trois activités et préfèrent la correction. |
 | 90 m² | Après préféré | Après préféré | Répartition améliorée ; le modèle conserve des réserves sur le vide et la chaleur des matériaux. |
 
 Le protocole neutre, les empreintes des images et les résultats sont dans [protocole-vision.json](composition-surface/protocole-vision.json) et [vision.json](composition-surface/vision.json). Les deux critiques finales de 30 m² sont intégrales ; certaines archives antérieures de 10/90 m² n’en conservent que les champs effectivement lus, explicitement marqués partiels. Aucun champ absent n’est reconstitué.
 
-Les premières tentatives avec un modèle retiré ou le MIME `application/octet-stream` ont été exclues. Les images retenues sont transmises en `image/jpeg`. Les comparaisons de 30 m² emploient des copies de 600 px, compressées de façon identique, avec 6 000 tokens maximum ; les autres emploient les JPEG de 900 px et 4 000 tokens. Modèle `google/gemini-3.8-flash`, raisonnement activé, température 0, sans recherche web et sans stockage du payload. Les avis évoquent parfois une suspension décentrée pourtant centrée à 72,5 cm au-dessus du plateau : ils ne certifient ni géométrie ni circulation. Le dernier résultat mitigé est conservé, sans changer de baseline ou de critères pour annoncer une victoire.
+Les premières tentatives avec un modèle retiré ou le MIME `application/octet-stream` ont été exclues. Les images retenues sont transmises en `image/jpeg`. Les comparaisons de 30 m² emploient des copies de 600 px, compressées de façon identique, avec 6 000 tokens maximum ; les autres emploient les JPEG de 900 px et 4 000 tokens. Modèle `google/gemini-3.8-flash`, raisonnement activé, température 0, sans recherche web et sans stockage du payload. Les avis évoquent parfois une suspension décentrée pourtant centrée à 72,5 cm au-dessus du plateau : ils ne certifient ni géométrie ni circulation. Le classement mitigé précédent de 30 m² est conservé dans `historique30`, avec les images du commit e23e936 ; le dernier réglage ajoute une séparation physique de 80 cm et gagne les deux comparaisons suivantes. Baseline, caméras, modèle et prompt restent les mêmes.
 
 ## Reproduire et désactiver
 

@@ -30,6 +30,9 @@ test('10 / 18 / 30 / 90 m² : quantités croissantes, focal et zones réellement
       assert.ok(r.agencement.filter(it => it.usageProgramme === 'fauteuil-salon').length >= 2
         || ['fauteuil-lecture', 'table-appoint', 'lumiere-lecture'].every(usage => r.agencement.some(it => it.usageProgramme === usage)));
       assert.deepEqual(p.programme.manquants, []);
+      const repas = p.planZones.zones.find(z => z.type === 'repas'), lecture = p.planZones.zones.find(z => z.type === 'lecture');
+      const distance = Math.hypot(Math.max(repas.x0 - lecture.x1, lecture.x0 - repas.x1, 0), Math.max(repas.z0 - lecture.z1, lecture.z0 - repas.z1, 0));
+      assert.ok(distance >= .79, 'lecture et repas restent deux ensembles distincts avec au moins 80 cm de séparation');
     }
     if (L === 10) { assert.ok(r.agencement.length >= 20); assert.equal(p.planZones.audit.circulation.largeur, 1.1); }
     objetsAvant = r.agencement.length; slotsAvant = slots;

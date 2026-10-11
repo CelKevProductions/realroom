@@ -76,7 +76,7 @@
           ]
         }
       ],
-      "tempsMs": 1257
+      "tempsMs": 1700
     },
     {
       "surface": 18,
@@ -157,7 +157,7 @@
           ]
         }
       ],
-      "tempsMs": 790
+      "tempsMs": 1049
     },
     {
       "surface": 30,
@@ -175,14 +175,8 @@
       "circulation": 0.9,
       "densite": {
         "version": "composition-surface-1",
-        "score": -2,
-        "regles": [
-          {
-            "id": "mur-mort",
-            "points": -2,
-            "zone": "gauche"
-          }
-        ],
+        "score": 0,
+        "regles": [],
         "elements": 15,
         "cibleElements": 6,
         "zonesVie": 3,
@@ -279,7 +273,7 @@
           ]
         }
       ],
-      "tempsMs": 4102
+      "tempsMs": 4658
     },
     {
       "surface": 90,
@@ -432,7 +426,7 @@
           ]
         }
       ],
-      "tempsMs": 5200
+      "tempsMs": 5581
     }
   ],
   "paliers": [
