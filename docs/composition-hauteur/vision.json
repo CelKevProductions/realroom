@@ -1,0 +1,19 @@
+{
+  "description": "Deux comparaisons bornées, même salon synthétique, deux caméras identiques, ordre inversé ; aucun fichier client. Critique visuelle, pas certification de géométrie ou d’esthétique universelle.",
+  "essais": [
+    {
+      "ordre": "avant-apres",
+      "endpoint": "openrouter/router/vision",
+      "modele": "google/gemini-2.5-flash",
+      "statut": "completed",
+      "output": "```json\n{\n  \"winner\": \"B\",\n  \"reasons\": [\n    \"Le modèle B présente un objet focal clair (la télévision) qui ancre l'espace du salon.\",\n    \"Le modèle B inclut des sources de lumière visibles (lampes), ce qui contribue à l'impression de complétude.\",\n    \"Le modèle B a une décoration murale plus cohérente et mieux répartie, ajoutant de l'intérêt visuel.\",\n    \"Malgré l'ajout d'objets, le modèle B maintient un agencement de meubles qui semble permettre un accès aisé.\"\n  ],\n  \"reservations\": [\n    \"La décoration murale dans le modèle B pourrait être un peu plus variée pour éviter la répétition.\",\n    \"L'éclairage dans le modèle B est présent mais pourrait être plus diversifié (par exemple, un plafonnier).\"\n  ]\n}\n```"
+    },
+    {
+      "ordre": "apres-avant",
+      "endpoint": "openrouter/router/vision",
+      "modele": "google/gemini-2.5-flash",
+      "statut": "completed",
+      "output": "```json\n{\n  \"winner\": \"A\",\n  \"reasons\": [\n    \"Le salon de l'image A semble plus complet et accueillant grâce à la présence d'une télévision comme point focal clair.\",\n    \"L'éclairage est mieux représenté dans l'image A avec une lampe sur pied et une suspension, suggérant une meilleure ambiance.\",\n    \"La décoration murale dans l'image A est plus présente et variée, ajoutant à la sensation d'un espace habité.\",\n    \"L'agencement des meubles dans l'image A offre une meilleure accessibilité et une disposition plus logique pour un salon.\"\n  ],\n  \"reservations\": [\n    \"La décoration murale dans l'image A pourrait être un peu plus diversifiée pour éviter la répétition.\",\n    \"L'image B manque d'un point focal évident, ce qui rend le salon moins défini.\",\n    \"L'absence d'éclairage visible dans l'image B rend l'espace moins fonctionnel et moins accueillant.\"\n  ]\n}\n```"
+    }
+  ]
+}

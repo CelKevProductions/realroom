@@ -1,6 +1,7 @@
 // Modèles paramétriques originaux. Même géométrie dans la pièce, la fiche et les vignettes.
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { estMural } from '../lib/agencement.js';
 
 export function construireObjetGenerique(p) {
   const g = new THREE.Group(); g.name=p.nom;
@@ -55,9 +56,26 @@ export function construireObjetGenerique(p) {
     cyl(w*.35,w*.5,shade,0,h-shade,0,bois);
     const ampoule=cyl(w*.26,w*.26,.015,0,h-shade+.005,0,mat('#FFF0CD'));
     ampoule.material.emissive=new THREE.Color('#FFE4AC');ampoule.material.emissiveIntensity=.3;
+  }else if(['ecran','ecran-mural'].includes(p.st)){
+    const mural=p.st==='ecran-mural', bas=mural?-h/2:h*.1, hh=mural?h:h*.9, ep=mural?d:Math.min(.05,d*.25);
+    box(w,hh,ep,0,bas,0,mat('#22262B'),.009);
+    box(w-.018,hh-.018,.004,0,bas+.009,ep/2,mat('#171E27',.2));
+    // Reflet sobre de l'écran, sans contenu ou marque fictive.
+    box(w*.4,hh*.014,.001,-w*.16,bas+hh*.86,ep/2+.003,mat('#3B4650'));
+    if(!mural)for(const x of [-1,1])box(.055,h*.1,d,x*w*.31,0,0,pied,.004);
+  }else if(p.st==='art'){
+    box(w,h,d-.008,0,-h/2,-.004,mat('#C7AD86'),.007);
+    box(w-.035,h-.035,.006,0,-h/2+.0175,d/2-.006,clair);
+    box(w*.28,h*.52,.002,-w*.22,-h*.29,d/2-.001,bois,.006);
+    box(w*.2,h*.33,.002,w*.22,-h*.18,d/2-.001,mat('#758078'),.01);
+    box(w*.68,h*.016,.002,0,h*.27,d/2-.001,mat('#826955'));
+  }else if(p.st==='etagere-murale'){
+    box(w,.025,d,0,-h/2,0,bois,.004);
+    for(const x of [-1,1])box(.02,h*.4,.02,x*w*.4,-h/2,d/2-.02,pied);
+    for(let i=0;i<5;i++)box(.024,h*(.5+i*.065),d*.62,-w*.3+i*.028,-h/2+.025,0,mat(['#B4A086','#77816F','#9B725A'][i%3]));
   }else if(p.st==='miroir'){
-    box(w,h,d,0,-h/2,0,bois,.012);
-    box(w-.04,h-.04,.005,0,-h/2+.02,d/2-.005,mat('#CFD9D8',.75));
+    box(w,h,d-.008,0,-h/2,-.004,bois,.012);
+    box(w-.04,h-.04,.005,0,-h/2+.02,d/2-.0025,mat('#CFD9D8',.75));
   }else if(p.st==='banc'){box(w,.09,d,0,h-.09,0,bois,.02);pieds(h-.09);}
   else if(p.st==='pouf')cyl(w/2,w/2,h,0,0,0,bois);
   else if(p.st==='fauteuil'){
@@ -80,7 +98,7 @@ export function construireObjetGenerique(p) {
   }else throw Error('Modèle générique inconnu : '+p.id);
   const b=new THREE.Box3().setFromObject(g),s=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3());
   g.scale.set(w/s.x,h/s.y,d/s.z);
-  g.position.set(-c.x*g.scale.x,(p.fam==='miroir'?-h/2:0)-b.min.y*g.scale.y,-c.z*g.scale.z);
+  g.position.set(-c.x*g.scale.x,(estMural(p.fam)?-h/2:0)-b.min.y*g.scale.y,(estMural(p.fam)?d/2:0)-c.z*g.scale.z);
   g.userData.generique=true;
   return g;
 }

@@ -12,6 +12,7 @@ import {demandeDemoIA} from '../lib/demo-ia.js';
 import {champsDepuisScan} from '../lib/scan.js';
 import {PRODUITS} from '../lib/catalogue.js';
 import {lireDXF} from '../lib/plans.js';
+import {segmentsDe} from '../lib/contour.js';
 
 const RACINE = path.resolve(import.meta.dirname, '..');
 const PORT = Number(process.env.PORT || 3117);
@@ -343,6 +344,28 @@ essai('rendu guidé : caméra, nuit, photo indépendante, concurrence et référ
   assert.equal(fichiersDe(uid,'photos')+fichiersDe(uid,'captures'),0,'les instantanés sont supprimés avec la pièce');
 });
 
+essai('hauteurs et attaches : TV et tableau gardent leur pose après sauvegarde et rechargement', async () => {
+  const api=client();await api.connexion('pose@composition.test');
+  const pr=await api('/api/projets',{method:'POST',corps:{nom:'Composition'}});
+  const pc=await api(`/api/projets/${pr.projet.id}/pieces`,{method:'POST',corps:{nom:'Salon',fonction:'salon'}});
+  const id=pc.piece.id,sc=await api(`/api/pieces/${id}/scan`,{method:'POST',corps:{scan:scanAndroid()}});
+  assert.equal(sc.statut,200);
+  const pan=segmentsDe(sc.piece.modele).find(p=>!(sc.piece.modele.murs[p.id]?.ouvertures||[]).length);
+  assert.ok(pan);
+  const base={id:'support',origine:'catalogue',sku:'rr-gen-tv-100',x:0,z:0,rot:0};
+  const tv={id:'ecran',origine:'catalogue',sku:'rr-gen-television-43',x:0,z:0,rot:0,y:.755,height:900,
+    kind:'surface_item',attach_to:{type:'furniture',id:'support'},zoneId:'salon',usageProgramme:'television',slotProgramme:'salon:television:1'};
+  const art={id:'tableau',origine:'catalogue',sku:'rr-gen-tableau-60',x:pan.centre[0],z:pan.centre[1],rot:Math.atan2(pan.n[0],pan.n[1]),y:1.475,
+    kind:'wall_item',mur:pan.id,wall_offset:999,attach_to:{type:'wall',id:'invente'}};
+  const patch=await api(`/api/pieces/${id}`,{method:'PATCH',corps:{agencement:[base,tv,art]}});assert.equal(patch.statut,200);
+  const r=await api(`/api/pieces/${id}`),ecran=r.piece.agencement.find(it=>it.id==='ecran'),tableau=r.piece.agencement.find(it=>it.id==='tableau');
+  assert.equal(ecran.y,.755);assert.equal(ecran.height,.755);assert.equal(ecran.kind,'surface_item');
+  assert.deepEqual(ecran.attach_to,{type:'furniture',id:'support'});assert.equal(ecran.usageProgramme,'television');
+  assert.equal(tableau.height,1.475);assert.equal(tableau.wall_offset,Math.round(pan.long/2*1000)/1000);
+  assert.deepEqual(tableau.attach_to,{type:'wall',id:pan.id});
+  assert.equal((await api(`/api/pieces/${id}`,{method:'DELETE'})).statut,200);
+});
+
 essai('les pages RealRoom, Maison Corleone et relevé mobile sont servies', async () => {
   for(const url of ['/fr/demo','/en/demo','/fr/maison-corleone/demo','/en/maison-corleone/demo','/fr/releve','/en/releve']) {
     const r=await fetch(BASE+url);assert.equal(r.status,200,url);
@@ -352,6 +375,8 @@ essai('les pages RealRoom, Maison Corleone et relevé mobile sont servies', asyn
   const j=await guide.json();assert.ok(j.qr.startsWith('data:image/'),'le QR Apple est disponible');
   const vignette=await fetch(BASE+'/generiques/rr-gen-basse-compacte-60.svg');assert.equal(vignette.status,200);
   assert.match(await vignette.text(),/modèle générique/);
+  const ecran=await fetch(BASE+'/generiques/rr-gen-television-43.svg');assert.equal(ecran.status,200);
+  const tableau=await fetch(BASE+'/generiques/rr-gen-tableau-120.svg');assert.equal(tableau.status,200);
 });
 
 try {

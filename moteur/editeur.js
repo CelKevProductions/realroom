@@ -350,8 +350,12 @@ export function creerEditeur(canvas, opts = {}) {
   }
 
   /* ---------- les meubles ---------- */
-  function optionsDe(p) {
+  function optionsDe(p, item) {
     const H = E.modele.dims.hauteur;
+    if (estSuspendu(p.fam) && item?.kind === 'ceiling_item' && Number.isFinite(item.y)) {
+      const descente = Math.max(.12, H - item.y - p.dim[2] / 2);
+      return { hMax: descente + p.dim[2] + .5, h: descente };
+    }
     if (estSuspendu(p.fam)) { const hMax = clamp(H - 1.95, .35, 2.2); return { hMax, h: Math.min(hMax * .65, .9) }; }
     return {};
   }
@@ -359,11 +363,16 @@ export function creerEditeur(canvas, opts = {}) {
     graine(hash(item.sku || item.id));
     let g = null;
     try {
-      if (item.sku && catalogue[item.sku]) g = construireProduit(item.sku, optionsDe(p));
+      if (item.sku && catalogue[item.sku]) g = construireProduit(item.sku, optionsDe(p, item));
       else if (PLUS[p.fam] && !(CAT_GENERIQUE[p.fam] && p.fam !== 'tapis')) g = PLUS[p.fam](p);
-      else g = construireCatalogue(p, optionsDe(p));
+      else g = construireCatalogue(p, optionsDe(p, item));
     } catch (err) { console.warn('maquette', p.fam, err); }
     if (!g || !g.children.length) g = boiteGenerique(p);
+    // L'origine reste au plafond. Le bas réel du modèle doit respecter la hauteur validée.
+    if (estSuspendu(p.fam) && item.kind === 'ceiling_item' && Number.isFinite(item.y)) {
+      const b = new THREE.Box3().setFromObject(g), descente = E.modele.dims.hauteur - (item.y - p.dim[2] / 2);
+      if (b.min.y < -.01) g.scale.y *= descente / -b.min.y;
+    }
     cuire(g);
     return g;
   }
@@ -417,7 +426,7 @@ export function creerEditeur(canvas, opts = {}) {
     for (const it of items) {
       vus.add(it.id);
       const e = E.items.get(it.id);
-      const produit = it.sku || JSON.stringify(it.p && [it.p.fam, it.p.dim, it.p.cols, it.p.st]);
+      const produit = (it.sku || JSON.stringify(it.p && [it.p.fam, it.p.dim, it.p.cols, it.p.st])) + (it.kind === 'ceiling_item' ? ':' + it.y : '');
       if (e && e.produit === produit) {
         e.item = { ...it };
         placerPorteur(e);

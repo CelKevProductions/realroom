@@ -12,12 +12,13 @@ import {programmeComposition,composerProduits,correspondSlot} from '../../lib/pr
 import {choisirCandidats} from '../../lib/selection.js';
 import {appliquerProposition,preparerAmenagement} from '../../lib/amenagement.js';
 import {salonReference,catalogueZones} from '../fixtures/plan-zones.js';
+import {estMural} from '../../lib/agencement.js';
 
-test('44 objets de projet identifiés, sans lien commercial ni photo produit fictive',()=>{
+test('54 objets de projet identifiés, sans lien commercial ni photo produit fictive',()=>{
   const commerciaux=JSON.parse(readFileSync(new URL('../../data/catalogue.json',import.meta.url)));
   const c=avecObjetsGeneriques(commerciaux);
-  assert.equal(Object.keys(OBJETS_GENERIQUES).length,44);
-  assert.equal(Object.keys(PRODUITS).length,Object.keys(commerciaux.produits).length+44);
+  assert.equal(Object.keys(OBJETS_GENERIQUES).length,54);
+  assert.equal(Object.keys(PRODUITS).length,Object.keys(commerciaux.produits).length+54);
   for(const [id,p] of Object.entries(OBJETS_GENERIQUES)){
     assert.equal(PRODUITS[id].generique,true);assert.equal(p.prixEstime,true);assert.ok(p.prix>0);
     assert.equal(p.url,null);assert.equal(p.img,null);assert.ok(p.usagesGeneriques.length);
@@ -32,8 +33,17 @@ test('tous les modèles génériques respectent exactement leurs dimensions et l
     assert.ok(g.children.length>0,p.id);
     for(const [i,v] of [s.x,s.z,s.y].entries())assert.ok(Math.abs(v-p.dim[i])<1e-6,p.id+' dimension '+i);
     assert.ok(Math.abs((b.min.x+b.max.x)/2)<1e-6,p.id);
-    assert.ok(Math.abs(b.min.y-(p.fam==='miroir'?-p.dim[2]/2:0))<1e-6,p.id);
+    assert.ok(Math.abs(b.min.y-(estMural(p.fam)?-p.dim[2]/2:0))<1e-6,p.id);
     g.traverse(o=>{o.geometry?.dispose();o.material?.dispose();});
+  }
+});
+test('le tableau et le miroir montrent leur surface depuis la pièce, devant le cadre',()=>{
+  for(const [id,couleur] of [['rr-gen-tableau-120','efe8dc'],['rr-gen-miroir-60','cfd9d8']]){
+    const p=OBJETS_GENERIQUES[id];assert.ok(p,id);
+    const g=construireObjetGenerique(p);g.updateMatrixWorld(true);
+    const rayon=new THREE.Raycaster(new THREE.Vector3(0,0,1),new THREE.Vector3(0,0,-1));
+    const premier=rayon.intersectObject(g,true)[0];assert.ok(premier,id);
+    assert.equal(premier.object.material.color.getHexString(),couleur,id);
   }
 });
 test('les tables et chaises génériques gardent leurs usages et une variété de tailles',()=>{

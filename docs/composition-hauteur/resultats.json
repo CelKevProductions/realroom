@@ -1,0 +1,2198 @@
+{
+  "source": "tests/fixtures/plan-zones.js et tests/fixtures/bench-chambres.js",
+  "donneesClient": false,
+  "synthese": {
+    "cas": 23,
+    "sansConflit": 23,
+    "plansValides": 18,
+    "television": 11,
+    "programmesCompletEtValide": 10,
+    "reference": {
+      "objets": 14,
+      "planValide": true,
+      "scoreAvant": -10,
+      "scoreApres": 30
+    }
+  },
+  "resultats": [
+    {
+      "nom": "Référence 20 m²",
+      "fonction": "salon",
+      "tempsMs": 621,
+      "objets": 14,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [],
+        "audit": [],
+        "score": 30,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "c18ih8k4_10"
+            ]
+          },
+          {
+            "id": "tv-face-canape",
+            "points": 5,
+            "ids": [
+              "c18ih8k4_10",
+              "c18ih8k4_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c18ih8k4_8"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c18ih8k4_13"
+            ]
+          },
+          {
+            "id": "suspension-centree",
+            "points": 5,
+            "ids": [
+              "c18ih8k4_13",
+              "c18ih8k4_3"
+            ]
+          },
+          {
+            "id": "mur-principal",
+            "points": 4,
+            "ids": [
+              "c18ih8k4_11"
+            ]
+          },
+          {
+            "id": "tableau-proportionne",
+            "points": 4,
+            "ids": [
+              "c18ih8k4_11",
+              "c18ih8k4_0"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "c18ih8k4_10",
+        "nombreMuraux": 2,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": {
+          "metres": 2.46,
+          "diagonale": 1.092,
+          "rapportDiagonale": 2.252,
+          "indicatif": true
+        }
+      },
+      "manquants": []
+    },
+    {
+      "nom": "3.5 × 4",
+      "fonction": "salon",
+      "tempsMs": 347,
+      "objets": 8,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [
+          {
+            "id": "c147d2iz_13",
+            "slot": "repas:suspension:1",
+            "usage": "suspension",
+            "motif": "support-absent"
+          }
+        ],
+        "audit": [],
+        "score": 21,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "c147d2iz_10"
+            ]
+          },
+          {
+            "id": "tv-face-canape",
+            "points": 5,
+            "ids": [
+              "c147d2iz_10",
+              "c147d2iz_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c147d2iz_8"
+            ]
+          },
+          {
+            "id": "mur-principal",
+            "points": 4,
+            "ids": [
+              "c147d2iz_11"
+            ]
+          },
+          {
+            "id": "tableau-proportionne",
+            "points": 4,
+            "ids": [
+              "c147d2iz_11",
+              "c147d2iz_0"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "c147d2iz_10",
+        "nombreMuraux": 2,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": {
+          "metres": 2.46,
+          "diagonale": 1.092,
+          "rapportDiagonale": 2.252,
+          "indicatif": true
+        }
+      },
+      "manquants": [
+        {
+          "id": "repas:table-repas:1",
+          "zone": "repas",
+          "usage": "table-repas",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "repas:chaise-repas:1",
+          "zone": "repas",
+          "usage": "chaise-repas",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "repas:chaise-repas:2",
+          "zone": "repas",
+          "usage": "chaise-repas",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "repas:chaise-repas:3",
+          "zone": "repas",
+          "usage": "chaise-repas",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "repas:chaise-repas:4",
+          "zone": "repas",
+          "usage": "chaise-repas",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "repas:suspension:1",
+          "zone": "repas",
+          "usage": "suspension",
+          "obligatoire": true,
+          "priorite": 2,
+          "couche": "finition",
+          "motif": "mur-ou-hauteur"
+        }
+      ]
+    },
+    {
+      "nom": "4 × 4",
+      "fonction": "salon",
+      "tempsMs": 1292,
+      "objets": 12,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": false,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [
+          {
+            "id": "c197hl9v_11",
+            "slot": "salon:tableau-principal:1",
+            "usage": "tableau-principal",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "audit": [],
+        "score": 8,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "c197hl9v_10"
+            ]
+          },
+          {
+            "id": "tv-face-canape",
+            "points": 5,
+            "ids": [
+              "c197hl9v_10",
+              "c197hl9v_0"
+            ]
+          },
+          {
+            "id": "tv-contre-jour",
+            "points": -8,
+            "ids": [
+              "c197hl9v_10"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c197hl9v_8"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c197hl9v_13"
+            ]
+          },
+          {
+            "id": "suspension-centree",
+            "points": 5,
+            "ids": [
+              "c197hl9v_13",
+              "c197hl9v_3"
+            ]
+          },
+          {
+            "id": "mur-principal",
+            "points": -4,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "c197hl9v_10",
+        "nombreMuraux": 1,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": {
+          "metres": 2.46,
+          "diagonale": 1.092,
+          "rapportDiagonale": 2.252,
+          "indicatif": true
+        }
+      },
+      "manquants": [
+        {
+          "id": "salon:fauteuil-salon:1",
+          "zone": "salon",
+          "usage": "fauteuil-salon",
+          "obligatoire": false,
+          "priorite": 3,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "salon:tableau-principal:1",
+          "zone": "salon",
+          "usage": "tableau-principal",
+          "obligatoire": false,
+          "priorite": 3,
+          "couche": "finition",
+          "motif": "mur-ou-hauteur"
+        }
+      ]
+    },
+    {
+      "nom": "4 × 5",
+      "fonction": "salon",
+      "tempsMs": 1084,
+      "objets": 13,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": false,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [],
+        "audit": [],
+        "score": 28,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "c1gjw09g_10"
+            ]
+          },
+          {
+            "id": "tv-face-canape",
+            "points": 5,
+            "ids": [
+              "c1gjw09g_10",
+              "c1gjw09g_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1gjw09g_8"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1gjw09g_13"
+            ]
+          },
+          {
+            "id": "suspension-centree",
+            "points": 5,
+            "ids": [
+              "c1gjw09g_13",
+              "c1gjw09g_3"
+            ]
+          },
+          {
+            "id": "mur-principal",
+            "points": 4,
+            "ids": [
+              "c1gjw09g_11"
+            ]
+          },
+          {
+            "id": "tableau-proportionne",
+            "points": 4,
+            "ids": [
+              "c1gjw09g_11",
+              "c1gjw09g_0"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "c1gjw09g_10",
+        "nombreMuraux": 2,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": {
+          "metres": 2.46,
+          "diagonale": 1.092,
+          "rapportDiagonale": 2.252,
+          "indicatif": true
+        }
+      },
+      "manquants": [
+        {
+          "id": "salon:fauteuil-salon:1",
+          "zone": "salon",
+          "usage": "fauteuil-salon",
+          "obligatoire": false,
+          "priorite": 3,
+          "motif": "surface-ou-acces"
+        }
+      ]
+    },
+    {
+      "nom": "5 × 5",
+      "fonction": "salon",
+      "tempsMs": 1233,
+      "objets": 13,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [],
+        "audit": [],
+        "score": 30,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "c1p9vgwo_12"
+            ]
+          },
+          {
+            "id": "tv-face-canape",
+            "points": 5,
+            "ids": [
+              "c1p9vgwo_12",
+              "c1p9vgwo_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1p9vgwo_9"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1p9vgwo_15"
+            ]
+          },
+          {
+            "id": "suspension-centree",
+            "points": 5,
+            "ids": [
+              "c1p9vgwo_15",
+              "c1p9vgwo_3"
+            ]
+          },
+          {
+            "id": "mur-principal",
+            "points": 4,
+            "ids": [
+              "c1p9vgwo_13"
+            ]
+          },
+          {
+            "id": "tableau-proportionne",
+            "points": 4,
+            "ids": [
+              "c1p9vgwo_13",
+              "c1p9vgwo_0"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "c1p9vgwo_12",
+        "nombreMuraux": 2,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": {
+          "metres": 2.47,
+          "diagonale": 1.092,
+          "rapportDiagonale": 2.261,
+          "indicatif": true
+        }
+      },
+      "manquants": [
+        {
+          "id": "salon:fauteuil-salon:1",
+          "zone": "salon",
+          "usage": "fauteuil-salon",
+          "obligatoire": false,
+          "priorite": 3,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "salon:tapis:1",
+          "zone": "salon",
+          "usage": "tapis",
+          "obligatoire": false,
+          "priorite": 3,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "lecture:fauteuil-lecture:1",
+          "zone": "lecture",
+          "usage": "fauteuil-lecture",
+          "obligatoire": true,
+          "priorite": 3,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "lecture:table-appoint:1",
+          "zone": "lecture",
+          "usage": "table-appoint",
+          "obligatoire": true,
+          "priorite": 3,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "lecture:lumiere-lecture:1",
+          "zone": "lecture",
+          "usage": "lumiere-lecture",
+          "obligatoire": true,
+          "priorite": 3,
+          "motif": "surface-ou-acces"
+        }
+      ]
+    },
+    {
+      "nom": "5 × 6",
+      "fonction": "salon",
+      "tempsMs": 918,
+      "objets": 18,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [],
+        "audit": [],
+        "score": 32,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "c1viuezp_12"
+            ]
+          },
+          {
+            "id": "tv-face-canape",
+            "points": 5,
+            "ids": [
+              "c1viuezp_12",
+              "c1viuezp_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1viuezp_9"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1viuezp_15"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1viuezp_17"
+            ]
+          },
+          {
+            "id": "suspension-centree",
+            "points": 5,
+            "ids": [
+              "c1viuezp_15",
+              "c1viuezp_3"
+            ]
+          },
+          {
+            "id": "mur-principal",
+            "points": 4,
+            "ids": [
+              "c1viuezp_13"
+            ]
+          },
+          {
+            "id": "tableau-proportionne",
+            "points": 4,
+            "ids": [
+              "c1viuezp_13",
+              "c1viuezp_0"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "c1viuezp_12",
+        "nombreMuraux": 2,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": {
+          "metres": 2.46,
+          "diagonale": 1.092,
+          "rapportDiagonale": 2.252,
+          "indicatif": true
+        }
+      },
+      "manquants": []
+    },
+    {
+      "nom": "6 × 6",
+      "fonction": "salon",
+      "tempsMs": 1550,
+      "objets": 19,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [],
+        "audit": [],
+        "score": 34,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "c1et2ddr_13"
+            ]
+          },
+          {
+            "id": "tv-face-canape",
+            "points": 5,
+            "ids": [
+              "c1et2ddr_13",
+              "c1et2ddr_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1et2ddr_10"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1et2ddr_17"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1et2ddr_19"
+            ]
+          },
+          {
+            "id": "suspension-centree",
+            "points": 5,
+            "ids": [
+              "c1et2ddr_17",
+              "c1et2ddr_3"
+            ]
+          },
+          {
+            "id": "mur-principal",
+            "points": 4,
+            "ids": [
+              "c1et2ddr_14"
+            ]
+          },
+          {
+            "id": "tableau-proportionne",
+            "points": 4,
+            "ids": [
+              "c1et2ddr_14",
+              "c1et2ddr_0"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "c1et2ddr_13",
+        "nombreMuraux": 3,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": {
+          "metres": 2.46,
+          "diagonale": 1.092,
+          "rapportDiagonale": 2.252,
+          "indicatif": true
+        }
+      },
+      "manquants": [
+        {
+          "id": "rangement:buffet:1",
+          "zone": "rangement",
+          "usage": "buffet",
+          "obligatoire": false,
+          "priorite": 6,
+          "motif": "surface-ou-acces"
+        }
+      ]
+    },
+    {
+      "nom": "6 × 7",
+      "fonction": "salon",
+      "tempsMs": 852,
+      "objets": 20,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [],
+        "audit": [],
+        "score": 34,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "co23woo_13"
+            ]
+          },
+          {
+            "id": "tv-face-canape",
+            "points": 5,
+            "ids": [
+              "co23woo_13",
+              "co23woo_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "co23woo_10"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "co23woo_17"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "co23woo_19"
+            ]
+          },
+          {
+            "id": "suspension-centree",
+            "points": 5,
+            "ids": [
+              "co23woo_17",
+              "co23woo_3"
+            ]
+          },
+          {
+            "id": "mur-principal",
+            "points": 4,
+            "ids": [
+              "co23woo_14"
+            ]
+          },
+          {
+            "id": "tableau-proportionne",
+            "points": 4,
+            "ids": [
+              "co23woo_14",
+              "co23woo_0"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "co23woo_13",
+        "nombreMuraux": 3,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": {
+          "metres": 2.46,
+          "diagonale": 1.092,
+          "rapportDiagonale": 2.252,
+          "indicatif": true
+        }
+      },
+      "manquants": []
+    },
+    {
+      "nom": "7 × 8",
+      "fonction": "salon",
+      "tempsMs": 2018,
+      "objets": 21,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [],
+        "audit": [],
+        "score": 34,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "c1je8mo4_15"
+            ]
+          },
+          {
+            "id": "tv-face-canape",
+            "points": 5,
+            "ids": [
+              "c1je8mo4_15",
+              "c1je8mo4_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1je8mo4_12"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1je8mo4_19"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1je8mo4_21"
+            ]
+          },
+          {
+            "id": "suspension-centree",
+            "points": 5,
+            "ids": [
+              "c1je8mo4_19",
+              "c1je8mo4_3"
+            ]
+          },
+          {
+            "id": "mur-principal",
+            "points": 4,
+            "ids": [
+              "c1je8mo4_16"
+            ]
+          },
+          {
+            "id": "tableau-proportionne",
+            "points": 4,
+            "ids": [
+              "c1je8mo4_16",
+              "c1je8mo4_0"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "c1je8mo4_15",
+        "nombreMuraux": 3,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": {
+          "metres": 2.46,
+          "diagonale": 1.092,
+          "rapportDiagonale": 2.252,
+          "indicatif": true
+        }
+      },
+      "manquants": [
+        {
+          "id": "rangement:buffet:1",
+          "zone": "rangement",
+          "usage": "buffet",
+          "obligatoire": false,
+          "priorite": 6,
+          "motif": "surface-ou-acces"
+        }
+      ]
+    },
+    {
+      "nom": "L · 12 m²",
+      "fonction": "salon",
+      "tempsMs": 7010,
+      "objets": 13,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": false,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [],
+        "audit": [],
+        "score": 27,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "c15xwbtu_9"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c15xwbtu_8"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1bolar0_12"
+            ]
+          },
+          {
+            "id": "suspension-centree",
+            "points": 5,
+            "ids": [
+              "c1bolar0_12",
+              "c15xwbtu_3"
+            ]
+          },
+          {
+            "id": "mur-principal",
+            "points": 4,
+            "ids": [
+              "c1bolar0_10"
+            ]
+          },
+          {
+            "id": "tableau-proportionne",
+            "points": 4,
+            "ids": [
+              "c1bolar0_10",
+              "c15xwbtu_0"
+            ]
+          }
+        ],
+        "focal": "c15xwbtu_9",
+        "nombreMuraux": 2,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": {
+          "metres": 2.388,
+          "diagonale": 1.092,
+          "rapportDiagonale": 2.187,
+          "indicatif": true
+        }
+      },
+      "manquants": []
+    },
+    {
+      "nom": "L · 16 m² · deux portes",
+      "fonction": "salon",
+      "tempsMs": 261,
+      "objets": 6,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [
+          {
+            "id": "cbg1o3a_11",
+            "slot": "salon:tableau-principal:1",
+            "usage": "tableau-principal",
+            "motif": "mur-ou-hauteur"
+          },
+          {
+            "id": "cbg1o3a_12",
+            "slot": "salon:tableau-secondaire:1",
+            "usage": "tableau-secondaire",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "audit": [],
+        "score": -3,
+        "regles": [
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "cbg1o3a_13"
+            ]
+          },
+          {
+            "id": "suspension-centree",
+            "points": 5,
+            "ids": [
+              "cbg1o3a_13",
+              "cbg1o3a_3"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": null,
+        "nombreMuraux": 0,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": null
+      },
+      "manquants": [
+        {
+          "id": "salon:canape:1",
+          "zone": "salon",
+          "usage": "canape",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "salon:table-basse:1",
+          "zone": "salon",
+          "usage": "table-basse",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "salon:meuble-tv:1",
+          "zone": "salon",
+          "usage": "meuble-tv",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "salon:lumiere-salon:1",
+          "zone": "salon",
+          "usage": "lumiere-salon",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "salon:fauteuil-salon:1",
+          "zone": "salon",
+          "usage": "fauteuil-salon",
+          "obligatoire": false,
+          "priorite": 3,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "salon:television:1",
+          "zone": "salon",
+          "usage": "television",
+          "obligatoire": true,
+          "priorite": 1,
+          "couche": "finition",
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "salon:tableau-principal:1",
+          "zone": "salon",
+          "usage": "tableau-principal",
+          "obligatoire": false,
+          "priorite": 3,
+          "couche": "finition",
+          "motif": "mur-ou-hauteur"
+        },
+        {
+          "id": "salon:tableau-secondaire:1",
+          "zone": "salon",
+          "usage": "tableau-secondaire",
+          "obligatoire": false,
+          "priorite": 4,
+          "couche": "finition",
+          "motif": "mur-ou-hauteur"
+        }
+      ]
+    },
+    {
+      "nom": "Oblique · 15 m²",
+      "fonction": "salon",
+      "tempsMs": 832,
+      "objets": 13,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": false,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [],
+        "audit": [],
+        "score": 28,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "cg863dx_10"
+            ]
+          },
+          {
+            "id": "tv-face-canape",
+            "points": 5,
+            "ids": [
+              "cg863dx_10",
+              "cg863dx_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "cg863dx_8"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "cg863dx_13"
+            ]
+          },
+          {
+            "id": "suspension-centree",
+            "points": 5,
+            "ids": [
+              "cg863dx_13",
+              "cg863dx_3"
+            ]
+          },
+          {
+            "id": "mur-principal",
+            "points": 4,
+            "ids": [
+              "cg863dx_11"
+            ]
+          },
+          {
+            "id": "tableau-proportionne",
+            "points": 4,
+            "ids": [
+              "cg863dx_11",
+              "cg863dx_0"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "cg863dx_10",
+        "nombreMuraux": 2,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": {
+          "metres": 2.45,
+          "diagonale": 1.092,
+          "rapportDiagonale": 2.243,
+          "indicatif": true
+        }
+      },
+      "manquants": [
+        {
+          "id": "salon:fauteuil-salon:1",
+          "zone": "salon",
+          "usage": "fauteuil-salon",
+          "obligatoire": false,
+          "priorite": 3,
+          "motif": "surface-ou-acces"
+        }
+      ]
+    },
+    {
+      "nom": "Décroché · 15 m²",
+      "fonction": "salon",
+      "tempsMs": 253,
+      "objets": 6,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [
+          {
+            "id": "cg863dx_11",
+            "slot": "salon:tableau-principal:1",
+            "usage": "tableau-principal",
+            "motif": "mur-ou-hauteur"
+          },
+          {
+            "id": "cg863dx_12",
+            "slot": "salon:tableau-secondaire:1",
+            "usage": "tableau-secondaire",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "audit": [],
+        "score": 1,
+        "regles": [
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "cg863dx_13"
+            ]
+          },
+          {
+            "id": "suspension-centree",
+            "points": 5,
+            "ids": [
+              "cg863dx_13",
+              "cg863dx_3"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": null,
+        "nombreMuraux": 0,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": null
+      },
+      "manquants": [
+        {
+          "id": "salon:canape:1",
+          "zone": "salon",
+          "usage": "canape",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "salon:table-basse:1",
+          "zone": "salon",
+          "usage": "table-basse",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "salon:meuble-tv:1",
+          "zone": "salon",
+          "usage": "meuble-tv",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "salon:lumiere-salon:1",
+          "zone": "salon",
+          "usage": "lumiere-salon",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "salon:fauteuil-salon:1",
+          "zone": "salon",
+          "usage": "fauteuil-salon",
+          "obligatoire": false,
+          "priorite": 3,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "salon:television:1",
+          "zone": "salon",
+          "usage": "television",
+          "obligatoire": true,
+          "priorite": 1,
+          "couche": "finition",
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "salon:tableau-principal:1",
+          "zone": "salon",
+          "usage": "tableau-principal",
+          "obligatoire": false,
+          "priorite": 3,
+          "couche": "finition",
+          "motif": "mur-ou-hauteur"
+        },
+        {
+          "id": "salon:tableau-secondaire:1",
+          "zone": "salon",
+          "usage": "tableau-secondaire",
+          "obligatoire": false,
+          "priorite": 4,
+          "couche": "finition",
+          "motif": "mur-ou-hauteur"
+        }
+      ]
+    },
+    {
+      "nom": "9 m²",
+      "fonction": "chambre",
+      "tempsMs": 31,
+      "objets": 1,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [
+          {
+            "id": "c3l0fu8_4",
+            "slot": "couchage:tableau-principal:1",
+            "usage": "tableau-principal",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "audit": [],
+        "score": -6,
+        "regles": [
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": null,
+        "nombreMuraux": 0,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": null
+      },
+      "manquants": [
+        {
+          "id": "couchage:lit:1",
+          "zone": "couchage",
+          "usage": "lit",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:chevet:1",
+          "zone": "couchage",
+          "usage": "chevet",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:lampe-chevet:1",
+          "zone": "couchage",
+          "usage": "lampe-chevet",
+          "obligatoire": true,
+          "priorite": 2,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:tableau-principal:1",
+          "zone": "couchage",
+          "usage": "tableau-principal",
+          "obligatoire": false,
+          "priorite": 3,
+          "couche": "finition",
+          "motif": "mur-ou-hauteur"
+        }
+      ]
+    },
+    {
+      "nom": "10,5 m²",
+      "fonction": "chambre",
+      "tempsMs": 45,
+      "objets": 5,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [
+          {
+            "id": "c1fty7st_6",
+            "slot": "couchage:tableau-principal:1",
+            "usage": "tableau-principal",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "audit": [],
+        "score": 6,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "c1fty7st_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1fty7st_4",
+              "c1fty7st_5"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "c1fty7st_0",
+        "nombreMuraux": 0,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": null
+      },
+      "manquants": [
+        {
+          "id": "couchage:tableau-principal:1",
+          "zone": "couchage",
+          "usage": "tableau-principal",
+          "obligatoire": false,
+          "priorite": 3,
+          "couche": "finition",
+          "motif": "mur-ou-hauteur"
+        },
+        {
+          "id": "rangement:armoire:1",
+          "zone": "rangement",
+          "usage": "armoire",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        }
+      ]
+    },
+    {
+      "nom": "12,25 m² · deux portes",
+      "fonction": "chambre",
+      "tempsMs": 41,
+      "objets": 1,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [
+          {
+            "id": "c1qgzjou_6",
+            "slot": "couchage:tableau-principal:1",
+            "usage": "tableau-principal",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "audit": [],
+        "score": -6,
+        "regles": [
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": null,
+        "nombreMuraux": 0,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": null
+      },
+      "manquants": [
+        {
+          "id": "couchage:lit:1",
+          "zone": "couchage",
+          "usage": "lit",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:chevet:1",
+          "zone": "couchage",
+          "usage": "chevet",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:chevet:2",
+          "zone": "couchage",
+          "usage": "chevet",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:lampe-chevet:1",
+          "zone": "couchage",
+          "usage": "lampe-chevet",
+          "obligatoire": true,
+          "priorite": 2,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:lampe-chevet:2",
+          "zone": "couchage",
+          "usage": "lampe-chevet",
+          "obligatoire": true,
+          "priorite": 2,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:tableau-principal:1",
+          "zone": "couchage",
+          "usage": "tableau-principal",
+          "obligatoire": false,
+          "priorite": 3,
+          "couche": "finition",
+          "motif": "mur-ou-hauteur"
+        }
+      ]
+    },
+    {
+      "nom": "14 m²",
+      "fonction": "chambre",
+      "tempsMs": 231,
+      "objets": 9,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [],
+        "audit": [],
+        "score": 8,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "cdwxwuh_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "cdwxwuh_5",
+              "cdwxwuh_6"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "cdwxwuh_0",
+        "nombreMuraux": 2,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": null
+      },
+      "manquants": [
+        {
+          "id": "couchage:banc:1",
+          "zone": "couchage",
+          "usage": "banc",
+          "obligatoire": false,
+          "priorite": 4,
+          "motif": "surface-ou-acces"
+        }
+      ]
+    },
+    {
+      "nom": "16 m² · deux portes",
+      "fonction": "chambre",
+      "tempsMs": 128,
+      "objets": 8,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [],
+        "audit": [],
+        "score": 6,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "c1g78pcx_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1g78pcx_5",
+              "c1g78pcx_6"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "c1g78pcx_0",
+        "nombreMuraux": 2,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": null
+      },
+      "manquants": [
+        {
+          "id": "couchage:banc:1",
+          "zone": "couchage",
+          "usage": "banc",
+          "obligatoire": false,
+          "priorite": 4,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "rangement:buffet:1",
+          "zone": "rangement",
+          "usage": "buffet",
+          "obligatoire": false,
+          "priorite": 3,
+          "motif": "surface-ou-acces"
+        }
+      ]
+    },
+    {
+      "nom": "20 m²",
+      "fonction": "chambre",
+      "tempsMs": 547,
+      "objets": 12,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [],
+        "audit": [],
+        "score": 12,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "c1smwkm7_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1smwkm7_6",
+              "c1smwkm7_7"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1smwkm7_12"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "c1smwkm7_0",
+        "nombreMuraux": 2,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": null
+      },
+      "manquants": [
+        {
+          "id": "couchage:banc:1",
+          "zone": "couchage",
+          "usage": "banc",
+          "obligatoire": false,
+          "priorite": 4,
+          "motif": "surface-ou-acces"
+        }
+      ]
+    },
+    {
+      "nom": "L · 12 m²",
+      "fonction": "chambre",
+      "tempsMs": 64,
+      "objets": 1,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [
+          {
+            "id": "ct8818i_6",
+            "slot": "couchage:tableau-principal:1",
+            "usage": "tableau-principal",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "audit": [],
+        "score": -10,
+        "regles": [
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": null,
+        "nombreMuraux": 0,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": null
+      },
+      "manquants": [
+        {
+          "id": "couchage:lit:1",
+          "zone": "couchage",
+          "usage": "lit",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:chevet:1",
+          "zone": "couchage",
+          "usage": "chevet",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:chevet:2",
+          "zone": "couchage",
+          "usage": "chevet",
+          "obligatoire": true,
+          "priorite": 1,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:lampe-chevet:1",
+          "zone": "couchage",
+          "usage": "lampe-chevet",
+          "obligatoire": true,
+          "priorite": 2,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:lampe-chevet:2",
+          "zone": "couchage",
+          "usage": "lampe-chevet",
+          "obligatoire": true,
+          "priorite": 2,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:tableau-principal:1",
+          "zone": "couchage",
+          "usage": "tableau-principal",
+          "obligatoire": false,
+          "priorite": 3,
+          "couche": "finition",
+          "motif": "mur-ou-hauteur"
+        }
+      ]
+    },
+    {
+      "nom": "L · 16 m² · deux portes",
+      "fonction": "chambre",
+      "tempsMs": 336,
+      "objets": 7,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": false,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [
+          {
+            "id": "c1lokpjm_8",
+            "slot": "couchage:tableau-principal:1",
+            "usage": "tableau-principal",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "audit": [],
+        "score": 2,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "c1lokpjm_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "c1lokpjm_5",
+              "c1lokpjm_6"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "c1lokpjm_0",
+        "nombreMuraux": 1,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": null
+      },
+      "manquants": [
+        {
+          "id": "couchage:banc:1",
+          "zone": "couchage",
+          "usage": "banc",
+          "obligatoire": false,
+          "priorite": 4,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:tableau-principal:1",
+          "zone": "couchage",
+          "usage": "tableau-principal",
+          "obligatoire": false,
+          "priorite": 3,
+          "couche": "finition",
+          "motif": "mur-ou-hauteur"
+        },
+        {
+          "id": "rangement:buffet:1",
+          "zone": "rangement",
+          "usage": "buffet",
+          "obligatoire": false,
+          "priorite": 3,
+          "motif": "surface-ou-acces"
+        }
+      ]
+    },
+    {
+      "nom": "Oblique · 15 m²",
+      "fonction": "chambre",
+      "tempsMs": 273,
+      "objets": 9,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [],
+        "audit": [],
+        "score": 10,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "ceudp99_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "ceudp99_5",
+              "ceudp99_6"
+            ]
+          }
+        ],
+        "focal": "ceudp99_0",
+        "nombreMuraux": 2,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": null
+      },
+      "manquants": [
+        {
+          "id": "couchage:banc:1",
+          "zone": "couchage",
+          "usage": "banc",
+          "obligatoire": false,
+          "priorite": 4,
+          "motif": "surface-ou-acces"
+        }
+      ]
+    },
+    {
+      "nom": "Décroché · 15 m²",
+      "fonction": "chambre",
+      "tempsMs": 517,
+      "objets": 8,
+      "geometrie": [],
+      "hauteurs": [],
+      "planValide": true,
+      "finition": {
+        "version": "composition-hauteur-1",
+        "manquants": [
+          {
+            "id": "ceudp99_8",
+            "slot": "couchage:tableau-principal:1",
+            "usage": "tableau-principal",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "audit": [],
+        "score": 8,
+        "regles": [
+          {
+            "id": "focal-visible",
+            "points": 6,
+            "ids": [
+              "ceudp99_0"
+            ]
+          },
+          {
+            "id": "lumiere-zone",
+            "points": 4,
+            "ids": [
+              "ceudp99_5",
+              "ceudp99_6"
+            ]
+          },
+          {
+            "id": "mur-vide",
+            "points": -2,
+            "ids": []
+          }
+        ],
+        "focal": "ceudp99_0",
+        "nombreMuraux": 1,
+        "cibleMuraux": [
+          2,
+          4
+        ],
+        "tvDistance": null
+      },
+      "manquants": [
+        {
+          "id": "couchage:banc:1",
+          "zone": "couchage",
+          "usage": "banc",
+          "obligatoire": false,
+          "priorite": 4,
+          "motif": "surface-ou-acces"
+        },
+        {
+          "id": "couchage:tableau-principal:1",
+          "zone": "couchage",
+          "usage": "tableau-principal",
+          "obligatoire": false,
+          "priorite": 3,
+          "couche": "finition",
+          "motif": "mur-ou-hauteur"
+        }
+      ]
+    }
+  ]
+}

@@ -16,6 +16,7 @@ import Tuto from '@/components/Tuto.js';
 import { apparaitre, deplier, animer } from '@/components/Mouvement.js';
 import { prix, remplir } from '@/lib/i18n.js';
 import { estMural, estSuspendu, estAdosse, placerAuMur, demiEmpreinte, resoudre, ANGLES } from '@/lib/agencement.js';
+import { deplacerAvecAttaches } from '@/lib/finition.js';
 
 const Icone = ({ d }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={d} /></svg>;
 const I = {
@@ -146,11 +147,11 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     else if (cadre && editeur.current) editeur.current.ensemble();
   }
   function surDeplacement(d) {
-    modifier(l => l.map(it => (it.id === d.id ? { ...it, x: d.x, z: d.z, rot: d.rot, ...(d.mur ? { mur: d.mur } : {}), ...(d.y != null ? { y: d.y } : {}) } : it)));
+    modifier(l => deplacerAvecAttaches(piece.modele, l, produits, d));
   }
   function tourner(delta) {
     const r = editeur.current && editeur.current.tourner(selection, delta);
-    if (r) modifier(l => l.map(it => (it.id === r.id ? { ...it, rot: r.rot, x: r.x, z: r.z } : it)));
+    if (r) modifier(l => deplacerAvecAttaches(piece.modele, l, produits, r));
   }
   function basculerGarde(id) {
     modifier(l => l.map(it => (it.id === id ? { ...it, garde: it.garde === false ? true : false } : it)));

@@ -1,0 +1,24 @@
+salon · Référence 20 m² : 14 objets, 0 conflits de hauteur, plan valide · 621 ms
+salon · 3.5 × 4 : 8 objets, 0 conflits de hauteur, plan valide · 347 ms
+salon · 4 × 4 : 12 objets, 0 conflits de hauteur, plan à vérifier · 1292 ms
+salon · 4 × 5 : 13 objets, 0 conflits de hauteur, plan à vérifier · 1084 ms
+salon · 5 × 5 : 13 objets, 0 conflits de hauteur, plan valide · 1233 ms
+salon · 5 × 6 : 18 objets, 0 conflits de hauteur, plan valide · 918 ms
+salon · 6 × 6 : 19 objets, 0 conflits de hauteur, plan valide · 1550 ms
+salon · 6 × 7 : 20 objets, 0 conflits de hauteur, plan valide · 852 ms
+salon · 7 × 8 : 21 objets, 0 conflits de hauteur, plan valide · 2018 ms
+salon · L · 12 m² : 13 objets, 0 conflits de hauteur, plan à vérifier · 7010 ms
+salon · L · 16 m² · deux portes : 6 objets, 0 conflits de hauteur, plan valide · 261 ms
+salon · Oblique · 15 m² : 13 objets, 0 conflits de hauteur, plan à vérifier · 832 ms
+salon · Décroché · 15 m² : 6 objets, 0 conflits de hauteur, plan valide · 253 ms
+chambre · 9 m² : 1 objets, 0 conflits de hauteur, plan valide · 31 ms
+chambre · 10,5 m² : 5 objets, 0 conflits de hauteur, plan valide · 45 ms
+chambre · 12,25 m² · deux portes : 1 objets, 0 conflits de hauteur, plan valide · 41 ms
+chambre · 14 m² : 9 objets, 0 conflits de hauteur, plan valide · 231 ms
+chambre · 16 m² · deux portes : 8 objets, 0 conflits de hauteur, plan valide · 128 ms
+chambre · 20 m² : 12 objets, 0 conflits de hauteur, plan valide · 547 ms
+chambre · L · 12 m² : 1 objets, 0 conflits de hauteur, plan valide · 64 ms
+chambre · L · 16 m² · deux portes : 7 objets, 0 conflits de hauteur, plan à vérifier · 336 ms
+chambre · Oblique · 15 m² : 9 objets, 0 conflits de hauteur, plan valide · 273 ms
+chambre · Décroché · 15 m² : 8 objets, 0 conflits de hauteur, plan valide · 517 ms
+{"cas":23,"sansConflit":23,"plansValides":18,"television":11,"programmesCompletEtValide":10,"reference":{"objets":14,"planValide":true,"scoreAvant":-10,"scoreApres":30}}
