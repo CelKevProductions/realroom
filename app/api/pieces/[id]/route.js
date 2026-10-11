@@ -32,11 +32,12 @@ export const PATCH = route(async (request, { params }) => {
     const correction = b.geometrie && typeof b.geometrie === 'object' ? b.geometrie : { dims: b.dims };
     try { Object.assign(champs, corrigerPiece(p.modele, Array.isArray(b.agencement) ? nettoyer(b.agencement, p.modele) : p.agencement || [], correction, PRODUITS)); } catch(e) { if(['scan-forme','scan-coins','scan-dimensions'].includes(e.message)) throw new ErreurHTTP(400,e.message);throw e; }
     champs.dims = mesuresConfirmees(champs.modele);
-    champs.proposition = p.proposition ? { ...p.proposition, confort: null } : null;
+    champs.proposition = p.proposition ? { ...p.proposition, confort: null, densite: null } : null;
   }
   if (Array.isArray(b.agencement)) {
     if (!p.modele) throw new ErreurHTTP(409, 'pas-de-modele');
     if (!b.dims && !b.geometrie) champs.agencement = nettoyer(b.agencement, p.modele);
+    if (p.proposition) champs.proposition = { ...p.proposition, confort: null, densite: null };
   }
   if (b.vue && p.modele) champs.modele = { ...(champs.modele || p.modele), vue: { ...p.modele.vue, ...pick(b.vue, ['x', 'y', 'z', 'cx', 'cy', 'cz', 'fov']) } };
   const n = await majPiece(u.id, id, champs);

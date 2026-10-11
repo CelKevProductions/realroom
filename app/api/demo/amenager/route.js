@@ -37,7 +37,7 @@ export const POST = route(async request => {
   const cands = candidats({ dims: p.modele.dims, fonction: p.fonction, envies: prep.envies, budget: prep.budget });
   let r;
   try {
-    r = await proposerAmenagement({ piece: { ...versClaude(p.modele, prep.base, PRODUITS), notes_client: p.notes }, fonction: p.fonction, mode: prep.mode, envies: prep.envies, espaces: prep.espaces, placesRepas: prep.placesRepas, budget: prep.budget, garder: prep.garder, aRemplacer: prep.aRemplacer, candidats: cands, inspirations, langue }, { reel: true, maxTokens: 12000 });
+    r = await proposerAmenagement({ piece: { ...versClaude(p.modele, prep.base, PRODUITS), notes_client: p.notes }, fonction: p.fonction, mode: prep.mode, envies: prep.envies, espaces: prep.espaces, placesRepas: prep.placesRepas, compositionSurface: prep.compositionSurface, compositionDetails: prep.compositionDetails, budget: prep.budget, garder: prep.garder, aRemplacer: prep.aRemplacer, candidats: cands, inspirations, langue }, { reel: true, maxTokens: 12000 });
   } catch (e) {
     if (e?.code === 'cle') return indisponible('D-07');
     console.error('Aménagement IA démo indisponible', e?.code || 'modele');

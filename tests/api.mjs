@@ -293,6 +293,7 @@ essai('réaménagement relancé : budget, style, meuble gardé et déplacement e
   const enregistrement = await api(`/api/pieces/${id}`, { method: 'PATCH', corps: { agencement: deplace } });
   assert.equal(enregistrement.statut, 200);
   const prop = enregistrement.piece.proposition;
+  assert.equal(prop.densite, null, 'un déplacement invalide le diagnostic de densité précédent');
   const suivantesEnvies = 'Style scandinave, bois clair. Un coin bureau près de la fenêtre.';
   const suivante = await api(`/api/pieces/${id}/amenager`, { method: 'POST', corps: { mode: 'tout', envies: suivantesEnvies, espaces: ['travail'], placesRepas: 4, budget: prop.budget, garder: prop.garder, aRemplacer: [], langue: 'fr' } });
   assert.equal(suivante.statut, 200, JSON.stringify(suivante));
@@ -329,6 +330,32 @@ essai('salon : les idées modifiées créent une table et quatre chaises, enregi
   const recharge = await api(`/api/pieces/${id}`);
   assert.deepEqual(recharge.piece.agencement, r.piece.agencement); assert.equal(recharge.piece.proposition.envies, choix.envies);
   assert.deepEqual(recharge.piece.modele, releve.piece.modele);
+});
+
+essai('90 m² : zones, densité et passage enregistrés ; le repli retire le nouveau palier', async () => {
+  const api = client(); await api.connexion('surface@composition.test');
+  const pr = await api('/api/projets', { method: 'POST', corps: { nom: 'Grand séjour synthétique' } });
+  const pc = await api(`/api/projets/${pr.projet.id}/pieces`, { method: 'POST', corps: { nom: 'Séjour', fonction: 'salon' } });
+  const scan = scanApple(); scan.objects = [];
+  scan.walls.forEach((w, i) => { w.size[0] = i < 2 ? 10 : 9; w.transform[12] *= 2.5; w.transform[14] *= 1.8; });
+  scan.openings.forEach(o => { o.transform[12] *= 2.5; o.transform[14] *= 1.8; });
+  const id = pc.piece.id;
+  assert.equal((await api(`/api/pieces/${id}/scan`, { method: 'POST', corps: { scan } })).statut, 200);
+  const choix = { mode: 'tout', envies: 'Salon chaleureux', budget: 15000, garder: [], aRemplacer: [], langue: 'fr' };
+  const r = await api(`/api/pieces/${id}/amenager`, { method: 'POST', corps: choix });
+  assert.equal(r.statut, 200, JSON.stringify(r));
+  const p = r.piece.proposition;
+  assert.equal(p.densite.echelle.surface, 90);
+  assert.ok(p.densite.zonesVie >= 3); assert.ok(r.piece.agencement.length >= 20);
+  assert.equal(p.planZones.audit.valide, true); assert.equal(p.planZones.audit.circulation.largeur, 1.1);
+  assert.equal(r.piece.agencement.filter(it => it.usageProgramme === 'chaise-repas').length, 8);
+  const relu = await api(`/api/pieces/${id}`);
+  assert.deepEqual(relu.piece.proposition.densite, p.densite);
+  assert.deepEqual(relu.piece.agencement, r.piece.agencement);
+  const repli = await api(`/api/pieces/${id}/amenager`, { method: 'POST', corps: { ...choix, compositionSurface: false } });
+  assert.equal(repli.statut, 200, JSON.stringify(repli));
+  assert.equal(repli.piece.proposition.densite, undefined);
+  assert.equal(repli.piece.proposition.programme.compositionSurface, undefined);
 });
 
 essai('rendu guidé : caméra, nuit, photo indépendante, concurrence et référence conservée', async () => {

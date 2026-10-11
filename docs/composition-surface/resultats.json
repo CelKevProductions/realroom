@@ -1,0 +1,6023 @@
+{
+  "source": "surfaces synthétiques, même catalogue et brief",
+  "resultats": [
+    {
+      "surface": 10,
+      "dims": [
+        3.2,
+        3.125
+      ],
+      "slots": 6,
+      "objets": 6,
+      "zonesVie": 1,
+      "focal": true,
+      "planValide": true,
+      "geometrie": [],
+      "hauteurs": [],
+      "circulation": 0.9,
+      "densite": {
+        "version": "composition-surface-1",
+        "score": -4,
+        "regles": [
+          {
+            "id": "mur-mort",
+            "points": -2,
+            "zone": "fond"
+          },
+          {
+            "id": "mur-mort",
+            "points": -2,
+            "zone": "entree"
+          }
+        ],
+        "elements": 4,
+        "cibleElements": 0,
+        "zonesVie": 1,
+        "cibleZones": 1,
+        "openSpace": false,
+        "choixExplicites": false,
+        "tauxEmpriseIndicatif": 26,
+        "repartition": {
+          "distanceMax": 1.05,
+          "proportionEloignee": 0,
+          "score": 0
+        },
+        "echelle": {
+          "surface": 10,
+          "unite": "m",
+          "metrique": true,
+          "controleTerrain": true,
+          "aVerifier": false,
+          "indices": [],
+          "redimensionnement": false
+        },
+        "aCompleter": false
+      },
+      "manquants": [],
+      "composition": [
+        {
+          "id": "salon",
+          "referenceM2": 16,
+          "slots": [
+            "canape",
+            "table-basse",
+            "meuble-tv",
+            "lumiere-salon",
+            "television",
+            "tableau-principal"
+          ],
+          "retenus": [
+            "canape",
+            "meuble-tv",
+            "table-basse",
+            "lumiere-salon",
+            "television",
+            "tableau-principal"
+          ]
+        }
+      ],
+      "tempsMs": 1257
+    },
+    {
+      "surface": 18,
+      "dims": [
+        4.5,
+        4
+      ],
+      "slots": 8,
+      "objets": 8,
+      "zonesVie": 1,
+      "focal": true,
+      "planValide": true,
+      "geometrie": [],
+      "hauteurs": [],
+      "circulation": 0.9,
+      "densite": {
+        "version": "composition-surface-1",
+        "score": -4,
+        "regles": [
+          {
+            "id": "mur-mort",
+            "points": -2,
+            "zone": "entree"
+          },
+          {
+            "id": "mur-mort",
+            "points": -2,
+            "zone": "gauche"
+          }
+        ],
+        "elements": 5,
+        "cibleElements": 0,
+        "zonesVie": 1,
+        "cibleZones": 1,
+        "openSpace": false,
+        "choixExplicites": false,
+        "tauxEmpriseIndicatif": 17,
+        "repartition": {
+          "distanceMax": 1.41,
+          "proportionEloignee": 0.02,
+          "score": 0
+        },
+        "echelle": {
+          "surface": 18,
+          "unite": "m",
+          "metrique": true,
+          "controleTerrain": true,
+          "aVerifier": false,
+          "indices": [],
+          "redimensionnement": false
+        },
+        "aCompleter": false
+      },
+      "manquants": [],
+      "composition": [
+        {
+          "id": "salon",
+          "referenceM2": 16,
+          "slots": [
+            "canape",
+            "table-basse",
+            "meuble-tv",
+            "lumiere-salon",
+            "fauteuil-salon",
+            "television",
+            "tableau-principal",
+            "tableau-secondaire"
+          ],
+          "retenus": [
+            "canape",
+            "fauteuil-salon",
+            "meuble-tv",
+            "table-basse",
+            "lumiere-salon",
+            "television",
+            "tableau-principal",
+            "tableau-secondaire"
+          ]
+        }
+      ],
+      "tempsMs": 790
+    },
+    {
+      "surface": 30,
+      "dims": [
+        6,
+        5
+      ],
+      "slots": 19,
+      "objets": 19,
+      "zonesVie": 3,
+      "focal": true,
+      "planValide": true,
+      "geometrie": [],
+      "hauteurs": [],
+      "circulation": 0.9,
+      "densite": {
+        "version": "composition-surface-1",
+        "score": -2,
+        "regles": [
+          {
+            "id": "mur-mort",
+            "points": -2,
+            "zone": "gauche"
+          }
+        ],
+        "elements": 15,
+        "cibleElements": 6,
+        "zonesVie": 3,
+        "cibleZones": 2,
+        "openSpace": false,
+        "choixExplicites": false,
+        "tauxEmpriseIndicatif": 18,
+        "repartition": {
+          "distanceMax": 1.83,
+          "proportionEloignee": 0.06,
+          "score": 0
+        },
+        "echelle": {
+          "surface": 30,
+          "unite": "m",
+          "metrique": true,
+          "controleTerrain": true,
+          "aVerifier": false,
+          "indices": [],
+          "redimensionnement": false
+        },
+        "aCompleter": false
+      },
+      "manquants": [],
+      "composition": [
+        {
+          "id": "salon",
+          "referenceM2": 16,
+          "slots": [
+            "canape",
+            "table-basse",
+            "meuble-tv",
+            "lumiere-salon",
+            "fauteuil-salon",
+            "tapis",
+            "television",
+            "tableau-principal",
+            "tableau-secondaire"
+          ],
+          "retenus": [
+            "tapis",
+            "canape",
+            "fauteuil-salon",
+            "meuble-tv",
+            "table-basse",
+            "lumiere-salon",
+            "television",
+            "tableau-principal",
+            "tableau-secondaire"
+          ]
+        },
+        {
+          "id": "repas",
+          "referenceM2": 16,
+          "slots": [
+            "table-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "suspension"
+          ],
+          "retenus": [
+            "table-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "suspension"
+          ]
+        },
+        {
+          "id": "lecture",
+          "referenceM2": 8,
+          "slots": [
+            "fauteuil-lecture",
+            "table-appoint",
+            "lumiere-lecture"
+          ],
+          "retenus": [
+            "fauteuil-lecture",
+            "table-appoint",
+            "lumiere-lecture"
+          ]
+        },
+        {
+          "id": "rangement",
+          "referenceM2": 8,
+          "slots": [
+            "buffet"
+          ],
+          "retenus": [
+            "buffet"
+          ]
+        }
+      ],
+      "tempsMs": 4102
+    },
+    {
+      "surface": 90,
+      "dims": [
+        10,
+        9
+      ],
+      "slots": 28,
+      "objets": 28,
+      "zonesVie": 4,
+      "focal": true,
+      "planValide": true,
+      "geometrie": [],
+      "hauteurs": [],
+      "circulation": 1.1,
+      "densite": {
+        "version": "composition-surface-1",
+        "score": -4,
+        "regles": [
+          {
+            "id": "mur-mort",
+            "points": -2,
+            "zone": "droite"
+          },
+          {
+            "id": "mur-mort",
+            "points": -2,
+            "zone": "entree"
+          }
+        ],
+        "elements": 23,
+        "cibleElements": 18,
+        "zonesVie": 4,
+        "cibleZones": 4,
+        "openSpace": true,
+        "choixExplicites": false,
+        "tauxEmpriseIndicatif": 10,
+        "repartition": {
+          "distanceMax": 2.5,
+          "proportionEloignee": 0.13,
+          "score": 0
+        },
+        "echelle": {
+          "surface": 90,
+          "unite": "m",
+          "metrique": true,
+          "controleTerrain": true,
+          "aVerifier": false,
+          "indices": [],
+          "redimensionnement": false
+        },
+        "aCompleter": false
+      },
+      "manquants": [],
+      "composition": [
+        {
+          "id": "salon",
+          "referenceM2": 20,
+          "slots": [
+            "canape",
+            "table-basse",
+            "meuble-tv",
+            "lumiere-salon",
+            "fauteuil-salon",
+            "fauteuil-salon",
+            "tapis",
+            "television",
+            "tableau-principal",
+            "tableau-secondaire",
+            "etagere-murale"
+          ],
+          "retenus": [
+            "tapis",
+            "canape",
+            "fauteuil-salon",
+            "fauteuil-salon",
+            "meuble-tv",
+            "table-basse",
+            "lumiere-salon",
+            "television",
+            "tableau-principal",
+            "tableau-secondaire",
+            "etagere-murale"
+          ]
+        },
+        {
+          "id": "repas",
+          "referenceM2": 16,
+          "slots": [
+            "table-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "suspension"
+          ],
+          "retenus": [
+            "table-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "chaise-repas",
+            "suspension"
+          ]
+        },
+        {
+          "id": "lecture",
+          "referenceM2": 8,
+          "slots": [
+            "fauteuil-lecture",
+            "table-appoint",
+            "lumiere-lecture"
+          ],
+          "retenus": [
+            "fauteuil-lecture",
+            "table-appoint",
+            "lumiere-lecture"
+          ]
+        },
+        {
+          "id": "travail",
+          "referenceM2": 10,
+          "slots": [
+            "bureau",
+            "chaise-bureau",
+            "lampe-bureau"
+          ],
+          "retenus": [
+            "bureau",
+            "chaise-bureau",
+            "lampe-bureau"
+          ]
+        },
+        {
+          "id": "rangement",
+          "referenceM2": 8,
+          "slots": [
+            "buffet"
+          ],
+          "retenus": [
+            "buffet"
+          ]
+        }
+      ],
+      "tempsMs": 5200
+    }
+  ],
+  "paliers": [
+    {
+      "fonction": "salon",
+      "paliers": [
+        {
+          "surface": 8,
+          "focal": {
+            "usage": "television",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "salon",
+              "type": "salon",
+              "libelle": "Salon",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "salon:canape:1",
+                  "zone": "salon",
+                  "usage": "canape",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "largeurCible": 1.8,
+                  "largeurMax": 2.1
+                },
+                {
+                  "id": "salon:table-basse:1",
+                  "zone": "salon",
+                  "usage": "table-basse",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:meuble-tv:1",
+                  "zone": "salon",
+                  "usage": "meuble-tv",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:lumiere-salon:1",
+                  "zone": "salon",
+                  "usage": "lumiere-salon",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:television:1",
+                  "zone": "salon",
+                  "usage": "television",
+                  "obligatoire": true,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "salon:tableau-principal:1",
+                  "zone": "salon",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "compact",
+            "openSpace": false,
+            "cibleZones": 1,
+            "zonesChoisies": 1,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 14,
+          "focal": {
+            "usage": "television",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "salon",
+              "type": "salon",
+              "libelle": "Salon",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "salon:canape:1",
+                  "zone": "salon",
+                  "usage": "canape",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "largeurCible": 2.1,
+                  "largeurMax": 2.6
+                },
+                {
+                  "id": "salon:table-basse:1",
+                  "zone": "salon",
+                  "usage": "table-basse",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:meuble-tv:1",
+                  "zone": "salon",
+                  "usage": "meuble-tv",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:lumiere-salon:1",
+                  "zone": "salon",
+                  "usage": "lumiere-salon",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:fauteuil-salon:1",
+                  "zone": "salon",
+                  "usage": "fauteuil-salon",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "salon:television:1",
+                  "zone": "salon",
+                  "usage": "television",
+                  "obligatoire": true,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "salon:tableau-principal:1",
+                  "zone": "salon",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "salon:tableau-secondaire:1",
+                  "zone": "salon",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "standard",
+            "openSpace": false,
+            "cibleZones": 1,
+            "zonesChoisies": 1,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 20,
+          "focal": {
+            "usage": "television",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "salon",
+              "type": "salon",
+              "libelle": "Salon",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "salon:canape:1",
+                  "zone": "salon",
+                  "usage": "canape",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "largeurCible": 2.1,
+                  "largeurMax": 2.6
+                },
+                {
+                  "id": "salon:table-basse:1",
+                  "zone": "salon",
+                  "usage": "table-basse",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:meuble-tv:1",
+                  "zone": "salon",
+                  "usage": "meuble-tv",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:lumiere-salon:1",
+                  "zone": "salon",
+                  "usage": "lumiere-salon",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:fauteuil-salon:1",
+                  "zone": "salon",
+                  "usage": "fauteuil-salon",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "salon:television:1",
+                  "zone": "salon",
+                  "usage": "television",
+                  "obligatoire": true,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "salon:tableau-principal:1",
+                  "zone": "salon",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "salon:tableau-secondaire:1",
+                  "zone": "salon",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "standard",
+            "openSpace": false,
+            "cibleZones": 1,
+            "zonesChoisies": 1,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 30,
+          "focal": {
+            "usage": "television",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "salon",
+              "type": "salon",
+              "libelle": "Salon",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "salon:canape:1",
+                  "zone": "salon",
+                  "usage": "canape",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "largeurCible": 2.4,
+                  "largeurMax": 3.8
+                },
+                {
+                  "id": "salon:table-basse:1",
+                  "zone": "salon",
+                  "usage": "table-basse",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "largeurCible": 1.1
+                },
+                {
+                  "id": "salon:meuble-tv:1",
+                  "zone": "salon",
+                  "usage": "meuble-tv",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:lumiere-salon:1",
+                  "zone": "salon",
+                  "usage": "lumiere-salon",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:fauteuil-salon:1",
+                  "zone": "salon",
+                  "usage": "fauteuil-salon",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "salon:tapis:1",
+                  "zone": "salon",
+                  "usage": "tapis",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3,
+                  "largeurCible": 1.8
+                },
+                {
+                  "id": "salon:television:1",
+                  "zone": "salon",
+                  "usage": "television",
+                  "obligatoire": true,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "salon:tableau-principal:1",
+                  "zone": "salon",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "salon:tableau-secondaire:1",
+                  "zone": "salon",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "repas",
+              "type": "repas",
+              "libelle": "Repas",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "repas:table-repas:1",
+                  "zone": "repas",
+                  "usage": "table-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:1",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:2",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:3",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:4",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:suspension:1",
+                  "zone": "repas",
+                  "usage": "suspension",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "lecture",
+              "type": "lecture",
+              "libelle": "Lecture",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "lecture:fauteuil-lecture:1",
+                  "zone": "lecture",
+                  "usage": "fauteuil-lecture",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "lecture:table-appoint:1",
+                  "zone": "lecture",
+                  "usage": "table-appoint",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "lecture:lumiere-lecture:1",
+                  "zone": "lecture",
+                  "usage": "lumiere-lecture",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 4,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:buffet:1",
+                  "zone": "rangement",
+                  "usage": "buffet",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 6
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "sejour",
+            "openSpace": false,
+            "cibleZones": 2,
+            "zonesChoisies": 3,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": 5,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 45,
+          "focal": {
+            "usage": "television",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "salon",
+              "type": "salon",
+              "libelle": "Salon",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "salon:canape:1",
+                  "zone": "salon",
+                  "usage": "canape",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "largeurCible": 2.8,
+                  "largeurMax": 3.8
+                },
+                {
+                  "id": "salon:table-basse:1",
+                  "zone": "salon",
+                  "usage": "table-basse",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "largeurCible": 1.4
+                },
+                {
+                  "id": "salon:meuble-tv:1",
+                  "zone": "salon",
+                  "usage": "meuble-tv",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:lumiere-salon:1",
+                  "zone": "salon",
+                  "usage": "lumiere-salon",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:fauteuil-salon:1",
+                  "zone": "salon",
+                  "usage": "fauteuil-salon",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "salon:tapis:1",
+                  "zone": "salon",
+                  "usage": "tapis",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3,
+                  "largeurCible": 2.5
+                },
+                {
+                  "id": "salon:television:1",
+                  "zone": "salon",
+                  "usage": "television",
+                  "obligatoire": true,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "salon:tableau-principal:1",
+                  "zone": "salon",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "salon:tableau-secondaire:1",
+                  "zone": "salon",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                },
+                {
+                  "id": "salon:etagere-murale:1",
+                  "zone": "salon",
+                  "usage": "etagere-murale",
+                  "obligatoire": false,
+                  "priorite": 5,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 20
+            },
+            {
+              "id": "repas",
+              "type": "repas",
+              "libelle": "Repas",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "repas:table-repas:1",
+                  "zone": "repas",
+                  "usage": "table-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:1",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:2",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:3",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:4",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:5",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:6",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:suspension:1",
+                  "zone": "repas",
+                  "usage": "suspension",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "lecture",
+              "type": "lecture",
+              "libelle": "Lecture",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "lecture:fauteuil-lecture:1",
+                  "zone": "lecture",
+                  "usage": "fauteuil-lecture",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "lecture:table-appoint:1",
+                  "zone": "lecture",
+                  "usage": "table-appoint",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "lecture:lumiere-lecture:1",
+                  "zone": "lecture",
+                  "usage": "lumiere-lecture",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 4,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:buffet:1",
+                  "zone": "rangement",
+                  "usage": "buffet",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 6
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "open-space",
+            "openSpace": true,
+            "cibleZones": 3,
+            "zonesChoisies": 3,
+            "choixExplicites": false,
+            "largeurCirculation": 1.1,
+            "maxM2ParElement": 5,
+            "referencesZones": {
+              "salon": 20,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 90,
+          "focal": {
+            "usage": "television",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "salon",
+              "type": "salon",
+              "libelle": "Salon",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "salon:canape:1",
+                  "zone": "salon",
+                  "usage": "canape",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "largeurCible": 3.2,
+                  "largeurMax": 3.8
+                },
+                {
+                  "id": "salon:table-basse:1",
+                  "zone": "salon",
+                  "usage": "table-basse",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "largeurCible": 1.4
+                },
+                {
+                  "id": "salon:meuble-tv:1",
+                  "zone": "salon",
+                  "usage": "meuble-tv",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:lumiere-salon:1",
+                  "zone": "salon",
+                  "usage": "lumiere-salon",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "salon:fauteuil-salon:1",
+                  "zone": "salon",
+                  "usage": "fauteuil-salon",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "salon:fauteuil-salon:2",
+                  "zone": "salon",
+                  "usage": "fauteuil-salon",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "salon:tapis:1",
+                  "zone": "salon",
+                  "usage": "tapis",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3,
+                  "largeurCible": 2.5
+                },
+                {
+                  "id": "salon:television:1",
+                  "zone": "salon",
+                  "usage": "television",
+                  "obligatoire": true,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "salon:tableau-principal:1",
+                  "zone": "salon",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "salon:tableau-secondaire:1",
+                  "zone": "salon",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                },
+                {
+                  "id": "salon:etagere-murale:1",
+                  "zone": "salon",
+                  "usage": "etagere-murale",
+                  "obligatoire": false,
+                  "priorite": 5,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 20
+            },
+            {
+              "id": "repas",
+              "type": "repas",
+              "libelle": "Repas",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "repas:table-repas:1",
+                  "zone": "repas",
+                  "usage": "table-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:1",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:2",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:3",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:4",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:5",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:6",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:7",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:8",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:suspension:1",
+                  "zone": "repas",
+                  "usage": "suspension",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "lecture",
+              "type": "lecture",
+              "libelle": "Lecture",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "lecture:fauteuil-lecture:1",
+                  "zone": "lecture",
+                  "usage": "fauteuil-lecture",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "lecture:table-appoint:1",
+                  "zone": "lecture",
+                  "usage": "table-appoint",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "lecture:lumiere-lecture:1",
+                  "zone": "lecture",
+                  "usage": "lumiere-lecture",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "travail",
+              "type": "travail",
+              "libelle": "Travail",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "travail:bureau:1",
+                  "zone": "travail",
+                  "usage": "bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "travail:chaise-bureau:1",
+                  "zone": "travail",
+                  "usage": "chaise-bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "travail:lampe-bureau:1",
+                  "zone": "travail",
+                  "usage": "lampe-bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 10
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 4,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:buffet:1",
+                  "zone": "rangement",
+                  "usage": "buffet",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 6
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "grand-open-space",
+            "openSpace": true,
+            "cibleZones": 4,
+            "zonesChoisies": 4,
+            "choixExplicites": false,
+            "largeurCirculation": 1.1,
+            "maxM2ParElement": 5,
+            "referencesZones": {
+              "salon": 20,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fonction": "chambre",
+      "paliers": [
+        {
+          "surface": 8,
+          "focal": {
+            "usage": "lit",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "couchage",
+              "type": "couchage",
+              "libelle": "Sommeil",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "couchage:lit:1",
+                  "zone": "couchage",
+                  "usage": "lit",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:chevet:1",
+                  "zone": "couchage",
+                  "usage": "chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:lampe-chevet:1",
+                  "zone": "couchage",
+                  "usage": "lampe-chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "couchage:tableau-principal:1",
+                  "zone": "couchage",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:armoire:1",
+                  "zone": "rangement",
+                  "usage": "armoire",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 1,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 14,
+          "focal": {
+            "usage": "lit",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "couchage",
+              "type": "couchage",
+              "libelle": "Sommeil",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "couchage:lit:1",
+                  "zone": "couchage",
+                  "usage": "lit",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:chevet:1",
+                  "zone": "couchage",
+                  "usage": "chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:chevet:2",
+                  "zone": "couchage",
+                  "usage": "chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:lampe-chevet:1",
+                  "zone": "couchage",
+                  "usage": "lampe-chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "couchage:lampe-chevet:2",
+                  "zone": "couchage",
+                  "usage": "lampe-chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "couchage:banc:1",
+                  "zone": "couchage",
+                  "usage": "banc",
+                  "obligatoire": false,
+                  "priorite": 4
+                },
+                {
+                  "id": "couchage:tableau-principal:1",
+                  "zone": "couchage",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "couchage:tableau-secondaire:1",
+                  "zone": "couchage",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:armoire:1",
+                  "zone": "rangement",
+                  "usage": "armoire",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "rangement:buffet:1",
+                  "zone": "rangement",
+                  "usage": "buffet",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 1,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 20,
+          "focal": {
+            "usage": "lit",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "couchage",
+              "type": "couchage",
+              "libelle": "Sommeil",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "couchage:lit:1",
+                  "zone": "couchage",
+                  "usage": "lit",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:chevet:1",
+                  "zone": "couchage",
+                  "usage": "chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:chevet:2",
+                  "zone": "couchage",
+                  "usage": "chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:lampe-chevet:1",
+                  "zone": "couchage",
+                  "usage": "lampe-chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "couchage:lampe-chevet:2",
+                  "zone": "couchage",
+                  "usage": "lampe-chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "couchage:banc:1",
+                  "zone": "couchage",
+                  "usage": "banc",
+                  "obligatoire": false,
+                  "priorite": 4
+                },
+                {
+                  "id": "couchage:tableau-principal:1",
+                  "zone": "couchage",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "couchage:tableau-secondaire:1",
+                  "zone": "couchage",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:armoire:1",
+                  "zone": "rangement",
+                  "usage": "armoire",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "rangement:buffet:1",
+                  "zone": "rangement",
+                  "usage": "buffet",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "lecture",
+              "type": "lecture",
+              "libelle": "Lecture",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "lecture:fauteuil-lecture:1",
+                  "zone": "lecture",
+                  "usage": "fauteuil-lecture",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "lecture:table-appoint:1",
+                  "zone": "lecture",
+                  "usage": "table-appoint",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "lecture:lumiere-lecture:1",
+                  "zone": "lecture",
+                  "usage": "lumiere-lecture",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 30,
+          "focal": {
+            "usage": "lit",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "couchage",
+              "type": "couchage",
+              "libelle": "Sommeil",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "couchage:lit:1",
+                  "zone": "couchage",
+                  "usage": "lit",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:chevet:1",
+                  "zone": "couchage",
+                  "usage": "chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:chevet:2",
+                  "zone": "couchage",
+                  "usage": "chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:lampe-chevet:1",
+                  "zone": "couchage",
+                  "usage": "lampe-chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "couchage:lampe-chevet:2",
+                  "zone": "couchage",
+                  "usage": "lampe-chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "couchage:banc:1",
+                  "zone": "couchage",
+                  "usage": "banc",
+                  "obligatoire": false,
+                  "priorite": 4
+                },
+                {
+                  "id": "couchage:tableau-principal:1",
+                  "zone": "couchage",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "couchage:tableau-secondaire:1",
+                  "zone": "couchage",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:armoire:1",
+                  "zone": "rangement",
+                  "usage": "armoire",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "rangement:buffet:1",
+                  "zone": "rangement",
+                  "usage": "buffet",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "lecture",
+              "type": "lecture",
+              "libelle": "Lecture",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "lecture:fauteuil-lecture:1",
+                  "zone": "lecture",
+                  "usage": "fauteuil-lecture",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "lecture:table-appoint:1",
+                  "zone": "lecture",
+                  "usage": "table-appoint",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "lecture:lumiere-lecture:1",
+                  "zone": "lecture",
+                  "usage": "lumiere-lecture",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 45,
+          "focal": {
+            "usage": "lit",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "couchage",
+              "type": "couchage",
+              "libelle": "Sommeil",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "couchage:lit:1",
+                  "zone": "couchage",
+                  "usage": "lit",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:chevet:1",
+                  "zone": "couchage",
+                  "usage": "chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:chevet:2",
+                  "zone": "couchage",
+                  "usage": "chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:lampe-chevet:1",
+                  "zone": "couchage",
+                  "usage": "lampe-chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "couchage:lampe-chevet:2",
+                  "zone": "couchage",
+                  "usage": "lampe-chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "couchage:banc:1",
+                  "zone": "couchage",
+                  "usage": "banc",
+                  "obligatoire": false,
+                  "priorite": 4
+                },
+                {
+                  "id": "couchage:tableau-principal:1",
+                  "zone": "couchage",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "couchage:tableau-secondaire:1",
+                  "zone": "couchage",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:armoire:1",
+                  "zone": "rangement",
+                  "usage": "armoire",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "rangement:buffet:1",
+                  "zone": "rangement",
+                  "usage": "buffet",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "lecture",
+              "type": "lecture",
+              "libelle": "Lecture",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "lecture:fauteuil-lecture:1",
+                  "zone": "lecture",
+                  "usage": "fauteuil-lecture",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "lecture:table-appoint:1",
+                  "zone": "lecture",
+                  "usage": "table-appoint",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "lecture:lumiere-lecture:1",
+                  "zone": "lecture",
+                  "usage": "lumiere-lecture",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 90,
+          "focal": {
+            "usage": "lit",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "couchage",
+              "type": "couchage",
+              "libelle": "Sommeil",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "couchage:lit:1",
+                  "zone": "couchage",
+                  "usage": "lit",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:chevet:1",
+                  "zone": "couchage",
+                  "usage": "chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:chevet:2",
+                  "zone": "couchage",
+                  "usage": "chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "couchage:lampe-chevet:1",
+                  "zone": "couchage",
+                  "usage": "lampe-chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "couchage:lampe-chevet:2",
+                  "zone": "couchage",
+                  "usage": "lampe-chevet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "couchage:banc:1",
+                  "zone": "couchage",
+                  "usage": "banc",
+                  "obligatoire": false,
+                  "priorite": 4
+                },
+                {
+                  "id": "couchage:tableau-principal:1",
+                  "zone": "couchage",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "couchage:tableau-secondaire:1",
+                  "zone": "couchage",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:armoire:1",
+                  "zone": "rangement",
+                  "usage": "armoire",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "rangement:buffet:1",
+                  "zone": "rangement",
+                  "usage": "buffet",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "lecture",
+              "type": "lecture",
+              "libelle": "Lecture",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "lecture:fauteuil-lecture:1",
+                  "zone": "lecture",
+                  "usage": "fauteuil-lecture",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "lecture:table-appoint:1",
+                  "zone": "lecture",
+                  "usage": "table-appoint",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                },
+                {
+                  "id": "lecture:lumiere-lecture:1",
+                  "zone": "lecture",
+                  "usage": "lumiere-lecture",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fonction": "salle_a_manger",
+      "paliers": [
+        {
+          "surface": 8,
+          "focal": {
+            "usage": "table-repas",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "repas",
+              "type": "repas",
+              "libelle": "Repas",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "repas:table-repas:1",
+                  "zone": "repas",
+                  "usage": "table-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:1",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:2",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:3",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:4",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:suspension:1",
+                  "zone": "repas",
+                  "usage": "suspension",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "repas:tableau-secondaire:1",
+                  "zone": "repas",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 1,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 14,
+          "focal": {
+            "usage": "table-repas",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "repas",
+              "type": "repas",
+              "libelle": "Repas",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "repas:table-repas:1",
+                  "zone": "repas",
+                  "usage": "table-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:1",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:2",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:3",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:4",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:5",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:6",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:suspension:1",
+                  "zone": "repas",
+                  "usage": "suspension",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "repas:tableau-secondaire:1",
+                  "zone": "repas",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:buffet:1",
+                  "zone": "rangement",
+                  "usage": "buffet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 1,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 20,
+          "focal": {
+            "usage": "table-repas",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "repas",
+              "type": "repas",
+              "libelle": "Repas",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "repas:table-repas:1",
+                  "zone": "repas",
+                  "usage": "table-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:1",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:2",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:3",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:4",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:5",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:6",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:7",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:8",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:suspension:1",
+                  "zone": "repas",
+                  "usage": "suspension",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "repas:tableau-secondaire:1",
+                  "zone": "repas",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:buffet:1",
+                  "zone": "rangement",
+                  "usage": "buffet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "rangement:vaisselier:1",
+                  "zone": "rangement",
+                  "usage": "vaisselier",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 4
+                },
+                {
+                  "id": "rangement:tableau-secondaire:1",
+                  "zone": "rangement",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 1,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 30,
+          "focal": {
+            "usage": "table-repas",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "repas",
+              "type": "repas",
+              "libelle": "Repas",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "repas:table-repas:1",
+                  "zone": "repas",
+                  "usage": "table-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:1",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:2",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:3",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:4",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:5",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:6",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:7",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:8",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:suspension:1",
+                  "zone": "repas",
+                  "usage": "suspension",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "repas:tableau-secondaire:1",
+                  "zone": "repas",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:buffet:1",
+                  "zone": "rangement",
+                  "usage": "buffet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "rangement:vaisselier:1",
+                  "zone": "rangement",
+                  "usage": "vaisselier",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 4
+                },
+                {
+                  "id": "rangement:tableau-secondaire:1",
+                  "zone": "rangement",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 1,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 45,
+          "focal": {
+            "usage": "table-repas",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "repas",
+              "type": "repas",
+              "libelle": "Repas",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "repas:table-repas:1",
+                  "zone": "repas",
+                  "usage": "table-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:1",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:2",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:3",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:4",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:5",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:6",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:7",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:8",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:suspension:1",
+                  "zone": "repas",
+                  "usage": "suspension",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "repas:tableau-secondaire:1",
+                  "zone": "repas",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:buffet:1",
+                  "zone": "rangement",
+                  "usage": "buffet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "rangement:vaisselier:1",
+                  "zone": "rangement",
+                  "usage": "vaisselier",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 4
+                },
+                {
+                  "id": "rangement:tableau-secondaire:1",
+                  "zone": "rangement",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 1,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 90,
+          "focal": {
+            "usage": "table-repas",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "repas",
+              "type": "repas",
+              "libelle": "Repas",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "repas:table-repas:1",
+                  "zone": "repas",
+                  "usage": "table-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:1",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:2",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:3",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:4",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:5",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:6",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:7",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:chaise-repas:8",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "repas:suspension:1",
+                  "zone": "repas",
+                  "usage": "suspension",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "repas:tableau-secondaire:1",
+                  "zone": "repas",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:buffet:1",
+                  "zone": "rangement",
+                  "usage": "buffet",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "rangement:vaisselier:1",
+                  "zone": "rangement",
+                  "usage": "vaisselier",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 4
+                },
+                {
+                  "id": "rangement:tableau-secondaire:1",
+                  "zone": "rangement",
+                  "usage": "tableau-secondaire",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 1,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fonction": "bureau",
+      "paliers": [
+        {
+          "surface": 8,
+          "focal": {
+            "usage": "bureau",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "travail",
+              "type": "travail",
+              "libelle": "Travail",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "travail:bureau:1",
+                  "zone": "travail",
+                  "usage": "bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:chaise-bureau:1",
+                  "zone": "travail",
+                  "usage": "chaise-bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:lampe-bureau:1",
+                  "zone": "travail",
+                  "usage": "lampe-bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:tableau-principal:1",
+                  "zone": "travail",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "travail:etagere-murale:1",
+                  "zone": "travail",
+                  "usage": "etagere-murale",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 10
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 1,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 14,
+          "focal": {
+            "usage": "bureau",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "travail",
+              "type": "travail",
+              "libelle": "Travail",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "travail:bureau:1",
+                  "zone": "travail",
+                  "usage": "bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:chaise-bureau:1",
+                  "zone": "travail",
+                  "usage": "chaise-bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:lampe-bureau:1",
+                  "zone": "travail",
+                  "usage": "lampe-bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:tableau-principal:1",
+                  "zone": "travail",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "travail:etagere-murale:1",
+                  "zone": "travail",
+                  "usage": "etagere-murale",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 10
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "lecture",
+              "type": "lecture",
+              "libelle": "Lecture",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "lecture:fauteuil-lecture:1",
+                  "zone": "lecture",
+                  "usage": "fauteuil-lecture",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "lecture:lumiere-lecture:1",
+                  "zone": "lecture",
+                  "usage": "lumiere-lecture",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 20,
+          "focal": {
+            "usage": "bureau",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "travail",
+              "type": "travail",
+              "libelle": "Travail",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "travail:bureau:1",
+                  "zone": "travail",
+                  "usage": "bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:chaise-bureau:1",
+                  "zone": "travail",
+                  "usage": "chaise-bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:lampe-bureau:1",
+                  "zone": "travail",
+                  "usage": "lampe-bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:tableau-principal:1",
+                  "zone": "travail",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "travail:etagere-murale:1",
+                  "zone": "travail",
+                  "usage": "etagere-murale",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 10
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "lecture",
+              "type": "lecture",
+              "libelle": "Lecture",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "lecture:fauteuil-lecture:1",
+                  "zone": "lecture",
+                  "usage": "fauteuil-lecture",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "lecture:table-appoint:1",
+                  "zone": "lecture",
+                  "usage": "table-appoint",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "lecture:lumiere-lecture:1",
+                  "zone": "lecture",
+                  "usage": "lumiere-lecture",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 30,
+          "focal": {
+            "usage": "bureau",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "travail",
+              "type": "travail",
+              "libelle": "Travail",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "travail:bureau:1",
+                  "zone": "travail",
+                  "usage": "bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:chaise-bureau:1",
+                  "zone": "travail",
+                  "usage": "chaise-bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:lampe-bureau:1",
+                  "zone": "travail",
+                  "usage": "lampe-bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:tableau-principal:1",
+                  "zone": "travail",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "travail:etagere-murale:1",
+                  "zone": "travail",
+                  "usage": "etagere-murale",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 10
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "lecture",
+              "type": "lecture",
+              "libelle": "Lecture",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "lecture:fauteuil-lecture:1",
+                  "zone": "lecture",
+                  "usage": "fauteuil-lecture",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "lecture:table-appoint:1",
+                  "zone": "lecture",
+                  "usage": "table-appoint",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "lecture:lumiere-lecture:1",
+                  "zone": "lecture",
+                  "usage": "lumiere-lecture",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 45,
+          "focal": {
+            "usage": "bureau",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "travail",
+              "type": "travail",
+              "libelle": "Travail",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "travail:bureau:1",
+                  "zone": "travail",
+                  "usage": "bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:chaise-bureau:1",
+                  "zone": "travail",
+                  "usage": "chaise-bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:lampe-bureau:1",
+                  "zone": "travail",
+                  "usage": "lampe-bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:tableau-principal:1",
+                  "zone": "travail",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "travail:etagere-murale:1",
+                  "zone": "travail",
+                  "usage": "etagere-murale",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 10
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "lecture",
+              "type": "lecture",
+              "libelle": "Lecture",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "lecture:fauteuil-lecture:1",
+                  "zone": "lecture",
+                  "usage": "fauteuil-lecture",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "lecture:table-appoint:1",
+                  "zone": "lecture",
+                  "usage": "table-appoint",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "lecture:lumiere-lecture:1",
+                  "zone": "lecture",
+                  "usage": "lumiere-lecture",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 90,
+          "focal": {
+            "usage": "bureau",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "travail",
+              "type": "travail",
+              "libelle": "Travail",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "travail:bureau:1",
+                  "zone": "travail",
+                  "usage": "bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:chaise-bureau:1",
+                  "zone": "travail",
+                  "usage": "chaise-bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:lampe-bureau:1",
+                  "zone": "travail",
+                  "usage": "lampe-bureau",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "travail:tableau-principal:1",
+                  "zone": "travail",
+                  "usage": "tableau-principal",
+                  "obligatoire": false,
+                  "priorite": 3,
+                  "couche": "finition"
+                },
+                {
+                  "id": "travail:etagere-murale:1",
+                  "zone": "travail",
+                  "usage": "etagere-murale",
+                  "obligatoire": false,
+                  "priorite": 4,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 10
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "lecture",
+              "type": "lecture",
+              "libelle": "Lecture",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "lecture:fauteuil-lecture:1",
+                  "zone": "lecture",
+                  "usage": "fauteuil-lecture",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "lecture:table-appoint:1",
+                  "zone": "lecture",
+                  "usage": "table-appoint",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "lecture:lumiere-lecture:1",
+                  "zone": "lecture",
+                  "usage": "lumiere-lecture",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fonction": "salle_de_bain",
+      "paliers": [
+        {
+          "surface": 8,
+          "focal": {
+            "usage": "vasque",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "bain",
+              "type": "bain",
+              "libelle": "Bain",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "bain:baignoire-murale:1",
+                  "zone": "bain",
+                  "usage": "baignoire-murale",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                }
+              ],
+              "surfaceMax": 12
+            },
+            {
+              "id": "vasque",
+              "type": "vasque",
+              "libelle": "Vasque",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "vasque:vasque:1",
+                  "zone": "vasque",
+                  "usage": "vasque",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "vasque:miroir:1",
+                  "zone": "vasque",
+                  "usage": "miroir",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "vasque:seche-serviettes:1",
+                  "zone": "vasque",
+                  "usage": "seche-serviettes",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 0,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 14,
+          "focal": {
+            "usage": "vasque",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "bain",
+              "type": "bain",
+              "libelle": "Bain",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "bain:baignoire-ilot:1",
+                  "zone": "bain",
+                  "usage": "baignoire-ilot",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                }
+              ],
+              "surfaceMax": 12
+            },
+            {
+              "id": "vasque",
+              "type": "vasque",
+              "libelle": "Vasque",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "vasque:vasque:1",
+                  "zone": "vasque",
+                  "usage": "vasque",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "vasque:miroir:1",
+                  "zone": "vasque",
+                  "usage": "miroir",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "vasque:seche-serviettes:1",
+                  "zone": "vasque",
+                  "usage": "seche-serviettes",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 0,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 20,
+          "focal": {
+            "usage": "vasque",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "bain",
+              "type": "bain",
+              "libelle": "Bain",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "bain:baignoire-ilot:1",
+                  "zone": "bain",
+                  "usage": "baignoire-ilot",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                }
+              ],
+              "surfaceMax": 12
+            },
+            {
+              "id": "vasque",
+              "type": "vasque",
+              "libelle": "Vasque",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "vasque:vasque:1",
+                  "zone": "vasque",
+                  "usage": "vasque",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "vasque:miroir:1",
+                  "zone": "vasque",
+                  "usage": "miroir",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "vasque:seche-serviettes:1",
+                  "zone": "vasque",
+                  "usage": "seche-serviettes",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 0,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 30,
+          "focal": {
+            "usage": "vasque",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "bain",
+              "type": "bain",
+              "libelle": "Bain",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "bain:baignoire-ilot:1",
+                  "zone": "bain",
+                  "usage": "baignoire-ilot",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                }
+              ],
+              "surfaceMax": 12
+            },
+            {
+              "id": "vasque",
+              "type": "vasque",
+              "libelle": "Vasque",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "vasque:vasque:1",
+                  "zone": "vasque",
+                  "usage": "vasque",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "vasque:miroir:1",
+                  "zone": "vasque",
+                  "usage": "miroir",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "vasque:seche-serviettes:1",
+                  "zone": "vasque",
+                  "usage": "seche-serviettes",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 0,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 45,
+          "focal": {
+            "usage": "vasque",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "bain",
+              "type": "bain",
+              "libelle": "Bain",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "bain:baignoire-ilot:1",
+                  "zone": "bain",
+                  "usage": "baignoire-ilot",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                }
+              ],
+              "surfaceMax": 12
+            },
+            {
+              "id": "vasque",
+              "type": "vasque",
+              "libelle": "Vasque",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "vasque:vasque:1",
+                  "zone": "vasque",
+                  "usage": "vasque",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "vasque:miroir:1",
+                  "zone": "vasque",
+                  "usage": "miroir",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "vasque:seche-serviettes:1",
+                  "zone": "vasque",
+                  "usage": "seche-serviettes",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 0,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 90,
+          "focal": {
+            "usage": "vasque",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "bain",
+              "type": "bain",
+              "libelle": "Bain",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "bain:baignoire-ilot:1",
+                  "zone": "bain",
+                  "usage": "baignoire-ilot",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                }
+              ],
+              "surfaceMax": 12
+            },
+            {
+              "id": "vasque",
+              "type": "vasque",
+              "libelle": "Vasque",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "vasque:vasque:1",
+                  "zone": "vasque",
+                  "usage": "vasque",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "vasque:miroir:1",
+                  "zone": "vasque",
+                  "usage": "miroir",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "vasque:seche-serviettes:1",
+                  "zone": "vasque",
+                  "usage": "seche-serviettes",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 3
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 0,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fonction": "entree",
+      "paliers": [
+        {
+          "surface": 8,
+          "focal": {
+            "usage": "miroir",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "accueil",
+              "type": "accueil",
+              "libelle": "Accueil",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "accueil:console:1",
+                  "zone": "accueil",
+                  "usage": "console",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "accueil:miroir:1",
+                  "zone": "accueil",
+                  "usage": "miroir",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "accueil:eclairage-accueil:1",
+                  "zone": "accueil",
+                  "usage": "eclairage-accueil",
+                  "obligatoire": false,
+                  "priorite": 2,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "assise",
+              "type": "assise",
+              "libelle": "Assise",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "assise:banc:1",
+                  "zone": "assise",
+                  "usage": "banc",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "assise:portemanteau:1",
+                  "zone": "assise",
+                  "usage": "portemanteau",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "assise:tapis:1",
+                  "zone": "assise",
+                  "usage": "tapis",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5,
+                  "largeurCible": 1.8
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 14,
+          "focal": {
+            "usage": "miroir",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "accueil",
+              "type": "accueil",
+              "libelle": "Accueil",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "accueil:console:1",
+                  "zone": "accueil",
+                  "usage": "console",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "accueil:miroir:1",
+                  "zone": "accueil",
+                  "usage": "miroir",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "accueil:eclairage-accueil:1",
+                  "zone": "accueil",
+                  "usage": "eclairage-accueil",
+                  "obligatoire": false,
+                  "priorite": 2,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "assise",
+              "type": "assise",
+              "libelle": "Assise",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "assise:banc:1",
+                  "zone": "assise",
+                  "usage": "banc",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "assise:portemanteau:1",
+                  "zone": "assise",
+                  "usage": "portemanteau",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "assise:tapis:1",
+                  "zone": "assise",
+                  "usage": "tapis",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5,
+                  "largeurCible": 1.8
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 20,
+          "focal": {
+            "usage": "miroir",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "accueil",
+              "type": "accueil",
+              "libelle": "Accueil",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "accueil:console:1",
+                  "zone": "accueil",
+                  "usage": "console",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "accueil:miroir:1",
+                  "zone": "accueil",
+                  "usage": "miroir",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "accueil:eclairage-accueil:1",
+                  "zone": "accueil",
+                  "usage": "eclairage-accueil",
+                  "obligatoire": false,
+                  "priorite": 2,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "assise",
+              "type": "assise",
+              "libelle": "Assise",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "assise:banc:1",
+                  "zone": "assise",
+                  "usage": "banc",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "assise:portemanteau:1",
+                  "zone": "assise",
+                  "usage": "portemanteau",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "assise:tapis:1",
+                  "zone": "assise",
+                  "usage": "tapis",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5,
+                  "largeurCible": 1.8
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 30,
+          "focal": {
+            "usage": "miroir",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "accueil",
+              "type": "accueil",
+              "libelle": "Accueil",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "accueil:console:1",
+                  "zone": "accueil",
+                  "usage": "console",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "accueil:miroir:1",
+                  "zone": "accueil",
+                  "usage": "miroir",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "accueil:eclairage-accueil:1",
+                  "zone": "accueil",
+                  "usage": "eclairage-accueil",
+                  "obligatoire": false,
+                  "priorite": 2,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "assise",
+              "type": "assise",
+              "libelle": "Assise",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "assise:banc:1",
+                  "zone": "assise",
+                  "usage": "banc",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "assise:portemanteau:1",
+                  "zone": "assise",
+                  "usage": "portemanteau",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "assise:tapis:1",
+                  "zone": "assise",
+                  "usage": "tapis",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5,
+                  "largeurCible": 1.8
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 45,
+          "focal": {
+            "usage": "miroir",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "accueil",
+              "type": "accueil",
+              "libelle": "Accueil",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "accueil:console:1",
+                  "zone": "accueil",
+                  "usage": "console",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "accueil:miroir:1",
+                  "zone": "accueil",
+                  "usage": "miroir",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "accueil:eclairage-accueil:1",
+                  "zone": "accueil",
+                  "usage": "eclairage-accueil",
+                  "obligatoire": false,
+                  "priorite": 2,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "assise",
+              "type": "assise",
+              "libelle": "Assise",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "assise:banc:1",
+                  "zone": "assise",
+                  "usage": "banc",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "assise:portemanteau:1",
+                  "zone": "assise",
+                  "usage": "portemanteau",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "assise:tapis:1",
+                  "zone": "assise",
+                  "usage": "tapis",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5,
+                  "largeurCible": 2.5
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 90,
+          "focal": {
+            "usage": "miroir",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "accueil",
+              "type": "accueil",
+              "libelle": "Accueil",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "accueil:console:1",
+                  "zone": "accueil",
+                  "usage": "console",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                },
+                {
+                  "id": "accueil:miroir:1",
+                  "zone": "accueil",
+                  "usage": "miroir",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1,
+                  "couche": "finition"
+                },
+                {
+                  "id": "accueil:eclairage-accueil:1",
+                  "zone": "accueil",
+                  "usage": "eclairage-accueil",
+                  "obligatoire": false,
+                  "priorite": 2,
+                  "couche": "finition"
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "assise",
+              "type": "assise",
+              "libelle": "Assise",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "assise:banc:1",
+                  "zone": "assise",
+                  "usage": "banc",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "assise:portemanteau:1",
+                  "zone": "assise",
+                  "usage": "portemanteau",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "assise:tapis:1",
+                  "zone": "assise",
+                  "usage": "tapis",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5,
+                  "largeurCible": 2.5
+                }
+              ],
+              "surfaceMax": 8
+            },
+            {
+              "id": "rangement",
+              "type": "rangement",
+              "libelle": "Rangement",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "rangement:etagere:1",
+                  "zone": "rangement",
+                  "usage": "etagere",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 8
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fonction": "terrasse",
+      "paliers": [
+        {
+          "surface": 8,
+          "focal": {
+            "usage": "salon-exterieur",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "salon",
+              "type": "salon",
+              "libelle": "Salon",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "salon:salon-exterieur:1",
+                  "zone": "salon",
+                  "usage": "salon-exterieur",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                }
+              ],
+              "surfaceMax": 16
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 1,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 14,
+          "focal": {
+            "usage": "salon-exterieur",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "salon",
+              "type": "salon",
+              "libelle": "Salon",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "salon:salon-exterieur:1",
+                  "zone": "salon",
+                  "usage": "salon-exterieur",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                }
+              ],
+              "surfaceMax": 16
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 1,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 20,
+          "focal": {
+            "usage": "salon-exterieur",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "salon",
+              "type": "salon",
+              "libelle": "Salon",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "salon:salon-exterieur:1",
+                  "zone": "salon",
+                  "usage": "salon-exterieur",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "repas",
+              "type": "repas",
+              "libelle": "Repas",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "repas:table-repas:1",
+                  "zone": "repas",
+                  "usage": "table-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:1",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:2",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:3",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:4",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                }
+              ],
+              "surfaceMax": 16
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 2,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 30,
+          "focal": {
+            "usage": "salon-exterieur",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "salon",
+              "type": "salon",
+              "libelle": "Salon",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "salon:salon-exterieur:1",
+                  "zone": "salon",
+                  "usage": "salon-exterieur",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "repas",
+              "type": "repas",
+              "libelle": "Repas",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "repas:table-repas:1",
+                  "zone": "repas",
+                  "usage": "table-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:1",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:2",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:3",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:4",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:5",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:6",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "detente",
+              "type": "detente",
+              "libelle": "Détente",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "detente:transat:1",
+                  "zone": "detente",
+                  "usage": "transat",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "detente:transat:2",
+                  "zone": "detente",
+                  "usage": "transat",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 12
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 3,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 45,
+          "focal": {
+            "usage": "salon-exterieur",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "salon",
+              "type": "salon",
+              "libelle": "Salon",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "salon:salon-exterieur:1",
+                  "zone": "salon",
+                  "usage": "salon-exterieur",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "repas",
+              "type": "repas",
+              "libelle": "Repas",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "repas:table-repas:1",
+                  "zone": "repas",
+                  "usage": "table-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:1",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:2",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:3",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:4",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:5",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:6",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "detente",
+              "type": "detente",
+              "libelle": "Détente",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "detente:transat:1",
+                  "zone": "detente",
+                  "usage": "transat",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "detente:transat:2",
+                  "zone": "detente",
+                  "usage": "transat",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 12
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 3,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        },
+        {
+          "surface": 90,
+          "focal": {
+            "usage": "salon-exterieur",
+            "sansTV": false
+          },
+          "zones": [
+            {
+              "id": "salon",
+              "type": "salon",
+              "libelle": "Salon",
+              "priorite": 1,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "salon:salon-exterieur:1",
+                  "zone": "salon",
+                  "usage": "salon-exterieur",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 1
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "repas",
+              "type": "repas",
+              "libelle": "Repas",
+              "priorite": 2,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "repas:table-repas:1",
+                  "zone": "repas",
+                  "usage": "table-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:1",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:2",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:3",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:4",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:5",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                },
+                {
+                  "id": "repas:chaise-repas:6",
+                  "zone": "repas",
+                  "usage": "chaise-repas",
+                  "obligatoire": true,
+                  "demandee": false,
+                  "priorite": 2
+                }
+              ],
+              "surfaceMax": 16
+            },
+            {
+              "id": "detente",
+              "type": "detente",
+              "libelle": "Détente",
+              "priorite": 3,
+              "demandee": false,
+              "slots": [
+                {
+                  "id": "detente:transat:1",
+                  "zone": "detente",
+                  "usage": "transat",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                },
+                {
+                  "id": "detente:transat:2",
+                  "zone": "detente",
+                  "usage": "transat",
+                  "obligatoire": false,
+                  "demandee": false,
+                  "priorite": 5
+                }
+              ],
+              "surfaceMax": 12
+            }
+          ],
+          "compositionSurface": {
+            "version": "composition-surface-1",
+            "palier": "selon-usage",
+            "openSpace": false,
+            "cibleZones": null,
+            "zonesChoisies": 3,
+            "choixExplicites": false,
+            "largeurCirculation": 0.9,
+            "maxM2ParElement": null,
+            "referencesZones": {
+              "salon": 16,
+              "repas": 16,
+              "lecture": 8,
+              "travail": 10,
+              "couchage": 16,
+              "rangement": 8,
+              "accueil": 8,
+              "bain": 12,
+              "vasque": 8,
+              "assise": 8,
+              "detente": 12
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -48,7 +48,7 @@ export default function BriefReamenagement({ piece, demande, lang = 'fr', onFerm
       </div></fieldset>}
       <div className={s.reglages}>
         {repas && <label className={s.champ}>{t.places}<select value={brief.placesRepas} onChange={e => changer('placesRepas', +e.target.value)}>
-          {[2, 4, 6, 8].map(n => <option key={n} value={n}>{n} {t.place}</option>)}
+          {[2, 4, 6, 8, 10].map(n => <option key={n} value={n}>{n} {t.place}</option>)}
         </select></label>}
         <label className={s.champ}>{t.budget}<span className={s.montant}><input type="number" min="0" max="1000000" step="0.01" inputMode="decimal" value={brief.budget} onChange={e => changer('budget', e.target.value)} /><span>€</span></span><small>{t.budgetAide}</small></label>
       </div>
