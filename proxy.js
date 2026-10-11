@@ -15,5 +15,5 @@ export function proxy(request) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|icon.svg|sitemap.xml|robots.txt|catalogue.json|styles-visuels.json|images|guides/|pdf/|opengraph-image).*)']
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|icon.svg|sitemap.xml|robots.txt|catalogue.json|styles-visuels.json|images|generiques/|guides/|pdf/|opengraph-image).*)']
 };

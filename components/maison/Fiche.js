@@ -2,7 +2,7 @@
 // Fiche d'une pièce Maison Corleone : sa maquette en 360° (moteur/vitrine.js, on la fait tourner
 // au doigt) ou sa photo, ses points forts, son prix, et le lien vers la boutique.
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { prix } from '@/lib/i18n.js';
+import {prixMobilier,noteGeneriques} from '@/components/prixMobilier.js';
 import { remplir } from '@/components/maison/textes.js';
 import { initGsap, gsap, reduit } from '@/components/maison/anim.js';
 import { Icone, I, lienBoutique } from '@/components/maison/icones.js';
@@ -51,7 +51,7 @@ export default function Fiche({ t, lang, p, produits, onFermer, onEchanger, onRe
           {photo && <img src={p.img || p.vign} alt={p.titre || p.nom} />}
           <div className="mc-segment mc-fiche__onglets" role="group" aria-label={t.scene.voir360}>
             <button type="button" aria-pressed={!photo} disabled={panne} onClick={() => setVue('3d')}>{t.scene.vue3d}</button>
-            <button type="button" aria-pressed={photo} onClick={() => setVue('photo')}>{t.scene.photo}</button>
+            <button type="button" aria-pressed={photo} onClick={() => setVue('photo')}>{p.generique?'Illustration':t.scene.photo}</button>
           </div>
           <button type="button" className="mc-fiche__fermer" onClick={onFermer} aria-label={t.scene.fermer}><Icone d={I.croix} /></button>
           {!photo && <span className="mc-fiche__aide mc-mono">{t.scene.tournerAide}</span>}
@@ -59,13 +59,14 @@ export default function Fiche({ t, lang, p, produits, onFermer, onEchanger, onRe
         <div className="mc-fiche__texte" ref={texte}>
           <p className="mc-fiche__cat mc-mono">{p.cat}{p.dim ? ' · ' + remplir(t.scene.dims, { l: cm(p.dim[0]), p: cm(p.dim[1]), h: cm(p.dim[2]) }) : ''}</p>
           {p.dimEstimees && <p className="mc-note">{lang==='fr'?'Dimensions estimées : à confirmer avant l’achat.':'Estimated dimensions: confirm before purchase.'}</p>}
+          {p.generique&&<p className="mc-note">{noteGeneriques(lang)}</p>}
           <h3 className="mc-fiche__nom">{p.nom}</h3>
           {p.titre && p.titre !== p.nom && <p className="mc-fiche__titre">{p.titre}</p>}
           {p.texte && <p className="mc-fiche__desc">{p.texte}</p>}
           {p.points && p.points.length > 0 && (
             <ul className="mc-fiche__points">{p.points.slice(0, 5).map(([k, v]) => <li key={k}><span>{k}</span>{v}</li>)}</ul>
           )}
-          <p className="mc-fiche__prix">{p.prix > 0 ? prix(p.prix * 100, lang) : t.scene.surDevis}</p>
+          <p className="mc-fiche__prix">{prixMobilier(p,lang,t.scene.surDevis)}</p>
         </div>
       </div>
       <div className="mc-fiche__pied">

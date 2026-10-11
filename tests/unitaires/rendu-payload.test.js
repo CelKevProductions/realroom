@@ -10,6 +10,13 @@ const produits={table:{nom:'Table Nordic',fam:'table',dim:[.4,.4,.48],img:'produ
 const items=[{origine:'catalogue',sku:'table',x:0,z:0}];
 const base={piece:{fonction:'chambre'},modele,produits,items,mode:'tout',angle:'libre',nbProduits:1};
 
+test('les objets génériques sont décrits depuis la maquette sans inventer de photo commerciale',()=>{
+  const p={nom:'Table générique',fam:'table',generique:true,dim:[.8,.8,.4],mat:'chêne',img:null};
+  const prompt=consigneRendu({...base,produits:{table:p},sansPhoto:true});
+  assert.match(prompt,/Generic planning object.*Table générique/);assert.match(prompt,/80 × 80 × 40 cm/);
+  assert.match(prompt,/no commercial product reference photo/);assert.doesNotMatch(prompt,/- Image 2:/);
+});
+
 test('la consigne suit la caméra choisie, les indices d’images et la lumière',()=>{
   const jour=consigneRendu({...base,nbAutres:3});
   assert.match(jour,/Image 2 defines/);assert.match(jour,/Images 3–5/);assert.match(jour,/- Image 6:.*Table Nordic/);

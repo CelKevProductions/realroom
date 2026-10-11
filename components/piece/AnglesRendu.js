@@ -2,28 +2,28 @@
 import {useEffect,useRef,useState} from 'react';
 import {api} from '@/components/api.js';
 import {reduireImage} from './image.js';
-import {vuePourPosition,validerVue} from '@/lib/cadrages.js';
+import {vuePourPosition,validerVue,dimensionsCapture} from '@/lib/cadrages.js';
 import CameraPhoto from './CameraPhoto.js';
 import s from './AnglesRendu.module.css';
 
 // Deux étapes partagées : caméra figée, puis photo ajoutée sans quitter le rendu.
 export default function AnglesRendu({lang='fr',piece,onPiece,capturer,lireVue,surVue,disabled=false,avant,onGenerer,cout=1}){
- const fr=lang==='fr',[etape,setEtape]=useState(1),[vue,setVue]=useState(null),[apercu,setApercu]=useState(null),[ambiance,setAmbiance]=useState('jour');
+ const fr=lang==='fr',[etape,setEtape]=useState(1),[vue,setVue]=useState(()=>lireVue?.()||null),[apercu,setApercu]=useState(null),[ambiance,setAmbiance]=useState('jour');
  const [photo,setPhoto]=useState(null),[sansPhoto,setSansPhoto]=useState(false),[erreur,setErreur]=useState(''),[attente,setAttente]=useState(false);
  const rappels=useRef({});rappels.current={capturer,lireVue,surVue,avant,onPiece,onGenerer};
  const vivant=useRef(true),verrou=useRef(false);
  useEffect(()=>{vivant.current=true;return()=>{vivant.current=false;};},[]);
- useEffect(()=>{const h=setTimeout(()=>{if(!vivant.current)return;const v=rappels.current.lireVue?.()||vuePourPosition(piece.modele,'entree');setVue(v);},180);return()=>clearTimeout(h);},[piece.id]);
+ useEffect(()=>{if(vue)return;let annule=false,h,essais=0;function lire(){if(annule)return;const v=rappels.current.lireVue?.();if(v){setVue(v);return;}if(++essais<60)h=setTimeout(lire,150);else setErreur(fr?'Ouvrez la vue Photo avant de préparer le rendu.':'Open Photo view before preparing the render.');}lire();return()=>{annule=true;clearTimeout(h);};},[piece.id,vue,fr]);
  useEffect(()=>{
   if(!vue)return;let annule=false,h,essais=0;setApercu(null);
   const indisponible=()=>setErreur(fr?'Le cadrage n’est pas disponible. Revenez à la vue Photo.':'View unavailable. Return to Photo view.');
   function prendre(){
    if(annule)return;
-   try{const ratio=photo?.largeur&&photo?.hauteur?photo.largeur/photo.hauteur:4/3;const image=rappels.current.capturer?.({largeur:ratio>=1?640:Math.round(640*ratio),hauteur:ratio>=1?Math.round(640/ratio):640,vue,ambiance});if(image){setApercu(image);return;}if(++essais>=60){indisponible();return;}h=setTimeout(prendre,150);}catch(_){indisponible();}
+   try{const image=rappels.current.capturer?.({...dimensionsCapture(vue,640),vue,ambiance});if(image){setApercu(image);return;}if(++essais>=60){indisponible();return;}h=setTimeout(prendre,150);}catch(_){indisponible();}
   }
   prendre();return()=>{annule=true;clearTimeout(h);};
- },[vue,ambiance,photo?.largeur,photo?.hauteur,piece.agencement,piece.modele,fr]);
- function choisir(v){setVue(v);setPhoto(null);setSansPhoto(false);setErreur('');rappels.current.surVue?.(v);}
+ },[vue,ambiance,piece.agencement,piece.modele,fr]);
+ function choisir(v){const cadrage={...v,aspect:v.aspect||vue?.aspect||rappels.current.lireVue?.()?.aspect||4/3};setVue(cadrage);setPhoto(null);setSansPhoto(false);setErreur('');rappels.current.surVue?.(cadrage);}
  function regarder(sens){if(!vue)return;const dx=vue.cx-vue.x,dz=vue.cz-vue.z,a=sens*Math.PI/12;choisir({...vue,cx:vue.x+dx*Math.cos(a)-dz*Math.sin(a),cz:vue.z+dx*Math.sin(a)+dz*Math.cos(a)});}
  async function ajouter(f){
   if(!f||disabled||verrou.current)return;verrou.current=true;setAttente(true);setErreur('');
@@ -34,7 +34,7 @@ export default function AnglesRendu({lang='fr',piece,onPiece,capturer,lireVue,su
  async function generer(){
   if(disabled||verrou.current||!vue||(!photo&&!sansPhoto))return;
   verrou.current=true;setAttente(true);setErreur('');
-  try{await rappels.current.avant?.();validerVue(piece.modele,vue);const ratio=photo?.largeur&&photo?.hauteur?photo.largeur/photo.hauteur:4/3;const largeur=ratio>=1?1536:Math.round(1536*ratio),hauteur=ratio>=1?Math.round(1536/ratio):1536;const capture=rappels.current.capturer?.({largeur,hauteur,vue,ambiance});if(!capture)throw Error('capture');await rappels.current.onGenerer?.({capture,vue,ambiance,angle:'libre',photoRole:photo?'rendu':null,sansPhoto:!photo&&sansPhoto});}
+  try{await rappels.current.avant?.();validerVue(piece.modele,vue);const capture=rappels.current.capturer?.({...dimensionsCapture(vue),vue,ambiance});if(!capture)throw Error('capture');await rappels.current.onGenerer?.({capture,vue,ambiance,angle:'libre',photoRole:photo?'rendu':null,sansPhoto:!photo&&sansPhoto});}
   catch(_){if(vivant.current)setErreur(fr?'La génération n’a pas démarré. Vérifiez le cadrage et réessayez.':'Generation did not start. Check the view and try again.');}
   finally{verrou.current=false;if(vivant.current)setAttente(false);}
  }
@@ -43,7 +43,7 @@ export default function AnglesRendu({lang='fr',piece,onPiece,capturer,lireVue,su
   <legend>{fr?`Étape ${etape} sur 2 · ${etape===1?'Choisir le cadrage':'Photo réelle et lumière'}`:`Step ${etape} of 2 · ${etape===1?'Choose the view':'Real photo and lighting'}`}</legend>
   {!apercu&&!erreur&&<p role="status">{fr?'Préparation de l’aperçu…':'Preparing preview…'}</p>}
   {etape===1?<>
-   <p>{fr?'Le rendu part de la caméra de votre vue Photo. Choisissez un autre coin ou tournez le regard, puis validez.':'The render starts from your Photo view camera. Choose another corner or turn the view, then confirm.'}</p>
+   <p>{fr?'Voici votre cadrage actuel en vue Photo, avec sa position et sa direction. Validez-le pour le rendu, ou revenez dans la pièce pour vous déplacer avec les flèches.':'This is your current Photo view, with its position and direction. Confirm it for the render, or return to the room to move with the arrow keys.'}</p>
    <CameraPhoto modele={piece.modele} lang={lang} surChoisir={choisir} disabled={bloque}/>
    <div className={s.choix}><button type="button" onClick={()=>regarder(-1)} disabled={!vue}>{fr?'← Regarder à gauche':'← Look left'}</button><button type="button" onClick={()=>regarder(1)} disabled={!vue}>{fr?'Regarder à droite →':'Look right →'}</button><button type="button" onClick={()=>choisir(rappels.current.lireVue?.()||vuePourPosition(piece.modele,'entree'))}>{fr?'Reprendre la vue Photo':'Use current Photo view'}</button></div>
    {apercu&&<img className={s.apercu} src={apercu} alt={fr?'Cadrage de la caméra pour le rendu':'Camera framing for the render'}/>}

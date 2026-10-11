@@ -11,11 +11,11 @@ import { chargerCatalogue } from '@/components/catalogueClient.js';
 let quitte = false;
 if (typeof window !== 'undefined') addEventListener('pagehide', () => { quitte = true; });
 
-export default function Editeur3D({ ref, modele, items, selection, vue, surSelection, surDeplacement, surCadre, surPret, erreurWebgl, fond, fondSoir }) {
+export default function Editeur3D({ ref, modele, items, selection, vue, navigationActive=true, surSelection, surDeplacement, surNavigation, surCadre, surPret, erreurWebgl, fond, fondSoir }) {
   const canvas = useRef(null);
   const ed = useRef(null);
   const rappels = useRef({});
-  rappels.current = { surSelection, surDeplacement, surCadre };
+  rappels.current = { surSelection, surDeplacement, surCadre, surNavigation };
   const [panne, setPanne] = useState(false);
   const cle = JSON.stringify(modele && [modele.dims, modele.contour, modele.murs, modele.sol, modele.plafond]);
 
@@ -27,6 +27,8 @@ export default function Editeur3D({ ref, modele, items, selection, vue, surSelec
         if (!vivant || !canvas.current) return;
         ed.current = creerEditeur(canvas.current, {
           produits: cat.produits,
+          navigationActive,
+          surNavigation:()=>rappels.current.surNavigation?.(),
           ...(fond ? { fond } : {}),
           ...(fondSoir ? { fondSoir } : {}),
           surSelection: id => rappels.current.surSelection && rappels.current.surSelection(id),
@@ -51,12 +53,14 @@ export default function Editeur3D({ ref, modele, items, selection, vue, surSelec
   useEffect(() => { if (ed.current) ed.current.majItems(items); }, [items]);
   useEffect(() => { if (ed.current) ed.current.selectionner(selection); }, [selection]);
   useEffect(() => { if (ed.current && ed.current.mode !== vue) ed.current.vue(vue); }, [vue]);
+  useEffect(() => { ed.current?.activerNavigation(navigationActive); }, [navigationActive]);
   useEffect(() => { if (ed.current && modele && modele.vue) ed.current.majVuePhoto(modele.vue); }, [modele && modele.vue]);
 
   useImperativeHandle(ref, () => ({
     capture: o => (ed.current ? ed.current.capture(o) : null),
     pointDeVue: () => ed.current?.pointDeVue()||null,
     choisirVue: v => ed.current?.choisirVue(v),
+    deplacerCamera: c => ed.current?.deplacerCamera(c),
     projeter: id => (ed.current ? ed.current.projeter(id) : null),
     tourner: (id, d) => (ed.current ? ed.current.tourner(id, d) : null),
     cadrer: id => (ed.current ? ed.current.cadrer(id) : false),
@@ -68,5 +72,5 @@ export default function Editeur3D({ ref, modele, items, selection, vue, surSelec
   }), []);
 
   if (panne) return <div className="attente"><p>{erreurWebgl}</p></div>;
-  return <canvas ref={canvas} aria-label="3D" />;
+  return <canvas ref={canvas} aria-label="3D" tabIndex={0} />;
 }

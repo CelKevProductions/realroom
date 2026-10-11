@@ -8,6 +8,7 @@ import { api } from '@/components/api.js';
 import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
 import CameraPhoto from '@/components/piece/CameraPhoto.js';
+import {prixMobilier,nomCategorie,noteGeneriques} from '@/components/prixMobilier.js';
 import PlanVie from '@/components/piece/PlanVie.js';
 import { texte as texteRealRoom, prix } from '@/lib/i18n.js';
 import { estMural, estSuspendu, estAdosse, placerAuMur, demiEmpreinte, resoudre, ANGLES } from '@/lib/agencement.js';
@@ -286,10 +287,11 @@ export default function Scene({ t, lang, demo, piece: initiale, choix, rendus: r
   const capturer = useCallback(o => (editeur.current ? editeur.current.capture(o) : null), []);
   const lireVue = useCallback(() => editeur.current?.pointDeVue(), []);
   const surVue = useCallback(v => { setSelection(null); editeur.current?.choisirVue(v); setVue('photo'); }, []);
+  const surMouvement=useCallback(c=>editeur.current?.deplacerCamera(c),[]);
   const quitter = f => async () => { try {await vider(); f();}catch(_){} };
 
   // ---------- station ----------
-  const prixDe = p => (p && p.prix > 0 ? prix(p.prix * 100, lang) : ts.surDevis);
+  const prixDe = p => prixMobilier(p,lang,ts.surDevis);
   let contenu;
   if (choisi && pChoisi) {
     const catalogue = choisi.origine === 'catalogue';
@@ -299,7 +301,7 @@ export default function Scene({ t, lang, demo, piece: initiale, choix, rendus: r
       <>
         <p className="mc-pill mc-station__pill"><i /><span key={pill} data-label={pill}>{pill}</span></p>
         <h2 className="mc-station__titre mc-display">{pChoisi.nom}</h2>
-        <p className="mc-station__script mc-script">{catalogue ? String(pChoisi.cat || '').toLowerCase() : choisi.garde === false ? ts.retireEtat.toLowerCase() : ts.gardeEtat.toLowerCase()}</p>
+        <p className="mc-station__script mc-script">{catalogue ? nomCategorie(pChoisi,lang).toLowerCase() : choisi.garde === false ? ts.retireEtat.toLowerCase() : ts.gardeEtat.toLowerCase()}</p>
         {(choisi.raison || (catalogue && pChoisi.titre)) && <p className="mc-station__texte">{choisi.raison || pChoisi.titre}</p>}
         <ul className="mc-station__donnees mc-mono">
           {pChoisi.dim && <li>{remplir(ts.dims, { l: cm(pChoisi.dim[0]), p: cm(pChoisi.dim[1]), h: cm(pChoisi.dim[2]) })}</li>}
@@ -338,7 +340,7 @@ export default function Scene({ t, lang, demo, piece: initiale, choix, rendus: r
                 <li key={it.id}>
                   <button type="button" className="mc-ligne-piece" onClick={() => choisir(it.id)} onMouseEnter={() => points.current[it.id] && points.current[it.id].classList.add('is-actif')} onMouseLeave={() => points.current[it.id] && points.current[it.id].classList.remove('is-actif')}>
                     <em>{pad2(i + 1)}</em>
-                    <span className="mc-ligne-piece__txt"><small>{p.cat}</small><b>{p.nom}</b></span>
+                    <span className="mc-ligne-piece__txt"><small>{nomCategorie(p,lang)}</small><b>{p.nom}</b></span>
                     <span className="mc-ligne-piece__prix">{prixDe(p)}</span>
                   </button>
                 </li>
@@ -350,7 +352,8 @@ export default function Scene({ t, lang, demo, piece: initiale, choix, rendus: r
           <li>{remplir(ts.maquette, { l: String(piece.modele.dims.largeur).replace('.', lang === 'fr' ? ',' : '.'), p: String(piece.modele.dims.profondeur).replace('.', lang === 'fr' ? ',' : '.') })}</li>
           {existants.length > 0 && <li>{remplir(ts.gardes, { n: gardes })}</li>}
         </ul>
-        <p className="mc-station__total"><small className="mc-mono">{ts.total}</small>{prix(total * 100, lang)}</p>
+        <p className="mc-station__total"><small className="mc-mono">{nouveaux.some(it=>produitDe(it)?.generique)?(lang==='fr'?'Total estimé':'Estimated total'):ts.total}</small>{prix(total * 100, lang)}</p>
+        {nouveaux.some(it=>produitDe(it)?.generique)&&<p className="mc-note">{noteGeneriques(lang)}</p>}
         <div className="mc-station__actions">
           <button type="button" className="mc-rendu-btn" onClick={ouvrirRendu} disabled={!credits && !renduEnCours && !finis.length}>
             {credits > 0 || renduEnCours ? <>{ts.rendu} <i>· {offerts}</i></> : finis.length ? ts.renduVoir : ts.plusDeRendu}
@@ -365,7 +368,7 @@ export default function Scene({ t, lang, demo, piece: initiale, choix, rendus: r
   return (
     <div className={'mc-piece mc-fixe' + (soir ? ' is-soir' : '') + (fiche ? ' a-fiche' : '')}>
       <div className="mc-piece__scene" inert={attente || undefined} aria-busy={attente}>
-        <Editeur3D ref={editeur} modele={piece.modele} items={items} selection={selection} vue={vue} fond="#E6E0D4" fondSoir="#1E160E"
+        <Editeur3D ref={editeur} modele={piece.modele} items={items} selection={selection} vue={vue} navigationActive={!attente&&!rendu&&!cat.ouvert&&!fiche} fond="#E6E0D4" fondSoir="#1E160E"
           surSelection={surSelection} surDeplacement={surDeplacement} surCadre={setCadre} surPret={() => setPret(true)} erreurWebgl={ts.erreur} />
         <div className="mc-points">
           {nouveaux.map((it, i) => {
@@ -422,7 +425,7 @@ export default function Scene({ t, lang, demo, piece: initiale, choix, rendus: r
       </section>}
 
       <div className="mc-commandes" inert={attente || undefined}>
-        {vue === 'photo' && <div className="mc-camera"><CameraPhoto modele={piece.modele} lang={lang} surChoisir={surVue}/><small>{lang==='fr'?'Glissez sur la pièce pour regarder autour.':'Drag on the room to look around.'}</small></div>}
+        {vue === 'photo' && <div className="mc-camera"><CameraPhoto modele={piece.modele} lang={lang} surChoisir={surVue} surMouvement={surMouvement} disabled={attente||!!rendu||cat.ouvert||!!fiche}/><small>{lang==='fr'?'Flèches : se déplacer · Glisser : regarder autour.':'Arrows: move · Drag: look around.'}</small></div>}
         {cadre && vue === 'dessus' && !choisi && <button type="button" className="mc-segment mc-segment--seul" onClick={ensemble}><span>{ts.ensemble}</span></button>}
         <div className="mc-segment" role="group" aria-label={ts.jour + ' / ' + ts.soir}>
           <button type="button" aria-pressed={!soir} onClick={() => setSoir(false)}>{ts.jour}</button>

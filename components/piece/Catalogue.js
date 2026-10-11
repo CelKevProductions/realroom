@@ -3,7 +3,8 @@
 // dans la pièce. Choisir un meuble ouvre sa fiche : sa maquette 3D en gros plan, qui tourne sur
 // elle-même (on la fait tourner au doigt), sa photo, ses cotes, son prix — puis on l'ajoute.
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { prix, remplir } from '@/lib/i18n.js';
+import { remplir } from '@/lib/i18n.js';
+import {prixMobilier,nomCategorie,noteGeneriques} from '@/components/prixMobilier.js';
 import { estSuspendu, estMural } from '@/lib/agencement.js';
 import { ouvrirDialogue, fermerDialogue, apparaitre, animer } from '@/components/Mouvement.js';
 
@@ -58,7 +59,7 @@ function Fiche({ p, t, lang, produits, action, choisir, fermer }) {
           {photo && <img className="detail__photo" src={p.img || p.vign} alt={p.titre || p.nom} />}
           <div className="segment detail__onglets" role="group">
             <button aria-pressed={!photo} disabled={panne} onClick={() => setVue('3d')}>{tc.vue3d}</button>
-            <button aria-pressed={photo} onClick={() => setVue('photo')}>{tc.photo}</button>
+            <button aria-pressed={photo} onClick={() => setVue('photo')}>{p.generique?(lang==='fr'?'Illustration':'Illustration'):tc.photo}</button>
           </div>
           <button className="btn btn--clair btn--icone detail__fermer" onClick={fermer} aria-label={tc.fermerFiche}><Croix /></button>
           {!photo && <span className="detail__aide">{tc.tourner}</span>}
@@ -68,7 +69,8 @@ function Fiche({ p, t, lang, produits, action, choisir, fermer }) {
           {p.titre && p.titre !== p.nom && <p>{p.titre}</p>}
           <p className="detail__cotes">{p.cat}, {remplir(tc.dims, { l: cm(p.dim[0]), p: cm(p.dim[1]), h: cm(p.dim[2]) })}</p>
           {p.dimEstimees && <p className="avis avis--note">{lang==='fr'?'Dimensions estimées : à confirmer avant l’achat.':'Estimated dimensions: confirm before purchase.'}</p>}
-          <p className="detail__prix">{p.prix > 0 ? prix(p.prix * 100, lang) : t.piece.surDevis}</p>
+          {p.generique&&<p className="avis avis--note">{noteGeneriques(lang)}</p>}
+          <p className="detail__prix">{prixMobilier(p,lang,t.piece.surDevis)}</p>
         </div>
       </div>
       <div className="detail__pied">
@@ -84,6 +86,7 @@ export default function Catalogue({ lang, t, produits, libelles, dims, exterieur
   const dlg = useRef(null);
   const [fam, setFam] = useState(famille || '');
   const [q, setQ] = useState('');
+  const [source,setSource]=useState('tout');
   const [tientSeul, setTientSeul] = useState(true);
   const [fiche, setFiche] = useState(null);
   useEffect(() => { setFam(famille || ''); if (ouvert) setFiche(null); }, [famille, ouvert]);
@@ -102,10 +105,10 @@ export default function Catalogue({ lang, t, produits, libelles, dims, exterieur
   }, [tous, tientSeul, dims]);
   const liste = useMemo(() => {
     const m = norm(q).split(/\s+/).filter(Boolean);
-    return tous.filter(p => (!fam || p.fam === fam) && (!tientSeul || tient(p, dims))
+    return tous.filter(p => (source==='tout'||(source==='generique'?p.generique:!p.generique))&&(!fam || p.fam === fam) && (!tientSeul || tient(p, dims))
       && m.every(x => norm([p.nom, p.titre, p.cat, (p.couleurs || []).join(' ')].join(' ')).includes(x)))
       .sort((a, b) => (b.look ? 1 : 0) - (a.look ? 1 : 0) || (a.prix || 9e9) - (b.prix || 9e9)).slice(0, 120);
-  }, [tous, fam, q, tientSeul, dims]);
+  }, [tous, fam, q, tientSeul, dims,source]);
 
   return (
     <dialog ref={dlg} className="catalogue" aria-label={tc.titre} onClose={fermer} onCancel={e => { e.preventDefault(); fermer(); }} onClick={e => { if (e.target === dlg.current) fermer(); }}>
@@ -118,6 +121,7 @@ export default function Catalogue({ lang, t, produits, libelles, dims, exterieur
           <input className="saisie" type="search" placeholder={tc.recherche} aria-label={tc.recherche} value={q} onChange={e => setQ(e.target.value)} />
           <label className="coche"><input type="checkbox" checked={tientSeul} onChange={e => setTientSeul(e.target.checked)} />{tc.tientSeulement}</label>
         </div>
+        <div className="catalogue__sources" role="group" aria-label={lang==='fr'?'Origine des meubles':'Furniture source'}>{[['tout',tc.tout],['boutique',lang==='fr'?'Boutique':'Store'],['generique',lang==='fr'?'Objets génériques':'Generic objects']].map(([cle,nom])=><button key={cle} type="button" className="puce puce-bouton" aria-pressed={source===cle} onClick={()=>setSource(cle)}>{nom}</button>)}</div>
       </div>
       <div className="catalogue__filtres">
         <button className="puce puce-bouton" aria-pressed={!fam} onClick={() => setFam('')}>{tc.tout}</button>
@@ -131,8 +135,8 @@ export default function Catalogue({ lang, t, produits, libelles, dims, exterieur
             <button key={p.id} className="produit" aria-pressed={!!fiche && fiche.id === p.id} onClick={() => setFiche(p)} data-sku={p.id}>
               <span className="produit__image"><img src={p.vign} alt="" loading="lazy" width="176" height="220" /></span>
               <b>{p.nom}</b>
-              <small>{p.cat}</small>
-              <span className="prix">{p.prix > 0 ? prix(p.prix * 100, lang) : t.piece.surDevis}</span>
+              <small>{nomCategorie(p,lang)}</small>
+              <span className="prix">{prixMobilier(p,lang,t.piece.surDevis)}</span>
             </button>
           ))}
         </div>

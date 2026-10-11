@@ -591,3 +591,4 @@ html[data-mvt] [data-entree]:not(.is-entre):not([data-entree='trait']), html[dat
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
+.catalogue__sources{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}

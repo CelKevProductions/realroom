@@ -7,6 +7,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {scanAndroid, scanApple} from './fixtures/scans.js';
 import {vuePourPosition} from '../lib/cadrages.js';
+import {deplacerVuePhoto} from '../lib/navigation-photo.js';
 import {demandeDemoIA} from '../lib/demo-ia.js';
 import {champsDepuisScan} from '../lib/scan.js';
 import {PRODUITS} from '../lib/catalogue.js';
@@ -312,7 +313,11 @@ essai('rendu guidé : caméra, nuit, photo indépendante, concurrence et référ
   const id=pc.piece.id;
   const sc=await api(`/api/pieces/${id}/scan`,{method:'POST',corps:{scan:scanAndroid()}});
   assert.equal(sc.statut,200);
-  const vue=vuePourPosition(sc.piece.modele,'fond-gauche');
+  const generique={id:'gen-test',origine:'catalogue',sku:'rr-gen-basse-compacte-60',x:0,z:0,rot:0,p:{prix:0,dim:[.01,.01,.01]}};
+  const ajout=await api(`/api/pieces/${id}`,{method:'PATCH',corps:{agencement:[generique]}});assert.equal(ajout.statut,200);
+  const relu=await api(`/api/pieces/${id}`);assert.equal(relu.piece.agencement[0].sku,generique.sku);assert.equal(relu.piece.agencement[0].p,undefined);
+  assert.equal(PRODUITS[generique.sku].generique,true);
+  const vue=deplacerVuePhoto(sc.piece.modele,{...vuePourPosition(sc.piece.modele,'fond-gauche'),aspect:1.72},{avant:1,droite:1},.05);
   const capture='data:image/jpeg;base64,'+PHOTO.toString('base64');
   const requete={type:'image',angle:'libre',vue,ambiance:'nuit',capture};
   assert.equal((await api(`/api/pieces/${id}/rendus`,{method:'POST',corps:requete})).erreur,'photo-entree');
@@ -345,6 +350,8 @@ essai('les pages RealRoom, Maison Corleone et relevé mobile sont servies', asyn
   }
   const guide=await fetch(BASE+'/api/guides/lagarsoft');assert.equal(guide.status,200);
   const j=await guide.json();assert.ok(j.qr.startsWith('data:image/'),'le QR Apple est disponible');
+  const vignette=await fetch(BASE+'/generiques/rr-gen-basse-compacte-60.svg');assert.equal(vignette.status,200);
+  assert.match(await vignette.text(),/modèle générique/);
 });
 
 try {

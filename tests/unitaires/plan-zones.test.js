@@ -67,7 +67,8 @@ test('le budget reste prioritaire même si la composition de base n’est pas fi
 });
 test('sans chaise catalogue, ni fauteuil de salon ni ensemble aux cotes incomplètes ne sont inventés', () => {
   const modele = rectangle(6, 6), p = programmeComposition({ modele, fonction: 'salon' });
-  const r = composerProduits(p, { meubles: [] }, PRODUITS, null);
+  const boutique=Object.fromEntries(Object.entries(PRODUITS).filter(([,p])=>!p.generique));
+  const r = composerProduits(p, { meubles: [] }, boutique, null);
   assert.ok(r.manquants.some(s => s.usage === 'chaise-repas'));
   assert.equal(r.meubles.filter(m => m.programme.usage === 'chaise-repas').length, 0);
   const ensemble = PRODUITS['table-ronde-chaises-graphite-collection-dining-contemporaine'];

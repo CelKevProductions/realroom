@@ -7,6 +7,7 @@ import { api } from '@/components/api.js';
 import Editeur3D, { chargerCatalogue } from '@/components/piece/Editeur3D.js';
 import Catalogue from '@/components/piece/Catalogue.js';
 import CameraPhoto from './CameraPhoto.js';
+import {prixMobilier,nomCategorie,noteGeneriques} from '@/components/prixMobilier.js';
 import Confort from '@/components/piece/Confort.js';
 import PlanVie from '@/components/piece/PlanVie.js';
 import Inspirations from '@/components/piece/Inspirations.js';
@@ -60,6 +61,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const premierOnglet = useRef(true);
   const lireVue = useCallback(() => editeur.current?.pointDeVue(), []);
   const surVue = useCallback(v => { setSelection(null); setOpacite(0); editeur.current?.choisirVue(v); setVue('photo'); }, []);
+  const surMouvement=useCallback(c=>{if(c)setOpacite(0);editeur.current?.deplacerCamera(c);},[]);
 
   useEffect(() => { chargerCatalogue().then(c => { setProduits(c.produits); setLibelles(c.libelles || {}); }); }, []);
   useEffect(() => { setItems(piece.agencement || []); }, [piece.agencement]);
@@ -251,9 +253,9 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
           {catalogue && p.vign ? <img src={p.vign} alt="" loading="lazy" /> : <span className="pastille" style={{ background: (p.cols && p.cols[0]) || undefined }} />}
           <span className="ligne-meuble__texte">
             <b>{p.nom}</b>
-            <small>{catalogue ? p.cat : it.garde === false ? tp.retire : tp.existant} <span className="chiffre">{cm(p.dim[0])}×{cm(p.dim[1])}</span></small>
+            <small>{catalogue ? nomCategorie(p,lang) : it.garde === false ? tp.retire : tp.existant} <span className="chiffre">{cm(p.dim[0])}×{cm(p.dim[1])}</span></small>
           </span>
-          <span className="prix">{catalogue ? (p.prix > 0 ? prix(p.prix * 100, lang) : tp.surDevis) : ''}</span>
+          <span className="prix">{catalogue ? prixMobilier(p,lang,tp.surDevis) : ''}</span>
         </button>
         {actif && (
           <Depliant>
@@ -347,7 +349,8 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
           <section className="groupe">
             <h3 className="sous-titre">{tp.proposes} <span className="chiffre">{nouveaux.length}</span></h3>
             <div className="liste-meubles">{nouveaux.map(ligne)}</div>
-            <div className="total"><span>{tp.total}</span><b>{prix(total * 100, lang)}</b></div>
+            <div className="total"><span>{nouveaux.some(it=>produitDe(it)?.generique)?(lang==='fr'?'Total estimé':'Estimated total'):tp.total}</span><b>{prix(total * 100, lang)}</b></div>
+            {nouveaux.some(it=>produitDe(it)?.generique)&&<p className="avis avis--note">{noteGeneriques(lang)}</p>}
           </section>
         )}
         {existants.length > 0 && (
@@ -367,7 +370,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   return (
     <div className="atelier">
       <div className="atelier__scene" inert={attente || undefined} aria-busy={attente}>
-        <Editeur3D ref={editeur} modele={piece.modele} items={items} selection={selection} vue={vue}
+        <Editeur3D ref={editeur} modele={piece.modele} items={items} selection={selection} vue={vue} navigationActive={!attente&&!cat.ouvert&&onglet!=='resultat'} surNavigation={()=>setOpacite(0)}
           surSelection={surSelection} surDeplacement={surDeplacement} surCadre={setCadre} erreurWebgl={t.erreurs.webgl} />
         {vue === 'photo' && photo && <div className="calque-photo" style={{ backgroundImage: `url(${photo.url})`, opacity: opacite }} />}
         <div className="vues">
@@ -376,7 +379,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
           </div>
           {cadre && vue === 'dessus' && <button className="btn btn--clair btn--petit" onClick={() => { setSelection(null); editeur.current && editeur.current.ensemble(); }}>{tp.ensemble}</button>}
         </div>
-        {vue === 'photo' && <div className="camera-photo"><CameraPhoto modele={piece.modele} lang={lang} surChoisir={surVue}/><small>{lang==='fr'?'Glissez sur la pièce pour regarder autour.':'Drag on the room to look around.'}</small></div>}
+        {vue === 'photo' && <div className="camera-photo"><CameraPhoto modele={piece.modele} lang={lang} surChoisir={surVue} surMouvement={surMouvement} disabled={attente||cat.ouvert||onglet==='resultat'}/><small>{lang==='fr'?'Flèches : se déplacer · Glisser : regarder autour.':'Arrows: move · Drag: look around.'}</small></div>}
         {vue === 'photo' && photo && (
           <label className="opacite">{tp.comparer}<input type="range" min="0" max="1" step=".05" value={opacite} onChange={e => setOpacite(+e.target.value)} /></label>
         )}
