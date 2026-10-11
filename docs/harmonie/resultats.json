@@ -1,0 +1,454 @@
+[
+ {
+  "fonction": "salon",
+  "envies": "salon japandi doux et naturel",
+  "L": 4,
+  "P": 4.2,
+  "surface": 17,
+  "sans": -4,
+  "avec": 2,
+  "aRevoirSans": [
+   "Une pièce s'éloigne nettement du style demandé."
+  ],
+  "aRevoirAvec": [],
+  "changements": [
+   "meuble-tv: Évasion Tropicale → Sonia"
+  ]
+ },
+ {
+  "fonction": "salon",
+  "envies": "salon japandi doux et naturel",
+  "L": 5.5,
+  "P": 6,
+  "surface": 33,
+  "sans": -19,
+  "avec": 2,
+  "aRevoirSans": [
+   "Une pièce s'éloigne nettement du style demandé.",
+   "3 teintes de bois différentes : en garder deux au plus.",
+   "Une seule matière sur toutes les assises : varier (velours, bouclé, cuir, lin)."
+  ],
+  "aRevoirAvec": [],
+  "changements": [
+   "meuble-tv: Évasion Tropicale → Sonia",
+   "fauteuil-salon: Classica → Mouton Beige",
+   "table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm",
+   "buffet: Jardin Élégant → Console d'entrée blanc"
+  ]
+ },
+ {
+  "fonction": "salon",
+  "envies": "ambiance art déco, laiton et velours",
+  "L": 4,
+  "P": 4.2,
+  "surface": 17,
+  "sans": -9,
+  "avec": -5,
+  "aRevoirSans": [
+   "Une pièce s'éloigne nettement du style demandé.",
+   "3 finitions de métal : une dominante, une seconde au plus."
+  ],
+  "aRevoirAvec": [
+   "Une pièce s'éloigne nettement du style demandé."
+  ],
+  "changements": [
+   "table-basse: Nordic → Table basse · 120 cm",
+   "meuble-tv: Harmonie Azur → Sonia",
+   "lumiere-salon: Soft Stone Layers → Crystal Blade"
+  ]
+ },
+ {
+  "fonction": "salon",
+  "envies": "ambiance art déco, laiton et velours",
+  "L": 5.5,
+  "P": 6,
+  "surface": 33,
+  "sans": -17,
+  "avec": -2,
+  "aRevoirSans": [
+   "Une pièce s'éloigne nettement du style demandé.",
+   "3 teintes de bois différentes : en garder deux au plus.",
+   "Une seule matière sur toutes les assises : varier (velours, bouclé, cuir, lin)."
+  ],
+  "aRevoirAvec": [
+   "Une pièce s'éloigne nettement du style demandé."
+  ],
+  "changements": [
+   "table-basse: Nordic → Table basse · 120 cm",
+   "fauteuil-salon: Marble Green Cone → Sabot",
+   "chaise-repas: Chaise de repas · bois → Chaise de repas · tissu",
+   "fauteuil-lecture: Marble Green Cone → Or Baroque",
+   "table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm"
+  ]
+ },
+ {
+  "fonction": "salon",
+  "envies": "style scandinave lumineux",
+  "L": 4,
+  "P": 4.2,
+  "surface": 17,
+  "sans": -4,
+  "avec": 2,
+  "aRevoirSans": [
+   "Une pièce s'éloigne nettement du style demandé."
+  ],
+  "aRevoirAvec": [],
+  "changements": [
+   "meuble-tv: Jardin Élégant → Sonia"
+  ]
+ },
+ {
+  "fonction": "salon",
+  "envies": "style scandinave lumineux",
+  "L": 5.5,
+  "P": 6,
+  "surface": 33,
+  "sans": -4,
+  "avec": 2,
+  "aRevoirSans": [
+   "Une pièce s'éloigne nettement du style demandé."
+  ],
+  "aRevoirAvec": [],
+  "changements": [
+   "meuble-tv: Jardin Élégant → Sonia"
+  ]
+ },
+ {
+  "fonction": "salon",
+  "envies": "audacieux et coloré",
+  "L": 4,
+  "P": 4.2,
+  "surface": 17,
+  "sans": -11,
+  "avec": -5,
+  "aRevoirSans": [
+   "Une pièce s'éloigne nettement du style demandé.",
+   "3 finitions de métal : une dominante, une seconde au plus."
+  ],
+  "aRevoirAvec": [
+   "Une pièce s'éloigne nettement du style demandé."
+  ],
+  "changements": [
+   "table-basse: Nordic → Grande table basse · 140 cm",
+   "meuble-tv: Harmonie Azur → Jardin Élégant",
+   "fauteuil-salon: Blob Pop → Fleur de Nuit"
+  ]
+ },
+ {
+  "fonction": "salon",
+  "envies": "audacieux et coloré",
+  "L": 5.5,
+  "P": 6,
+  "surface": 33,
+  "sans": -7,
+  "avec": -2,
+  "aRevoirSans": [
+   "Une pièce s'éloigne nettement du style demandé.",
+   "3 teintes de bois différentes : en garder deux au plus."
+  ],
+  "aRevoirAvec": [
+   "Une pièce s'éloigne nettement du style demandé."
+  ],
+  "changements": [
+   "table-basse: Nordic → Table basse · 120 cm",
+   "fauteuil-salon: Blob Pop → Chester Moon",
+   "table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm"
+  ]
+ },
+ {
+  "fonction": "salon",
+  "envies": "chaleureux et cosy",
+  "L": 4,
+  "P": 4.2,
+  "surface": 17,
+  "sans": -8,
+  "avec": 7,
+  "aRevoirSans": [
+   "4 couleurs d'accent : la palette se disperse (2 suffisent, 3 au plus).",
+   "3 finitions de métal : une dominante, une seconde au plus.",
+   "Une couleur vive n'apparaît qu'une fois : la répéter (coussin, tableau, objet) ou l'éviter."
+  ],
+  "aRevoirAvec": [],
+  "changements": [
+   "meuble-tv: Évasion Tropicale → Jardin Élégant",
+   "fauteuil-salon: Hexa → Dual"
+  ]
+ },
+ {
+  "fonction": "salon",
+  "envies": "chaleureux et cosy",
+  "L": 5.5,
+  "P": 6,
+  "surface": 33,
+  "sans": -2,
+  "avec": 10,
+  "aRevoirSans": [
+   "3 teintes de bois différentes : en garder deux au plus.",
+   "Une seule matière sur toutes les assises : varier (velours, bouclé, cuir, lin)."
+  ],
+  "aRevoirAvec": [],
+  "changements": [
+   "fauteuil-salon: Hexa → Fleur de Nuit",
+   "fauteuil-lecture: Hexa → Mouton Beige",
+   "table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm"
+  ]
+ },
+ {
+  "fonction": "salon",
+  "envies": "",
+  "L": 4,
+  "P": 4.2,
+  "surface": 17,
+  "sans": 2,
+  "avec": 7,
+  "aRevoirSans": [],
+  "aRevoirAvec": [],
+  "changements": [
+   "meuble-tv: Sonia → Évasion Tropicale",
+   "fauteuil-salon: Curva → Fauteuil lounge pivotant tonneau"
+  ]
+ },
+ {
+  "fonction": "salon",
+  "envies": "",
+  "L": 5.5,
+  "P": 6,
+  "surface": 33,
+  "sans": -1,
+  "avec": 10,
+  "aRevoirSans": [
+   "3 teintes de bois différentes : en garder deux au plus."
+  ],
+  "aRevoirAvec": [],
+  "changements": [
+   "meuble-tv: Sonia → Évasion Tropicale",
+   "suspension: Luna Stack → Bloom Crystal Lotus",
+   "table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm",
+   "buffet: Console d'entrée blanc → Sonia"
+  ]
+ },
+ {
+  "fonction": "chambre",
+  "envies": "salon japandi doux et naturel",
+  "L": 4,
+  "P": 4.2,
+  "surface": 17,
+  "sans": -9,
+  "avec": 2,
+  "aRevoirSans": [
+   "Une pièce s'éloigne nettement du style demandé.",
+   "3 teintes de bois différentes : en garder deux au plus."
+  ],
+  "aRevoirAvec": [],
+  "changements": [
+   "buffet: Évasion Tropicale → Console d'entrée blanc",
+   "table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm"
+  ]
+ },
+ {
+  "fonction": "chambre",
+  "envies": "salon japandi doux et naturel",
+  "L": 5.5,
+  "P": 6,
+  "surface": 33,
+  "sans": -9,
+  "avec": 2,
+  "aRevoirSans": [
+   "Une pièce s'éloigne nettement du style demandé.",
+   "3 teintes de bois différentes : en garder deux au plus."
+  ],
+  "aRevoirAvec": [],
+  "changements": [
+   "buffet: Évasion Tropicale → Console d'entrée blanc",
+   "table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm"
+  ]
+ },
+ {
+  "fonction": "chambre",
+  "envies": "ambiance art déco, laiton et velours",
+  "L": 4,
+  "P": 4.2,
+  "surface": 17,
+  "sans": -8,
+  "avec": -7,
+  "aRevoirSans": [
+   "Une pièce s'éloigne nettement du style demandé."
+  ],
+  "aRevoirAvec": [
+   "Une pièce s'éloigne nettement du style demandé.",
+   "Courbes et lignes droites à parts égales : affirmer une dominante."
+  ],
+  "changements": [
+   "chevet: Nordic → Chevet à tiroir · 45 cm",
+   "chevet: Nordic → Chevet à tiroir · 45 cm",
+   "fauteuil-lecture: Marble Green Cone → Sabot",
+   "table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm"
+  ]
+ },
+ {
+  "fonction": "chambre",
+  "envies": "ambiance art déco, laiton et velours",
+  "L": 5.5,
+  "P": 6,
+  "surface": 33,
+  "sans": -8,
+  "avec": -7,
+  "aRevoirSans": [
+   "Une pièce s'éloigne nettement du style demandé."
+  ],
+  "aRevoirAvec": [
+   "Une pièce s'éloigne nettement du style demandé.",
+   "Courbes et lignes droites à parts égales : affirmer une dominante."
+  ],
+  "changements": [
+   "chevet: Nordic → Chevet à tiroir · 45 cm",
+   "chevet: Nordic → Chevet à tiroir · 45 cm",
+   "fauteuil-lecture: Marble Green Cone → Sabot",
+   "table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm"
+  ]
+ },
+ {
+  "fonction": "chambre",
+  "envies": "style scandinave lumineux",
+  "L": 4,
+  "P": 4.2,
+  "surface": 17,
+  "sans": 2,
+  "avec": 2,
+  "aRevoirSans": [],
+  "aRevoirAvec": [],
+  "changements": []
+ },
+ {
+  "fonction": "chambre",
+  "envies": "style scandinave lumineux",
+  "L": 5.5,
+  "P": 6,
+  "surface": 33,
+  "sans": 2,
+  "avec": 2,
+  "aRevoirSans": [],
+  "aRevoirAvec": [],
+  "changements": []
+ },
+ {
+  "fonction": "chambre",
+  "envies": "audacieux et coloré",
+  "L": 4,
+  "P": 4.2,
+  "surface": 17,
+  "sans": -10,
+  "avec": -9,
+  "aRevoirSans": [
+   "Une pièce s'éloigne nettement du style demandé.",
+   "Une couleur vive n'apparaît qu'une fois : la répéter (coussin, tableau, objet) ou l'éviter."
+  ],
+  "aRevoirAvec": [
+   "Une pièce s'éloigne nettement du style demandé.",
+   "Une couleur vive n'apparaît qu'une fois : la répéter (coussin, tableau, objet) ou l'éviter.",
+   "Courbes et lignes droites à parts égales : affirmer une dominante."
+  ],
+  "changements": [
+   "chevet: Nordic → Chevet à tiroir · 45 cm",
+   "chevet: Nordic → Chevet compact · 35 cm",
+   "fauteuil-lecture: Blob Pop → Fleur de Nuit",
+   "table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm"
+  ]
+ },
+ {
+  "fonction": "chambre",
+  "envies": "audacieux et coloré",
+  "L": 5.5,
+  "P": 6,
+  "surface": 33,
+  "sans": -10,
+  "avec": -9,
+  "aRevoirSans": [
+   "Une pièce s'éloigne nettement du style demandé.",
+   "Une couleur vive n'apparaît qu'une fois : la répéter (coussin, tableau, objet) ou l'éviter."
+  ],
+  "aRevoirAvec": [
+   "Une pièce s'éloigne nettement du style demandé.",
+   "Une couleur vive n'apparaît qu'une fois : la répéter (coussin, tableau, objet) ou l'éviter.",
+   "Courbes et lignes droites à parts égales : affirmer une dominante."
+  ],
+  "changements": [
+   "chevet: Nordic → Chevet à tiroir · 45 cm",
+   "chevet: Nordic → Chevet compact · 35 cm",
+   "fauteuil-lecture: Blob Pop → Fleur de Nuit",
+   "table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm"
+  ]
+ },
+ {
+  "fonction": "chambre",
+  "envies": "chaleureux et cosy",
+  "L": 4,
+  "P": 4.2,
+  "surface": 17,
+  "sans": -3,
+  "avec": 10,
+  "aRevoirSans": [
+   "3 teintes de bois différentes : en garder deux au plus.",
+   "Une couleur vive n'apparaît qu'une fois : la répéter (coussin, tableau, objet) ou l'éviter."
+  ],
+  "aRevoirAvec": [],
+  "changements": [
+   "fauteuil-lecture: Hexa → Fleur de Nuit",
+   "table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm"
+  ]
+ },
+ {
+  "fonction": "chambre",
+  "envies": "chaleureux et cosy",
+  "L": 5.5,
+  "P": 6,
+  "surface": 33,
+  "sans": -3,
+  "avec": 10,
+  "aRevoirSans": [
+   "3 teintes de bois différentes : en garder deux au plus.",
+   "Une couleur vive n'apparaît qu'une fois : la répéter (coussin, tableau, objet) ou l'éviter."
+  ],
+  "aRevoirAvec": [],
+  "changements": [
+   "fauteuil-lecture: Hexa → Fleur de Nuit",
+   "table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm"
+  ]
+ },
+ {
+  "fonction": "chambre",
+  "envies": "",
+  "L": 4,
+  "P": 4.2,
+  "surface": 17,
+  "sans": -5,
+  "avec": 4,
+  "aRevoirSans": [
+   "3 teintes de bois différentes : en garder deux au plus.",
+   "Une seule matière sur toutes les assises : varier (velours, bouclé, cuir, lin)."
+  ],
+  "aRevoirAvec": [],
+  "changements": [
+   "fauteuil-lecture: Curva → Fauteuil de salle à manger",
+   "lumiere-lecture: Wood Orb Duo → Chinoiserie"
+  ]
+ },
+ {
+  "fonction": "chambre",
+  "envies": "",
+  "L": 5.5,
+  "P": 6,
+  "surface": 33,
+  "sans": -5,
+  "avec": 4,
+  "aRevoirSans": [
+   "3 teintes de bois différentes : en garder deux au plus.",
+   "Une seule matière sur toutes les assises : varier (velours, bouclé, cuir, lin)."
+  ],
+  "aRevoirAvec": [],
+  "changements": [
+   "fauteuil-lecture: Curva → Fauteuil de salle à manger",
+   "lumiere-lecture: Wood Orb Duo → Chinoiserie"
+  ]
+ }
+]

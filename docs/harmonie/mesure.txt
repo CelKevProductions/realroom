@@ -1,0 +1,25 @@
+{"cas":24,"moyenneSans":-6.25,"moyenneAvec":1.33,"mieux":22,"egal":2,"pire":0}
+salon   17m² salon japandi doux et naturel              -4 →      2  meuble-tv: Évasion Tropicale → Sonia
+salon   33m² salon japandi doux et naturel             -19 →      2  meuble-tv: Évasion Tropicale → Sonia ; fauteuil-salon: Classica → Mouton Beige ; table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm
+salon   17m² ambiance art déco, laiton et velours       -9 →     -5  table-basse: Nordic → Table basse · 120 cm ; meuble-tv: Harmonie Azur → Sonia ; lumiere-salon: Soft Stone Layers → Crystal Blade
+salon   33m² ambiance art déco, laiton et velours      -17 →     -2  table-basse: Nordic → Table basse · 120 cm ; fauteuil-salon: Marble Green Cone → Sabot ; chaise-repas: Chaise de repas · bois → Chaise de repas · tissu
+salon   17m² style scandinave lumineux                  -4 →      2  meuble-tv: Jardin Élégant → Sonia
+salon   33m² style scandinave lumineux                  -4 →      2  meuble-tv: Jardin Élégant → Sonia
+salon   17m² audacieux et coloré                       -11 →     -5  table-basse: Nordic → Grande table basse · 140 cm ; meuble-tv: Harmonie Azur → Jardin Élégant ; fauteuil-salon: Blob Pop → Fleur de Nuit
+salon   33m² audacieux et coloré                        -7 →     -2  table-basse: Nordic → Table basse · 120 cm ; fauteuil-salon: Blob Pop → Chester Moon ; table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm
+salon   17m² chaleureux et cosy                         -8 →      7  meuble-tv: Évasion Tropicale → Jardin Élégant ; fauteuil-salon: Hexa → Dual
+salon   33m² chaleureux et cosy                         -2 →     10  fauteuil-salon: Hexa → Fleur de Nuit ; fauteuil-lecture: Hexa → Mouton Beige ; table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm
+salon   17m² (sans brief)                                2 →      7  meuble-tv: Sonia → Évasion Tropicale ; fauteuil-salon: Curva → Fauteuil lounge pivotant tonneau
+salon   33m² (sans brief)                               -1 →     10  meuble-tv: Sonia → Évasion Tropicale ; suspension: Luna Stack → Bloom Crystal Lotus ; table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm
+chambre 17m² salon japandi doux et naturel              -9 →      2  buffet: Évasion Tropicale → Console d'entrée blanc ; table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm
+chambre 33m² salon japandi doux et naturel              -9 →      2  buffet: Évasion Tropicale → Console d'entrée blanc ; table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm
+chambre 17m² ambiance art déco, laiton et velours       -8 →     -7  chevet: Nordic → Chevet à tiroir · 45 cm ; chevet: Nordic → Chevet à tiroir · 45 cm ; fauteuil-lecture: Marble Green Cone → Sabot
+chambre 33m² ambiance art déco, laiton et velours       -8 →     -7  chevet: Nordic → Chevet à tiroir · 45 cm ; chevet: Nordic → Chevet à tiroir · 45 cm ; fauteuil-lecture: Marble Green Cone → Sabot
+chambre 17m² style scandinave lumineux                   2 →      2  
+chambre 33m² style scandinave lumineux                   2 →      2  
+chambre 17m² audacieux et coloré                       -10 →     -9  chevet: Nordic → Chevet à tiroir · 45 cm ; chevet: Nordic → Chevet compact · 35 cm ; fauteuil-lecture: Blob Pop → Fleur de Nuit
+chambre 33m² audacieux et coloré                       -10 →     -9  chevet: Nordic → Chevet à tiroir · 45 cm ; chevet: Nordic → Chevet compact · 35 cm ; fauteuil-lecture: Blob Pop → Fleur de Nuit
+chambre 17m² chaleureux et cosy                         -3 →     10  fauteuil-lecture: Hexa → Fleur de Nuit ; table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm
+chambre 33m² chaleureux et cosy                         -3 →     10  fauteuil-lecture: Hexa → Fleur de Nuit ; table-appoint: Table d’appoint · 35 cm → Table d’appoint · 45 cm
+chambre 17m² (sans brief)                               -5 →      4  fauteuil-lecture: Curva → Fauteuil de salle à manger ; lumiere-lecture: Wood Orb Duo → Chinoiserie
+chambre 33m² (sans brief)                               -5 →      4  fauteuil-lecture: Curva → Fauteuil de salle à manger ; lumiere-lecture: Wood Orb Duo → Chinoiserie
