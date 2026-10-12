@@ -1,0 +1,1 @@
+{"dispositions":521,"avecPreconditions":107,"operations":{"diagonale":8,"lineaire":432,"fenetre-laterale":4,"vis-a-vis":6,"central":53,"L":14,"U":4}}

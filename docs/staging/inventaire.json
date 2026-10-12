@@ -1,0 +1,955 @@
+{
+  "date": "2026-10-11",
+  "nombreCommercial": 341,
+  "nombreGenerique": 54,
+  "nombreProps": 31,
+  "nombreRecettes": 84,
+  "bibliotheque": {
+    "plateau": {
+      "id": "plateau",
+      "nom": "Plateau",
+      "dim": [
+        0.25,
+        0.16,
+        0.025
+      ],
+      "forme": "plateau",
+      "description": "Plateau en bois ou métal, sobre, aux rebords fins.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "livres": {
+      "id": "livres",
+      "nom": "Livres empilés",
+      "dim": [
+        0.2,
+        0.14,
+        0.065
+      ],
+      "forme": "livres",
+      "description": "Deux livres empilés, couvertures mates dans la palette de la pièce.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "livres-debout": {
+      "id": "livres-debout",
+      "nom": "Livres sur étagère",
+      "dim": [
+        0.12,
+        0.12,
+        0.22
+      ],
+      "forme": "livres-debout",
+      "description": "Petit groupe de livres de hauteurs différentes.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "vase": {
+      "id": "vase",
+      "nom": "Vase en céramique",
+      "dim": [
+        0.11,
+        0.11,
+        0.23
+      ],
+      "forme": "vase",
+      "description": "Vase artisanal en céramique, quelques branches légères.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "vase-haut": {
+      "id": "vase-haut",
+      "nom": "Vase haut",
+      "dim": [
+        0.16,
+        0.16,
+        0.35
+      ],
+      "forme": "vase",
+      "description": "Vase élancé, terre cuite ou céramique mate.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "bougie": {
+      "id": "bougie",
+      "nom": "Bougie",
+      "dim": [
+        0.07,
+        0.07,
+        0.09
+      ],
+      "forme": "bougie",
+      "description": "Bougie dans un contenant mat.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "bol-fruits": {
+      "id": "bol-fruits",
+      "nom": "Coupe de fruits",
+      "dim": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "forme": "bol",
+      "description": "Coupe basse contenant quelques fruits, composition centrale discrète.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "carnet": {
+      "id": "carnet",
+      "nom": "Carnet",
+      "dim": [
+        0.16,
+        0.11,
+        0.018
+      ],
+      "forme": "livres",
+      "description": "Carnet fermé sur le bureau.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "ordinateur": {
+      "id": "ordinateur",
+      "nom": "Ordinateur",
+      "dim": [
+        0.38,
+        0.24,
+        0.31
+      ],
+      "forme": "ordinateur",
+      "description": "Écran plat avec clavier fin, sans marque ni contenu fictif.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "sculpture": {
+      "id": "sculpture",
+      "nom": "Objet sculptural",
+      "dim": [
+        0.1,
+        0.1,
+        0.17
+      ],
+      "forme": "sculpture",
+      "description": "Petite sculpture abstraite en pierre.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "coussin": {
+      "id": "coussin",
+      "nom": "Coussin",
+      "dim": [
+        0.32,
+        0.11,
+        0.29
+      ],
+      "forme": "coussin",
+      "description": "Coussin en lin ou velours, assorti à la palette.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "plaid": {
+      "id": "plaid",
+      "nom": "Plaid",
+      "dim": [
+        0.28,
+        0.37,
+        0.055
+      ],
+      "forme": "plaid",
+      "description": "Plaid plié, drapé sur un accoudoir.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "corbeille": {
+      "id": "corbeille",
+      "nom": "Corbeille",
+      "dim": [
+        0.26,
+        0.26,
+        0.29
+      ],
+      "forme": "corbeille",
+      "description": "Corbeille tressée aux dimensions modestes.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "plante-petite": {
+      "id": "plante-petite",
+      "nom": "Petite plante",
+      "dim": [
+        0.13,
+        0.13,
+        0.25
+      ],
+      "forme": "plante",
+      "description": "Petite plante vivante en pot de céramique.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "plante-moyenne": {
+      "id": "plante-moyenne",
+      "nom": "Plante de console",
+      "dim": [
+        0.23,
+        0.23,
+        0.43
+      ],
+      "forme": "plante",
+      "description": "Plante de feuillage dans un pot mat.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "plante-haute": {
+      "id": "plante-haute",
+      "nom": "Plante haute",
+      "dim": [
+        0.4,
+        0.4,
+        1.5
+      ],
+      "forme": "plante",
+      "description": "Plante haute à feuillage léger, en pot, près de la lumière.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "lampadaire-decor": {
+      "id": "lampadaire-decor",
+      "nom": "Lumière d’angle",
+      "dim": [
+        0.2,
+        0.2,
+        1.65
+      ],
+      "forme": "lampadaire",
+      "description": "Lampadaire fin de mise en scène, abat-jour chaleureux.",
+      "fam": "lampadaire",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "suspension-decor": {
+      "id": "suspension-decor",
+      "nom": "Suspension de mise en scène",
+      "dim": [
+        0.34,
+        0.34,
+        0.22
+      ],
+      "forme": "suspension",
+      "description": "Suspension sobre au-dessus du comptoir.",
+      "fam": "suspension",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "television": {
+      "id": "television",
+      "nom": "Télévision de mise en scène",
+      "dim": [
+        0.97,
+        0.2,
+        0.61
+      ],
+      "forme": "television",
+      "description": "Écran noir mat sur pieds, point focal face au canapé.",
+      "fam": "tv",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "television-murale": {
+      "id": "television-murale",
+      "nom": "Télévision murale de mise en scène",
+      "dim": [
+        0.97,
+        0.045,
+        0.55
+      ],
+      "forme": "television",
+      "description": "Écran noir mat fixé au mur face au canapé.",
+      "fam": "tv-murale",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "ilot": {
+      "id": "ilot",
+      "nom": "Îlot de cuisine de mise en scène",
+      "dim": [
+        2,
+        0.95,
+        0.92
+      ],
+      "forme": "ilot",
+      "description": "Îlot architectural en bois, plan de travail clair, façades, évier et plaque stylisés.",
+      "fam": "ilot",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "comptoir": {
+      "id": "comptoir",
+      "nom": "Comptoir de bar de mise en scène",
+      "dim": [
+        1.5,
+        0.55,
+        1.05
+      ],
+      "forme": "comptoir",
+      "description": "Comptoir haut, plan chaleureux et rangement fermé.",
+      "fam": "comptoir",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "tabouret": {
+      "id": "tabouret",
+      "nom": "Tabouret de mise en scène",
+      "dim": [
+        0.4,
+        0.4,
+        0.7
+      ],
+      "forme": "tabouret",
+      "description": "Tabouret haut avec repose-pieds ; silhouette de référence, non vendu.",
+      "fam": "tabouret",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "bouteilles": {
+      "id": "bouteilles",
+      "nom": "Bouteilles",
+      "dim": [
+        0.12,
+        0.08,
+        0.27
+      ],
+      "forme": "bouteilles",
+      "description": "Deux bouteilles sobres, sans marque.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "verres": {
+      "id": "verres",
+      "nom": "Verres",
+      "dim": [
+        0.15,
+        0.07,
+        0.12
+      ],
+      "forme": "verres",
+      "description": "Deux verres transparents posés ensemble.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "planche": {
+      "id": "planche",
+      "nom": "Planche à découper",
+      "dim": [
+        0.23,
+        0.16,
+        0.02
+      ],
+      "forme": "plateau",
+      "description": "Planche en bois sur le plan de travail.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "bouilloire": {
+      "id": "bouilloire",
+      "nom": "Bouilloire",
+      "dim": [
+        0.16,
+        0.15,
+        0.22
+      ],
+      "forme": "bouilloire",
+      "description": "Petit équipement de cuisine stylisé, sans marque.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "serviettes": {
+      "id": "serviettes",
+      "nom": "Serviettes pliées",
+      "dim": [
+        0.22,
+        0.15,
+        0.09
+      ],
+      "forme": "plaid",
+      "description": "Serviettes pliées dans une palette douce.",
+      "fam": "deco",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "lattes": {
+      "id": "lattes",
+      "nom": "Mur à lattes de bois",
+      "dim": [
+        2,
+        0.015,
+        2.3
+      ],
+      "forme": "lattes",
+      "description": "Lattes verticales en bois sur fond mat, segment mural sans ouverture.",
+      "fam": "panneau",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "lambris": {
+      "id": "lambris",
+      "nom": "Panneaux muraux",
+      "dim": [
+        2,
+        0.012,
+        2.3
+      ],
+      "forme": "lambris",
+      "description": "Panneaux muraux à cadres sobres, couleur assortie à la pièce.",
+      "fam": "panneau",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    },
+    "mur-vegetal": {
+      "id": "mur-vegetal",
+      "nom": "Mur végétal",
+      "dim": [
+        1.5,
+        0.1,
+        2
+      ],
+      "forme": "mur-vegetal",
+      "description": "Petit segment mural de feuillage, jamais derrière la télévision.",
+      "fam": "panneau",
+      "styles": [
+        "neutre",
+        "epure",
+        "chaleureux",
+        "classique",
+        "boheme",
+        "artdeco",
+        "japandi",
+        "audacieux",
+        "mediterraneen",
+        "scandinave",
+        "industriel",
+        "contemporain"
+      ],
+      "vendu": false,
+      "origine": "mise-en-scene"
+    }
+  },
+  "poids": {
+    "hoteVivant": 4,
+    "tableVide": -5,
+    "surcharge": -6,
+    "monotone": -2,
+    "masque": -15,
+    "angleNu": -3,
+    "planteSombre": -2,
+    "murZone": 5,
+    "lattes": 3,
+    "vegetalTV": -10,
+    "mursMultiples": -10,
+    "ouverture": -100,
+    "style": 2
+  },
+  "tapisReordonnes": [
+    {
+      "id": "al-480",
+      "source": [
+        1.5,
+        0.05,
+        1.9
+      ],
+      "dim": [
+        1.5,
+        1.9,
+        0.05
+      ]
+    }
+  ],
+  "tabouretsCommerciaux": [
+    {
+      "id": "fleur-de-nuit",
+      "nom": "Fleur de Nuit",
+      "dim": [
+        0.45,
+        0.45,
+        0.78
+      ],
+      "prix": 1181.25,
+      "hauteurAssise": null
+    },
+    {
+      "id": "orange-diamond-barstool",
+      "nom": "Diamond",
+      "dim": [
+        0.45,
+        0.5,
+        1.1
+      ],
+      "prix": 1687.5,
+      "hauteurAssise": null
+    },
+    {
+      "id": "tabouret-enfant-coque-blanche-square-kid",
+      "nom": "Square Kid",
+      "dim": [
+        0.45,
+        0.45,
+        0.4
+      ],
+      "prix": 0,
+      "hauteurAssise": null
+    }
+  ],
+  "offresParUsage": {
+    "television": [],
+    "ilot-cuisine": [],
+    "comptoir-bar": [],
+    "ordinateur": []
+  },
+  "usagesSansOffreCommerciale": [
+    "television",
+    "ilot-cuisine",
+    "comptoir-bar",
+    "ordinateur"
+  ],
+  "limites": "Les usages sans offre sont issus du classement catalogue courant, pas une affirmation sur tout le stock de la boutique. Les tabourets hauts existent, leur hauteur d’assise n’est pas renseignée."
+}

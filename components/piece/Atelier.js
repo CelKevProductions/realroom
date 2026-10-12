@@ -284,7 +284,10 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const amenager = (
     <>
       <div className="panneau__corps" role="tabpanel" inert={attente || undefined}>
-        <Confort modele={piece.modele} items={items} produits={produits} lang={lang} onCorriger={corrigerPlan} />
+        <Confort modele={piece.modele} items={items} produits={produits} lang={lang} onCorriger={corrigerPlan}
+          programme={piece.proposition?.programme} planZones={piece.proposition?.planZones} staging={piece.proposition?.staging}
+          mode={mode} envies={envies} garder={[...garder]} preferences={piece.proposition?.preferences}
+          onAppliquer={piece.proposition?.encyclopedie ? liste=>modifier(()=>liste) : undefined} />
         <fieldset className="champ champ--groupe">
           <legend>{tp.modeTitre}</legend>
           <div className="choix-fonction choix-fonction--liste">
@@ -377,7 +380,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   return (
     <div className="atelier">
       <div className="atelier__scene" inert={attente || undefined} aria-busy={attente}>
-        <Editeur3D ref={editeur} modele={piece.modele} items={items} selection={selection} vue={vue} navigationActive={!attente&&!cat.ouvert&&onglet!=='resultat'} surNavigation={()=>setOpacite(0)}
+        <Editeur3D ref={editeur} modele={piece.modele} items={items} staging={piece.proposition?.staging} selection={selection} vue={vue} navigationActive={!attente&&!cat.ouvert&&onglet!=='resultat'} surNavigation={()=>setOpacite(0)}
           surSelection={surSelection} surDeplacement={surDeplacement} surCadre={setCadre} erreurWebgl={t.erreurs.webgl} />
         {vue === 'photo' && photo && <div className="calque-photo" style={{ backgroundImage: `url(${photo.url})`, opacity: opacite }} />}
         <div className="vues">

@@ -1,0 +1,93 @@
+{
+  "endpoint_id": "openrouter/router/vision",
+  "comparaisons": [
+    {
+      "id": "89-direct",
+      "images": [
+        "89-avant-vision.jpg",
+        "89-apres-vision.jpg"
+      ],
+      "apres": "B",
+      "empreintes": [
+        {
+          "nom": "89-avant-vision.jpg",
+          "sha256": "f8d5b9e6a7b0d97cf59fc5f7b0077659cd165a6e450fc15dd927cf64bddad7ea"
+        },
+        {
+          "nom": "89-apres-vision.jpg",
+          "sha256": "9d0d204d3fda86af1170153e2aaf5697193cf5a3f47c4b8fe2307a0507babbd4"
+        }
+      ],
+      "critique": {
+        "prefere": "B",
+        "raison": "L'ajout du mur végétalisé apporte une nuance texturée et chaleureuse plus éditoriale.",
+        "tv_visible_A": true,
+        "tv_visible_B": true,
+        "reserves": [
+          "Positionnement de l'îlot en plein passage",
+          "Fluidité des flux non certifiable à l'échelle"
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 2361,
+        "completion_tokens": 872,
+        "total_tokens": 3233,
+        "cost": 0.00504075,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      }
+    },
+    {
+      "id": "89-inverse",
+      "images": [
+        "89-apres-vision.jpg",
+        "89-avant-vision.jpg"
+      ],
+      "apres": "A",
+      "empreintes": [
+        {
+          "nom": "89-apres-vision.jpg",
+          "sha256": "9d0d204d3fda86af1170153e2aaf5697193cf5a3f47c4b8fe2307a0507babbd4"
+        },
+        {
+          "nom": "89-avant-vision.jpg",
+          "sha256": "f8d5b9e6a7b0d97cf59fc5f7b0077659cd165a6e450fc15dd927cf64bddad7ea"
+        }
+      ],
+      "critique": {
+        "prefere": "A",
+        "raison": "La version A présente un agencement plus chaleureux et équilibré, valorisé par le mur végétal et une meilleure articulation des zones de vie.",
+        "tv_visible_A": true,
+        "tv_visible_B": true,
+        "reserves": [
+          "Légère sensation d'encombrement autour de l'îlot et du salon",
+          "Fluidité des passages non mesurable précisément"
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 2361,
+        "completion_tokens": 662,
+        "total_tokens": 3023,
+        "cost": 0.00425325,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      }
+    }
+  ],
+  "couts": {
+    "appelsVision": 8,
+    "coutVisionUSD": 0.0338985,
+    "appelsGeneration3D": 0,
+    "coutGeneration3DUSD": 0
+  },
+  "iterationsPrecedentes": [
+    "vision-iteration-1.json",
+    "vision-iteration-2.json",
+    "vision-iteration-3.json"
+  ],
+  "limites": "Deux jugements finaux dans les deux ordres ; ne garantissent pas une préférence universelle. Rendus logiciels synthétiques, aucune certification des passages par vision."
+}

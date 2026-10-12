@@ -1,4 +1,4 @@
-const ZONES_EN = { salon: 'Living', repas: 'Dining', lecture: 'Reading', couchage: 'Sleeping', rangement: 'Storage', travail: 'Work', bain: 'Bath', vasque: 'Washbasin', accueil: 'Entrance', assise: 'Seating', detente: 'Relaxation' };
+const ZONES_EN = { salon: 'Living', repas: 'Dining', lecture: 'Reading', couchage: 'Sleeping', rangement: 'Storage', travail: 'Work', bain: 'Bath', vasque: 'Washbasin', accueil: 'Entrance', assise: 'Seating', detente: 'Relaxation',cuisine:'Kitchen',bar:'Bar' };
 import { intituleUsage, manquesParEspace } from '@/lib/programme-textes.js';
 
 // Une ligne de composition, le détail uniquement à la demande, dans les deux expériences.
@@ -7,12 +7,15 @@ export default function PlanVie({ proposition, langue = 'fr' }) {
   if (!programme) return null;
   const en = langue === 'en', zones = plan?.zones || [];
   const densite = proposition.densite;
-  const manquants = [...new Set((programme.manquants || []).filter(s => s.obligatoire).map(s => s.usage))];
+  const manquants = [...new Set((programme.manquants || []).filter(s => s.obligatoire && !s.substitut).map(s => s.usage))];
   const espacesManquants = manquesParEspace(programme, langue);
   const detailsManquants = [...new Set((programme.manquants || []).filter(s => !s.obligatoire && s.couche === 'finition').map(s => s.usage))];
   return (
     <div className="plan-vie">
       {zones.length > 0 && <p className="plan-vie__zones" aria-label={en ? 'Activity areas' : 'Organisation de la pièce'}>{zones.map(z => <span key={z.id}>{en ? ZONES_EN[z.type] || z.type : z.libelle || z.type}</span>)}</p>}
+      {proposition.staging && <p className="plan-vie__densite">{en?'Decor, plants and staged equipment are not included in the furniture price or basket.':'Déco, plantes et équipements de mise en scène ne sont pas inclus dans le prix du mobilier ni dans le panier.'}</p>}
+      {proposition.staging?.items.some(it=>it.usageProgramme==='television')&&<p className="plan-vie__densite">{en?'The TV shown is a staging reference, not a store product.':'La télévision montrée est une référence de mise en scène, sans offre d’achat.'}</p>}
+      {proposition.staging?.manquants?.map(z=><p key={z.zone} className="plan-vie__densite" role="status">{en?`${ZONES_EN[z.zone]||'Storage'}: not enough free space to keep the access paths clear.`:`${z.zone==='cuisine'?'Cuisine':z.zone==='bar'?'Bar':'Rangement'} : l’espace libre ne permet pas de préserver tous les accès.`}</p>)}
       {densite?.aCompleter && <p role="status" className="plan-vie__densite"><b>{en ? 'Room to complete' : 'Une pièce à compléter'}</b> — {en ? 'The furniture or activity areas do not yet cover this room’s size.' : 'Le mobilier ou les espaces de vie ne couvrent pas encore les besoins de cette surface.'} {densite.choixExplicites && (en ? 'Your selected areas have been respected.' : 'Tes choix d’espaces ont été respectés.')}</p>}
       {densite?.echelle?.aVerifier && <p className="plan-vie__densite">{en ? 'Check the scale: confirm a room dimension and the openings in the editable plan.' : 'Échelle à vérifier : confirme une cote de la pièce et ses ouvertures dans le plan éditable.'}</p>}
       {espacesManquants.length > 0 && <ul className="plan-vie__manquants" role="status">{espacesManquants.map(z => <li key={z.zone}>

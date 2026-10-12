@@ -1,0 +1,88 @@
+{
+  "endpoint_id": "openrouter/router/vision",
+  "input": {
+    "model": "google/gemini-3.8-flash",
+    "temperature": 0.1,
+    "max_tokens": 6000,
+    "reasoning": true
+  },
+  "prompt": "Deux images sont fournies, A puis B. Chaque image contient deux vues opposées de la même pièce synthétique de 89 m², avec le même type de maquette et les mêmes caméras. Juge seulement les images, sans inventer de texture, objet ou équipement. Quelle version paraît la plus habitée, chaleureuse et digne d'un magazine ? Ne récompense pas automatiquement la quantité : considère les surfaces vivantes, les végétaux, le mur travaillé et la cohérence des activités, avec la surcharge éventuelle. Réponds seulement en JSON concis (pas de raisonnement détaillé) : {\"prefere\":\"A|B|egal\",\"raison\":\"...\",\"tv_visible_A\":true,\"tv_visible_B\":true,\"reserves\":[\"...\"]}. Les chemins et mesures ne sont pas certifiables depuis les images.",
+  "comparaisons": [
+    {
+      "id": "89-direct-r2",
+      "images": [
+        "89-avant-vision.jpg",
+        "89-iteration-2-vision.jpg"
+      ],
+      "apres": "B",
+      "empreintes": [
+        {
+          "nom": "89-avant-vision.jpg",
+          "sha256": "f8d5b9e6a7b0d97cf59fc5f7b0077659cd165a6e450fc15dd927cf64bddad7ea"
+        },
+        {
+          "nom": "89-iteration-2-vision.jpg",
+          "sha256": "8f6651ed6fcea660d1189a8e4f08d9764165784015c66664e858b4c8527ec02d"
+        }
+      ],
+      "critique": {
+        "prefere": "A",
+        "raison": "L'implantation du buffet sur la cloison centrale équilibre mieux l'espace de vie et structure les circulations de manière plus harmonieuse.",
+        "tv_visible_A": true,
+        "tv_visible_B": true,
+        "reserves": [
+          "Volumes restant relativement épurés dans les deux versions",
+          "Circulations réelles non vérifiables à l'échelle"
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 2361,
+        "completion_tokens": 816,
+        "total_tokens": 3177,
+        "cost": 0.00483075,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      }
+    },
+    {
+      "id": "89-inverse-r2",
+      "images": [
+        "89-iteration-2-vision.jpg",
+        "89-avant-vision.jpg"
+      ],
+      "apres": "A",
+      "empreintes": [
+        {
+          "nom": "89-iteration-2-vision.jpg",
+          "sha256": "8f6651ed6fcea660d1189a8e4f08d9764165784015c66664e858b4c8527ec02d"
+        },
+        {
+          "nom": "89-avant-vision.jpg",
+          "sha256": "f8d5b9e6a7b0d97cf59fc5f7b0077659cd165a6e450fc15dd927cf64bddad7ea"
+        }
+      ],
+      "critique": {
+        "prefere": "B",
+        "raison": "L'implantation du buffet contre la cloison centrale équilibre mieux l'espace repas et habille cette paroi.",
+        "tv_visible_A": true,
+        "tv_visible_B": true,
+        "reserves": [
+          "Ambiance globale encore très minimale et monochrome",
+          "Circulations autour du buffet central à valider à l'usage"
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 2361,
+        "completion_tokens": 470,
+        "total_tokens": 2831,
+        "cost": 0.00353325,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      }
+    }
+  ]
+}

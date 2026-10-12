@@ -7,6 +7,8 @@ import { corrigerPiece, mesuresConfirmees } from '@/lib/geometrie.js';
 import { PRODUITS } from '@/lib/catalogue.js';
 import { attacheMur } from '@/lib/hauteurs.js';
 import { estMural } from '@/lib/agencement.js';
+import {verifierReglesDures,BASE} from '@/lib/encyclopedie.js';
+import {posesStaging} from '@/lib/staging.js';
 
 export const GET = route(async (request, { params }) => {
   const u = await exiger(request);
@@ -32,14 +34,19 @@ export const PATCH = route(async (request, { params }) => {
     const correction = b.geometrie && typeof b.geometrie === 'object' ? b.geometrie : { dims: b.dims };
     try { Object.assign(champs, corrigerPiece(p.modele, Array.isArray(b.agencement) ? nettoyer(b.agencement, p.modele) : p.agencement || [], correction, PRODUITS)); } catch(e) { if(['scan-forme','scan-coins','scan-dimensions'].includes(e.message)) throw new ErreurHTTP(400,e.message);throw e; }
     champs.dims = mesuresConfirmees(champs.modele);
-    champs.proposition = p.proposition ? { ...p.proposition, confort: null, densite: null } : null;
+    champs.proposition = p.proposition ? { ...p.proposition, confort: null, densite: null, staging: (b.dims || b.geometrie) ? null : p.proposition.staging } : null;
   }
   if (Array.isArray(b.agencement)) {
     if (!p.modele) throw new ErreurHTTP(409, 'pas-de-modele');
     if (!b.dims && !b.geometrie) champs.agencement = nettoyer(b.agencement, p.modele);
-    if (p.proposition) champs.proposition = { ...p.proposition, confort: null, densite: null };
+    if (p.proposition) champs.proposition = { ...p.proposition, confort: null, densite: null, staging: (b.dims || b.geometrie) ? null : p.proposition.staging };
   }
   if (b.vue && p.modele) champs.modele = { ...(champs.modele || p.modele), vue: { ...p.modele.vue, ...pick(b.vue, ['x', 'y', 'z', 'cx', 'cy', 'cz', 'fov']) } };
+  if(p.proposition?.encyclopedie&&(champs.agencement||champs.modele)){
+    const modele=champs.modele||p.modele,liste=champs.agencement||p.agencement||[],stage=champs.proposition ? champs.proposition.staging : p.proposition.staging;
+    const audit=verifierReglesDures(modele,[...liste,...posesStaging(liste,stage,PRODUITS)],PRODUITS,p.proposition.encyclopedie.profil);
+    if(!audit.valide)throw new ErreurHTTP(422,'regles-bloquantes',audit.erreurs.join(', '));
+  }
   const n = await majPiece(u.id, id, champs);
   return json({ piece: publique(n), alertes: n.modele ? verifier(n.modele, n.agencement || [], PRODUITS) : [] });
 });
@@ -66,6 +73,8 @@ function nettoyer(liste, modele) {
     if (it.attach_to?.type === 'furniture' && typeof it.attach_to.id === 'string' && liste.some(q => q?.id === it.attach_to.id)) base.attach_to = { type: 'furniture', id: it.attach_to.id.slice(0, 40) };
     if (it.attach_to?.type === 'ceiling') base.attach_to = { type: 'ceiling' };
     for (const k of ['zoneId', 'usageProgramme', 'slotProgramme']) if (typeof it[k] === 'string') base[k] = it[k].slice(0, 80);
+    const source=BASE.dispositions.find(d=>d.uid===it.dispositionUid);
+    if(source){base.dispositionUid=source.uid;base.dispositionSource=source.id;if(typeof it.dispositionVariante==='string'&&it.dispositionVariante.startsWith(source.uid+'@'))base.dispositionVariante=it.dispositionVariante.slice(0,100);}
     if (typeof it.obligatoireProgramme === 'boolean') base.obligatoireProgramme = it.obligatoireProgramme;
     if (Number.isFinite(it.prioriteProgramme)) base.prioriteProgramme = Math.max(1, Math.min(7, it.prioriteProgramme));
     if (base.origine === 'catalogue') {

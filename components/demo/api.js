@@ -153,10 +153,10 @@ async function modifier(p, b) {
     if ((b.dims || b.geometrie) && p.modele) {
       Object.assign(p, corrigerPiece(p.modele, Array.isArray(b.agencement) ? b.agencement.slice(0, 80) : p.agencement || [], b.geometrie || { dims: b.dims }, produits));
       p.dims = mesuresConfirmees(p.modele);
-      if (p.proposition) p.proposition = { ...p.proposition, confort: null, densite: null };
+      if (p.proposition) p.proposition = { ...p.proposition, confort: null, densite: null, staging: (b.dims || b.geometrie) ? null : p.proposition.staging };
     }
     if (Array.isArray(b.agencement) && p.modele && !b.dims && !b.geometrie) p.agencement = b.agencement.slice(0, 80);
-    if (Array.isArray(b.agencement) && p.proposition) p.proposition = { ...p.proposition, confort: null, densite: null };
+    if (Array.isArray(b.agencement) && p.proposition) p.proposition = { ...p.proposition, confort: null, densite: null, staging: (b.dims || b.geometrie) ? null : p.proposition.staging };
     if (b.vue && p.modele) p.modele = { ...p.modele, vue: { ...p.modele.vue, ...b.vue } };
     toucher(p);
     if (p.modele) alertes = verifier(p.modele, p.agencement || [], produits);

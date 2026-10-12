@@ -1,0 +1,2122 @@
+{
+  "tolerance": 0.05,
+  "modeles": 8,
+  "configurations": 96,
+  "valides": 96,
+  "appelsGeneration3D": 0,
+  "coutGeneration3DUSD": 0,
+  "controles": [
+    {
+      "id": "enc-console-dos",
+      "cibles": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "neutre"
+    },
+    {
+      "id": "enc-console-dos",
+      "cibles": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "epure"
+    },
+    {
+      "id": "enc-console-dos",
+      "cibles": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "chaleureux"
+    },
+    {
+      "id": "enc-console-dos",
+      "cibles": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "classique"
+    },
+    {
+      "id": "enc-console-dos",
+      "cibles": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "boheme"
+    },
+    {
+      "id": "enc-console-dos",
+      "cibles": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "artdeco"
+    },
+    {
+      "id": "enc-console-dos",
+      "cibles": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "japandi"
+    },
+    {
+      "id": "enc-console-dos",
+      "cibles": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "audacieux"
+    },
+    {
+      "id": "enc-console-dos",
+      "cibles": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "mediterraneen"
+    },
+    {
+      "id": "enc-console-dos",
+      "cibles": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "scandinave"
+    },
+    {
+      "id": "enc-console-dos",
+      "cibles": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "industriel"
+    },
+    {
+      "id": "enc-console-dos",
+      "cibles": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.7
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "contemporain"
+    },
+    {
+      "id": "enc-console-tv-suspendue",
+      "cibles": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "neutre"
+    },
+    {
+      "id": "enc-console-tv-suspendue",
+      "cibles": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "epure"
+    },
+    {
+      "id": "enc-console-tv-suspendue",
+      "cibles": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "chaleureux"
+    },
+    {
+      "id": "enc-console-tv-suspendue",
+      "cibles": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "classique"
+    },
+    {
+      "id": "enc-console-tv-suspendue",
+      "cibles": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "boheme"
+    },
+    {
+      "id": "enc-console-tv-suspendue",
+      "cibles": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "artdeco"
+    },
+    {
+      "id": "enc-console-tv-suspendue",
+      "cibles": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "japandi"
+    },
+    {
+      "id": "enc-console-tv-suspendue",
+      "cibles": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "audacieux"
+    },
+    {
+      "id": "enc-console-tv-suspendue",
+      "cibles": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "mediterraneen"
+    },
+    {
+      "id": "enc-console-tv-suspendue",
+      "cibles": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "scandinave"
+    },
+    {
+      "id": "enc-console-tv-suspendue",
+      "cibles": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "industriel"
+    },
+    {
+      "id": "enc-console-tv-suspendue",
+      "cibles": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "mesures": [
+        1.2,
+        0.3,
+        0.25
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "contemporain"
+    },
+    {
+      "id": "enc-bar-cart",
+      "cibles": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "mesures": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "neutre"
+    },
+    {
+      "id": "enc-bar-cart",
+      "cibles": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "mesures": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "epure"
+    },
+    {
+      "id": "enc-bar-cart",
+      "cibles": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "mesures": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "chaleureux"
+    },
+    {
+      "id": "enc-bar-cart",
+      "cibles": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "mesures": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "classique"
+    },
+    {
+      "id": "enc-bar-cart",
+      "cibles": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "mesures": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "boheme"
+    },
+    {
+      "id": "enc-bar-cart",
+      "cibles": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "mesures": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "artdeco"
+    },
+    {
+      "id": "enc-bar-cart",
+      "cibles": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "mesures": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "japandi"
+    },
+    {
+      "id": "enc-bar-cart",
+      "cibles": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "mesures": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "audacieux"
+    },
+    {
+      "id": "enc-bar-cart",
+      "cibles": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "mesures": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "mediterraneen"
+    },
+    {
+      "id": "enc-bar-cart",
+      "cibles": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "mesures": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "scandinave"
+    },
+    {
+      "id": "enc-bar-cart",
+      "cibles": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "mesures": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "industriel"
+    },
+    {
+      "id": "enc-bar-cart",
+      "cibles": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "mesures": [
+        0.6,
+        0.4,
+        0.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "contemporain"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "neutre"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "epure"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "chaleureux"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "classique"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "boheme"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "artdeco"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "japandi"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "audacieux"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "mediterraneen"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "scandinave"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "industriel"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "contemporain"
+    },
+    {
+      "id": "enc-enfilade",
+      "cibles": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "mesures": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "neutre"
+    },
+    {
+      "id": "enc-enfilade",
+      "cibles": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "mesures": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "epure"
+    },
+    {
+      "id": "enc-enfilade",
+      "cibles": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "mesures": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "chaleureux"
+    },
+    {
+      "id": "enc-enfilade",
+      "cibles": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "mesures": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "classique"
+    },
+    {
+      "id": "enc-enfilade",
+      "cibles": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "mesures": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "boheme"
+    },
+    {
+      "id": "enc-enfilade",
+      "cibles": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "mesures": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "artdeco"
+    },
+    {
+      "id": "enc-enfilade",
+      "cibles": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "mesures": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "japandi"
+    },
+    {
+      "id": "enc-enfilade",
+      "cibles": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "mesures": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "audacieux"
+    },
+    {
+      "id": "enc-enfilade",
+      "cibles": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "mesures": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "mediterraneen"
+    },
+    {
+      "id": "enc-enfilade",
+      "cibles": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "mesures": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "scandinave"
+    },
+    {
+      "id": "enc-enfilade",
+      "cibles": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "mesures": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "industriel"
+    },
+    {
+      "id": "enc-enfilade",
+      "cibles": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "mesures": [
+        1.6,
+        0.4,
+        0.75
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "contemporain"
+    },
+    {
+      "id": "enc-bibliotheque-ouverte",
+      "cibles": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "mesures": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "neutre"
+    },
+    {
+      "id": "enc-bibliotheque-ouverte",
+      "cibles": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "mesures": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "epure"
+    },
+    {
+      "id": "enc-bibliotheque-ouverte",
+      "cibles": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "mesures": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "chaleureux"
+    },
+    {
+      "id": "enc-bibliotheque-ouverte",
+      "cibles": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "mesures": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "classique"
+    },
+    {
+      "id": "enc-bibliotheque-ouverte",
+      "cibles": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "mesures": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "boheme"
+    },
+    {
+      "id": "enc-bibliotheque-ouverte",
+      "cibles": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "mesures": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "artdeco"
+    },
+    {
+      "id": "enc-bibliotheque-ouverte",
+      "cibles": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "mesures": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "japandi"
+    },
+    {
+      "id": "enc-bibliotheque-ouverte",
+      "cibles": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "mesures": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "audacieux"
+    },
+    {
+      "id": "enc-bibliotheque-ouverte",
+      "cibles": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "mesures": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "mediterraneen"
+    },
+    {
+      "id": "enc-bibliotheque-ouverte",
+      "cibles": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "mesures": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "scandinave"
+    },
+    {
+      "id": "enc-bibliotheque-ouverte",
+      "cibles": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "mesures": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "industriel"
+    },
+    {
+      "id": "enc-bibliotheque-ouverte",
+      "cibles": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "mesures": [
+        0.8,
+        0.3,
+        1.8
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "contemporain"
+    },
+    {
+      "id": "enc-carafe",
+      "cibles": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "mesures": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "neutre"
+    },
+    {
+      "id": "enc-carafe",
+      "cibles": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "mesures": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "epure"
+    },
+    {
+      "id": "enc-carafe",
+      "cibles": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "mesures": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "chaleureux"
+    },
+    {
+      "id": "enc-carafe",
+      "cibles": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "mesures": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "classique"
+    },
+    {
+      "id": "enc-carafe",
+      "cibles": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "mesures": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "boheme"
+    },
+    {
+      "id": "enc-carafe",
+      "cibles": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "mesures": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "artdeco"
+    },
+    {
+      "id": "enc-carafe",
+      "cibles": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "mesures": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "japandi"
+    },
+    {
+      "id": "enc-carafe",
+      "cibles": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "mesures": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "audacieux"
+    },
+    {
+      "id": "enc-carafe",
+      "cibles": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "mesures": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "mediterraneen"
+    },
+    {
+      "id": "enc-carafe",
+      "cibles": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "mesures": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "scandinave"
+    },
+    {
+      "id": "enc-carafe",
+      "cibles": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "mesures": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "industriel"
+    },
+    {
+      "id": "enc-carafe",
+      "cibles": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "mesures": [
+        0.13,
+        0.13,
+        0.26
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "contemporain"
+    },
+    {
+      "id": "enc-bol-citrons",
+      "cibles": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "mesures": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "neutre"
+    },
+    {
+      "id": "enc-bol-citrons",
+      "cibles": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "mesures": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "epure"
+    },
+    {
+      "id": "enc-bol-citrons",
+      "cibles": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "mesures": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "chaleureux"
+    },
+    {
+      "id": "enc-bol-citrons",
+      "cibles": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "mesures": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "classique"
+    },
+    {
+      "id": "enc-bol-citrons",
+      "cibles": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "mesures": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "boheme"
+    },
+    {
+      "id": "enc-bol-citrons",
+      "cibles": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "mesures": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "artdeco"
+    },
+    {
+      "id": "enc-bol-citrons",
+      "cibles": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "mesures": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "japandi"
+    },
+    {
+      "id": "enc-bol-citrons",
+      "cibles": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "mesures": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "audacieux"
+    },
+    {
+      "id": "enc-bol-citrons",
+      "cibles": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "mesures": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "mediterraneen"
+    },
+    {
+      "id": "enc-bol-citrons",
+      "cibles": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "mesures": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "scandinave"
+    },
+    {
+      "id": "enc-bol-citrons",
+      "cibles": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "mesures": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "industriel"
+    },
+    {
+      "id": "enc-bol-citrons",
+      "cibles": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "mesures": [
+        0.24,
+        0.24,
+        0.12
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "contemporain"
+    }
+  ]
+}

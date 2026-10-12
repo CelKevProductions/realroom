@@ -1,0 +1,401 @@
+{
+  "id": "enc-armoire-bar",
+  "nom": "Armoire-bar",
+  "forme": "ency-armoire",
+  "dim": [
+    0.9,
+    0.45,
+    1.4
+  ],
+  "emprise": {
+    "largeur": 0.9,
+    "profondeur": 0.45,
+    "surface": 0.405
+  },
+  "types": [
+    "salon",
+    "open-space"
+  ],
+  "tagsStyle": [
+    "neutre",
+    "epure",
+    "chaleureux",
+    "classique",
+    "boheme",
+    "artdeco",
+    "japandi",
+    "audacieux",
+    "mediterraneen",
+    "scandinave",
+    "industriel",
+    "contemporain"
+  ],
+  "venteSource": "B-possible",
+  "validationProduit": false,
+  "sourceDimension": "SL:meuble:armoire_bar",
+  "dimensionsSource": "90–120 × 45–55 × 140–180",
+  "degagements": "80 pour ouvrir les portes",
+  "sourceDisposition": [
+    "SL:3.1",
+    "SL:3.2",
+    "SL:3.3",
+    "SL:3.4",
+    "SL:3.5",
+    "SL:3.6",
+    "SL:3.7",
+    "SL:3.10",
+    "SL:3.11",
+    "SL:3.12",
+    "SL:3.13",
+    "SL:3.14",
+    "SL:3.15",
+    "SL:3.16",
+    "SL:3.17",
+    "SL:3.18",
+    "SL:3.19",
+    "SL:3.20",
+    "SL:3.21",
+    "SL:3.23",
+    "SL:8.16.2"
+  ],
+  "priorite": 2,
+  "fam": "meuble",
+  "vendu": false,
+  "statut": "produit-a-valider",
+  "classe": "S",
+  "description": "Armoire-bar de mise en scène, non vendu.",
+  "pose": "sol",
+  "materiauxParStyle": {
+    "neutre": [
+      "#B69773",
+      "#D5C6AE",
+      "#6A8559"
+    ],
+    "epure": [
+      "#C9B89D",
+      "#EDE9DF",
+      "#667460"
+    ],
+    "chaleureux": [
+      "#9A6E48",
+      "#D6BB90",
+      "#6A8559"
+    ],
+    "classique": [
+      "#73533F",
+      "#E3D4BE",
+      "#3B5645"
+    ],
+    "boheme": [
+      "#B8885C",
+      "#E6C19B",
+      "#738B56"
+    ],
+    "artdeco": [
+      "#76513D",
+      "#DAC080",
+      "#294B42"
+    ],
+    "japandi": [
+      "#9E8A69",
+      "#D7D1BB",
+      "#718271"
+    ],
+    "audacieux": [
+      "#A75443",
+      "#DBB95C",
+      "#3C7F71"
+    ],
+    "mediterraneen": [
+      "#B78864",
+      "#EADBC8",
+      "#6D8B78"
+    ],
+    "scandinave": [
+      "#CEB998",
+      "#E8E4DD",
+      "#7D9679"
+    ],
+    "industriel": [
+      "#705A49",
+      "#586068",
+      "#526B56"
+    ],
+    "contemporain": [
+      "#A09078",
+      "#CCC8C0",
+      "#597A68"
+    ]
+  },
+  "controles": [
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "neutre"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "epure"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "chaleureux"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "classique"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "boheme"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "artdeco"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "japandi"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "audacieux"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "mediterraneen"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "scandinave"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "industriel"
+    },
+    {
+      "id": "enc-armoire-bar",
+      "cibles": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "mesures": [
+        0.9,
+        0.45,
+        1.4
+      ],
+      "ecartsRelatifs": [
+        0,
+        0,
+        0
+      ],
+      "tolerance": 0.05,
+      "valide": true,
+      "bas": 0,
+      "style": "contemporain"
+    }
+  ],
+  "rendus": [
+    "enc-armoire-bar-angle-1.jpg",
+    "enc-armoire-bar-angle-2.jpg",
+    "enc-armoire-bar-angle-3.jpg"
+  ]
+}

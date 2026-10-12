@@ -1,0 +1,90 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> build
+> node scripts/prepare-assets.mjs && next build
+
+▲ Next.js 16.3.6 (Turbopack)
+✓ Running next.config.mjs took 12ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 8.4s
+  Running TypeScript ...
+  Finished TypeScript in 4ms ...
+  Collecting page data using 8 workers ...
+  Generating static pages using 8 workers (0/48) ...
+  Generating static pages using 8 workers (12/48)
+  Generating static pages using 8 workers (24/48)
+  Generating static pages using 8 workers (36/48)
+✓ Generating static pages using 8 workers (48/48) in 579ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /_not-found
+├   /[lang]
+│ ├ ● /fr
+│ └ ● /en
+├ ƒ /[lang]/app
+├ ƒ /[lang]/app/compte
+├ ƒ /[lang]/app/pieces/[id]
+├ ƒ /[lang]/app/projets/[id]
+├   /[lang]/connexion
+│ ├ ● /fr/connexion
+│ └ ● /en/connexion
+├   /[lang]/demo
+│ ├ ● /fr/demo
+│ └ ● /en/demo
+├   /[lang]/demo/compte
+│ ├ ● /fr/demo/compte
+│ └ ● /en/demo/compte
+├ ƒ /[lang]/demo/pieces/[id]
+├ ƒ /[lang]/demo/projets/[id]
+├   /[lang]/legal/[page]
+│ ├ ● /fr/legal/mentions
+│ ├ ● /fr/legal/cgv
+│ ├ ● /fr/legal/confidentialite
+│ └ ● [+3 more paths]
+├ ƒ /[lang]/maison-corleone
+├ ƒ /[lang]/maison-corleone/demo
+├ ƒ /[lang]/opengraph-image
+├   /[lang]/releve
+│ ├ ● /fr/releve
+│ └ ● /en/releve
+├ ƒ /api/auth/code
+├ ƒ /api/auth/deconnexion
+├ ƒ /api/auth/verifier
+├ ƒ /api/compte
+├ ƒ /api/credits/achat
+├ ƒ /api/credits/retour
+├ ƒ /api/credits/simulation
+├ ƒ /api/demo/amenager
+├ ƒ /api/etat
+├ ƒ /api/fichiers/[...chemin]
+├ ○ /api/guides/lagarsoft
+├ ƒ /api/mc/connexion
+├ ƒ /api/mc/deconnexion
+├ ƒ /api/mc/profil
+├ ƒ /api/mc/retour
+├ ƒ /api/moi
+├ ƒ /api/pieces/[id]
+├ ƒ /api/pieces/[id]/amenager
+├ ƒ /api/pieces/[id]/analyse
+├ ƒ /api/pieces/[id]/photos
+├ ƒ /api/pieces/[id]/rendus
+├ ƒ /api/pieces/[id]/scan
+├ ƒ /api/projets
+├ ƒ /api/projets/[id]
+├ ƒ /api/projets/[id]/pieces
+├ ƒ /api/rendus/[id]
+├ ƒ /api/stripe/webhook
+├ ƒ /api/transferts
+├ ○ /icon.svg
+├ ○ /robots.txt
+├ ○ /sitemap.xml
+└ ○ /styles-visuels.json
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand

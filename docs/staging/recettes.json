@@ -1,0 +1,3160 @@
+{
+  "salon": {
+    "neutre": {
+      "hotes": [
+        "table-basse",
+        "table-appoint",
+        "buffet",
+        "etagere",
+        "etagere-murale",
+        "bureau",
+        "table-repas",
+        "canape",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "neutre : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "canape": [
+          "1 à 3 coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "epure": {
+      "hotes": [
+        "table-basse",
+        "table-appoint",
+        "buffet",
+        "etagere",
+        "etagere-murale",
+        "bureau",
+        "table-repas",
+        "canape",
+        "fauteuil"
+      ],
+      "maxSurface": 2,
+      "esprit": "Deux gestes discrets, un seul coussin, peu de contrastes.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "canape": [
+          "1 à 3 coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "chaleureux": {
+      "hotes": [
+        "table-basse",
+        "table-appoint",
+        "buffet",
+        "etagere",
+        "etagere-murale",
+        "bureau",
+        "table-repas",
+        "canape",
+        "fauteuil"
+      ],
+      "maxSurface": 4,
+      "esprit": "Céramique, feuillage, textiles et bois chaleureux.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "canape": [
+          "1 à 3 coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "classique": {
+      "hotes": [
+        "table-basse",
+        "table-appoint",
+        "buffet",
+        "etagere",
+        "etagere-murale",
+        "bureau",
+        "table-repas",
+        "canape",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "classique : objets de hauteurs variées, palette cohérente.",
+      "mur": "lambris",
+      "recettesHotes": {
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "canape": [
+          "1 à 3 coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "boheme": {
+      "hotes": [
+        "table-basse",
+        "table-appoint",
+        "buffet",
+        "etagere",
+        "etagere-murale",
+        "bureau",
+        "table-repas",
+        "canape",
+        "fauteuil"
+      ],
+      "maxSurface": 4,
+      "esprit": "Céramique, feuillage, textiles et bois chaleureux.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "canape": [
+          "1 à 3 coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "artdeco": {
+      "hotes": [
+        "table-basse",
+        "table-appoint",
+        "buffet",
+        "etagere",
+        "etagere-murale",
+        "bureau",
+        "table-repas",
+        "canape",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "artdeco : objets de hauteurs variées, palette cohérente.",
+      "mur": "lambris",
+      "recettesHotes": {
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "canape": [
+          "1 à 3 coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "japandi": {
+      "hotes": [
+        "table-basse",
+        "table-appoint",
+        "buffet",
+        "etagere",
+        "etagere-murale",
+        "bureau",
+        "table-repas",
+        "canape",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "japandi : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "canape": [
+          "1 à 3 coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "audacieux": {
+      "hotes": [
+        "table-basse",
+        "table-appoint",
+        "buffet",
+        "etagere",
+        "etagere-murale",
+        "bureau",
+        "table-repas",
+        "canape",
+        "fauteuil"
+      ],
+      "maxSurface": 4,
+      "esprit": "audacieux : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "canape": [
+          "1 à 3 coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "mediterraneen": {
+      "hotes": [
+        "table-basse",
+        "table-appoint",
+        "buffet",
+        "etagere",
+        "etagere-murale",
+        "bureau",
+        "table-repas",
+        "canape",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "mediterraneen : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "canape": [
+          "1 à 3 coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "scandinave": {
+      "hotes": [
+        "table-basse",
+        "table-appoint",
+        "buffet",
+        "etagere",
+        "etagere-murale",
+        "bureau",
+        "table-repas",
+        "canape",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "scandinave : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "canape": [
+          "1 à 3 coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "industriel": {
+      "hotes": [
+        "table-basse",
+        "table-appoint",
+        "buffet",
+        "etagere",
+        "etagere-murale",
+        "bureau",
+        "table-repas",
+        "canape",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "industriel : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "canape": [
+          "1 à 3 coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "contemporain": {
+      "hotes": [
+        "table-basse",
+        "table-appoint",
+        "buffet",
+        "etagere",
+        "etagere-murale",
+        "bureau",
+        "table-repas",
+        "canape",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "contemporain : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "canape": [
+          "1 à 3 coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    }
+  },
+  "chambre": {
+    "neutre": {
+      "hotes": [
+        "chevet",
+        "buffet",
+        "etagere",
+        "bureau",
+        "lit",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "neutre : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "chevet": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "lit": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "epure": {
+      "hotes": [
+        "chevet",
+        "buffet",
+        "etagere",
+        "bureau",
+        "lit",
+        "fauteuil"
+      ],
+      "maxSurface": 2,
+      "esprit": "Deux gestes discrets, un seul coussin, peu de contrastes.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "chevet": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "lit": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "chaleureux": {
+      "hotes": [
+        "chevet",
+        "buffet",
+        "etagere",
+        "bureau",
+        "lit",
+        "fauteuil"
+      ],
+      "maxSurface": 4,
+      "esprit": "Céramique, feuillage, textiles et bois chaleureux.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "chevet": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "lit": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "classique": {
+      "hotes": [
+        "chevet",
+        "buffet",
+        "etagere",
+        "bureau",
+        "lit",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "classique : objets de hauteurs variées, palette cohérente.",
+      "mur": "lambris",
+      "recettesHotes": {
+        "chevet": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "lit": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "boheme": {
+      "hotes": [
+        "chevet",
+        "buffet",
+        "etagere",
+        "bureau",
+        "lit",
+        "fauteuil"
+      ],
+      "maxSurface": 4,
+      "esprit": "Céramique, feuillage, textiles et bois chaleureux.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "chevet": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "lit": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "artdeco": {
+      "hotes": [
+        "chevet",
+        "buffet",
+        "etagere",
+        "bureau",
+        "lit",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "artdeco : objets de hauteurs variées, palette cohérente.",
+      "mur": "lambris",
+      "recettesHotes": {
+        "chevet": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "lit": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "japandi": {
+      "hotes": [
+        "chevet",
+        "buffet",
+        "etagere",
+        "bureau",
+        "lit",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "japandi : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "chevet": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "lit": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "audacieux": {
+      "hotes": [
+        "chevet",
+        "buffet",
+        "etagere",
+        "bureau",
+        "lit",
+        "fauteuil"
+      ],
+      "maxSurface": 4,
+      "esprit": "audacieux : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "chevet": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "lit": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "mediterraneen": {
+      "hotes": [
+        "chevet",
+        "buffet",
+        "etagere",
+        "bureau",
+        "lit",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "mediterraneen : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "chevet": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "lit": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "scandinave": {
+      "hotes": [
+        "chevet",
+        "buffet",
+        "etagere",
+        "bureau",
+        "lit",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "scandinave : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "chevet": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "lit": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "industriel": {
+      "hotes": [
+        "chevet",
+        "buffet",
+        "etagere",
+        "bureau",
+        "lit",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "industriel : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "chevet": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "lit": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "contemporain": {
+      "hotes": [
+        "chevet",
+        "buffet",
+        "etagere",
+        "bureau",
+        "lit",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "contemporain : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "chevet": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "lit": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    }
+  },
+  "salle_a_manger": {
+    "neutre": {
+      "hotes": [
+        "table-repas",
+        "buffet",
+        "vaisselier",
+        "etagere"
+      ],
+      "maxSurface": 3,
+      "esprit": "neutre : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "vaisselier": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "epure": {
+      "hotes": [
+        "table-repas",
+        "buffet",
+        "vaisselier",
+        "etagere"
+      ],
+      "maxSurface": 2,
+      "esprit": "Deux gestes discrets, un seul coussin, peu de contrastes.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "vaisselier": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "chaleureux": {
+      "hotes": [
+        "table-repas",
+        "buffet",
+        "vaisselier",
+        "etagere"
+      ],
+      "maxSurface": 4,
+      "esprit": "Céramique, feuillage, textiles et bois chaleureux.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "vaisselier": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "classique": {
+      "hotes": [
+        "table-repas",
+        "buffet",
+        "vaisselier",
+        "etagere"
+      ],
+      "maxSurface": 3,
+      "esprit": "classique : objets de hauteurs variées, palette cohérente.",
+      "mur": "lambris",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "vaisselier": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "boheme": {
+      "hotes": [
+        "table-repas",
+        "buffet",
+        "vaisselier",
+        "etagere"
+      ],
+      "maxSurface": 4,
+      "esprit": "Céramique, feuillage, textiles et bois chaleureux.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "vaisselier": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "artdeco": {
+      "hotes": [
+        "table-repas",
+        "buffet",
+        "vaisselier",
+        "etagere"
+      ],
+      "maxSurface": 3,
+      "esprit": "artdeco : objets de hauteurs variées, palette cohérente.",
+      "mur": "lambris",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "vaisselier": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "japandi": {
+      "hotes": [
+        "table-repas",
+        "buffet",
+        "vaisselier",
+        "etagere"
+      ],
+      "maxSurface": 3,
+      "esprit": "japandi : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "vaisselier": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "audacieux": {
+      "hotes": [
+        "table-repas",
+        "buffet",
+        "vaisselier",
+        "etagere"
+      ],
+      "maxSurface": 4,
+      "esprit": "audacieux : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "vaisselier": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "mediterraneen": {
+      "hotes": [
+        "table-repas",
+        "buffet",
+        "vaisselier",
+        "etagere"
+      ],
+      "maxSurface": 3,
+      "esprit": "mediterraneen : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "vaisselier": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "scandinave": {
+      "hotes": [
+        "table-repas",
+        "buffet",
+        "vaisselier",
+        "etagere"
+      ],
+      "maxSurface": 3,
+      "esprit": "scandinave : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "vaisselier": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "industriel": {
+      "hotes": [
+        "table-repas",
+        "buffet",
+        "vaisselier",
+        "etagere"
+      ],
+      "maxSurface": 3,
+      "esprit": "industriel : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "vaisselier": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "contemporain": {
+      "hotes": [
+        "table-repas",
+        "buffet",
+        "vaisselier",
+        "etagere"
+      ],
+      "maxSurface": 3,
+      "esprit": "contemporain : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "vaisselier": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    }
+  },
+  "bureau": {
+    "neutre": {
+      "hotes": [
+        "bureau",
+        "etagere",
+        "etagere-murale",
+        "table-appoint",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "neutre : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "epure": {
+      "hotes": [
+        "bureau",
+        "etagere",
+        "etagere-murale",
+        "table-appoint",
+        "fauteuil"
+      ],
+      "maxSurface": 2,
+      "esprit": "Deux gestes discrets, un seul coussin, peu de contrastes.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "chaleureux": {
+      "hotes": [
+        "bureau",
+        "etagere",
+        "etagere-murale",
+        "table-appoint",
+        "fauteuil"
+      ],
+      "maxSurface": 4,
+      "esprit": "Céramique, feuillage, textiles et bois chaleureux.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "classique": {
+      "hotes": [
+        "bureau",
+        "etagere",
+        "etagere-murale",
+        "table-appoint",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "classique : objets de hauteurs variées, palette cohérente.",
+      "mur": "lambris",
+      "recettesHotes": {
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "boheme": {
+      "hotes": [
+        "bureau",
+        "etagere",
+        "etagere-murale",
+        "table-appoint",
+        "fauteuil"
+      ],
+      "maxSurface": 4,
+      "esprit": "Céramique, feuillage, textiles et bois chaleureux.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "artdeco": {
+      "hotes": [
+        "bureau",
+        "etagere",
+        "etagere-murale",
+        "table-appoint",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "artdeco : objets de hauteurs variées, palette cohérente.",
+      "mur": "lambris",
+      "recettesHotes": {
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "japandi": {
+      "hotes": [
+        "bureau",
+        "etagere",
+        "etagere-murale",
+        "table-appoint",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "japandi : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "audacieux": {
+      "hotes": [
+        "bureau",
+        "etagere",
+        "etagere-murale",
+        "table-appoint",
+        "fauteuil"
+      ],
+      "maxSurface": 4,
+      "esprit": "audacieux : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "mediterraneen": {
+      "hotes": [
+        "bureau",
+        "etagere",
+        "etagere-murale",
+        "table-appoint",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "mediterraneen : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "scandinave": {
+      "hotes": [
+        "bureau",
+        "etagere",
+        "etagere-murale",
+        "table-appoint",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "scandinave : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "industriel": {
+      "hotes": [
+        "bureau",
+        "etagere",
+        "etagere-murale",
+        "table-appoint",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "industriel : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "contemporain": {
+      "hotes": [
+        "bureau",
+        "etagere",
+        "etagere-murale",
+        "table-appoint",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "contemporain : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "bureau": [
+          "ordinateur",
+          "carnet",
+          "plante-petite"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "etagere-murale": [
+          "livres-debout",
+          "sculpture"
+        ],
+        "table-appoint": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    }
+  },
+  "salle_de_bain": {
+    "neutre": {
+      "hotes": [
+        "vasque",
+        "etagere",
+        "buffet"
+      ],
+      "maxSurface": 3,
+      "esprit": "neutre : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "vasque": [
+          "serviettes",
+          "bougie"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "epure": {
+      "hotes": [
+        "vasque",
+        "etagere",
+        "buffet"
+      ],
+      "maxSurface": 2,
+      "esprit": "Deux gestes discrets, un seul coussin, peu de contrastes.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "vasque": [
+          "serviettes",
+          "bougie"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "chaleureux": {
+      "hotes": [
+        "vasque",
+        "etagere",
+        "buffet"
+      ],
+      "maxSurface": 4,
+      "esprit": "Céramique, feuillage, textiles et bois chaleureux.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "vasque": [
+          "serviettes",
+          "bougie"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "classique": {
+      "hotes": [
+        "vasque",
+        "etagere",
+        "buffet"
+      ],
+      "maxSurface": 3,
+      "esprit": "classique : objets de hauteurs variées, palette cohérente.",
+      "mur": "lambris",
+      "recettesHotes": {
+        "vasque": [
+          "serviettes",
+          "bougie"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "boheme": {
+      "hotes": [
+        "vasque",
+        "etagere",
+        "buffet"
+      ],
+      "maxSurface": 4,
+      "esprit": "Céramique, feuillage, textiles et bois chaleureux.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "vasque": [
+          "serviettes",
+          "bougie"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "artdeco": {
+      "hotes": [
+        "vasque",
+        "etagere",
+        "buffet"
+      ],
+      "maxSurface": 3,
+      "esprit": "artdeco : objets de hauteurs variées, palette cohérente.",
+      "mur": "lambris",
+      "recettesHotes": {
+        "vasque": [
+          "serviettes",
+          "bougie"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "japandi": {
+      "hotes": [
+        "vasque",
+        "etagere",
+        "buffet"
+      ],
+      "maxSurface": 3,
+      "esprit": "japandi : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "vasque": [
+          "serviettes",
+          "bougie"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "audacieux": {
+      "hotes": [
+        "vasque",
+        "etagere",
+        "buffet"
+      ],
+      "maxSurface": 4,
+      "esprit": "audacieux : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "vasque": [
+          "serviettes",
+          "bougie"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "mediterraneen": {
+      "hotes": [
+        "vasque",
+        "etagere",
+        "buffet"
+      ],
+      "maxSurface": 3,
+      "esprit": "mediterraneen : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "vasque": [
+          "serviettes",
+          "bougie"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "scandinave": {
+      "hotes": [
+        "vasque",
+        "etagere",
+        "buffet"
+      ],
+      "maxSurface": 3,
+      "esprit": "scandinave : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "vasque": [
+          "serviettes",
+          "bougie"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "industriel": {
+      "hotes": [
+        "vasque",
+        "etagere",
+        "buffet"
+      ],
+      "maxSurface": 3,
+      "esprit": "industriel : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "vasque": [
+          "serviettes",
+          "bougie"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "contemporain": {
+      "hotes": [
+        "vasque",
+        "etagere",
+        "buffet"
+      ],
+      "maxSurface": 3,
+      "esprit": "contemporain : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "vasque": [
+          "serviettes",
+          "bougie"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "buffet": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    }
+  },
+  "entree": {
+    "neutre": {
+      "hotes": [
+        "console",
+        "etagere",
+        "banc"
+      ],
+      "maxSurface": 3,
+      "esprit": "neutre : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "console": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "banc": []
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "epure": {
+      "hotes": [
+        "console",
+        "etagere",
+        "banc"
+      ],
+      "maxSurface": 2,
+      "esprit": "Deux gestes discrets, un seul coussin, peu de contrastes.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "console": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "banc": []
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "chaleureux": {
+      "hotes": [
+        "console",
+        "etagere",
+        "banc"
+      ],
+      "maxSurface": 4,
+      "esprit": "Céramique, feuillage, textiles et bois chaleureux.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "console": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "banc": []
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "classique": {
+      "hotes": [
+        "console",
+        "etagere",
+        "banc"
+      ],
+      "maxSurface": 3,
+      "esprit": "classique : objets de hauteurs variées, palette cohérente.",
+      "mur": "lambris",
+      "recettesHotes": {
+        "console": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "banc": []
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "boheme": {
+      "hotes": [
+        "console",
+        "etagere",
+        "banc"
+      ],
+      "maxSurface": 4,
+      "esprit": "Céramique, feuillage, textiles et bois chaleureux.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "console": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "banc": []
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "artdeco": {
+      "hotes": [
+        "console",
+        "etagere",
+        "banc"
+      ],
+      "maxSurface": 3,
+      "esprit": "artdeco : objets de hauteurs variées, palette cohérente.",
+      "mur": "lambris",
+      "recettesHotes": {
+        "console": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "banc": []
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "japandi": {
+      "hotes": [
+        "console",
+        "etagere",
+        "banc"
+      ],
+      "maxSurface": 3,
+      "esprit": "japandi : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "console": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "banc": []
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "audacieux": {
+      "hotes": [
+        "console",
+        "etagere",
+        "banc"
+      ],
+      "maxSurface": 4,
+      "esprit": "audacieux : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "console": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "banc": []
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "mediterraneen": {
+      "hotes": [
+        "console",
+        "etagere",
+        "banc"
+      ],
+      "maxSurface": 3,
+      "esprit": "mediterraneen : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "console": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "banc": []
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "scandinave": {
+      "hotes": [
+        "console",
+        "etagere",
+        "banc"
+      ],
+      "maxSurface": 3,
+      "esprit": "scandinave : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "console": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "banc": []
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "industriel": {
+      "hotes": [
+        "console",
+        "etagere",
+        "banc"
+      ],
+      "maxSurface": 3,
+      "esprit": "industriel : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "console": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "banc": []
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "contemporain": {
+      "hotes": [
+        "console",
+        "etagere",
+        "banc"
+      ],
+      "maxSurface": 3,
+      "esprit": "contemporain : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "console": [
+          "vase-haut",
+          "livres",
+          "plante-moyenne",
+          "sculpture"
+        ],
+        "etagere": [
+          "livres-debout",
+          "sculpture ou vase-haut par niveau"
+        ],
+        "banc": []
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    }
+  },
+  "terrasse": {
+    "neutre": {
+      "hotes": [
+        "table-repas",
+        "salon-exterieur",
+        "table-basse",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "neutre : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "salon-exterieur": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "epure": {
+      "hotes": [
+        "table-repas",
+        "salon-exterieur",
+        "table-basse",
+        "fauteuil"
+      ],
+      "maxSurface": 2,
+      "esprit": "Deux gestes discrets, un seul coussin, peu de contrastes.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "salon-exterieur": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "chaleureux": {
+      "hotes": [
+        "table-repas",
+        "salon-exterieur",
+        "table-basse",
+        "fauteuil"
+      ],
+      "maxSurface": 4,
+      "esprit": "Céramique, feuillage, textiles et bois chaleureux.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "salon-exterieur": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "classique": {
+      "hotes": [
+        "table-repas",
+        "salon-exterieur",
+        "table-basse",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "classique : objets de hauteurs variées, palette cohérente.",
+      "mur": "lambris",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "salon-exterieur": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "boheme": {
+      "hotes": [
+        "table-repas",
+        "salon-exterieur",
+        "table-basse",
+        "fauteuil"
+      ],
+      "maxSurface": 4,
+      "esprit": "Céramique, feuillage, textiles et bois chaleureux.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "salon-exterieur": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "artdeco": {
+      "hotes": [
+        "table-repas",
+        "salon-exterieur",
+        "table-basse",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "artdeco : objets de hauteurs variées, palette cohérente.",
+      "mur": "lambris",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "salon-exterieur": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "japandi": {
+      "hotes": [
+        "table-repas",
+        "salon-exterieur",
+        "table-basse",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "japandi : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "salon-exterieur": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "audacieux": {
+      "hotes": [
+        "table-repas",
+        "salon-exterieur",
+        "table-basse",
+        "fauteuil"
+      ],
+      "maxSurface": 4,
+      "esprit": "audacieux : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "salon-exterieur": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "mediterraneen": {
+      "hotes": [
+        "table-repas",
+        "salon-exterieur",
+        "table-basse",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "mediterraneen : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "salon-exterieur": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "scandinave": {
+      "hotes": [
+        "table-repas",
+        "salon-exterieur",
+        "table-basse",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "scandinave : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "salon-exterieur": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "industriel": {
+      "hotes": [
+        "table-repas",
+        "salon-exterieur",
+        "table-basse",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "industriel : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "salon-exterieur": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    },
+    "contemporain": {
+      "hotes": [
+        "table-repas",
+        "salon-exterieur",
+        "table-basse",
+        "fauteuil"
+      ],
+      "maxSurface": 3,
+      "esprit": "contemporain : objets de hauteurs variées, palette cohérente.",
+      "mur": "lattes",
+      "recettesHotes": {
+        "table-repas": [
+          "bol-fruits",
+          "vase"
+        ],
+        "salon-exterieur": [
+          "coussins",
+          "plaid hors épuré"
+        ],
+        "table-basse": [
+          "plateau",
+          "livres",
+          "vase",
+          "bougie"
+        ],
+        "fauteuil": [
+          "coussin",
+          "plaid hors épuré"
+        ]
+      },
+      "compact": "À 14 m² ou moins : livres + vase sur petite table, un coussin, aucun mur travaillé ou grand prop automatique."
+    }
+  }
+}

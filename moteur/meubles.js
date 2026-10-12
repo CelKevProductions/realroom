@@ -2072,6 +2072,12 @@ function panneauMural(p) {
   bloc(g, l, h, .04, p.fam === 'miroir' ? M('chrome') : M('tissu:' + (p.cols[0] || '#6B6358')), 0, -h / 2, .02, .02);
   return g;
 }
+function tapisCat(p) {
+  const g=groupe('tapis'),[w,d,h]=p.dim;
+  bloc(g,w,h,d,M('tissu:'+(p.cols?.[0]||'#C8BCA6')),0,0,0,.006);
+  for(const z of [-1,1])bloc(g,w*.94,.001,.025,M('tissu:'+(p.cols?.[1]||'#E1D7C6')),0,h+.001,z*(d/2-.055));
+  return g;
+}
 
 /* ---------------------------------------------------------------
    Aiguillage : pièce du catalogue -> maquette générique
@@ -2080,7 +2086,7 @@ const CAT_GENERIQUE = {
   lit: litCat, fauteuil: fauteuilCat, canape: canapeCat, suspension: suspensionCat, lustre: lustreCat, applique: appliqueCat,
   lampadaire: lampadaireCat, lampe: lampadaireCat, plafonnier: plafonnierCat, baignoire: baignoireCat, tabouret: tabouretCat,
   banc: bancCat, pouf: poufCat, sculpture: sculptureCat, meridienne: meridienneCat, 'salon-jardin': salonCat,
-  jardiniere: () => jardiniere(), balancelle: () => balancelles(), table: tableCat, meuble: meubleCat, miroir: panneauMural, tapis: panneauMural
+  jardiniere: () => jardiniere(), balancelle: () => balancelles(), table: tableCat, meuble: meubleCat, miroir: panneauMural, tapis: tapisCat
 };
 function construireCatalogue(p, o = {}) {
   const f = CAT_GENERIQUE[p.fam];

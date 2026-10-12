@@ -1,0 +1,88 @@
+{
+  "endpoint_id": "openrouter/router/vision",
+  "input": {
+    "model": "google/gemini-3.8-flash",
+    "temperature": 0.1,
+    "max_tokens": 6000,
+    "reasoning": true
+  },
+  "prompt": "Deux images sont fournies, A puis B. Chaque image contient deux vues opposées de la même pièce synthétique de 89 m², avec le même type de maquette et les mêmes caméras. Juge seulement les images, sans inventer de texture, objet ou équipement. Quelle version paraît la plus habitée, chaleureuse et digne d'un magazine ? Ne récompense pas automatiquement la quantité : considère les surfaces vivantes, les végétaux, le mur travaillé et la cohérence des activités, avec la surcharge éventuelle. Réponds seulement en JSON concis (pas de raisonnement détaillé) : {\"prefere\":\"A|B|egal\",\"raison\":\"...\",\"tv_visible_A\":true,\"tv_visible_B\":true,\"reserves\":[\"...\"]}. Les chemins et mesures ne sont pas certifiables depuis les images.",
+  "comparaisons": [
+    {
+      "id": "89-direct-r3",
+      "images": [
+        "89-avant-vision.jpg",
+        "89-iteration-3-vision.jpg"
+      ],
+      "apres": "B",
+      "empreintes": [
+        {
+          "nom": "89-avant-vision.jpg",
+          "sha256": "f8d5b9e6a7b0d97cf59fc5f7b0077659cd165a6e450fc15dd927cf64bddad7ea"
+        },
+        {
+          "nom": "89-iteration-3-vision.jpg",
+          "sha256": "f29687c28e4ddaab542069f280855e0e939a429716c83e61708e471a00d0fff0"
+        }
+      ],
+      "critique": {
+        "prefere": "A",
+        "raison": "Agencement plus équilibré et convivial des zones de vie, préservant la fluidité sans sensation d'éparpillement.",
+        "tv_visible_A": true,
+        "tv_visible_B": true,
+        "reserves": [
+          "Circulation centrale potentiellement étroite autour du salon",
+          "Rendu minimaliste limitant l'appréciation des textures réelles"
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 2361,
+        "completion_tokens": 516,
+        "total_tokens": 2877,
+        "cost": 0.00370575,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      }
+    },
+    {
+      "id": "89-inverse-r3",
+      "images": [
+        "89-iteration-3-vision.jpg",
+        "89-avant-vision.jpg"
+      ],
+      "apres": "A",
+      "empreintes": [
+        {
+          "nom": "89-iteration-3-vision.jpg",
+          "sha256": "f29687c28e4ddaab542069f280855e0e939a429716c83e61708e471a00d0fff0"
+        },
+        {
+          "nom": "89-avant-vision.jpg",
+          "sha256": "f8d5b9e6a7b0d97cf59fc5f7b0077659cd165a6e450fc15dd927cf64bddad7ea"
+        }
+      ],
+      "critique": {
+        "prefere": "B",
+        "raison": "Agencement plus équilibré des zones de vie, dégageant mieux les flux de circulation tout en conservant l'apport chaleureux du mur texturé.",
+        "tv_visible_A": true,
+        "tv_visible_B": true,
+        "reserves": [
+          "Dégagements et dimensions réelles impossibles à mesurer précisément.",
+          "Proportion de vide encore importante au sol."
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 2361,
+        "completion_tokens": 646,
+        "total_tokens": 3007,
+        "cost": 0.00419325,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      }
+    }
+  ]
+}

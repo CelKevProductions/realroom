@@ -1,0 +1,507 @@
+{
+  "provenance": "Fixtures synthétiques indépendantes ; aucune pièce client. Instantanés complets sous .data/encyclopedie-modeles, non suivis par Git.",
+  "comptes": {
+    "zones": 100,
+    "dispositions": 521,
+    "meubles": 242,
+    "props": 155,
+    "regles": 81,
+    "signature_moments": 55,
+    "trous": 219,
+    "dispositionsParPiece": {
+      "SL": 257,
+      "CH": 119,
+      "SAM": 29,
+      "CU": 30,
+      "BU": 23,
+      "SDB": 21,
+      "EN": 10,
+      "BA": 10,
+      "AN": 22
+    }
+  },
+  "variantes": {
+    "SL": {
+      "source": 257,
+      "contextes": 257,
+      "parZone": {
+        "conversation": 32,
+        "ecran_media": 24,
+        "home_cinema": 7,
+        "repas_openspace": 0,
+        "cuisine_ouverte": 0,
+        "lecture": 20,
+        "feu": 15,
+        "musique_piano": 13,
+        "bar": 23,
+        "cafe": 6,
+        "bibliotheque": 18,
+        "bureau_appoint": 10,
+        "jeux_enfants": 8,
+        "jeux_adultes": 6,
+        "gaming": 5,
+        "meditation_yoga": 6,
+        "sport": 6,
+        "animalier": 8,
+        "cave_vin": 6,
+        "collection_vitrine": 6,
+        "hifi_vinyles": 5,
+        "banquette_fenetre": 20,
+        "sieste_daybed": 5,
+        "couchage_invites": 6,
+        "vegetal": 8,
+        "loisirs_creatifs": 5,
+        "conversation_secondaire": 5,
+        "recharge_depose": 4
+      }
+    },
+    "CH": {
+      "source": 119,
+      "contextes": 256,
+      "parZone": {
+        "couchage": 82,
+        "chevets": 16,
+        "rangement_vetements": 20,
+        "dressing_tete_de_lit": 10,
+        "bureau_chambre": 16,
+        "coiffeuse": 10,
+        "lecture": 12,
+        "banc_pied_de_lit": 8,
+        "bebe": 14,
+        "jeux_enfant": 12,
+        "devoirs": 10,
+        "tv_chambre": 8,
+        "salle_eau_ouverte": 8,
+        "sport_yoga": 8,
+        "animal": 8,
+        "boudoir_salon": 8,
+        "bibliotheque": 8,
+        "priere_meditation": 8
+      }
+    },
+    "SAM": {
+      "source": 29,
+      "contextes": 256,
+      "parZone": {
+        "table_repas": 144,
+        "rangement_vaisselle": 45,
+        "banquette": 144,
+        "bar_desserte": 35,
+        "coin_cafe": 32,
+        "salon_apres_diner": 0
+      }
+    },
+    "CU": {
+      "source": 30,
+      "contextes": 256,
+      "parZone": {
+        "plan_preparation": 126,
+        "cuisson": 126,
+        "lavage": 126,
+        "froid": 126,
+        "ilot": 50,
+        "coin_repas_cuisine": 48,
+        "cellier_garde_manger": 32,
+        "coin_cafe_petit_dej": 0,
+        "kitchenette_studio": 126
+      }
+    },
+    "BU": {
+      "source": 23,
+      "contextes": 230,
+      "parZone": {
+        "poste_travail": 120,
+        "rangement_bureau": 40,
+        "visio_fond": 40,
+        "reunion_canape": 30,
+        "bureau_invite": 0,
+        "atelier_creatif": 0
+      }
+    },
+    "SDB": {
+      "source": 21,
+      "contextes": 210,
+      "parZone": {
+        "douche": 100,
+        "baignoire": 100,
+        "vasque": 60,
+        "wc_integre": 100,
+        "rangement_sdb": 50,
+        "coin_buanderie_sdb": 0,
+        "coiffeuse_sdb": 0
+      }
+    },
+    "EN": {
+      "source": 10,
+      "contextes": 100,
+      "parZone": {
+        "depose_cles": 100,
+        "chaussures": 100,
+        "assise_chaussage": 100,
+        "vestiaire": 100,
+        "miroir_sortie": 100,
+        "coin_animal_entree": 0,
+        "coin_poussette_velo": 0
+      }
+    },
+    "BA": {
+      "source": 10,
+      "contextes": 100,
+      "parZone": {
+        "repas_exterieur": 100,
+        "detente_lounge": 100,
+        "bain_de_soleil": 100,
+        "potager_vegetal": 100,
+        "rangement_ext": 0,
+        "bar_ext": 100
+      }
+    },
+    "AN": {
+      "source": 22,
+      "contextes": 220,
+      "parZone": {
+        "couloir_galerie": 60,
+        "couloir_bibliotheque": 60,
+        "couloir_rangement": 60,
+        "palier_lecture": 40,
+        "palier_rangement": 40,
+        "dressing_i": 60,
+        "dressing_l": 60,
+        "dressing_u": 60,
+        "ilot_dressing": 60,
+        "lavage_sechage": 60,
+        "pliage": 60,
+        "repassage": 60,
+        "tri_linge": 60
+      }
+    }
+  },
+  "cas": [
+    {
+      "id": "chambre",
+      "surface": 16,
+      "mobilier": 8,
+      "props": 7,
+      "activites": 1,
+      "zones": [
+        {
+          "id": "couchage",
+          "uid": "CH:CH-1.03",
+          "sources": [
+            "CH:couchage",
+            "CH:chevets"
+          ]
+        },
+        {
+          "id": "rangement",
+          "uid": "CH:CH-3.04",
+          "sources": [
+            "CH:rangement_vetements"
+          ]
+        }
+      ],
+      "graines": [
+        "CH-1.03",
+        "CH-3.04"
+      ],
+      "auditRegles": true,
+      "auditPlacement": true,
+      "auditProps": [],
+      "passage": 0.9,
+      "television": false,
+      "manquants": [],
+      "coutMobilier": 2753,
+      "coutProps": 0,
+      "modelesNouveaux": [],
+      "reglesMesurees": [],
+      "signatureMoments": [],
+      "statistiques": {
+        "candidats": 86,
+        "combinaisons": 1022,
+        "plansVerifies": 53,
+        "ordreComposition": [
+          "couchage",
+          "rangement"
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "surface": 10,
+      "mobilier": 4,
+      "props": 4,
+      "activites": 1,
+      "zones": [
+        {
+          "id": "salon",
+          "uid": "SL:1.1",
+          "sources": [
+            "SL:conversation",
+            "SL:ecran_media"
+          ]
+        }
+      ],
+      "graines": [
+        "1.1"
+      ],
+      "auditRegles": true,
+      "auditPlacement": true,
+      "auditProps": [],
+      "passage": 0.9,
+      "television": true,
+      "manquants": [],
+      "coutMobilier": 1829,
+      "coutProps": 0,
+      "modelesNouveaux": [],
+      "reglesMesurees": [
+        "SL:regle:longueur_table_basse",
+        "SL:regle:canape_table_basse",
+        "SL:regle:centre_de_l_ecran_au_sol"
+      ],
+      "signatureMoments": [],
+      "statistiques": {
+        "candidats": 4,
+        "combinaisons": 4,
+        "plansVerifies": 4,
+        "ordreComposition": [
+          "salon"
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "surface": 18,
+      "mobilier": 6,
+      "props": 12,
+      "activites": 1,
+      "zones": [
+        {
+          "id": "salon",
+          "uid": "SL:1.3",
+          "sources": [
+            "SL:conversation",
+            "SL:ecran_media"
+          ]
+        }
+      ],
+      "graines": [
+        "1.3"
+      ],
+      "auditRegles": true,
+      "auditPlacement": true,
+      "auditProps": [],
+      "passage": 0.9,
+      "television": true,
+      "manquants": [],
+      "coutMobilier": 2204,
+      "coutProps": 0,
+      "modelesNouveaux": [],
+      "reglesMesurees": [
+        "SL:regle:longueur_table_basse",
+        "SL:regle:canape_table_basse",
+        "SL:regle:espace_entre_deux_assises",
+        "SL:regle:centre_de_l_ecran_au_sol"
+      ],
+      "signatureMoments": [],
+      "statistiques": {
+        "candidats": 72,
+        "combinaisons": 72,
+        "plansVerifies": 42,
+        "ordreComposition": [
+          "salon"
+        ],
+        "reprisesEspaces": 2
+      }
+    },
+    {
+      "id": 30,
+      "surface": 30,
+      "mobilier": 17,
+      "props": 25,
+      "activites": 3,
+      "zones": [
+        {
+          "id": "salon",
+          "uid": "SL:1.3",
+          "sources": [
+            "SL:conversation",
+            "SL:ecran_media"
+          ]
+        },
+        {
+          "id": "repas",
+          "uid": "SAM:SAM-1.02",
+          "sources": [
+            "SAM:table_repas"
+          ]
+        },
+        {
+          "id": "lecture",
+          "uid": "SL:4.1",
+          "sources": [
+            "SL:lecture"
+          ]
+        },
+        {
+          "id": "rangement",
+          "uid": "SAM:SAM-2.01",
+          "sources": [
+            "SAM:rangement_vaisselle"
+          ]
+        }
+      ],
+      "graines": [
+        "1.3",
+        "SAM-1.02",
+        "SAM-2.01",
+        "4.1"
+      ],
+      "auditRegles": true,
+      "auditPlacement": true,
+      "auditProps": [],
+      "passage": 0.9,
+      "television": true,
+      "manquants": [],
+      "coutMobilier": 6449,
+      "coutProps": 0,
+      "modelesNouveaux": [],
+      "reglesMesurees": [
+        "SL:regle:longueur_table_basse",
+        "SL:regle:canape_table_basse",
+        "SL:regle:espace_entre_deux_assises",
+        "SL:regle:tapis_debord_de_chaque_cote_du_canape",
+        "SL:regle:tapis_mur",
+        "SAM:regle:suspension_au_dessus_du_plateau",
+        "SL:regle:centre_de_l_ecran_au_sol"
+      ],
+      "signatureMoments": [],
+      "statistiques": {
+        "candidats": 380,
+        "combinaisons": 11405,
+        "plansVerifies": 40,
+        "ordreComposition": [
+          "salon",
+          "repas",
+          "lecture",
+          "rangement"
+        ],
+        "reprisesEspaces": 2
+      }
+    },
+    {
+      "id": 89,
+      "surface": 89,
+      "mobilier": 22,
+      "props": 47,
+      "activites": 5,
+      "zones": [
+        {
+          "id": "salon",
+          "uid": "SL:1.5",
+          "sources": [
+            "SL:conversation",
+            "SL:ecran_media"
+          ]
+        },
+        {
+          "id": "travail",
+          "uid": "BU:BU-1.01",
+          "sources": [
+            "BU:poste_travail"
+          ]
+        },
+        {
+          "id": "repas",
+          "uid": "SAM:SAM-1.01",
+          "sources": [
+            "SAM:table_repas"
+          ]
+        },
+        {
+          "id": "cuisine",
+          "uid": "CU:CU-2.01",
+          "sources": [
+            "CU:ilot"
+          ]
+        },
+        {
+          "id": "bar",
+          "uid": "SL:3.1",
+          "sources": [
+            "SL:bar"
+          ]
+        },
+        {
+          "id": "rangement",
+          "uid": "SAM:SAM-2.01",
+          "sources": [
+            "SAM:rangement_vaisselle"
+          ]
+        }
+      ],
+      "graines": [
+        "1.5",
+        "CU-2.01",
+        "SAM-1.01",
+        "3.1",
+        "BU-1.01"
+      ],
+      "auditRegles": true,
+      "auditPlacement": true,
+      "auditProps": [],
+      "passage": 1.1,
+      "television": true,
+      "manquants": [],
+      "coutMobilier": 6954,
+      "coutProps": 0,
+      "modelesNouveaux": [
+        "enc-enfilade",
+        "enc-bol-citrons",
+        "enc-carafe"
+      ],
+      "reglesMesurees": [
+        "SL:regle:longueur_table_basse",
+        "SL:regle:canape_table_basse",
+        "SL:regle:espace_entre_deux_assises",
+        "SL:regle:tapis_debord_de_chaque_cote_du_canape",
+        "SL:regle:tapis_mur",
+        "BU:regle:plan_de_travail_fixe",
+        "SAM:regle:suspension_au_dessus_du_plateau",
+        "CU:regle:hauteur_du_plan_de_travail",
+        "SL:regle:plan_de_bar_ilot",
+        "SL:regle:assise_de_tabouret",
+        "SL:regle:centre_de_l_ecran_au_sol",
+        "CU:regle:suspension_au_dessus_de_l_ilot",
+        "SL:regle:largeur_de_plan_par_personne_au_bar",
+        "SL:regle:espace_entre_tabourets"
+      ],
+      "signatureMoments": [
+        {
+          "uid": "CU:signature:504",
+          "hote": "stage-cuisine",
+          "realisation": "plateau-pierre-angles-arrondis"
+        },
+        {
+          "uid": "SL:signature:vegetal",
+          "hote": "stage-mur-bar",
+          "realisation": "mur-vegetal-stabilise"
+        }
+      ],
+      "statistiques": {
+        "candidats": 306,
+        "combinaisons": 9776,
+        "plansVerifies": 48,
+        "ordreComposition": [
+          "salon",
+          "travail",
+          "repas",
+          "cuisine",
+          "bar",
+          "rangement"
+        ],
+        "reductions": 1,
+        "reprisesEspaces": 2
+      }
+    }
+  ]
+}

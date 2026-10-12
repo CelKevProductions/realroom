@@ -34,10 +34,11 @@ export const POST = route(async (request, { params }) => {
     if (dataUri) inspirations.push({ dataUri });
   }
   const { proposition } = await proposerAmenagement({
-    piece: { ...versClaude(p.modele, prep.base, PRODUITS), notes_client: p.notes || '' }, fonction: p.fonction, mode: prep.mode, envies: prep.envies, espaces: prep.espaces, placesRepas: prep.placesRepas, compositionSurface: prep.compositionSurface, compositionDetails: prep.compositionDetails, budget: prep.budget,
+    piece: { ...versClaude(p.modele, prep.base, PRODUITS), notes_client: p.notes || '' }, fonction: p.fonction, mode: prep.mode, envies: prep.envies, espaces: prep.espaces, placesRepas: prep.placesRepas, compositionSurface: prep.compositionSurface, compositionDetails: prep.compositionDetails, staging:prep.staging, encyclopedie:prep.encyclopedie, budget: prep.budget,
     garder: prep.garder, aRemplacer: prep.aRemplacer, candidats: cands, inspirations, langue: b.langue === 'en' ? 'en' : 'fr'
   });
-  const { agencement, proposition: prop } = appliquerProposition({ modele: p.modele, fonction: p.fonction, prep, proposition, produits: PRODUITS, candidats: cands });
+  let resultat;try{resultat = appliquerProposition({ modele: p.modele, fonction: p.fonction, prep, proposition, produits: PRODUITS, candidats: cands });}catch(e){if(e.code==='REGLES_BLOQUANTES')throw new ErreurHTTP(422,'regles-bloquantes',e.message);throw e;}
+  const {agencement,proposition:prop}=resultat;
   const n = await majPiece(u.id, id, { agencement, proposition: prop });
   return json({ piece: publique(n) });
 });

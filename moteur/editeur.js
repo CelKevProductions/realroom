@@ -18,6 +18,8 @@ import { contourDe, segmentsDe, aireSignee, contientPoint, contientBoite } from 
 import {vuePourAngle,validerVue,vuePourPosition} from '../lib/cadrages.js';
 import { deplacerVuePhoto,creerNavigationPhoto } from '../lib/navigation-photo.js';
 import { produitDe, estMural, estSuspendu, estPlat, estAdosse, estPosable, porteurDe, demiEmpreinte, placerAuMur, normaliserAngle } from '../lib/agencement.js';
+import { construireProp } from './staging.js';
+import { posesStaging } from '../lib/staging.js';
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -200,8 +202,9 @@ export function creerEditeur(canvas, opts = {}) {
   const camera = new THREE.PerspectiveCamera(45, 1, .05, 200);
   const racine = groupe('piece');       // murs, sol, plafond
   const meublesG = groupe('meubles');   // un porteur par meuble
+  const stagingG = groupe('mise-en-scene'), props3D=new Map();
   const aides = groupe('aides');        // contour de sélection
-  scene.add(racine, meublesG, aides);
+  scene.add(racine, meublesG, stagingG, aides);
 
   const E = {
     modele: null, items: new Map(), murs: [], plafond: null, selection: null, mode: 'dessus',
@@ -439,6 +442,7 @@ export function creerEditeur(canvas, opts = {}) {
     }
     for (const id of [...E.items.keys()]) if (!vus.has(id)) retirer(id);
     for (const e of E.items.values()) if (posable(e)) placerPorteur(e);
+    majStaging(E.staging);
     if (E.cadre && !E.items.has(E.cadre)) ensemble();
     if (E.amb.k > 0 || E.amb.cible > 0) { majFeux(); appliquerAmbiance(E.amb.k); }
     if (E.selection && !E.items.has(E.selection)) selectionner(null);
@@ -446,6 +450,22 @@ export function creerEditeur(canvas, opts = {}) {
     E.ombres = true;
     demander();
     prechauffer();
+  }
+
+  function majStaging(staging) {
+    E.staging=staging;
+    const poses=posesStaging([...E.items.values()].map(e=>e.item),staging,catalogue),vus=new Set();
+    for(const it of poses) {
+      vus.add(it.id);const cle=JSON.stringify([it.prop,it.p.dim,it.p.cols]);let e=props3D.get(it.id);
+      if(e?.cle!==cle) {
+        if(e){stagingG.remove(e.g);viderGroupe(e.g);}
+        const g=new THREE.Group();g.add(construireProp(it.p));stagingG.add(g);e={g,cle};props3D.set(it.id,e);
+      }
+      e.item=it;e.g.position.set(it.x,it.baseY||0,it.z);e.g.rotation.y=it.rot||0;
+      // Les accessoires ne sont ni sélectionnables ni des références achetables.
+    }
+    for(const [id,e]of props3D)if(!vus.has(id)){stagingG.remove(e.g);viderGroupe(e.g);props3D.delete(id);}
+    E.ombres=true;demander();
   }
 
   /* ---------- sélection ---------- */
@@ -638,6 +658,9 @@ export function creerEditeur(canvas, opts = {}) {
       sources.push({ c, i: e.p.fam === 'applique' ? 1.6 : e.p.fam === 'lampe' ? 2 : 4.5 });
       if (sources.length >= 6) break;
     }
+    for(const e of props3D.values())if(LUMINAIRES.has(e.item.p.fam)&&sources.length<6) {
+      sources.push({c:new THREE.Vector3(e.item.x,(e.item.baseY||0)+e.item.p.dim[2]-.08,e.item.z),i:3.5});
+    }
     feux.forEach((f, n) => { const s = sources[n]; f.i = s ? s.i : 0; if (s) f.l.position.copy(s.c); });
   }
   const cAmb = new THREE.Color();
@@ -697,6 +720,10 @@ export function creerEditeur(canvas, opts = {}) {
         w.me.material.depthWrite = true;
         change = true;
       }
+    }
+    for(const e of props3D.values())if(e.item.kind==='wall_item') {
+      const pan=segmentsDe(E.modele).find(p=>p.id===e.item.mur);
+      e.g.visible=!pan||force||dedans||(cam.position.x-pan.centre[0])*pan.n[0]+(cam.position.z-pan.centre[1])*pan.n[1]>=0;
     }
     if (change) E.ombres = true;
     return change;
@@ -906,12 +933,13 @@ export function creerEditeur(canvas, opts = {}) {
   }
 
   /* ---------- API ---------- */
-  function charger(modele, items = []) {
+  function charger(modele, items = [], staging = null) {
     E.modele = JSON.parse(JSON.stringify(modele));
     for (const id of [...E.items.keys()]) retirer(id);
     construirePiece(E.modele);
     E.tween = null; E.auto = null; E.cadre = null;
     poserOrbite(orbiteDefaut());
+    E.staging=staging;
     majItems(items);
     redimensionner();
     vue(E.mode, false);
@@ -919,6 +947,7 @@ export function creerEditeur(canvas, opts = {}) {
   return {
     charger,
     majItems,
+    majStaging,
     majVuePhoto(v) { if (!E.modele) return; E.modele.vue = { ...(E.modele.vue || {}), ...v }; if (E.mode === 'photo') vue('photo', false); },
     selectionner: id => selectionner(id, false),
     vue,
@@ -962,7 +991,7 @@ export function creerEditeur(canvas, opts = {}) {
       if (E.amb.k > 0) appliquerAmbiance(0);
       if (E.raf) cancelAnimationFrame(E.raf);
       if (obs) obs.disconnect();
-      viderGroupe(racine); viderGroupe(meublesG); viderGroupe(aides);
+      viderGroupe(racine); viderGroupe(meublesG); viderGroupe(stagingG); viderGroupe(aides);
       renderer.dispose();
     },
     adossable: fam => estAdosse(fam)

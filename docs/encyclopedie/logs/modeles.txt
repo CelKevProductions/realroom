@@ -1,0 +1,8 @@
+{"id":"enc-console-dos","dim":[1.2,0.3,0.7],"styles":12,"angles":3,"valide":true}
+{"id":"enc-console-tv-suspendue","dim":[1.2,0.3,0.25],"styles":12,"angles":3,"valide":true}
+{"id":"enc-bar-cart","dim":[0.6,0.4,0.8],"styles":12,"angles":3,"valide":true}
+{"id":"enc-armoire-bar","dim":[0.9,0.45,1.4],"styles":12,"angles":3,"valide":true}
+{"id":"enc-enfilade","dim":[1.6,0.4,0.75],"styles":12,"angles":3,"valide":true}
+{"id":"enc-bibliotheque-ouverte","dim":[0.8,0.3,1.8],"styles":12,"angles":3,"valide":true}
+{"id":"enc-carafe","dim":[0.13,0.13,0.26],"styles":12,"angles":3,"valide":true}
+{"id":"enc-bol-citrons","dim":[0.24,0.24,0.12],"styles":12,"angles":3,"valide":true}

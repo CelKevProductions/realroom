@@ -1,0 +1,88 @@
+{
+  "endpoint_id": "openrouter/router/vision",
+  "input": {
+    "model": "google/gemini-3.8-flash",
+    "temperature": 0.1,
+    "max_tokens": 6000,
+    "reasoning": true
+  },
+  "prompt": "Deux images sont fournies, A puis B. Chaque image contient deux vues opposées de la même pièce synthétique de 89 m², avec le même type de maquette et les mêmes caméras. Juge seulement les images, sans inventer de texture, objet ou équipement. Quelle version paraît la plus habitée, chaleureuse et digne d'un magazine ? Ne récompense pas automatiquement la quantité : considère les surfaces vivantes, les végétaux, le mur travaillé et la cohérence des activités, avec la surcharge éventuelle. Réponds seulement en JSON concis (pas de raisonnement détaillé) : {\"prefere\":\"A|B|egal\",\"raison\":\"...\",\"tv_visible_A\":true,\"tv_visible_B\":true,\"reserves\":[\"...\"]}. Les chemins et mesures ne sont pas certifiables depuis les images.",
+  "comparaisons": [
+    {
+      "id": "89-direct-r1",
+      "images": [
+        "89-avant-vision.jpg",
+        "89-iteration-1-vision.jpg"
+      ],
+      "apres": "B",
+      "empreintes": [
+        {
+          "nom": "89-avant-vision.jpg",
+          "sha256": "f8d5b9e6a7b0d97cf59fc5f7b0077659cd165a6e450fc15dd927cf64bddad7ea"
+        },
+        {
+          "nom": "89-iteration-1-vision.jpg",
+          "sha256": "833366e598fc69dad3fb59944fafacb45f3ccb2bc186188e1fc853d4b80c1be7"
+        }
+      ],
+      "critique": {
+        "prefere": "A",
+        "raison": "L'agencement de la version A intègre un buffet et une console qui habillent mieux les pans de murs et équilibrent les espaces sans les surcharger.",
+        "tv_visible_A": true,
+        "tv_visible_B": true,
+        "reserves": [
+          "Circulations autour des assises et de la table à valider",
+          "Rendu minimaliste laissant de larges zones de sol vides"
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 2361,
+        "completion_tokens": 697,
+        "total_tokens": 3058,
+        "cost": 0.0043845,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      }
+    },
+    {
+      "id": "89-inverse-r1",
+      "images": [
+        "89-iteration-1-vision.jpg",
+        "89-avant-vision.jpg"
+      ],
+      "apres": "A",
+      "empreintes": [
+        {
+          "nom": "89-iteration-1-vision.jpg",
+          "sha256": "833366e598fc69dad3fb59944fafacb45f3ccb2bc186188e1fc853d4b80c1be7"
+        },
+        {
+          "nom": "89-avant-vision.jpg",
+          "sha256": "f8d5b9e6a7b0d97cf59fc5f7b0077659cd165a6e450fc15dd927cf64bddad7ea"
+        }
+      ],
+      "critique": {
+        "prefere": "B",
+        "raison": "L'ajout de l'enfilade habille le pan de mur central et apporte une meilleure impression de complétude sans encombrer l'espace.",
+        "tv_visible_A": true,
+        "tv_visible_B": true,
+        "reserves": [
+          "Circulations et cotes exactes non mesurables visuellement",
+          "Traitement global très épuré et monochrome"
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 2361,
+        "completion_tokens": 583,
+        "total_tokens": 2944,
+        "cost": 0.003957,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      }
+    }
+  ]
+}

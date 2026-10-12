@@ -1,0 +1,1 @@
+{"appelsVision":8,"coutVisionUSD":0.0338985,"classementFinal":"apres-prefere-dans-les-deux-ordres","iterationsPrecedentes":3,"empreintes":"toutes-verifiees","appelsExternesDeVerification":0}
