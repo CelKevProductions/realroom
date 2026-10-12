@@ -1,6 +1,9 @@
 // Configuration Next.js de RealRoom
+// Previews qui testent l'encyclopédie : la mission 5 et l'aménagement vivant (variété,
+// relations entre coins, remplissage). La production reste sans encyclopédie par défaut.
+const BRANCHES_ENCYCLOPEDIE = ['codex/realroom-mission5-encyclopedie-2026-10-12', 'amenagement-vivant'];
 const previewMission5 = process.env.VERCEL_ENV === 'preview'
-  && process.env.VERCEL_GIT_COMMIT_REF === 'codex/realroom-mission5-encyclopedie-2026-10-12'
+  && BRANCHES_ENCYCLOPEDIE.includes(process.env.VERCEL_GIT_COMMIT_REF)
   && process.env.REALROOM_ENCYCLOPEDIE !== '0'
   && process.env.NEXT_PUBLIC_REALROOM_ENCYCLOPEDIE !== '0';
 const nextConfig = {

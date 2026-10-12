@@ -54,10 +54,10 @@ test('navigateur : sans choix local le drapeau du build active aussi l’encyclo
   for(const [key,value] of [['REALROOM_ENCYCLOPEDIE',avant.serveur],['NEXT_PUBLIC_REALROOM_ENCYCLOPEDIE',avant.client]]){if(value===undefined)delete process.env[key];else process.env[key]=value;}
  }
 });
-test('configuration : activation limitée à la preview de la branche mission 5, avec arrêt prioritaire',async()=>{
+test('configuration : activation limitée aux previews des branches mission 5 et aménagement vivant, avec arrêt prioritaire',async()=>{
  const keys=['VERCEL_ENV','VERCEL_GIT_COMMIT_REF','REALROOM_ENCYCLOPEDIE','NEXT_PUBLIC_REALROOM_ENCYCLOPEDIE'],avant=keys.map(k=>process.env[k]),branche='codex/realroom-mission5-encyclopedie-2026-10-12';
  try{
-  const cas=[['preview',branche,undefined,undefined,true],['production',branche,undefined,undefined,false],['preview','main',undefined,undefined,false],['development',branche,undefined,undefined,false],['preview',branche,'0',undefined,false],['preview',branche,undefined,'0',false]];
+  const cas=[['preview',branche,undefined,undefined,true],['production',branche,undefined,undefined,false],['preview','main',undefined,undefined,false],['development',branche,undefined,undefined,false],['preview',branche,'0',undefined,false],['preview',branche,undefined,'0',false],['preview','amenagement-vivant',undefined,undefined,true],['production','amenagement-vivant',undefined,undefined,false],['preview','amenagement-vivant','0',undefined,false]];
   for(let i=0;i<cas.length;i++){const valeurs=cas[i];for(let k=0;k<keys.length;k++){if(valeurs[k]===undefined)delete process.env[keys[k]];else process.env[keys[k]]=valeurs[k];}const {default:config}=await import(`../../next.config.mjs?mission5-test=${i}`);assert.equal(config.env?.NEXT_PUBLIC_REALROOM_ENCYCLOPEDIE==='1',valeurs[4]);assert.equal(config.env?.REALROOM_ENCYCLOPEDIE==='1',valeurs[4]);}
  }finally{for(let i=0;i<keys.length;i++){if(avant[i]===undefined)delete process.env[keys[i]];else process.env[keys[i]]=avant[i];}}
 });

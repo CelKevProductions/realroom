@@ -1,5 +1,6 @@
 import { api } from '@/components/api.js';
 import { demandeDemoIA } from '@/lib/demo-ia.js';
+import { tirerVariation } from '@/lib/variation.js';
 import { reduireImage } from '@/components/piece/image.js';
 
 const dataUri = blob => new Promise((ok, ko) => {
@@ -34,5 +35,6 @@ export async function amenagerParIA(piece, choix, langue) {
     }));
   } catch (_) { return { ok: false, erreur: 'inspiration-demo', statut: 400 }; }
   // La fonction Vercel dispose de 300 s ; le navigateur attend au plus 15 s de plus.
-  return appelBorne({ method: 'POST', corps: demandeDemoIA(piece, choix, langue, inspirations) }, 315000);
+  // Chaque nouvel aménagement tire sa variation : deux essais ne donnent pas toujours la même disposition.
+  return appelBorne({ method: 'POST', corps: demandeDemoIA(piece, { ...choix, variation: choix.variation || tirerVariation() }, langue, inspirations) }, 315000);
 }

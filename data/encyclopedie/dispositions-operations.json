@@ -142,8 +142,8 @@
     }
   },
   {
-    "interpreteur": null,
-    "statutExecution": "interpreteur-ou-modele-manquant",
+    "interpreteur": "conversation-laterale",
+    "statutExecution": "actif",
     "uid": "SL:1.6",
     "id": "1.6",
     "piece": "SL",
@@ -195,8 +195,8 @@
     }
   },
   {
-    "interpreteur": null,
-    "statutExecution": "interpreteur-ou-modele-manquant",
+    "interpreteur": "canape-angle-coin",
+    "statutExecution": "actif",
     "uid": "SL:1.8",
     "id": "1.8",
     "piece": "SL",
@@ -627,8 +627,8 @@
     }
   },
   {
-    "interpreteur": null,
-    "statutExecution": "interpreteur-ou-modele-manquant",
+    "interpreteur": "canape-dos-fenetre",
+    "statutExecution": "actif",
     "uid": "SL:1.24",
     "id": "1.24",
     "piece": "SL",
@@ -2012,8 +2012,8 @@
     }
   },
   {
-    "interpreteur": null,
-    "statutExecution": "interpreteur-ou-modele-manquant",
+    "interpreteur": "lecture-face-fenetre",
+    "statutExecution": "actif",
     "uid": "SL:4.3",
     "id": "4.3",
     "piece": "SL",
@@ -2034,8 +2034,8 @@
     }
   },
   {
-    "interpreteur": null,
-    "statutExecution": "interpreteur-ou-modele-manquant",
+    "interpreteur": "lecture-long-fenetre",
+    "statutExecution": "actif",
     "uid": "SL:4.4",
     "id": "4.4",
     "piece": "SL",
@@ -6006,8 +6006,8 @@
     }
   },
   {
-    "interpreteur": null,
-    "statutExecution": "interpreteur-ou-modele-manquant",
+    "interpreteur": "lit-en-angle",
+    "statutExecution": "actif",
     "uid": "CH:CH-1.05",
     "id": "CH-1.05",
     "piece": "CH",
