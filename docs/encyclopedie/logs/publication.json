@@ -1,0 +1,34 @@
+{
+  "depot": "CelKevProductions/realroom",
+  "branche": "codex/realroom-mission5-encyclopedie-2026-10-12",
+  "pr": "https://github.com/CelKevProductions/realroom/pull/3",
+  "publication": {
+    "commit": "e1bde04f626c8500a9c7cb50e73f433f60c83f0b",
+    "tree": "2e973f28dee5f8c04b0842a0d4f5ddfa15a16ac9",
+    "fichiers": 148,
+    "exclusion": "Nouvelle version de DECISIONS.md conservée localement ; version antérieure publique inchangée. Instantanés complets de pièces exclus."
+  },
+  "deploiement": {
+    "id": "dpl_FppuoHsqiDPXsysfUjWchqrvkquV",
+    "cible": "preview",
+    "framework": "nextjs",
+    "statut": "READY",
+    "source": "git",
+    "commit": "e1bde04f626c8500a9c7cb50e73f433f60c83f0b",
+    "url": "https://realroom-mpwrpd4fr-kpw4.vercel.app",
+    "alias": "https://realroom-git-codex-realroom-mission5-encyclopedie-2-d55d2e-kpw4.vercel.app",
+    "dureeBuildMs": 38517
+  },
+  "activation": {
+    "build": "Les deux drapeaux = 1 uniquement sur la branche dédiée et VERCEL_ENV=preview ; variables à 0 prioritaires.",
+    "navigateur": "Drapeau de build utilisé sans choix local ; rr-encyclopedie=0 désactive."
+  },
+  "controles": {
+    "unitaires": 230,
+    "apiLocaleIsolee": 19,
+    "dimensions": 96,
+    "buildLocalPreview": "réussi",
+    "arbrePublic": "identique au code testé, sauf DECISIONS.md conservé dans sa version publique précédente",
+    "pageDeployee": "Non vérifiée : lecture authentifiée refusée (403 au stade read_protection_bypass). La protection reste active."
+  }
+}
