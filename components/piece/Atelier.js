@@ -18,6 +18,7 @@ import { apparaitre, deplier, animer } from '@/components/Mouvement.js';
 import { prix, remplir } from '@/lib/i18n.js';
 import { estMural, estSuspendu, estAdosse, placerAuMur, demiEmpreinte, resoudre, ANGLES } from '@/lib/agencement.js';
 import { deplacerAvecAttaches } from '@/lib/finition.js';
+import { referencesSpatialesActives } from '@/lib/ameublement-reference.js';
 
 const Icone = ({ d }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={d} /></svg>;
 const I = {
@@ -213,7 +214,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     setOnglet('meubles');
     try {
       await vider();
-      const r = await api(`/api/pieces/${piece.id}/amenager`, { method: 'POST', corps: demande });
+      const r = await api(`/api/pieces/${piece.id}/amenager`, { method: 'POST', corps: {...demande,referencesSpatiales:referencesSpatialesActives(demande.referencesSpatiales)} });
       if (!r.ok) throw r;
       setPiece(r.piece);
       setSelection(null);

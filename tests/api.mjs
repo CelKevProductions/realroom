@@ -131,7 +131,8 @@ essai('la démo anonyme appelle le moteur IA, conserve les choix et limite les a
   assert.equal((await envoyer('192.0.2.1', corps, { origin: 'https://autre.example' })).statut, 403);
   assert.equal((await envoyer('192.0.2.1', { ...corps, choix: { ...corps.choix, budget: -1 } })).statut, 400);
   for (let i = 0; i < 2; i++) {
-    const r = await envoyer();
+    const r = await envoyer('192.0.2.1', i===1 ? {...corps,choix:{...corps.choix,referencesSpatiales:false}} : corps);
+    if(i===1)assert.equal(r.proposition?.referencesSpatiales?.actif,false,'le repli traverse la démo et son serveur');
     assert.equal(r.statut, 200, JSON.stringify(r)); assert.equal(r.proposition.moteur.type, 'ia');
     assert.equal(r.proposition.concept, 'Proposition IA du fournisseur de test.');
     assert.equal(r.proposition.budget, 2000); assert.equal(r.proposition.envies, corps.choix.envies);

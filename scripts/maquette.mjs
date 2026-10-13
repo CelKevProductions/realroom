@@ -30,7 +30,7 @@ function fixture(p){
   }
   return g;
 }
-export function sceneDe(data,camera){
+export function sceneDe(data,camera,constructeurControle){
   const scene=new THREE.Scene(),{modele,catalogue,items}=data;
   const L=modele.dims.largeur,P=modele.dims.profondeur;
   const mursCoupes=new Set();
@@ -61,7 +61,7 @@ export function sceneDe(data,camera){
   const es=items.map(it=>({it,p:it.sku?catalogue[it.sku]:it.p}));
   for(const e of es){
     if(estMural(e.p.fam)&&mursCoupes.has(e.it.mur||e.it.attach_to?.id))continue;
-    const {it,p}=e,g=fixture(p),racine=new THREE.Group(),v=intervalleHauteur(it,p,modele,es);
+    const {it,p}=e,g=constructeurControle?.(p)||fixture(p),racine=new THREE.Group(),v=intervalleHauteur(it,p,modele,es);
     racine.position.set(it.x,estMural(p.fam)?it.y:v.bas,it.z);racine.rotation.y=it.rot||0;racine.add(g);scene.add(racine);
     g.traverse(o=>{if(o.isMesh){const m=o.material;o.material=mat(m.color);}});
     if(estSuspendu(p.fam)){

@@ -9,6 +9,7 @@ import { dimsValides } from '@/lib/piece.js';
 import { moteurGuideActif } from '@/lib/moteur-guide.js';
 import { finitionActive } from '@/lib/finition.js';
 import { compositionSurfaceActive } from '@/lib/composition-surface.js';
+import { referencesSpatialesActives } from '@/lib/ameublement-reference.js';
 import { amenagerParIA } from './ia.js';
 import { verifier } from '@/lib/agencement.js';
 import { corrigerPiece, mesuresConfirmees } from '@/lib/geometrie.js';
@@ -200,7 +201,7 @@ async function analyser(p, langue) {
 async function amenager(p, b, langue) {
   if (!p.modele) return non('pas-de-modele', 409);
   const revision = p.maj_le;
-  const r = await amenagerParIA(p, { ...b, moteurGuide: moteurGuideActif(b.moteurGuide), compositionDetails: finitionActive(b.compositionDetails), compositionSurface: compositionSurfaceActive(b.compositionSurface) }, langue);
+  const r = await amenagerParIA(p, { ...b, moteurGuide: moteurGuideActif(b.moteurGuide), compositionDetails: finitionActive(b.compositionDetails), compositionSurface: compositionSurfaceActive(b.compositionSurface),referencesSpatiales:referencesSpatialesActives(b.referencesSpatiales) }, langue);
   if (!r.ok) return r;
   if (pieceDe(p.id) !== p || p.maj_le !== revision) return non('amenagement-conflit', 409);
   ecrire(() => { p.agencement = r.agencement; p.proposition = r.proposition; toucher(p); });
