@@ -396,6 +396,36 @@ essai('séjour en L : brief vide, sans plafond, huit places et quatre activités
   assert.deepEqual(relu.piece.modele, releve.piece.modele);
 });
 
+essai('fonctions essentielles : lit, canapé et TV préservés puis rechargés sans modifier la pièce', async () => {
+  const api=client(BASE,'192.0.2.45');await api.connexion('fonctions@essentiels.test');
+  const pr=await api('/api/projets',{method:'POST',corps:{nom:'Fonctions essentielles'}});
+  for(const [fonction,L,P,budget,envies] of [
+    ['chambre',4,4,0,'Chambre épurée, télévision et rangement'],
+    ['salon',6,5,1200,'Salon épuré avec télévision et repas']
+  ]) {
+    const pc=await api(`/api/projets/${pr.projet.id}/pieces`,{method:'POST',corps:{nom:fonction,fonction}}),id=pc.piece.id;
+    const scan=scanApple();scan.objects=[];
+    scan.walls.forEach((w,i)=>{w.size[0]=i<2?L:P;if(i<2)w.transform[14]=(i===0?1:-1)*P/2;else w.transform[12]=(i===2?-1:1)*L/2;});
+    scan.openings[0].transform[12]=.2;scan.openings[0].transform[14]=P/2;
+    scan.openings[1].size[0]=1.1;scan.openings[1].transform[12]=0;scan.openings[1].transform[14]=-P/2;
+    const releve=await api(`/api/pieces/${id}/scan`,{method:'POST',corps:{scan}});assert.equal(releve.statut,200);
+    const r=await api(`/api/pieces/${id}/amenager`,{method:'POST',corps:{mode:'tout',envies,budget,espaces:fonction==='salon'?['repas']:['rangement'],placesRepas:4,encyclopedie:true,referencesSpatiales:true}});
+    assert.equal(r.statut,200,JSON.stringify(r));
+    const p=r.piece.proposition,items=r.piece.agencement.filter(it=>it.garde!==false);
+    assert.ok(items.some(it=>it.usageProgramme===(fonction==='chambre'?'lit':'canape')),fonction);
+    assert.ok([...items,...posesStaging(items,p.staging,PRODUITS)].some(it=>it.usageProgramme==='television'),fonction);
+    if(fonction==='salon') {
+      assert.equal(items.filter(it=>it.usageProgramme==='chaise-repas').length,4);
+      assert.ok(items.reduce((s,it)=>s+(PRODUITS[it.sku]?.prix||0),0)<=budget);
+    }
+    assert.equal(p.confort.score.contraintes,0);assert.equal(p.confort.acces,true);assert.equal(p.confort.circulation,true);
+    assert.equal(p.planZones.audit.valide,p.programme.complet);
+    const relu=await api(`/api/pieces/${id}`);
+    assert.deepEqual(relu.piece.modele,releve.piece.modele);assert.deepEqual(relu.piece.agencement,r.piece.agencement);
+    assert.equal(relu.piece.proposition.programme.complet,p.programme.complet);
+  }
+});
+
 essai('mission 4 : staging du séjour 89 m² sauvegardé, attaches mobiles, hors budget et repli', async () => {
   const api=client();await api.connexion('mission4@staging.test');
   const pr=await api('/api/projets',{method:'POST',corps:{nom:'Staging synthétique'}});

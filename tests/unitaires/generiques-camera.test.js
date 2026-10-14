@@ -64,13 +64,16 @@ test('les candidats et l’inventaire complètent les vrais manques de repas et 
   const chambre=programmeComposition({modele,fonction:'chambre'}),r2=composerProduits(chambre,{meubles:[]},PRODUITS,null);
   assert.ok(r2.meubles.some(m=>m.programme.usage==='armoire'&&PRODUITS[m.produit].generique));
 });
-test('le salon reste complet avec les chaises et tables génériques, sous le budget réel',()=>{
+test('les ensembles salon et repas restent présents sous le budget ; la suspension absente est signalée',()=>{
   const produits={...OBJETS_GENERIQUES,canape:catalogueZones.canape};
   assert.ok(produits.canape);
   const modele=salonReference(),r=appliquerProposition({modele,produits,fonction:'salon',prep:preparerAmenagement([],{envies:'Salon avec coin repas',budget:3000}),proposition:{meubles:[]}});
   assert.equal(r.agencement.filter(i=>i.usageProgramme==='chaise-repas').length,4);
   assert.ok(r.agencement.some(i=>i.usageProgramme==='table-basse'));
-  assert.equal(r.proposition.planZones.audit.valide,true);
+  assert.equal(r.proposition.planZones.audit.geometrieValide,true);
+  assert.ok(r.proposition.programme.manquants.some(s=>s.usage==='suspension'&&s.obligatoire));
+  assert.equal(r.proposition.planZones.audit.valide,false);
+  assert.equal(r.proposition.planZones.statut,'a-completer');
   const total=r.agencement.filter(i=>i.garde!==false).reduce((s,i)=>s+produits[i.sku].prix,0);
   assert.ok(total<=3000);assert.ok(total<=r.proposition.selectionBudget.cout,'les retraits de densité peuvent réduire le coût de la sélection initiale');
 });

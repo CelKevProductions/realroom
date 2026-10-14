@@ -25,7 +25,7 @@ export default function PlanVie({ proposition, langue = 'fr' }) {
         <summary>{manquants.length ? en ? 'Areas to complete' : 'Ensembles à compléter' : detailsManquants.length ? en ? 'Finishing details' : 'Détails de la pièce' : en ? 'Circulation to check' : 'Circulation à vérifier'}</summary>
         {manquants.length > 0 && <p>{en ? 'Adjust your area choices, seat count or budget when rearranging.' : 'Au prochain réaménagement, ajuste les espaces choisis, le nombre de places ou le budget.'}</p>}
         {detailsManquants.length > 0 && <p>{en ? 'Finishing pieces left out due to budget, mounting height or usable wall space: ' : 'Détails écartés selon le budget, la hauteur de pose ou les murs disponibles : '}{detailsManquants.map(u => intituleUsage(u, langue)).join(', ')}.</p>}
-        {plan?.statut !== 'compose' && <p>{en ? 'Check the access paths in the editable plan before confirming.' : 'Vérifiez les accès dans le plan éditable avant de valider.'}</p>}
+        {plan?.statut !== 'compose' && plan?.statut !== 'a-completer' && <p>{en ? 'Check the access paths in the editable plan before confirming.' : 'Vérifiez les accès dans le plan éditable avant de valider.'}</p>}
       </details>}
     </div>
   );

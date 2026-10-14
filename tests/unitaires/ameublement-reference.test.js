@@ -51,5 +51,9 @@ test('les observations statistiques ne changent pas les contraintes bloquantes',
 test('pipeline : les repères préservent le repas à quatre places et les deux ensembles',()=>{
  const modele=salonReference(),avant=structuredClone(modele),prep=preparerAmenagement([],{envies:'Salon avec un coin repas',referencesSpatiales:true,staging:false});
  const r=appliquerProposition({modele,fonction:'salon',prep,produits:catalogueZones,proposition:{meubles:[]}});
- assert.deepEqual(modele,avant);assert.equal(r.agencement.filter(it=>it.usageProgramme==='chaise-repas').length,4);assert.ok(r.proposition.planZones.zones.some(z=>z.type==='repas'));assert.equal(r.proposition.planZones.audit.valide,true);
+ assert.deepEqual(modele,avant);assert.equal(r.agencement.filter(it=>it.usageProgramme==='chaise-repas').length,4);assert.ok(r.proposition.planZones.zones.some(z=>z.type==='repas'));
+ assert.equal(r.proposition.planZones.audit.geometrieValide,true);
+ // Ce catalogue de géométrie ne contient aucune TV, et le staging est désactivé.
+ assert.ok(r.proposition.programme.manquants.some(s=>s.usage==='television'&&s.obligatoire));
+ assert.equal(r.proposition.planZones.audit.valide,false);assert.equal(r.proposition.planZones.statut,'a-completer');
 });
