@@ -133,6 +133,7 @@ export async function repondre(url, { method = 'GET', corps, formulaire } = {}) 
     return non('introuvable', 404);
   } catch (e) {
     if (e && e.statut) return non(e.code, e.statut);
+    if (['scan-forme','scan-coins','scan-dimensions','scan-repere'].includes(e?.message)) return non(e.message,400);
     console.error('démo', e);
     return non('serveur', 500);
   }

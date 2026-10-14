@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Essais de l'API sur un serveur local (services simulés) : les cas limites que le parcours
 // Playwright ne couvre pas. Après `npm run build` : node tests/api.mjs
+// Pour un incident précis : ESSAI_API='plan en miroir' node tests/api.mjs
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -507,6 +508,36 @@ essai('hauteurs et attaches : TV et tableau gardent leur pose après sauvegarde 
   assert.equal((await api(`/api/pieces/${id}`,{method:'DELETE'})).statut,200);
 });
 
+essai('plan en miroir : contour, ouvertures et mobilier sauvegardés ensemble, symétrie invalide refusée', async () => {
+  const api=client();await api.connexion('plan@orientation.test');
+  const pr=await api('/api/projets',{method:'POST',corps:{nom:'Orientation'}});
+  const pc=await api(`/api/projets/${pr.projet.id}/pieces`,{method:'POST',corps:{nom:'Pièce en L',fonction:'salon'}}),id=pc.piece.id;
+  const scan={version:'realroom-scan-v1',source:'plan-dxf',unit:'m',floorCorners:[[0,0,0],[6,0,0],[6,0,2],[2,0,2],[2,0,5],[0,0,5]],ceilingHeight:2.6,
+    openings:[{type:'porte',a:[.5,0],b:[1.4,0]},{type:'fenetre',a:[2,3],b:[2,4.2]}]};
+  assert.equal((await api(`/api/pieces/${id}/scan`,{method:'POST',corps:{scan}})).statut,200);
+  const items=[{id:'existant',origine:'existant',x:-2,z:1,rot:.4,p:{fam:'meuble',nom:'Rangement conservé',dim:[.7,.4,.8]}}];
+  assert.equal((await api(`/api/pieces/${id}`,{method:'PATCH',corps:{agencement:items}})).statut,200);
+  for (const axe of ['z','x']) {
+    const avant=(await api(`/api/pieces/${id}`)).piece;
+    const r=await api(`/api/pieces/${id}`,{method:'PATCH',corps:{geometrie:{miroir:{[axe]:true}}}});
+    assert.equal(r.statut,200,JSON.stringify(r));
+    assert.deepEqual(r.piece.modele.contour,avant.modele.contour.map(([x,z])=>[axe==='x'?-x:x,axe==='z'?-z:z]));
+    assert.equal(r.piece.agencement[0][axe],-avant.agencement[0][axe]);
+    assert.deepEqual(r.piece.agencement[0].p.dim,items[0].p.dim);
+    for(const pan of segmentsDe(avant.modele))for(const [i,o]of avant.modele.murs[pan.id].ouvertures.entries()){
+      const a=pointOuverture(pan,o.position),nouveau=segmentsDe(r.piece.modele).find(p=>p.id===pan.id);
+      const b=pointOuverture(nouveau,r.piece.modele.murs[pan.id].ouvertures[i].position);
+      assert.ok(Math.abs(b[0]-(axe==='x'?-a[0]:a[0]))<.011);assert.ok(Math.abs(b[1]-(axe==='z'?-a[1]:a[1]))<.011);
+    }
+    const relu=(await api(`/api/pieces/${id}`)).piece;
+    assert.deepEqual(relu.modele,r.piece.modele);assert.deepEqual(relu.agencement,r.piece.agencement);
+  }
+  const avant=(await api(`/api/pieces/${id}`)).piece;
+  assert.equal((await api(`/api/pieces/${id}`,{method:'PATCH',corps:{geometrie:{miroir:{x:'oui'}}}})).statut,400);
+  assert.deepEqual((await api(`/api/pieces/${id}`)).piece.modele,avant.modele);
+  assert.equal((await api(`/api/pieces/${id}`,{method:'DELETE'})).statut,200);
+});
+
 essai('les pages RealRoom, Maison Corleone et relevé mobile sont servies', async () => {
   for(const url of ['/fr/demo','/en/demo','/fr/maison-corleone/demo','/en/maison-corleone/demo','/fr/releve','/en/releve']) {
     const r=await fetch(BASE+url);assert.equal(r.status,200,url);
@@ -523,7 +554,9 @@ essai('les pages RealRoom, Maison Corleone et relevé mobile sont servies', asyn
 try {
   await attendre();
   let ko = 0;
-  for (const { nom, fn } of essais) {
+  const selection=essais.filter(e=>!process.env.ESSAI_API||e.nom.includes(process.env.ESSAI_API));
+  assert.ok(selection.length,'Aucun scénario ne correspond à ESSAI_API');
+  for (const { nom, fn } of selection) {
     try { await fn(); console.log('ok  ', nom); } catch (e) { ko++; console.log('ÉCHEC', nom, '\n     ', e.message); }
   }
   console.log(ko ? `${ko} échec(s)` : 'OK');

@@ -32,7 +32,7 @@ export const PATCH = route(async (request, { params }) => {
   // Le plan corrigé remplace la géométrie ; le relevé reste visible, même s'il faut l'ajuster.
   if ((b.dims || b.geometrie) && p.modele) {
     const correction = b.geometrie && typeof b.geometrie === 'object' ? b.geometrie : { dims: b.dims };
-    try { Object.assign(champs, corrigerPiece(p.modele, Array.isArray(b.agencement) ? nettoyer(b.agencement, p.modele) : p.agencement || [], correction, PRODUITS)); } catch(e) { if(['scan-forme','scan-coins','scan-dimensions'].includes(e.message)) throw new ErreurHTTP(400,e.message);throw e; }
+    try { Object.assign(champs, corrigerPiece(p.modele, Array.isArray(b.agencement) ? nettoyer(b.agencement, p.modele) : p.agencement || [], correction, PRODUITS)); } catch(e) { if(['scan-forme','scan-coins','scan-dimensions','scan-repere'].includes(e.message)) throw new ErreurHTTP(400,e.message);throw e; }
     champs.dims = mesuresConfirmees(champs.modele);
     champs.proposition = p.proposition ? { ...p.proposition, confort: null, densite: null, staging: (b.dims || b.geometrie) ? null : p.proposition.staging } : null;
   }
