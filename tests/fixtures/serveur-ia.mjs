@@ -7,6 +7,8 @@ globalThis.fetch = async (url, options) => {
   if (String(url) !== 'https://fal.run/openrouter/router/openai/v1/chat/completions') return fetchOriginal(url, options);
   const corps = JSON.parse(options.body);
   if (process.env.DEMO_FAL_REFUS === '1') return Response.json({ error: 'Clé de test refusée' }, { status: 401 });
+  if (process.env.DEMO_FAL_REFUS === 'credits') return Response.json({ detail: 'User is locked. Reason: Exhausted balance.' }, { status: 403 });
+  if (process.env.DEMO_FAL_REFUS === 'acces') return Response.json({ error: { message: 'Permission denied' } }, { status: 403 });
   const texte = corps.messages.at(-1).content.find(c => c.type === 'text').text;
   const ids = [...texte.matchAll(/^([^\s|]+) \|/gm)].map(m => m[1]);
   const p = ids.map(id => catalogue.produits[id]).find(p => p && ['table', 'lampe'].includes(p.fam));

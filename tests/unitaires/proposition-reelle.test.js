@@ -37,3 +37,38 @@ test('une clé manquante ou une erreur du fournisseur ne produit jamais un amén
   try { await assert.rejects(proposerAmenagement(demande, { reel: true }), e => e.code === 'cle'); }
   finally { process.env.FAL_KEY = 'test-sans-reseau'; }
 });
+
+for (const [nom, statut, corps, code] of [
+  ['clé invalide', 401, { error: { message: 'Invalid API key' } }, 'cle'],
+  ['paiement requis', 402, {}, 'credits-ia'],
+  ['solde épuisé dans detail', 403, { detail: 'User is locked. Reason: Exhausted balance.' }, 'credits-ia'],
+  ['crédits insuffisants dans error', 403, { error: { code: 'insufficient_credits', message: 'Credit allowance exceeded' } }, 'credits-ia'],
+  ['plafond de facturation', 429, { error: { message: 'Billing hard limit reached' } }, 'credits-ia'],
+  ['permission refusée', 403, { error: { message: 'Permission denied' } }, 'acces-ia'],
+  ['compte verrouillé pour une raison inconnue', 403, { detail: 'User is locked.' }, 'acces-ia']
+]) test(`Fal : ${nom}, sans nouvelle tentative ni fuite du message brut`, async t => {
+  let appels = 0;
+  const reponse = { ...corps, message: 'détail privé à ne pas transmettre' };
+  t.mock.method(globalThis, 'fetch', async () => {
+    appels++;
+    return Response.json(reponse, { status: statut });
+  });
+  await assert.rejects(proposerAmenagement(demande, { reel: true }), e => {
+    assert.equal(e.code, code);
+    assert.equal(e.statutFournisseur, statut);
+    assert.equal(e.fournisseur, 'fal');
+    assert.equal(e.message, code);
+    return true;
+  });
+  assert.equal(appels, 1, 'changer de modèle ne peut pas corriger ce blocage');
+});
+
+test('un refus pour solde épuisé ne bloque pas une future demande rétablie', async t => {
+  let appels = 0;
+  t.mock.method(globalThis, 'fetch', async () => ++appels === 1
+    ? Response.json({ detail: 'User is locked. Reason: Exhausted balance.' }, { status: 403 })
+    : Response.json({ choices: [{ message: { content: JSON.stringify(resultat) }, finish_reason: 'stop' }], usage: {} }));
+  await assert.rejects(proposerAmenagement(demande, { reel: true }), e => e.code === 'credits-ia');
+  assert.deepEqual((await proposerAmenagement(demande, { reel: true })).proposition, resultat);
+  assert.equal(appels, 2);
+});

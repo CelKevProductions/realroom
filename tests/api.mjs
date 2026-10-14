@@ -85,14 +85,19 @@ const pieceRegression = process.env.DXF_REGRESSION
   ? { ...champsDepuisScan(lireDXF(fs.readFileSync(process.env.DXF_REGRESSION, 'utf8')).pieces[0].scan), fonction: 'chambre', notes: '' }
   : { ...champsDepuisScan(scanAndroid()), fonction: 'chambre', notes: '' };
 
-essai('clé absente ou refusée : refus explicite sans attente ni remplacement du plan', async () => {
+essai('clé, solde et accès IA : refus distincts sans remplacement du plan', async () => {
   const corps = demandeDemoIA(pieceRegression, { budget: 2000 }, 'fr');
   const avant = structuredClone(corps);
-  for (const [cle, reference] of [['', 'D-02'], ['test-refusee', 'D-07']]) {
+  for (const [cle, reference, refus, erreur] of [
+    ['', 'D-02', '1', 'ia-indisponible'],
+    ['test-refusee', 'D-07', '1', 'ia-indisponible'],
+    ['test-sans-solde', 'D-08', 'credits', 'credits-ia'],
+    ['test-sans-acces', 'D-09', 'acces', 'ia-indisponible']
+  ]) {
     const base = `http://127.0.0.1:${PORT + 1}`, dossier = path.join(DONNEES, reference);
     const diagnostic = spawn(process.execPath, ['--import', path.join(RACINE, 'tests/fixtures/serveur-ia.mjs'), 'node_modules/next/dist/bin/next', 'start', '-H', '127.0.0.1', '-p', String(PORT + 1)], {
       cwd: RACINE, stdio: 'inherit',
-      env: { ...envEssais, REALROOM_ESSAIS: '1', REALROOM_SIMULATION: '1', DEMO_AMENAGEMENT_IA: '1', FAL_KEY: cle, DEMO_FAL_REFUS: '1', PGLITE_DIR: path.join(dossier, 'pglite'), FICHIERS_DIR: path.join(dossier, 'fichiers'), DEMO_FAL_AUDIT: path.join(dossier, 'fal.jsonl') }
+      env: { ...envEssais, REALROOM_ESSAIS: '1', REALROOM_SIMULATION: '1', DEMO_AMENAGEMENT_IA: '1', FAL_KEY: cle, DEMO_FAL_REFUS: refus, PGLITE_DIR: path.join(dossier, 'pglite'), FICHIERS_DIR: path.join(dossier, 'fichiers'), DEMO_FAL_AUDIT: path.join(dossier, 'fal.jsonl') }
     });
     try {
       let pret = false;
@@ -106,7 +111,7 @@ essai('clé absente ou refusée : refus explicite sans attente ni remplacement d
       assert.equal(etat.disponible, !!cle);
       if (!cle) assert.equal(etat.reference, reference);
       const r = await api('/api/demo/amenager', { method: 'POST', corps });
-      assert.equal(r.statut, 503, JSON.stringify(r)); assert.equal(r.erreur, 'ia-indisponible'); assert.equal(r.reference, reference);
+      assert.equal(r.statut, 503, JSON.stringify(r)); assert.equal(r.erreur, erreur); assert.equal(r.reference, reference);
       assert.equal(r.agencement, undefined); assert.equal(r.proposition, undefined);
       assert.deepEqual(corps, avant);
       if (!cle) assert.equal(fs.existsSync(path.join(dossier, 'pglite')), false, 'aucun compteur ni appel IA lorsque la clé manque');
