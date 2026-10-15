@@ -14,11 +14,11 @@ import {appliquerProposition,preparerAmenagement} from '../../lib/amenagement.js
 import {salonReference,catalogueZones} from '../fixtures/plan-zones.js';
 import {estMural} from '../../lib/agencement.js';
 
-test('54 objets de projet identifiés, sans lien commercial ni photo produit fictive',()=>{
+test('59 objets de projet identifiés, sans lien commercial ni photo produit fictive',()=>{
   const commerciaux=JSON.parse(readFileSync(new URL('../../data/catalogue.json',import.meta.url)));
   const c=avecObjetsGeneriques(commerciaux);
-  assert.equal(Object.keys(OBJETS_GENERIQUES).length,54);
-  assert.equal(Object.keys(PRODUITS).length,Object.keys(commerciaux.produits).length+54);
+  assert.equal(Object.keys(OBJETS_GENERIQUES).length,59);
+  assert.equal(Object.keys(PRODUITS).length,Object.keys(commerciaux.produits).length+59);
   for(const [id,p] of Object.entries(OBJETS_GENERIQUES)){
     assert.equal(PRODUITS[id].generique,true);assert.equal(p.prixEstime,true);assert.ok(p.prix>0);
     assert.equal(p.url,null);assert.equal(p.img,null);assert.ok(p.usagesGeneriques.length);
@@ -65,7 +65,7 @@ test('les candidats et l’inventaire complètent les vrais manques de repas et 
   assert.ok(r2.meubles.some(m=>m.programme.usage==='armoire'&&PRODUITS[m.produit].generique));
 });
 test('les ensembles salon et repas restent présents sous le budget ; la suspension absente est signalée',()=>{
-  const produits={...OBJETS_GENERIQUES,canape:catalogueZones.canape};
+  const produits={...Object.fromEntries(Object.entries(OBJETS_GENERIQUES).filter(([,p])=>p.fam!=='suspension')),canape:catalogueZones.canape};
   assert.ok(produits.canape);
   const modele=salonReference(),r=appliquerProposition({modele,produits,fonction:'salon',prep:preparerAmenagement([],{envies:'Salon avec coin repas',budget:3000}),proposition:{meubles:[]}});
   assert.equal(r.agencement.filter(i=>i.usageProgramme==='chaise-repas').length,4);

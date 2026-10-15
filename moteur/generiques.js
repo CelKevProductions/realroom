@@ -27,7 +27,22 @@ export function construireObjetGenerique(p) {
       }
     }
   };
-  if(p.st==='tapis'){
+  if(p.fam==='lit'){
+    pieds(.14);box(w,.16,d,0,.14,0,bois,.012);
+    box(w,h,.055,0,0,-d/2+.0275,bois,.018);
+    box(w-.06,.19,d-.07,0,.3,.015,clair,.045);
+    box(w-.09,.025,d*.62,0,.49,d*.16,mat('#B4BCAC'),.015);
+    for(const x of [-1,1])box((w-.16)/2,.085,.37,x*(w-.12)/4,.49,-d*.33,clair,.035);
+  }else if(p.fam==='canape'){
+    pieds(.1);box(w,.28,d,0,.1,0,bois,.05);
+    box(w,h-.38,.14,0,.38,-d/2+.07,bois,.04);
+    for(const x of [-1,1])box(.12,.2,d,x*(w/2-.06),.38,0,bois,.03);
+    for(const x of [-1,1])box((w-.27)/2,.1,d-.17,x*(w-.25)/4,.38,.06,clair,.035);
+  }else if(p.fam==='suspension'){
+    cyl(w*.38,w*.5,h*.85,0,0,0,bois);
+    cyl(.009,.009,h*.15,0,h*.85,0,pied);
+    cyl(w*.33,w*.33,.012,0,.005,0,mat('#FFF0CD'));
+  }else if(p.st==='tapis'){
     box(w,h,d,0,0,0,bois,.004);
     for(const z of [-1,1])box(w*.94,.001,.025,0,h-.001,z*(d/2-.055),clair);
   }else if(p.fam==='chaise'){

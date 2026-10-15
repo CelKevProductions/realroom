@@ -7,7 +7,8 @@ import { PRODUITS } from '../../lib/catalogue.js';
 import { verifier } from '../../lib/agencement.js';
 import { verifierHauteurs } from '../../lib/hauteurs.js';
 import { posesStaging } from '../../lib/staging.js';
-import { rectangle } from '../fixtures/bench-chambres.js';
+import { rectangle, chambres } from '../fixtures/bench-chambres.js';
+import { completerHauteurs } from '../../lib/finition.js';
 
 function amenager(modele, fonction, choix) {
   const avant = structuredClone(modele), catalogue = JSON.stringify(PRODUITS);
@@ -88,4 +89,41 @@ test('un budget insuffisant reste signalé : des passages libres ne valident pas
   assert.notEqual(r.proposition.planZones.statut, 'compose');
   assert.notEqual(r.proposition.planZones.audit?.valide, true);
   assert.ok(r.proposition.programme.manquants.some(s => s.usage === 'canape'));
+});
+
+for (const index of [0,2,7]) test(`la chambre ${chambres()[index].nom} conserve le couchage, le rangement et la TV`, () => {
+  const modele = chambres()[index].modele;
+  const r = amenager(modele, 'chambre', { envies:'Chambre épurée, télévision et rangement', referencesSpatiales:true });
+  assert.ok(r.actifs.some(it=>it.usageProgramme==='lit'));
+  assert.ok(r.actifs.some(it=>it.usageProgramme==='armoire'));
+  assert.ok(r.tous.some(it=>it.usageProgramme==='television'));
+  assert.equal(r.proposition.programme.complet,true);
+  assert.equal(r.proposition.planZones.audit.valide,true);
+  assert.deepEqual(verifier(modele,r.actifs,PRODUITS),[]);
+  assert.deepEqual(verifierHauteurs(modele,[...r.actifs,...r.tous.filter(it=>it.usageProgramme==='television'&&!r.actifs.includes(it))],PRODUITS),[]);
+});
+
+test('25 m² : un repas à quatre tient avec le salon et une suspension adaptée', () => {
+  const modele=rectangle(5,5);
+  const r=amenager(modele,'salon',{envies:'Salon épuré avec télévision et repas',espaces:['repas'],placesRepas:4,budget:9000,referencesSpatiales:true});
+  assert.ok(r.actifs.some(it=>it.usageProgramme==='canape'));
+  assert.equal(r.actifs.filter(it=>it.usageProgramme==='chaise-repas').length,4);
+  assert.ok(r.actifs.some(it=>it.usageProgramme==='suspension'));
+  assert.equal(r.proposition.programme.complet,true);
+  assert.equal(r.proposition.planZones.audit.valide,true);
+  assert.deepEqual(verifier(modele,r.actifs,PRODUITS),[]);
+});
+
+test('une suspension trop haute est remplacée par une alternative éligible sans déplacer la table', () => {
+  const catalogue={table:{id:'table',fam:'table',dim:[1,.7,.75],prix:220},longue:{id:'longue',fam:'suspension',dim:[.4,.4,.8],prix:100},courte:{id:'courte',fam:'suspension',dim:[.3,.3,.3],prix:65},horsBudget:{id:'horsBudget',fam:'suspension',dim:[.2,.2,.2],prix:200}};
+  const modele=rectangle(4,4);modele.dims.hauteur=2.3;
+  const table={id:'table',sku:'table',x:0,z:0,rot:0,zoneId:'repas',usageProgramme:'table-repas'};
+  const detail={id:'lumiere',sku:'longue',x:0,z:0,zoneId:'repas',slotProgramme:'repas:suspension:1',usageProgramme:'suspension'};
+  const avant=structuredClone(table);
+  const r=completerHauteurs(modele,[table],[detail],catalogue,{programme:{encyclopedie:true},budget:320,candidats:{suspension:[catalogue.longue,catalogue.courte,catalogue.horsBudget]},emplacements:[{programme:{id:detail.slotProgramme,usage:'suspension',fonction:'salon'}}]});
+  assert.deepEqual(table,avant);
+  assert.equal(r.items.find(it=>it.id==='lumiere').sku,'courte');
+  assert.equal(r.items.find(it=>it.id==='lumiere').attach_to.id,'table');
+  assert.equal(r.diagnostic.substitutions.length,1);
+  assert.deepEqual(verifierHauteurs(modele,r.items,catalogue),[]);
 });
