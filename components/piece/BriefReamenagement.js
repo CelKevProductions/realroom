@@ -29,7 +29,7 @@ const textes = {
 };
 
 export default function BriefReamenagement({ piece, demande, lang = 'fr', onFermer, onValider }) {
-  const t = textes[lang] || textes.fr, titre = useId(), dialogue = useRef(null);
+  const t = textes[lang] || textes.fr, titre = useId(), dialogue = useRef(null), assistant = demande.methode !== 'ia';
   const [brief, setBrief] = useState(() => initialiserBrief(piece, demande));
   const options = ESPACES_PAR_FONCTION[piece.fonction] || [];
   const repas = brief.espaces.includes('repas') || piece.fonction === 'salle_a_manger';
@@ -42,7 +42,7 @@ export default function BriefReamenagement({ piece, demande, lang = 'fr', onFerm
     onCancel={e => { e.preventDefault(); onFermer(); }} onClick={e => { if (e.target === dialogue.current) onFermer(); }}>
     <form onSubmit={e => { e.preventDefault(); onValider({...demandeDepuisBrief(piece, demande, brief),encyclopedie:encyclopedieActive(demande?.encyclopedie)}); }}>
       <header className={s.entete}><h2 id={titre}>{t.titre}</h2><button type="button" aria-label={t.annuler} onClick={onFermer}>×</button></header>
-      <p className={s.intro}>{t.intro}</p>
+      <p className={s.intro}>{t.intro} {assistant && (lang === 'en' ? 'Once the first proposal is ready, use Shuffle to explore other layouts.' : 'Après la première proposition, utilise Shuffle pour explorer d’autres dispositions.')}</p>
       {options.length > 0 && <fieldset className={s.espaces}><legend>{t.espaces}</legend><div className={s.choix}>
         {options.map(id => <label key={id} className={s.option}>
           <input type="checkbox" checked={brief.espaces.includes(id)} onChange={e => cocher(id, e.target.checked)} />
@@ -57,7 +57,7 @@ export default function BriefReamenagement({ piece, demande, lang = 'fr', onFerm
       </div>
       <label className={s.champ}>{t.envies}<textarea autoFocus rows="4" value={brief.envies} maxLength={1200} placeholder={t.exemple} onChange={e => setBrief(b => actualiserEnvies(b, e.target.value, options))} /></label>
       <p className={s.aide}>{demande.mode === 'partiel' ? t.partiel : t.aide}</p>
-      <footer className={s.actions}><button type="button" onClick={onFermer}>{t.annuler}</button><button type="submit">{t.lancer}</button></footer>
+      <footer className={s.actions}><button type="button" onClick={onFermer}>{t.annuler}</button><button type="submit">{assistant ? (lang === 'en' ? 'Create my furnished room' : 'Créer ma pièce meublée') : t.lancer}</button></footer>
     </form>
   </dialog>;
 }

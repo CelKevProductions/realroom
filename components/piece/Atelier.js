@@ -11,6 +11,7 @@ import {prixMobilier,nomCategorie,noteGeneriques} from '@/components/prixMobilie
 import Confort from '@/components/piece/Confort.js';
 import PlanVie from '@/components/piece/PlanVie.js';
 import BriefReamenagement from '@/components/piece/BriefReamenagement.js';
+import Variantes from '@/components/piece/Variantes.js';
 import Inspirations from '@/components/piece/Inspirations.js';
 import Resultat from '@/components/piece/Resultat.js';
 import Tuto from '@/components/Tuto.js';
@@ -19,6 +20,7 @@ import { prix, remplir } from '@/lib/i18n.js';
 import { estMural, estSuspendu, estAdosse, placerAuMur, demiEmpreinte, resoudre, ANGLES } from '@/lib/agencement.js';
 import { deplacerAvecAttaches } from '@/lib/finition.js';
 import { referencesSpatialesActives } from '@/lib/ameublement-reference.js';
+import { TYPES_PROGRAMME } from '@/lib/programme.js';
 
 const Icone = ({ d }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={d} /></svg>;
 const I = {
@@ -36,6 +38,7 @@ function Depliant({ children }) {
 
 export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, solde, setSolde, couts, services, retourPhotos }) {
   const tp = t.piece;
+  const assistantDisponible = TYPES_PROGRAMME.includes(piece.fonction);
   const [items, setItems] = useState(piece.agencement || []);
   const [selection, setSelection] = useState(null);
   const [cadre, setCadre] = useState(null);
@@ -205,8 +208,24 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     setOnglet('meubles');
     if (vue === 'dessus') aCadrer.current = id;
   }
+  function ouvrirBrief(methode = 'assistant') {
+    setBrief({ mode, envies, budget: +budget || 0, garder: [...garder], aRemplacer: [...aRemplacer], espaces, placesRepas, langue: lang, methode });
+  }
+  function erreurAssistant(e) {
+    const fr = lang !== 'en';
+    const messages = {
+      'assistant-obsolete': fr ? 'La pièce a changé. Relance l’assistant pour créer de nouvelles propositions.' : 'The room has changed. Restart the assistant.',
+      'assistant-disposition': fr ? 'Aucune disposition suffisamment sûre n’a été trouvée. Ton aménagement actuel est conservé.' : 'No suitable layout was found. Your current room is preserved.',
+      'assistant-budget': fr ? 'Le mobilier conservé dépasse le budget. Ajuste le budget ou les meubles à garder.' : 'Kept furniture exceeds the budget. Adjust the budget or kept items.',
+      'assistant-conservation': fr ? 'Cette proposition déplacerait un meuble conservé. Ton aménagement actuel est conservé.' : 'This layout would move a kept item. Your current room is preserved.',
+      'assistant-fonction': fr ? 'Pour cette fonction de pièce, utilise l’option de réaménagement avec l’IA.' : 'Use the AI redesign option for this room type.',
+      'amenagement-conflit': fr ? 'Une autre modification a été enregistrée pendant le calcul. Recharge la pièce avant de réessayer.' : 'The room changed during the calculation. Reload before trying again.'
+    };
+    return messages[e?.erreur] || t.demo.erreurs[e?.erreur] || (e?.erreur === 'limite' ? t.connexion.erreurs.limite : t.erreurs.generique);
+  }
   async function proposer(demande) {
-    if (inspirationOccupe || reamenagement.current || !services.analyse) return;
+    const assistant = demande.methode !== 'ia';
+    if (inspirationOccupe || reamenagement.current || !assistant && !services.analyse) return;
     reamenagement.current = true;
     setBrief(null);
     setEnvies(demande.envies); setBudget(demande.budget); setEspaces(demande.espaces); setPlacesRepas(demande.placesRepas);
@@ -214,20 +233,34 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     setOnglet('meubles');
     try {
       await vider();
-      const r = await api(`/api/pieces/${piece.id}/amenager`, { method: 'POST', corps: {...demande,referencesSpatiales:referencesSpatialesActives(demande.referencesSpatiales)} });
+      const r = await api(`/api/pieces/${piece.id}/${assistant ? 'variantes' : 'amenager'}`, { method: 'POST', corps: {...demande, action:'generer', referencesSpatiales:referencesSpatialesActives(demande.referencesSpatiales)} });
       if (!r.ok) throw r;
       setPiece(r.piece);
+      setGarder(new Set(r.piece.proposition?.garder || []));
       setSelection(null);
       aCadrer.current = null;
       dire(tp.reamenage);
       // la nouvelle pièce se dévoile : la caméra fait un lent quart de tour
       if (vue === 'dessus') editeur.current?.balayer();
     } catch (e) {
-      dire(t.demo.erreurs[e?.erreur] || (e?.erreur === 'limite' ? t.connexion.erreurs.limite : t.erreurs.generique), true);
+      dire(erreurAssistant(e), true);
     } finally {
       reamenagement.current = false;
       setAttente(false);
     }
+  }
+  async function changerVariante(id) {
+    if (reamenagement.current) return;
+    reamenagement.current = true; setAttente(true);
+    try {
+      await vider();
+      const r = await api(`/api/pieces/${piece.id}/variantes`, { method:'POST', corps:{ action:id ? 'choisir' : 'shuffle', id, session:piece.proposition?.variantes?.session } });
+      if (!r.ok) throw r;
+      setPiece(r.piece); setSelection(null); aCadrer.current = null;
+      if (r.assistant?.message === 'aucune-autre-variante') dire(lang === 'fr' ? 'Aucune autre disposition aussi complète n’a été trouvée. Tu peux conserver celle-ci ou ajuster le brief.' : 'No equally complete alternative was found. Keep this one or adjust your brief.');
+      else { dire(lang === 'fr' ? 'Proposition affichée et enregistrée.' : 'Proposal displayed and saved.'); if (vue === 'dessus') editeur.current?.balayer(); }
+    } catch (e) { dire(erreurAssistant(e), true); }
+    finally { reamenagement.current = false; setAttente(false); }
   }
   async function appliquerDims() {
     const r = await api(`/api/pieces/${piece.id}`, { method: 'PATCH', corps: { dims } });
@@ -411,11 +444,14 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
           <button type="button" className="btn btn--clair" onClick={() => ouvrirCatalogue('', null)} disabled={!produits || attente}>
             <span className="plus" aria-hidden="true" />{tp.ajouterMeuble}
           </button>
-          <button type="button" className="btn btn--plein" onClick={() => setBrief({ mode, envies, budget: +budget || 0, garder: [...garder], aRemplacer: [...aRemplacer], espaces, placesRepas, langue: lang })} disabled={attente || inspirationOccupe || !services.analyse} title={tp.reamenagerAide}>
-            {attente && <span className="rouage rouage--petit" aria-hidden="true" />}{attente ? tp.proposition : tp.reamenager}
+          <button type="button" className="btn btn--plein" onClick={() => ouvrirBrief()} disabled={attente || inspirationOccupe || !assistantDisponible}>
+            {attente && <span className="rouage rouage--petit" aria-hidden="true" />}{attente ? (lang === 'fr' ? 'Composition en cours…' : 'Arranging…') : (lang === 'fr' ? 'Assistant d’aménagement' : 'Room assistant')}
           </button>
-          {attente && <p role="status">{tp.reamenagerAide}</p>}
+          <button type="button" className="atelier__ia btn btn--lien btn--petit" onClick={() => ouvrirBrief('ia')} disabled={attente || inspirationOccupe || !services.analyse}>{lang === 'fr' ? 'Réaménager avec l’IA et mes inspirations' : 'Redesign with AI and my inspirations'}</button>
+          {!assistantDisponible && <p>{lang === 'fr' ? 'Pour une cuisine, une chambre d’enfant ou une pièce sans fonction précise, utilise le réaménagement avec l’IA.' : 'For a kitchen, children’s room or an unspecified room type, use AI redesign.'}</p>}
+          {attente && <p role="status">{lang === 'fr' ? 'Recherche d’une composition compatible avec tes usages, tes meubles conservés et ton budget.' : 'Finding a layout that fits your activities, kept furniture and budget.'}</p>}
         </div>
+        <Variantes piece={piece} items={items} produits={produits} demande={{mode,envies,budget,garder:[...garder],aRemplacer:[...aRemplacer],espaces,placesRepas}} lang={lang} attente={attente} onShuffle={() => changerVariante()} onChoisir={changerVariante} onRelancer={() => ouvrirBrief()} />
         <div className="onglets" role="tablist">
           {ONGLETS.map((o, i) => (
             <button key={o} role="tab" aria-selected={onglet === o} onClick={() => setOnglet(o)} disabled={attente}>

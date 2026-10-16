@@ -1,0 +1,16 @@
+.variantes{padding:14px 16px;border-bottom:1px solid var(--trait);background:var(--papier,#f8f5ef);flex-shrink:0}
+.entete{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.85rem}
+.shuffle{display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:8px 12px;border:1px solid currentColor;border-radius:3px;color:inherit;background:transparent;font:inherit;cursor:pointer}
+.shuffle svg{width:19px;height:19px}
+.shuffle:disabled{opacity:.45;cursor:default}
+.aide{margin:7px 0 10px;font-size:.72rem;line-height:1.5;color:var(--graphite,#6c6257)}
+.aide button{display:block;margin-top:7px;color:inherit;background:transparent;border:0;border-bottom:1px solid currentColor;padding:2px 0;font:inherit;cursor:pointer}
+.liste{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scroll-snap-type:x proximity}
+.carte{flex:0 0 104px;scroll-snap-align:start;display:grid;gap:3px;padding:8px;border:1px solid var(--trait,#c9bdac);border-radius:3px;background:transparent;text-align:left;color:inherit;font:inherit;cursor:pointer}
+.carte svg{width:100%;height:66px;margin-bottom:4px}
+.carte b{font-size:.68rem;font-weight:500}
+.carte small{font-size:.62rem;color:var(--graphite,#6c6257)}
+.carte[aria-pressed=true]{background:#e6e8e0;border-color:#5b7266;cursor:default}
+.carte:disabled:not([aria-pressed=true]){opacity:.5;cursor:default}
+.variantes button:focus-visible{outline:2px solid #526b60;outline-offset:2px}
+@media(max-height:740px) and (min-width:801px){.carte svg{height:46px}.aide{margin:5px 0}.variantes{padding:9px 14px}}

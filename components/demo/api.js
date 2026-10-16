@@ -1,5 +1,5 @@
 // Démo sans compte : réponses de l'API servies dans le navigateur, avec les mêmes formes que les
-// vraies routes (app/api). L'aménagement appelle réellement l'IA côté serveur et le même solveur ;
+// vraies routes (app/api). L'assistant utilise le moteur local ; l'option IA appelle le serveur.
 // l'analyse photo, le rendu (vue de la maquette), la visite 3D et les paiements sont simulés.
 import { lire, ecrire, remettreAZero, piece as pieceDe, projet as projetDe, publique, renduPublic, rendusDe, listeProjets, projetComplet, id as nouvelId } from '@/components/demo/magasin.js';
 import { chargerCatalogue } from '@/components/catalogueClient.js';
@@ -11,6 +11,7 @@ import { finitionActive } from '@/lib/finition.js';
 import { compositionSurfaceActive } from '@/lib/composition-surface.js';
 import { referencesSpatialesActives } from '@/lib/ameublement-reference.js';
 import { amenagerParIA } from './ia.js';
+import { assistantEnArrierePlan } from './assistant.js';
 import { verifier } from '@/lib/agencement.js';
 import { corrigerPiece, mesuresConfirmees } from '@/lib/geometrie.js';
 import { CREDITS, PACKS, FONCTIONS, ROLES_PHOTO, LIMITES } from '@/lib/config.js';
@@ -125,6 +126,7 @@ export async function repondre(url, { method = 'GET', corps, formulaire } = {}) 
       }
       if (sous === 'analyse') return analyser(p, langue);
       if (sous === 'amenager') return amenager(p, corps || {}, langue);
+      if (sous === 'variantes' && method === 'POST') return variantes(p, corps || {}, langue);
       if (sous === 'rendus') {
         if (method === 'GET') return ok({ rendus: rendusDe(p.id) });
         return generer(p, corps || {});
@@ -207,6 +209,16 @@ async function amenager(p, b, langue) {
   if (pieceDe(p.id) !== p || p.maj_le !== revision) return non('amenagement-conflit', 409);
   ecrire(() => { p.agencement = r.agencement; p.proposition = r.proposition; toucher(p); });
   return ok({ piece: publique(p) });
+}
+
+async function variantes(p, b, langue) {
+  if (!p.modele) return non('pas-de-modele', 409);
+  if (p.etat === 'analyse') return non('en-cours', 409);
+  const revision = p.maj_le, produits = (await chargerCatalogue()).produits;
+  const resultat = await assistantEnArrierePlan({ piece: structuredClone(p), demande: { ...b, langue }, produits });
+  if (pieceDe(p.id) !== p || p.maj_le !== revision) return non('amenagement-conflit', 409);
+  ecrire(() => { p.agencement = resultat.agencement; p.proposition = resultat.proposition; toucher(p); });
+  return ok({ piece: publique(p), assistant: resultat.assistant });
 }
 
 async function generer(p, b) {
