@@ -11,9 +11,9 @@ import { disponibiliteDemoIA } from '@/lib/demo-disponibilite.js';
 
 export const maxDuration = 300;
 const disponibilite = () => disponibiliteDemoIA({ env: process.env, base: adresseBase(), limites: LIMITES });
-const indisponible = reference => {
+const indisponible = (reference, erreur = 'ia-indisponible') => {
   console.error('Aménagement IA démo indisponible', reference);
-  return json({ erreur: 'ia-indisponible', reference }, 503);
+  return json({ erreur, reference }, 503);
 };
 
 export const GET = route(async () => json(disponibilite()));
@@ -37,13 +37,15 @@ export const POST = route(async request => {
   const cands = candidats({ modele: p.modele, fonction: p.fonction, ...prep });
   let r;
   try {
-    r = await proposerAmenagement({ piece: { ...versClaude(p.modele, prep.base, PRODUITS), notes_client: p.notes }, fonction: p.fonction, mode: prep.mode, envies: prep.envies, espaces: prep.espaces, placesRepas: prep.placesRepas, compositionSurface: prep.compositionSurface, compositionDetails: prep.compositionDetails, budget: prep.budget, garder: prep.garder, aRemplacer: prep.aRemplacer, candidats: cands, inspirations, langue }, { reel: true, maxTokens: 12000 });
+    r = await proposerAmenagement({ piece: { ...versClaude(p.modele, prep.base, PRODUITS), notes_client: p.notes }, fonction: p.fonction, mode: prep.mode, envies: prep.envies, espaces: prep.espaces, placesRepas: prep.placesRepas, compositionSurface: prep.compositionSurface, compositionDetails: prep.compositionDetails, staging:prep.staging, encyclopedie:prep.encyclopedie, budget: prep.budget, garder: prep.garder, aRemplacer: prep.aRemplacer, candidats: cands, inspirations, langue }, { reel: true, maxTokens: 12000 });
   } catch (e) {
     if (e?.code === 'cle') return indisponible('D-07');
+    if (e?.code === 'credits-ia') return indisponible('D-08', 'credits-ia');
+    if (e?.code === 'acces-ia') return indisponible('D-09');
     console.error('Aménagement IA démo indisponible', e?.code || 'modele');
     throw new ErreurHTTP(502, 'amenagement-ia');
   }
-  const resultat = appliquerProposition({ modele: p.modele, fonction: p.fonction, prep, proposition: r.proposition, produits: PRODUITS, candidats: cands });
+  let resultat;try{resultat = appliquerProposition({ modele: p.modele, fonction: p.fonction, prep, proposition: r.proposition, produits: PRODUITS, candidats: cands });}catch(e){if(e.code==='REGLES_BLOQUANTES')throw new ErreurHTTP(422,'regles-bloquantes',e.message);throw e;}
   resultat.proposition.moteur = { type: 'ia', modele: r.usage?.modele || MODELES.claude };
   return json(resultat);
 });

@@ -11,7 +11,7 @@ import { chargerCatalogue } from '@/components/catalogueClient.js';
 let quitte = false;
 if (typeof window !== 'undefined') addEventListener('pagehide', () => { quitte = true; });
 
-export default function Editeur3D({ ref, modele, items, selection, vue, navigationActive=true, surSelection, surDeplacement, surNavigation, surCadre, surPret, erreurWebgl, fond, fondSoir }) {
+export default function Editeur3D({ ref, modele, items, staging, selection, vue, navigationActive=true, surSelection, surDeplacement, surNavigation, surCadre, surPret, erreurWebgl, fond, fondSoir }) {
   const canvas = useRef(null);
   const ed = useRef(null);
   const rappels = useRef({});
@@ -35,7 +35,7 @@ export default function Editeur3D({ ref, modele, items, selection, vue, navigati
           surDeplacement: d => rappels.current.surDeplacement && rappels.current.surDeplacement(d),
           surCadre: id => rappels.current.surCadre && rappels.current.surCadre(id)
         });
-        ed.current.charger(modele, items);
+        ed.current.charger(modele, items, staging);
         ed.current.vue(vue, false);
         if (vue === 'dessus') ed.current.intro();
         if (selection) ed.current.selectionner(selection);
@@ -51,6 +51,7 @@ export default function Editeur3D({ ref, modele, items, selection, vue, navigati
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cle]);
   useEffect(() => { if (ed.current) ed.current.majItems(items); }, [items]);
+  useEffect(() => { ed.current?.majStaging(staging); }, [staging]);
   useEffect(() => { if (ed.current) ed.current.selectionner(selection); }, [selection]);
   useEffect(() => { if (ed.current && ed.current.mode !== vue) ed.current.vue(vue); }, [vue]);
   useEffect(() => { ed.current?.activerNavigation(navigationActive); }, [navigationActive]);

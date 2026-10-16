@@ -15,7 +15,7 @@ test('les deux démos vérifient la disponibilité avant l’appel IA ; un refus
   t.mock.method(globalThis, 'fetch', async (url, options) => {
     appels.push({ url, method: options.method, corps: options.body && JSON.parse(options.body) });
     if (options.method === 'GET') return Response.json({ disponible, simulation: false, ...(!disponible ? { reference: 'D-02' } : {}) });
-    if (echec) return Response.json({ erreur: 'ia-indisponible' }, { status: 503 });
+    if (echec) return Response.json(echec, { status: 503 });
     return Response.json({ agencement: [], proposition: { concept: 'IA test', moteur: { type: 'ia' } } });
   });
   for (const chemin of ['/fr/demo/pieces/r_demo_salon', '/fr/maison-corleone/demo']) {
@@ -31,10 +31,12 @@ test('les deux démos vérifient la disponibilité avant l’appel IA ; un refus
     assert.equal(moi.email, 'demo@realroom.app'); assert.equal(appels.length, avant + 2);
   }
   const avant = await api('/api/pieces/r_demo_salon');
-  echec = true;
-  const r = await api('/api/pieces/r_demo_salon/amenager', { method: 'POST', corps: { mode: 'tout', budget: 1234 } });
-  assert.equal(r.ok, false); assert.equal(r.erreur, 'ia-indisponible');
-  assert.deepEqual((await api('/api/pieces/r_demo_salon')).piece, avant.piece, 'aucune simulation ni mutation après une erreur serveur');
+  for (const [erreur, reference] of [['ia-indisponible', 'D-07'], ['credits-ia', 'D-08'], ['ia-indisponible', 'D-09']]) {
+    echec = { erreur, reference };
+    const r = await api('/api/pieces/r_demo_salon/amenager', { method: 'POST', corps: { mode: 'tout', budget: 1234 } });
+    assert.equal(r.ok, false); assert.equal(r.erreur, erreur); assert.equal(r.reference, reference);
+    assert.deepEqual((await api('/api/pieces/r_demo_salon')).piece, avant.piece, 'aucune simulation ni mutation après une erreur serveur');
+  }
   disponible = false;
   const n = appels.length;
   const refuse = await api('/api/pieces/r_demo_salon/amenager', { method: 'POST', corps: { mode: 'tout', budget: 1234 } });

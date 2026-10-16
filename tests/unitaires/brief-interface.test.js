@@ -19,7 +19,10 @@ test('le dialogue natif expose les espaces, places, envies et actions dans les d
   assert.match(fr, /<dialog[^>]+aria-labelledby=/); assert.match(fr, /Quelles idées pour cette pièce/);
   assert.match(fr, /Coin repas/); assert.match(fr, /Coin bureau/); assert.match(fr, /Coin lecture/);
   assert.match(fr, /<option value="6" selected="">6 places/); assert.match(fr, /Bois clair et table près de la fenêtre/);
-  assert.match(fr, /type="submit"/); assert.match(fr, /Réaménager avec ces idées/); assert.match(fr, /Annuler/);
+  assert.match(fr, /type="submit"/); assert.match(fr, /Créer ma pièce meublée/); assert.match(fr, /Shuffle/); assert.match(fr, /Annuler/);
   const en = afficher({ ...props, lang: 'en' });
-  assert.match(en, /What do you imagine for this room/); assert.match(en, /Dining area/); assert.match(en, /Rearrange with these ideas/);
+  assert.match(en, /What do you imagine for this room/); assert.match(en, /Dining area/); assert.match(en, /Create my furnished room/);
+  const ia=afficher({...props,demande:{...props.demande,methode:'ia'},lang:'fr'});
+  assert.match(ia,/Réaménager avec ces idées/);
+  assert.doesNotMatch(ia,/utilise Shuffle/);
 });

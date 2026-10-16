@@ -1,0 +1,302 @@
+{
+  "version": "ssr-reperes-1",
+  "archive": {
+    "presente": true,
+    "scenes": 14992,
+    "scenesIdentiquesAuParquet": 14992,
+    "horsPartitions": 0,
+    "calibreesHorsPartitions": 0
+  },
+  "fichiers": {
+    "train": {
+      "scenes": 12055,
+      "logements": 5697,
+      "pieces": {
+        "bedroom": 5886,
+        "livingroom": 3543,
+        "other": 2626
+      }
+    },
+    "val": {
+      "scenes": 1465,
+      "logements": 1338,
+      "pieces": {
+        "bedroom": 721,
+        "livingroom": 643,
+        "other": 101
+      }
+    },
+    "test": {
+      "scenes": 1472,
+      "logements": 1336,
+      "pieces": {
+        "bedroom": 721,
+        "livingroom": 644,
+        "other": 107
+      }
+    }
+  },
+  "separationLogements": {
+    "train": {
+      "retenus": 8033,
+      "exclus": 4022
+    },
+    "val": {
+      "retenus": 1195,
+      "exclus": 270
+    },
+    "test": {
+      "retenus": 1472,
+      "exclus": 0
+    }
+  },
+  "scenesAdmissibles": {
+    "train": {
+      "chambre": 3081,
+      "salon": 2485,
+      "bureau": 321,
+      "salle_a_manger": 48
+    },
+    "val": {
+      "chambre": 432,
+      "salon": 530,
+      "bureau": 11,
+      "salle_a_manger": 1
+    },
+    "test": {
+      "chambre": 570,
+      "salon": 626,
+      "bureau": 25,
+      "salle_a_manger": 2
+    }
+  },
+  "rejets": {
+    "train": {
+      "pas-assez-de-mobilier-valide": 1300,
+      "contour-invalide": 141,
+      "fonction-non-identifiee": 657
+    },
+    "val": {
+      "pas-assez-de-mobilier-valide": 178,
+      "contour-invalide": 10,
+      "fonction-non-identifiee": 33
+    },
+    "test": {
+      "pas-assez-de-mobilier-valide": 190,
+      "contour-invalide": 14,
+      "fonction-non-identifiee": 45
+    }
+  },
+  "relationsHorsCalibration": {
+    "train": {
+      "chaise-repas-face": {
+        "n": 6810,
+        "q10": 0.6576,
+        "q25": 0.8051,
+        "q50": 0.887,
+        "q75": 0.9599,
+        "q90": 0.9996
+      },
+      "chevet-ecart": {
+        "n": 2074,
+        "q10": -0.015,
+        "q25": 0.01,
+        "q50": 0.07,
+        "q75": 0.175,
+        "q90": 0.285
+      },
+      "chevet-largeur": {
+        "n": 2074,
+        "q10": 0.1827,
+        "q25": 0.219,
+        "q50": 0.2605,
+        "q75": 0.305,
+        "q90": 0.3503
+      },
+      "chevet-recul": {
+        "n": 2074,
+        "q10": -0.4653,
+        "q25": -0.4242,
+        "q50": -0.4023,
+        "q75": -0.3864,
+        "q90": -0.367
+      },
+      "table-canape-decentrage": {
+        "n": 1261,
+        "q10": 0.0037,
+        "q25": 0.011,
+        "q50": 0.0265,
+        "q75": 0.0563,
+        "q90": 0.1285
+      },
+      "table-canape-ecart": {
+        "n": 1261,
+        "q10": 0.1,
+        "q25": 0.24,
+        "q50": 0.38,
+        "q75": 0.51,
+        "q90": 0.65
+      },
+      "table-canape-largeur": {
+        "n": 1261,
+        "q10": 0.3152,
+        "q25": 0.4061,
+        "q50": 0.519,
+        "q75": 0.6078,
+        "q90": 0.7062
+      },
+      "tete-lit-mur": {
+        "n": 2814,
+        "q10": 0.005,
+        "q25": 0.015,
+        "q50": 0.04,
+        "q75": 0.09,
+        "q90": 0.18
+      }
+    },
+    "val": {
+      "chaise-repas-face": {
+        "n": 1484,
+        "q10": 0.6568,
+        "q25": 0.7981,
+        "q50": 0.8841,
+        "q75": 0.9463,
+        "q90": 0.9996
+      },
+      "chevet-ecart": {
+        "n": 286,
+        "q10": -0.0175,
+        "q25": 0.01,
+        "q50": 0.06,
+        "q75": 0.15,
+        "q90": 0.33
+      },
+      "chevet-largeur": {
+        "n": 286,
+        "q10": 0.1845,
+        "q25": 0.219,
+        "q50": 0.2554,
+        "q75": 0.3053,
+        "q90": 0.3439
+      },
+      "chevet-recul": {
+        "n": 286,
+        "q10": -0.4634,
+        "q25": -0.4291,
+        "q50": -0.4035,
+        "q75": -0.385,
+        "q90": -0.3685
+      },
+      "table-canape-decentrage": {
+        "n": 244,
+        "q10": 0.004,
+        "q25": 0.0121,
+        "q50": 0.0254,
+        "q75": 0.0572,
+        "q90": 0.1343
+      },
+      "table-canape-ecart": {
+        "n": 244,
+        "q10": 0.17,
+        "q25": 0.2638,
+        "q50": 0.3775,
+        "q75": 0.52,
+        "q90": 0.667
+      },
+      "table-canape-largeur": {
+        "n": 244,
+        "q10": 0.3291,
+        "q25": 0.4098,
+        "q50": 0.4966,
+        "q75": 0.5937,
+        "q90": 0.6908
+      },
+      "tete-lit-mur": {
+        "n": 398,
+        "q10": 0.0085,
+        "q25": 0.02,
+        "q50": 0.04,
+        "q75": 0.0787,
+        "q90": 0.1565
+      }
+    },
+    "test": {
+      "chaise-repas-face": {
+        "n": 1748,
+        "q10": 0.6343,
+        "q25": 0.8091,
+        "q50": 0.8835,
+        "q75": 0.9499,
+        "q90": 0.9996
+      },
+      "chevet-ecart": {
+        "n": 362,
+        "q10": -0.02,
+        "q25": 0.01,
+        "q50": 0.07,
+        "q75": 0.1637,
+        "q90": 0.275
+      },
+      "chevet-largeur": {
+        "n": 362,
+        "q10": 0.1956,
+        "q25": 0.22,
+        "q50": 0.2607,
+        "q75": 0.3089,
+        "q90": 0.3439
+      },
+      "chevet-recul": {
+        "n": 362,
+        "q10": -0.4592,
+        "q25": -0.4248,
+        "q50": -0.3991,
+        "q75": -0.3773,
+        "q90": -0.3558
+      },
+      "table-canape-decentrage": {
+        "n": 327,
+        "q10": 0.0038,
+        "q25": 0.0108,
+        "q50": 0.0265,
+        "q75": 0.0596,
+        "q90": 0.1411
+      },
+      "table-canape-ecart": {
+        "n": 327,
+        "q10": 0.135,
+        "q25": 0.26,
+        "q50": 0.39,
+        "q75": 0.535,
+        "q90": 0.6419
+      },
+      "table-canape-largeur": {
+        "n": 327,
+        "q10": 0.3319,
+        "q25": 0.4201,
+        "q50": 0.5089,
+        "q75": 0.5893,
+        "q90": 0.6996
+      },
+      "tete-lit-mur": {
+        "n": 532,
+        "q10": 0.005,
+        "q25": 0.015,
+        "q50": 0.04,
+        "q75": 0.0863,
+        "q90": 0.195
+      }
+    }
+  },
+  "controle": {
+    "physiqueTrainSeulement": true,
+    "logementsCommunsApresFiltre": {
+      "train/val": 0,
+      "train/test": 0,
+      "val/test": 0
+    },
+    "dimensions": "Source [largeur,hauteur,profondeur], application [largeur,profondeur,hauteur].",
+    "rotations": "Quaternions normalisés, axe Y ; objets inclinés exclus.",
+    "contours": "Polygones réels, emprises orientées, tolérance 3 cm et inclusion >=98,5 %.",
+    "ouvertures": "Absentes du dataset : les portes/fenêtres réelles restent contrôlées par RealRoom."
+  }
+}

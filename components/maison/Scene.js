@@ -375,7 +375,7 @@ export default function Scene({ t, lang, demo, piece: initiale, choix, rendus: r
   return (
     <div className={'mc-piece mc-fixe' + (soir ? ' is-soir' : '') + (fiche ? ' a-fiche' : '')}>
       <div className="mc-piece__scene" inert={attente || undefined} aria-busy={attente}>
-        <Editeur3D ref={editeur} modele={piece.modele} items={items} selection={selection} vue={vue} navigationActive={!attente&&!rendu&&!cat.ouvert&&!fiche} fond="#E6E0D4" fondSoir="#1E160E"
+        <Editeur3D ref={editeur} modele={piece.modele} items={items} staging={piece.proposition?.staging} selection={selection} vue={vue} navigationActive={!attente&&!rendu&&!cat.ouvert&&!fiche} fond="#E6E0D4" fondSoir="#1E160E"
           surSelection={surSelection} surDeplacement={surDeplacement} surCadre={setCadre} surPret={() => setPret(true)} erreurWebgl={ts.erreur} />
         <div className="mc-points">
           {nouveaux.map((it, i) => {

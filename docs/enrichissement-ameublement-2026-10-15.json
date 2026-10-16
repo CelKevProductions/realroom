@@ -1,0 +1,1394 @@
+{
+  "version": "2026-10-15",
+  "referenceAvant": "a480820051b5d6466c8cfcb792a261c9911ab356",
+  "scenarios": 26,
+  "appelsIA": 0,
+  "appelsReseau": 0,
+  "resultats": [
+    {
+      "id": "chambre-1",
+      "nom": "Chambre 9 m²",
+      "choix": {
+        "envies": "Chambre épurée, télévision et rangement",
+        "budget": 0
+      },
+      "avant": {
+        "meubles": 1,
+        "principalPresent": false,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 0,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 320,
+        "manquants": [
+          {
+            "usage": "lit",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chevet",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "lampe-chevet",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "television",
+            "motif": "catalogue"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 5,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 1109,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-2",
+      "nom": "Chambre 10,5 m²",
+      "choix": {
+        "envies": "Chambre épurée, télévision et rangement",
+        "budget": 0
+      },
+      "avant": {
+        "meubles": 5,
+        "principalPresent": true,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 1938,
+        "manquants": [
+          {
+            "usage": "armoire",
+            "motif": "surface-ou-acces"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 7,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 6915.5,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-3",
+      "nom": "Chambre 12,25 m² · deux portes",
+      "choix": {
+        "envies": "Chambre épurée, télévision et rangement",
+        "budget": 0
+      },
+      "avant": {
+        "meubles": 1,
+        "principalPresent": false,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 0,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 320,
+        "manquants": [
+          {
+            "usage": "lit",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chevet",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chevet",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "lampe-chevet",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "lampe-chevet",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "television",
+            "motif": "catalogue"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 7,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 6915.5,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-4",
+      "nom": "Chambre 14 m²",
+      "choix": {
+        "envies": "Chambre épurée, télévision et rangement",
+        "budget": 0
+      },
+      "avant": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 2998,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 3052.99,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-5",
+      "nom": "Chambre 16 m² · deux portes",
+      "choix": {
+        "envies": "Chambre épurée, télévision et rangement",
+        "budget": 0
+      },
+      "avant": {
+        "meubles": 8,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 2568,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 8,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 2572.99,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-6",
+      "nom": "Chambre 20 m²",
+      "choix": {
+        "envies": "Chambre épurée, télévision et rangement",
+        "budget": 0
+      },
+      "avant": {
+        "meubles": 11,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 4123,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 11,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 4127.99,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-7",
+      "nom": "Chambre L · 12 m²",
+      "choix": {
+        "envies": "Chambre épurée, télévision et rangement",
+        "budget": 0
+      },
+      "avant": {
+        "meubles": 1,
+        "principalPresent": false,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 0,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 320,
+        "manquants": [
+          {
+            "usage": "lit",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chevet",
+            "motif": "selection"
+          },
+          {
+            "usage": "chevet",
+            "motif": "selection"
+          },
+          {
+            "usage": "lampe-chevet",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "lampe-chevet",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "television",
+            "motif": "catalogue"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 1,
+        "principalPresent": false,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 0,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 320,
+        "manquants": [
+          {
+            "usage": "lit",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chevet",
+            "motif": "selection"
+          },
+          {
+            "usage": "chevet",
+            "motif": "selection"
+          },
+          {
+            "usage": "lampe-chevet",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "lampe-chevet",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "television",
+            "motif": "catalogue"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-8",
+      "nom": "Chambre L · 16 m² · deux portes",
+      "choix": {
+        "envies": "Chambre épurée, télévision et rangement",
+        "budget": 0
+      },
+      "avant": {
+        "meubles": 2,
+        "principalPresent": false,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 0,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 920,
+        "manquants": [
+          {
+            "usage": "lit",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chevet",
+            "motif": "selection"
+          },
+          {
+            "usage": "chevet",
+            "motif": "selection"
+          },
+          {
+            "usage": "lampe-chevet",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "lampe-chevet",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "television",
+            "motif": "catalogue"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 8,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 2053,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-9",
+      "nom": "Chambre Oblique · 15 m²",
+      "choix": {
+        "envies": "Chambre épurée, télévision et rangement",
+        "budget": 0
+      },
+      "avant": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 2998,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 3052.99,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-10",
+      "nom": "Chambre Décroché · 15 m²",
+      "choix": {
+        "envies": "Chambre épurée, télévision et rangement",
+        "budget": 0
+      },
+      "avant": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 2998,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 3002.99,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-budget-500",
+      "nom": "Chambre 16 m² · 500 €",
+      "choix": {
+        "envies": "Chambre épurée, télévision et rangement",
+        "budget": 500
+      },
+      "avant": {
+        "meubles": 1,
+        "principalPresent": false,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 0,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 320,
+        "manquants": [
+          {
+            "usage": "lit",
+            "motif": "catalogue"
+          },
+          {
+            "usage": "chevet",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chevet",
+            "motif": "budget"
+          },
+          {
+            "usage": "lampe-chevet",
+            "motif": "budget"
+          },
+          {
+            "usage": "lampe-chevet",
+            "motif": "budget"
+          },
+          {
+            "usage": "television",
+            "motif": "catalogue"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 3,
+        "principalPresent": true,
+        "programmeComplet": false,
+        "auditPlan": null,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 495,
+        "manquants": [
+          {
+            "usage": "chevet",
+            "motif": "budget"
+          },
+          {
+            "usage": "chevet",
+            "motif": "budget"
+          },
+          {
+            "usage": "lampe-chevet",
+            "motif": "budget"
+          },
+          {
+            "usage": "armoire",
+            "motif": "budget"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-budget-1500",
+      "nom": "Chambre 16 m² · 1500 €",
+      "choix": {
+        "envies": "Chambre épurée, télévision et rangement",
+        "budget": 1500
+      },
+      "avant": {
+        "meubles": 8,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 1495,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 1494,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-budget-2500",
+      "nom": "Chambre 16 m² · 2500 €",
+      "choix": {
+        "envies": "Chambre épurée, télévision et rangement",
+        "budget": 2500
+      },
+      "avant": {
+        "meubles": 10,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 2039,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 1723,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-tv-sur-meuble",
+      "nom": "Chambre 16 m² · TV sur meuble",
+      "choix": {
+        "envies": "Chambre épurée avec télévision sur meuble et rangement",
+        "budget": 0
+      },
+      "avant": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 3168,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 2582.99,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-sans-tv",
+      "nom": "Chambre 16 m² · sans télévision",
+      "choix": {
+        "envies": "Chambre épurée sans télévision, avec rangement",
+        "budget": 0
+      },
+      "avant": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 0,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 3567.99,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 0,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 3052.99,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-chaleureuse",
+      "nom": "Chambre 16 m² · chaleureuse",
+      "choix": {
+        "envies": "Chambre chaleureuse avec télévision et rangement",
+        "budget": 0
+      },
+      "avant": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 3218,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 3052.99,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "salon-3.5-4",
+      "nom": "Salon 14 m² · repas à quatre",
+      "choix": {
+        "envies": "Salon épuré avec télévision et repas",
+        "espaces": [
+          "repas"
+        ],
+        "placesRepas": 4,
+        "budget": 9000
+      },
+      "avant": {
+        "meubles": 5,
+        "principalPresent": false,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 0,
+        "tablesRepas": 1,
+        "chaisesRepas": 4,
+        "totalCatalogue": 480,
+        "manquants": [
+          {
+            "usage": "canape",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "table-basse",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "meuble-tv",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "lumiere-salon",
+            "motif": "mur-ou-hauteur"
+          },
+          {
+            "usage": "television",
+            "motif": "catalogue"
+          },
+          {
+            "usage": "suspension",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 6,
+        "principalPresent": true,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 1304,
+        "manquants": [
+          {
+            "usage": "table-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "suspension",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "salon-4-4",
+      "nom": "Salon 16 m² · repas à quatre",
+      "choix": {
+        "envies": "Salon épuré avec télévision et repas",
+        "espaces": [
+          "repas"
+        ],
+        "placesRepas": 4,
+        "budget": 9000
+      },
+      "avant": {
+        "meubles": 6,
+        "principalPresent": true,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 1334,
+        "manquants": [
+          {
+            "usage": "table-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "suspension",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 6,
+        "principalPresent": true,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 2524,
+        "manquants": [
+          {
+            "usage": "table-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "suspension",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "salon-4-5",
+      "nom": "Salon 20 m² · repas à quatre",
+      "choix": {
+        "envies": "Salon épuré avec télévision et repas",
+        "espaces": [
+          "repas"
+        ],
+        "placesRepas": 4,
+        "budget": 9000
+      },
+      "avant": {
+        "meubles": 6,
+        "principalPresent": true,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 1754,
+        "manquants": [
+          {
+            "usage": "table-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "suspension",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 12,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 1,
+        "chaisesRepas": 4,
+        "totalCatalogue": 2619,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "salon-5-5",
+      "nom": "Salon 25 m² · repas à quatre",
+      "choix": {
+        "envies": "Salon épuré avec télévision et repas",
+        "espaces": [
+          "repas"
+        ],
+        "placesRepas": 4,
+        "budget": 9000
+      },
+      "avant": {
+        "meubles": 7,
+        "principalPresent": true,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 2134,
+        "manquants": [
+          {
+            "usage": "table-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "suspension",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 13,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 1,
+        "chaisesRepas": 4,
+        "totalCatalogue": 3669,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "salon-6-5",
+      "nom": "Salon 30 m² · repas à quatre",
+      "choix": {
+        "envies": "Salon épuré avec télévision et repas",
+        "espaces": [
+          "repas"
+        ],
+        "placesRepas": 4,
+        "budget": 9000
+      },
+      "avant": {
+        "meubles": 12,
+        "principalPresent": true,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 1,
+        "tablesRepas": 1,
+        "chaisesRepas": 4,
+        "totalCatalogue": 2614,
+        "manquants": [
+          {
+            "usage": "suspension",
+            "motif": "mur-ou-hauteur"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 13,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 1,
+        "chaisesRepas": 4,
+        "totalCatalogue": 3669,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "salon-budget-500",
+      "nom": "Salon 30 m² · 500 €",
+      "choix": {
+        "envies": "Salon épuré avec télévision et repas",
+        "espaces": [
+          "repas"
+        ],
+        "placesRepas": 4,
+        "budget": 500
+      },
+      "avant": {
+        "meubles": 1,
+        "principalPresent": true,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 0,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 280,
+        "manquants": [
+          {
+            "usage": "table-basse",
+            "motif": "budget"
+          },
+          {
+            "usage": "meuble-tv",
+            "motif": "budget"
+          },
+          {
+            "usage": "lumiere-salon",
+            "motif": "budget"
+          },
+          {
+            "usage": "television",
+            "motif": "catalogue"
+          },
+          {
+            "usage": "table-repas",
+            "motif": "budget"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "budget"
+          },
+          {
+            "usage": "suspension",
+            "motif": "budget"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 1,
+        "principalPresent": true,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 0,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 280,
+        "manquants": [
+          {
+            "usage": "table-basse",
+            "motif": "budget"
+          },
+          {
+            "usage": "meuble-tv",
+            "motif": "budget"
+          },
+          {
+            "usage": "lumiere-salon",
+            "motif": "budget"
+          },
+          {
+            "usage": "television",
+            "motif": "catalogue"
+          },
+          {
+            "usage": "table-repas",
+            "motif": "budget"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "surface-ou-acces"
+          },
+          {
+            "usage": "chaise-repas",
+            "motif": "budget"
+          },
+          {
+            "usage": "suspension",
+            "motif": "budget"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "salon-budget-1200",
+      "nom": "Salon 30 m² · 1200 €",
+      "choix": {
+        "envies": "Salon épuré avec télévision et repas",
+        "espaces": [
+          "repas"
+        ],
+        "placesRepas": 4,
+        "budget": 1200
+      },
+      "avant": {
+        "meubles": 11,
+        "principalPresent": true,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 1,
+        "tablesRepas": 1,
+        "chaisesRepas": 4,
+        "totalCatalogue": 1195,
+        "manquants": [
+          {
+            "usage": "suspension",
+            "motif": "budget"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 11,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 1,
+        "chaisesRepas": 4,
+        "totalCatalogue": 1180,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "salon-budget-2000",
+      "nom": "Salon 30 m² · 2000 €",
+      "choix": {
+        "envies": "Salon épuré avec télévision et repas",
+        "espaces": [
+          "repas"
+        ],
+        "placesRepas": 4,
+        "budget": 2000
+      },
+      "avant": {
+        "meubles": 12,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 1,
+        "chaisesRepas": 4,
+        "totalCatalogue": 1700,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 13,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 1,
+        "chaisesRepas": 4,
+        "totalCatalogue": 1989,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "chambre-ssr-off",
+      "nom": "Chambre 16 m² · SSR désactivé",
+      "choix": {
+        "envies": "Chambre épurée, télévision et rangement",
+        "budget": 0,
+        "referencesSpatiales": false
+      },
+      "avant": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 2998,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 9,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 0,
+        "chaisesRepas": 0,
+        "totalCatalogue": 3052.99,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    },
+    {
+      "id": "salon-ssr-off",
+      "nom": "Salon 30 m² · 1 200 € · SSR désactivé",
+      "choix": {
+        "envies": "Salon épuré avec télévision et repas",
+        "espaces": [
+          "repas"
+        ],
+        "placesRepas": 4,
+        "budget": 1200,
+        "referencesSpatiales": false
+      },
+      "avant": {
+        "meubles": 11,
+        "principalPresent": true,
+        "programmeComplet": false,
+        "auditPlan": false,
+        "televisions": 1,
+        "tablesRepas": 1,
+        "chaisesRepas": 4,
+        "totalCatalogue": 1195,
+        "manquants": [
+          {
+            "usage": "suspension",
+            "motif": "budget"
+          }
+        ],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      },
+      "apres": {
+        "meubles": 11,
+        "principalPresent": true,
+        "programmeComplet": true,
+        "auditPlan": true,
+        "televisions": 1,
+        "tablesRepas": 1,
+        "chaisesRepas": 4,
+        "totalCatalogue": 1180,
+        "manquants": [],
+        "spatialOK": true,
+        "geometrieConservee": true,
+        "budgetRespecte": true
+      }
+    }
+  ]
+}

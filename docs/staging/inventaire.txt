@@ -1,0 +1,56 @@
+{
+  "nombreCommercial": 341,
+  "nombreGenerique": 54,
+  "nombreProps": 31,
+  "nombreRecettes": 84,
+  "tapisReordonnes": [
+    {
+      "id": "al-480",
+      "source": [
+        1.5,
+        0.05,
+        1.9
+      ],
+      "dim": [
+        1.5,
+        1.9,
+        0.05
+      ]
+    }
+  ],
+  "tabouretsCommerciaux": [
+    {
+      "id": "fleur-de-nuit",
+      "nom": "Fleur de Nuit",
+      "dim": [
+        0.45,
+        0.45,
+        0.78
+      ],
+      "prix": 1181.25,
+      "hauteurAssise": null
+    },
+    {
+      "id": "orange-diamond-barstool",
+      "nom": "Diamond",
+      "dim": [
+        0.45,
+        0.5,
+        1.1
+      ],
+      "prix": 1687.5,
+      "hauteurAssise": null
+    },
+    {
+      "id": "tabouret-enfant-coque-blanche-square-kid",
+      "nom": "Square Kid",
+      "dim": [
+        0.45,
+        0.45,
+        0.4
+      ],
+      "prix": 0,
+      "hauteurAssise": null
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "endpoint_id": "openrouter/router/vision",
+  "input": {
+    "model": "google/gemini-3.8-flash",
+    "temperature": 0.1,
+    "max_tokens": 6000,
+    "reasoning": true
+  },
+  "store_payload": false,
+  "images": [
+    {
+      "nom": "89-avant-vision.jpg",
+      "sha256": "f8d5b9e6a7b0d97cf59fc5f7b0077659cd165a6e450fc15dd927cf64bddad7ea"
+    },
+    {
+      "nom": "89-apres-vision.jpg",
+      "sha256": "9d0d204d3fda86af1170153e2aaf5697193cf5a3f47c4b8fe2307a0507babbd4"
+    }
+  ],
+  "comparaisons": [
+    {
+      "id": "89-direct",
+      "images": [
+        "89-avant-vision.jpg",
+        "89-apres-vision.jpg"
+      ],
+      "apres": "B",
+      "prompt": "Deux images sont fournies, A puis B. Chaque image contient deux vues opposées de la même pièce synthétique de 89 m², avec le même type de maquette et les mêmes caméras. Juge seulement les images, sans inventer de texture, objet ou équipement. Quelle version paraît la plus habitée, chaleureuse et digne d'un magazine ? Ne récompense pas automatiquement la quantité : considère les surfaces vivantes, les végétaux, le mur travaillé et la cohérence des activités, avec la surcharge éventuelle. Réponds seulement en JSON concis (pas de raisonnement détaillé) : {\"prefere\":\"A|B|egal\",\"raison\":\"...\",\"tv_visible_A\":true,\"tv_visible_B\":true,\"reserves\":[\"...\"]}. Les chemins et mesures ne sont pas certifiables depuis les images.",
+      "promptOriginalArchive": true
+    },
+    {
+      "id": "89-inverse",
+      "images": [
+        "89-apres-vision.jpg",
+        "89-avant-vision.jpg"
+      ],
+      "apres": "A",
+      "prompt": "Deux images sont fournies, A puis B. Chaque image contient deux vues opposées de la même pièce synthétique de 89 m², avec le même type de maquette et les mêmes caméras. Juge seulement les images, sans inventer de texture, objet ou équipement. Quelle version paraît la plus habitée, chaleureuse et digne d'un magazine ? Ne récompense pas automatiquement la quantité : considère les surfaces vivantes, les végétaux, le mur travaillé et la cohérence des activités, avec la surcharge éventuelle. Réponds seulement en JSON concis (pas de raisonnement détaillé) : {\"prefere\":\"A|B|egal\",\"raison\":\"...\",\"tv_visible_A\":true,\"tv_visible_B\":true,\"reserves\":[\"...\"]}. Les chemins et mesures ne sont pas certifiables depuis les images.",
+      "promptOriginalArchive": true
+    }
+  ]
+}

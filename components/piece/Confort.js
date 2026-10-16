@@ -3,6 +3,7 @@ import { referencesStylesDe } from '@/lib/references-styles.js';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { bilanConfort, optimiserAmenagement } from '@/lib/confort.js';
+import { comparerDispositions } from '@/lib/encyclopedie-variantes.js';
 import PlanPiece, { ApercuPlan } from './PlanPiece.js';
 import { REFERENCES } from '@/lib/references.js';
 import s from './Confort.module.css';
@@ -50,7 +51,7 @@ const textes = {
   }
 };
 
-export default function Confort({ modele, items, produits, lang = 'fr', garder = [], avis = [], onAppliquer, onCorriger, mode, envies, preferences }) {
+export default function Confort({ modele, items, produits, lang = 'fr', garder = [], avis = [], onAppliquer, onCorriger, mode, envies, preferences, programme, planZones, staging }) {
   const t = textes[lang] || textes.fr;
   const bilan = useMemo(() => produits ? bilanConfort(modele, items, produits, lang, { envies, preferences }) : null, [modele, items, produits, lang, envies, preferences]);
   const [attente, setAttente] = useState(false), [message, setMessage] = useState(''), [retour, setRetour] = useState(null);
@@ -69,7 +70,8 @@ export default function Confort({ modele, items, produits, lang = 'fr', garder =
     setAttente(true);
     // Laisse le bouton s'afficher avant le calcul local ; aucun appel IA ni crédit consommé.
     timer.current = setTimeout(() => {
-      const r = optimiserAmenagement(modele, items, produits, { garder: fixes, langue: lang, mode, envies, preferences, ...(comparer ? { variantes: 3 } : {}) });
+      const options={garder:fixes,langue:lang,mode,envies,preferences,programme,plan:planZones,staging};
+      const r = programme?.encyclopedie ? comparerDispositions(modele,items,produits,options) : optimiserAmenagement(modele, items, produits, { ...options, ...(comparer ? { variantes: 3 } : {}) });
       if (comparer) { setComparaison({ base: items, variantes: r.variantes }); setAttente(false); return; }
       const change = r.items.some((it, i) => it.x !== items[i].x || it.z !== items[i].z || it.rot !== items[i].rot);
       if (change) { setRetour({ avant: items, apres: r.items }); onAppliquer(r.items); }

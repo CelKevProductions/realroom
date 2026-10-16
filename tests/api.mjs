@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Essais de l'API sur un serveur local (services simulés) : les cas limites que le parcours
 // Playwright ne couvre pas. Après `npm run build` : node tests/api.mjs
+// Pour un incident précis : ESSAI_API='plan en miroir' node tests/api.mjs
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -12,8 +13,10 @@ import {demandeDemoIA} from '../lib/demo-ia.js';
 import {champsDepuisScan} from '../lib/scan.js';
 import {PRODUITS} from '../lib/catalogue.js';
 import {lireDXF} from '../lib/plans.js';
-import {segmentsDe} from '../lib/contour.js';
+import {segmentsDe,pointOuverture} from '../lib/contour.js';
 import { salonConcave } from './fixtures/salons-catalogue.js';
+import { sejour89 } from './fixtures/staging.js';
+import { posesStaging } from '../lib/staging.js';
 
 const RACINE = path.resolve(import.meta.dirname, '..');
 const PORT = Number(process.env.PORT || 3117);
@@ -42,12 +45,12 @@ async function attendre() {
 }
 
 // petit client avec cookie de session
-function client(base = BASE) {
+function client(base = BASE, reseauEssai) {
   let cookie = '';
   const appel = async (url, { method = 'GET', corps, brut, formulaire, headers = {} } = {}) => {
     const r = await fetch(base + url, {
       method, redirect: 'manual', signal: AbortSignal.timeout(45000),
-      headers: { ...headers, ...(cookie ? { cookie } : {}), ...(corps !== undefined ? { 'content-type': 'application/json' } : {}) },
+      headers: { ...(reseauEssai?{'x-forwarded-for':reseauEssai}:{}),...headers, ...(cookie ? { cookie } : {}), ...(corps !== undefined ? { 'content-type': 'application/json' } : {}) },
       body: corps !== undefined ? JSON.stringify(corps) : brut !== undefined ? brut : formulaire
     });
     const c = r.headers.get('set-cookie');
@@ -83,14 +86,19 @@ const pieceRegression = process.env.DXF_REGRESSION
   ? { ...champsDepuisScan(lireDXF(fs.readFileSync(process.env.DXF_REGRESSION, 'utf8')).pieces[0].scan), fonction: 'chambre', notes: '' }
   : { ...champsDepuisScan(scanAndroid()), fonction: 'chambre', notes: '' };
 
-essai('clé absente ou refusée : refus explicite sans attente ni remplacement du plan', async () => {
+essai('clé, solde et accès IA : refus distincts sans remplacement du plan', async () => {
   const corps = demandeDemoIA(pieceRegression, { budget: 2000 }, 'fr');
   const avant = structuredClone(corps);
-  for (const [cle, reference] of [['', 'D-02'], ['test-refusee', 'D-07']]) {
+  for (const [cle, reference, refus, erreur] of [
+    ['', 'D-02', '1', 'ia-indisponible'],
+    ['test-refusee', 'D-07', '1', 'ia-indisponible'],
+    ['test-sans-solde', 'D-08', 'credits', 'credits-ia'],
+    ['test-sans-acces', 'D-09', 'acces', 'ia-indisponible']
+  ]) {
     const base = `http://127.0.0.1:${PORT + 1}`, dossier = path.join(DONNEES, reference);
     const diagnostic = spawn(process.execPath, ['--import', path.join(RACINE, 'tests/fixtures/serveur-ia.mjs'), 'node_modules/next/dist/bin/next', 'start', '-H', '127.0.0.1', '-p', String(PORT + 1)], {
       cwd: RACINE, stdio: 'inherit',
-      env: { ...envEssais, REALROOM_ESSAIS: '1', REALROOM_SIMULATION: '1', DEMO_AMENAGEMENT_IA: '1', FAL_KEY: cle, DEMO_FAL_REFUS: '1', PGLITE_DIR: path.join(dossier, 'pglite'), FICHIERS_DIR: path.join(dossier, 'fichiers'), DEMO_FAL_AUDIT: path.join(dossier, 'fal.jsonl') }
+      env: { ...envEssais, REALROOM_ESSAIS: '1', REALROOM_SIMULATION: '1', DEMO_AMENAGEMENT_IA: '1', FAL_KEY: cle, DEMO_FAL_REFUS: refus, PGLITE_DIR: path.join(dossier, 'pglite'), FICHIERS_DIR: path.join(dossier, 'fichiers'), DEMO_FAL_AUDIT: path.join(dossier, 'fal.jsonl') }
     });
     try {
       let pret = false;
@@ -104,7 +112,7 @@ essai('clé absente ou refusée : refus explicite sans attente ni remplacement d
       assert.equal(etat.disponible, !!cle);
       if (!cle) assert.equal(etat.reference, reference);
       const r = await api('/api/demo/amenager', { method: 'POST', corps });
-      assert.equal(r.statut, 503, JSON.stringify(r)); assert.equal(r.erreur, 'ia-indisponible'); assert.equal(r.reference, reference);
+      assert.equal(r.statut, 503, JSON.stringify(r)); assert.equal(r.erreur, erreur); assert.equal(r.reference, reference);
       assert.equal(r.agencement, undefined); assert.equal(r.proposition, undefined);
       assert.deepEqual(corps, avant);
       if (!cle) assert.equal(fs.existsSync(path.join(dossier, 'pglite')), false, 'aucun compteur ni appel IA lorsque la clé manque');
@@ -129,7 +137,8 @@ essai('la démo anonyme appelle le moteur IA, conserve les choix et limite les a
   assert.equal((await envoyer('192.0.2.1', corps, { origin: 'https://autre.example' })).statut, 403);
   assert.equal((await envoyer('192.0.2.1', { ...corps, choix: { ...corps.choix, budget: -1 } })).statut, 400);
   for (let i = 0; i < 2; i++) {
-    const r = await envoyer();
+    const r = await envoyer('192.0.2.1', i===1 ? {...corps,choix:{...corps.choix,referencesSpatiales:false}} : corps);
+    if(i===1)assert.equal(r.proposition?.referencesSpatiales?.actif,false,'le repli traverse la démo et son serveur');
     assert.equal(r.statut, 200, JSON.stringify(r)); assert.equal(r.proposition.moteur.type, 'ia');
     assert.equal(r.proposition.concept, 'Proposition IA du fournisseur de test.');
     assert.equal(r.proposition.budget, 2000); assert.equal(r.proposition.envies, corps.choix.envies);
@@ -387,6 +396,89 @@ essai('séjour en L : brief vide, sans plafond, huit places et quatre activités
   assert.deepEqual(relu.piece.modele, releve.piece.modele);
 });
 
+essai('fonctions essentielles : lit, canapé et TV préservés puis rechargés sans modifier la pièce', async () => {
+  const api=client(BASE,'192.0.2.45');await api.connexion('fonctions@essentiels.test');
+  const pr=await api('/api/projets',{method:'POST',corps:{nom:'Fonctions essentielles'}});
+  for(const [fonction,L,P,budget,envies] of [
+    ['chambre',4,4,0,'Chambre épurée, télévision et rangement'],
+    ['salon',6,5,1200,'Salon épuré avec télévision et repas']
+  ]) {
+    const pc=await api(`/api/projets/${pr.projet.id}/pieces`,{method:'POST',corps:{nom:fonction,fonction}}),id=pc.piece.id;
+    const scan=scanApple();scan.objects=[];
+    scan.walls.forEach((w,i)=>{w.size[0]=i<2?L:P;if(i<2)w.transform[14]=(i===0?1:-1)*P/2;else w.transform[12]=(i===2?-1:1)*L/2;});
+    scan.openings[0].transform[12]=.2;scan.openings[0].transform[14]=P/2;
+    scan.openings[1].size[0]=1.1;scan.openings[1].transform[12]=0;scan.openings[1].transform[14]=-P/2;
+    const releve=await api(`/api/pieces/${id}/scan`,{method:'POST',corps:{scan}});assert.equal(releve.statut,200);
+    const r=await api(`/api/pieces/${id}/amenager`,{method:'POST',corps:{mode:'tout',envies,budget,espaces:fonction==='salon'?['repas']:['rangement'],placesRepas:4,encyclopedie:true,referencesSpatiales:true}});
+    assert.equal(r.statut,200,JSON.stringify(r));
+    const p=r.piece.proposition,items=r.piece.agencement.filter(it=>it.garde!==false);
+    assert.ok(items.some(it=>it.usageProgramme===(fonction==='chambre'?'lit':'canape')),fonction);
+    assert.ok([...items,...posesStaging(items,p.staging,PRODUITS)].some(it=>it.usageProgramme==='television'),fonction);
+    if(fonction==='salon') {
+      assert.equal(items.filter(it=>it.usageProgramme==='chaise-repas').length,4);
+      assert.ok(items.reduce((s,it)=>s+(PRODUITS[it.sku]?.prix||0),0)<=budget);
+    }
+    assert.equal(p.confort.score.contraintes,0);assert.equal(p.confort.acces,true);assert.equal(p.confort.circulation,true);
+    assert.equal(p.planZones.audit.valide,p.programme.complet);
+    const relu=await api(`/api/pieces/${id}`);
+    assert.deepEqual(relu.piece.modele,releve.piece.modele);assert.deepEqual(relu.piece.agencement,r.piece.agencement);
+    assert.equal(relu.piece.proposition.programme.complet,p.programme.complet);
+  }
+});
+
+essai('mission 4 : staging du séjour 89 m² sauvegardé, attaches mobiles, hors budget et repli', async () => {
+  const api=client();await api.connexion('mission4@staging.test');
+  const pr=await api('/api/projets',{method:'POST',corps:{nom:'Staging synthétique'}});
+  const pc=await api(`/api/projets/${pr.projet.id}/pieces`,{method:'POST',corps:{nom:'Séjour',fonction:'salon'}}),id=pc.piece.id;
+  const modele=sejour89(),scan={version:scanAndroid().version,source:'plan-dessine',unit:'m',ceilingHeight:modele.dims.hauteur,
+    floorCorners:modele.contour.map(([x,z])=>[x,0,z]),openings:segmentsDe(modele).flatMap(pan=>modele.murs[pan.id].ouvertures.map(o=>({type:o.type,
+      a:pan.centre.map((v,i)=>v+(o.position-o.largeur/2)*pan.d[i]),b:pan.centre.map((v,i)=>v+(o.position+o.largeur/2)*pan.d[i])})))};
+  assert.equal((await api(`/api/pieces/${id}/scan`,{method:'POST',corps:{scan}})).statut,200);
+  const choix={mode:'tout',envies:'Salon chaleureux',budget:0,garder:[],aRemplacer:[],langue:'fr'};
+  const r=await api(`/api/pieces/${id}/amenager`,{method:'POST',corps:choix});assert.equal(r.statut,200,JSON.stringify(r));
+  const p=r.piece.proposition;assert.equal(p.densite.echelle.surface,89);assert.equal(p.densite.zonesVie,5);
+  assert.ok(p.staging.items.length>20);assert.deepEqual(p.staging.diagnostic.audit,[]);assert.equal(p.planZones.audit.valide,true);
+  assert.ok(p.staging.items.every(it=>it.vendu===false&&!it.sku&&!it.p.prix));
+  const cout=xs=>xs.filter(it=>it.origine==='catalogue').reduce((s,it)=>s+(PRODUITS[it.sku]?.prix||0),0);
+  assert.equal(cout([...r.piece.agencement,...p.staging.items]),cout(r.piece.agencement));
+  const relu=await api(`/api/pieces/${id}`);assert.deepEqual(relu.piece.proposition.staging,p.staging);
+  const h=r.piece.agencement.find(it=>p.staging.items.some(q=>q.attach_to?.id===it.id&&q.kind==='surface_item'));
+  const avant=posesStaging(r.piece.agencement,p.staging).find(it=>it.attach_to?.id===h.id);
+  const deplaces=r.piece.agencement.map(it=>it.id===h.id?{...it,x:it.x+.1,z:it.z+.1}:it);
+  assert.equal((await api(`/api/pieces/${id}`,{method:'PATCH',corps:{agencement:deplaces}})).statut,200);
+  const relu2=await api(`/api/pieces/${id}`),apres=posesStaging(relu2.piece.agencement,relu2.piece.proposition.staging).find(it=>it.id===avant.id);
+  assert.ok(Math.abs(apres.x-avant.x-.1)<.002);assert.ok(Math.abs(apres.z-avant.z-.1)<.002);
+  const repli=await api(`/api/pieces/${id}/amenager`,{method:'POST',corps:{...choix,staging:false}});
+  assert.equal(repli.statut,200);assert.equal(repli.piece.proposition.staging,undefined);
+});
+
+essai('mission 5 : IDs source, staging S et drapeau conservés après enregistrement', async () => {
+  const api=client(BASE,'198.51.100.55');await api.connexion('mission5@encyclopedie.test');
+  const pr=await api('/api/projets',{method:'POST',corps:{nom:'Encyclopédie synthétique'}});
+  const pc=await api(`/api/projets/${pr.projet.id}/pieces`,{method:'POST',corps:{nom:'Séjour',fonction:'salon'}}),id=pc.piece.id;
+  const modele=sejour89(),scan={version:scanAndroid().version,source:'plan-dessine',unit:'m',ceilingHeight:modele.dims.hauteur,
+    floorCorners:modele.contour.map(([x,z])=>[x,0,z]),openings:segmentsDe(modele).flatMap(pan=>modele.murs[pan.id].ouvertures.map(o=>({type:o.type,
+      a:pointOuverture(pan,o.position-o.largeur/2),b:pointOuverture(pan,o.position+o.largeur/2)})))};
+  assert.equal((await api(`/api/pieces/${id}/scan`,{method:'POST',corps:{scan}})).statut,200);
+  const choix={mode:'tout',envies:'Salon chaleureux',encyclopedie:true,budget:0,garder:[],langue:'fr'};
+  const r=await api(`/api/pieces/${id}/amenager`,{method:'POST',corps:choix});assert.equal(r.statut,200,JSON.stringify(r));
+  const p=r.piece.proposition;assert.ok(p.encyclopedie);assert.equal(p.encyclopedie.audit.valide,true);assert.equal(p.densite.zonesVie,5);assert.ok(p.planZones.zones.every(z=>z.dispositionUid));
+  assert.ok(p.staging.encyclopedie.signatureMoments.length);assert.ok(p.staging.items.every(it=>it.classe==='S'&&!it.sku&&!it.p.prix));
+  const relu=await api(`/api/pieces/${id}`);assert.deepEqual(relu.piece.proposition.encyclopedie,p.encyclopedie);
+  assert.equal((await api(`/api/pieces/${id}`,{method:'PATCH',corps:{agencement:r.piece.agencement}})).statut,200);
+  const relu2=await api(`/api/pieces/${id}`);assert.deepEqual(relu2.piece.agencement.map(it=>it.dispositionUid),r.piece.agencement.map(it=>it.dispositionUid));
+  const repli=await api(`/api/pieces/${id}/amenager`,{method:'POST',corps:{...choix,encyclopedie:false}});assert.equal(repli.statut,200);assert.equal(repli.piece.proposition.encyclopedie,undefined);
+});
+
+essai('mission 5 : erreur 422 réglementaire sans remplacement du plan sauvegardé', async () => {
+  const api=client(BASE,'198.51.100.56');await api.connexion('mission5-strict@encyclopedie.test');
+  const pr=await api('/api/projets',{method:'POST',corps:{nom:'Règles synthétiques'}}),pc=await api(`/api/projets/${pr.projet.id}/pieces`,{method:'POST',corps:{nom:'Chambre',fonction:'chambre'}}),id=pc.piece.id;
+  assert.equal((await api(`/api/pieces/${id}/scan`,{method:'POST',corps:{scan:scanAndroid()}})).statut,200);
+  const avant=await api(`/api/pieces/${id}`),r=await api(`/api/pieces/${id}/amenager`,{method:'POST',corps:{mode:'tout',encyclopedie:true,profilUsage:{ergonomieStricte:true},envies:'Chambre',budget:0}});
+  assert.equal(r.statut,422,JSON.stringify(r));assert.equal(r.erreur,'regles-bloquantes');const apres=await api(`/api/pieces/${id}`);assert.deepEqual(apres.piece.agencement,avant.piece.agencement);assert.deepEqual(apres.piece.proposition,avant.piece.proposition);
+  const partiel=await api(`/api/pieces/${id}/amenager`,{method:'POST',corps:{mode:'partiel',encyclopedie:true,profilUsage:{ergonomieStricte:true},envies:'Chambre',budget:0}});assert.equal(partiel.statut,422);assert.deepEqual((await api(`/api/pieces/${id}`)).piece.agencement,avant.piece.agencement);
+});
+
 essai('rendu guidé : caméra, nuit, photo indépendante, concurrence et référence conservée', async () => {
   const api=client();await api.connexion('camera@angles.test');
   const pr=await api('/api/projets',{method:'POST',corps:{nom:'Caméra'}});
@@ -446,6 +538,81 @@ essai('hauteurs et attaches : TV et tableau gardent leur pose après sauvegarde 
   assert.equal((await api(`/api/pieces/${id}`,{method:'DELETE'})).statut,200);
 });
 
+essai('plan en miroir : contour, ouvertures et mobilier sauvegardés ensemble, symétrie invalide refusée', async () => {
+  const api=client();await api.connexion('plan@orientation.test');
+  const pr=await api('/api/projets',{method:'POST',corps:{nom:'Orientation'}});
+  const pc=await api(`/api/projets/${pr.projet.id}/pieces`,{method:'POST',corps:{nom:'Pièce en L',fonction:'salon'}}),id=pc.piece.id;
+  const scan={version:'realroom-scan-v1',source:'plan-dxf',unit:'m',floorCorners:[[0,0,0],[6,0,0],[6,0,2],[2,0,2],[2,0,5],[0,0,5]],ceilingHeight:2.6,
+    openings:[{type:'porte',a:[.5,0],b:[1.4,0]},{type:'fenetre',a:[2,3],b:[2,4.2]}]};
+  assert.equal((await api(`/api/pieces/${id}/scan`,{method:'POST',corps:{scan}})).statut,200);
+  const items=[{id:'existant',origine:'existant',x:-2,z:1,rot:.4,p:{fam:'meuble',nom:'Rangement conservé',dim:[.7,.4,.8]}}];
+  assert.equal((await api(`/api/pieces/${id}`,{method:'PATCH',corps:{agencement:items}})).statut,200);
+  for (const axe of ['z','x']) {
+    const avant=(await api(`/api/pieces/${id}`)).piece;
+    const r=await api(`/api/pieces/${id}`,{method:'PATCH',corps:{geometrie:{miroir:{[axe]:true}}}});
+    assert.equal(r.statut,200,JSON.stringify(r));
+    assert.deepEqual(r.piece.modele.contour,avant.modele.contour.map(([x,z])=>[axe==='x'?-x:x,axe==='z'?-z:z]));
+    assert.equal(r.piece.agencement[0][axe],-avant.agencement[0][axe]);
+    assert.deepEqual(r.piece.agencement[0].p.dim,items[0].p.dim);
+    for(const pan of segmentsDe(avant.modele))for(const [i,o]of avant.modele.murs[pan.id].ouvertures.entries()){
+      const a=pointOuverture(pan,o.position),nouveau=segmentsDe(r.piece.modele).find(p=>p.id===pan.id);
+      const b=pointOuverture(nouveau,r.piece.modele.murs[pan.id].ouvertures[i].position);
+      assert.ok(Math.abs(b[0]-(axe==='x'?-a[0]:a[0]))<.011);assert.ok(Math.abs(b[1]-(axe==='z'?-a[1]:a[1]))<.011);
+    }
+    const relu=(await api(`/api/pieces/${id}`)).piece;
+    assert.deepEqual(relu.modele,r.piece.modele);assert.deepEqual(relu.agencement,r.piece.agencement);
+  }
+  const avant=(await api(`/api/pieces/${id}`)).piece;
+  assert.equal((await api(`/api/pieces/${id}`,{method:'PATCH',corps:{geometrie:{miroir:{x:'oui'}}}})).statut,400);
+  assert.deepEqual((await api(`/api/pieces/${id}`)).piece.modele,avant.modele);
+  assert.equal((await api(`/api/pieces/${id}`,{method:'DELETE'})).statut,200);
+});
+
+essai('assistant et Shuffle : variantes complètes sauvegardées, retour exact, plan modifié et accès étrangers refusés', async () => {
+  const api=client(BASE,'192.0.2.46');await api.connexion('client@assistant-layouts.test');
+  const projet=await api('/api/projets',{method:'POST',corps:{nom:'Assistant'}});
+  const creation=await api(`/api/projets/${projet.projet.id}/pieces`,{method:'POST',corps:{nom:'Salon',fonction:'salon'}});
+  const id=creation.piece.id;
+  const scan={version:'realroom-scan-v1',source:'plan-dxf',unit:'m',floorCorners:[[0,0,0],[5,0,0],[5,0,5],[0,0,5]],ceilingHeight:2.6,
+    openings:[{type:'porte',a:[2.05,0],b:[2.95,0]},{type:'fenetre',a:[1.6,5],b:[3.4,5],height:1.35,sillHeight:.9}]};
+  const initial=await api(`/api/pieces/${id}/scan`,{method:'POST',corps:{scan}});assert.equal(initial.statut,200,JSON.stringify(initial));
+  const avant=structuredClone(initial.piece.modele),fichierAudit=path.join(DONNEES,'fal.jsonl');
+  const appelsAvant=fs.existsSync(fichierAudit)?fs.readFileSync(fichierAudit,'utf8'):'';
+  const premier=await api(`/api/pieces/${id}/variantes`,{method:'POST',corps:{action:'generer',envies:'Salon épuré avec télévision et repas',espaces:['repas'],placesRepas:4,budget:9000,encyclopedie:true}});
+  assert.equal(premier.statut,200,JSON.stringify(premier));
+  assert.equal(premier.piece.proposition.programme.complet,true);
+  assert.equal(premier.piece.proposition.moteur.type,'assistant');
+  assert.equal(premier.piece.agencement.filter(it=>it.usageProgramme==='chaise-repas').length,4);
+  const session=premier.piece.proposition.variantes.session;
+  // L'enregistrement différé de l'éditeur ne doit pas invalider une proposition inchangée.
+  const patch=await api(`/api/pieces/${id}`,{method:'PATCH',corps:{agencement:premier.piece.agencement}});assert.equal(patch.statut,200,JSON.stringify(patch));
+  const deuxieme=await api(`/api/pieces/${id}/variantes`,{method:'POST',corps:{action:'shuffle',session}});
+  assert.equal(deuxieme.statut,200,JSON.stringify(deuxieme));assert.equal(deuxieme.assistant.message,'proposition');
+  assert.equal(deuxieme.piece.proposition.programme.complet,true);
+  assert.equal(deuxieme.piece.proposition.planZones.audit.valide,true);
+  assert.equal(deuxieme.piece.proposition.variantes.liste.length,2);
+  const relue=await api(`/api/pieces/${id}`);assert.deepEqual(relue.piece.agencement,deuxieme.piece.agencement);
+  assert.deepEqual(relue.piece.proposition.variantes,deuxieme.piece.proposition.variantes);
+  assert.deepEqual(relue.piece.modele,avant);
+  const retour=await api(`/api/pieces/${id}/variantes`,{method:'POST',corps:{action:'choisir',id:'v0',session}});
+  assert.equal(retour.statut,200,JSON.stringify(retour));assert.deepEqual(retour.piece.agencement,premier.piece.agencement);
+  assert.deepEqual(retour.piece.proposition.staging,premier.piece.proposition.staging);
+  assert.equal(fs.existsSync(fichierAudit)?fs.readFileSync(fichierAudit,'utf8'):'',appelsAvant,'aucun fournisseur IA appelé');
+  assert.equal((await client()(`/api/pieces/${id}/variantes`,{method:'POST',corps:{action:'shuffle'}})).statut,401);
+  assert.equal((await api(`/api/pieces/${id}/variantes`,{method:'POST',corps:{action:'choisir',id:'inconnu',session}})).statut,400);
+  const modification=await api(`/api/pieces/${id}`,{method:'PATCH',corps:{geometrie:{miroir:{x:true}}}});assert.equal(modification.statut,200);
+  const refuse=await api(`/api/pieces/${id}/variantes`,{method:'POST',corps:{action:'choisir',id:'v0',session}});assert.equal(refuse.statut,409);assert.equal(refuse.erreur,'assistant-obsolete');
+  assert.deepEqual((await api(`/api/pieces/${id}`)).piece.agencement,modification.piece.agencement);
+  await api(`/api/pieces/${id}`,{method:'DELETE'});
+  const cuisine=await api(`/api/projets/${projet.projet.id}/pieces`,{method:'POST',corps:{nom:'Cuisine',fonction:'cuisine'}});
+  const cid=cuisine.piece.id;
+  assert.equal((await api(`/api/pieces/${cid}/scan`,{method:'POST',corps:{scan}})).statut,200);
+  const nonCouvert=await api(`/api/pieces/${cid}/variantes`,{method:'POST',corps:{action:'generer'}});
+  assert.equal(nonCouvert.statut,400);assert.equal(nonCouvert.erreur,'assistant-fonction');
+  const conservee=await api(`/api/pieces/${cid}`);assert.deepEqual(conservee.piece.agencement,[]);assert.equal(conservee.piece.proposition,null);
+  await api(`/api/pieces/${cid}`,{method:'DELETE'});
+});
+
 essai('les pages RealRoom, Maison Corleone et relevé mobile sont servies', async () => {
   for(const url of ['/fr/demo','/en/demo','/fr/maison-corleone/demo','/en/maison-corleone/demo','/fr/releve','/en/releve']) {
     const r=await fetch(BASE+url);assert.equal(r.status,200,url);
@@ -462,7 +629,9 @@ essai('les pages RealRoom, Maison Corleone et relevé mobile sont servies', asyn
 try {
   await attendre();
   let ko = 0;
-  for (const { nom, fn } of essais) {
+  const selection=essais.filter(e=>!process.env.ESSAI_API||e.nom.includes(process.env.ESSAI_API));
+  assert.ok(selection.length,'Aucun scénario ne correspond à ESSAI_API');
+  for (const { nom, fn } of selection) {
     try { await fn(); console.log('ok  ', nom); } catch (e) { ko++; console.log('ÉCHEC', nom, '\n     ', e.message); }
   }
   console.log(ko ? `${ko} échec(s)` : 'OK');

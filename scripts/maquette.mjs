@@ -1,10 +1,12 @@
 // Rendu métrique logiciel commun aux bancs synthétiques.
 import * as THREE from 'three';
 import { construireObjetGenerique } from '../moteur/generiques.js';
-import { segmentsDe } from '../lib/contour.js';
+import { segmentsDe, contourDe } from '../lib/contour.js';
 import { estMural, estSuspendu } from '../lib/agencement.js';
 import { intervalleHauteur } from '../lib/hauteurs.js';
 import { PNG } from 'pngjs';
+import { construireProp } from '../moteur/staging.js';
+import { posesStaging } from '../lib/staging.js';
 const mat=c=>new THREE.MeshLambertMaterial({color:c});
 function boite(g,w,h,d,x,y,z,c){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(c));o.position.set(x,y+h/2,z);g.add(o);return o;}
 function fixture(p){
@@ -17,26 +19,29 @@ function fixture(p){
     for(const x of [-1,1])boite(g,.09,h*.24,d,x*(w/2-.045),assise,0,'#B9AA94');
     boite(g,w-.2,.07,d-ep-.07,0,assise,.04,'#DDD0BB');
     for(const x of [-1,1])for(const z of [-1,1])boite(g,.035,.08,.035,x*(w/2-.07),0,z*(d/2-.07),'#514A40');
+  }else if(p.fam==='applique') {
+    boite(g,w*.15,h,d*.2,0,-h/2,0,'#7B6953');
+    boite(g,w,h*.6,d,0,-h*.3,d*.4,'#CDBD9C');
   }else if(estSuspendu(p.fam)){
     const o=new THREE.Mesh(new THREE.CylinderGeometry(w*.35,w/2,h,20),mat('#C6A976'));o.position.y=h/2;g.add(o);
   }else{
-    const styles={table:'rectangle',chaise:'chaise',meuble:'tv',lampadaire:'lampadaire',lampe:'lampe',buffet:'buffet'};
+    const styles={table:'rectangle',chaise:'chaise',meuble:'tv',lampadaire:'lampadaire',lampe:'lampe',buffet:'buffet',tapis:'tapis'};
     return construireObjetGenerique({...p,st:styles[p.fam]||'rectangle',cols:['#C2AC8B'],mat:'bois'});
   }
   return g;
 }
-export function sceneDe(data,camera){
+export function sceneDe(data,camera,constructeurControle){
   const scene=new THREE.Scene(),{modele,catalogue,items}=data;
   const L=modele.dims.largeur,P=modele.dims.profondeur;
   const mursCoupes=new Set();
-  boite(scene,L+.14,.08,P+.14,0,-.08,0,'#E4D7C2');
-  for(let i=0;i<24;i++)boite(scene,L,.001,.007,0,.001,-P/2+i*P/23,'#CBBBA4');
+  const shape=new THREE.Shape(contourDe(modele).map(([x,z])=>new THREE.Vector2(x,-z)));
+  const floor=new THREE.Mesh(new THREE.ShapeGeometry(shape),mat('#E4D7C2'));floor.rotation.x=-Math.PI/2;scene.add(floor);
   // Deux parois coupées pour lire la pièce ; les ouvertures des autres murs restent exactes.
   for(const pan of segmentsDe(modele)){
     const coupe=(camera.position.x-pan.centre[0])*pan.n[0]+(camera.position.z-pan.centre[1])*pan.n[1]<0;
     if(coupe)mursCoupes.add(pan.id);
     const h=coupe?.06:modele.dims.hauteur;
-    const wall=new THREE.Group();wall.position.set(...[pan.centre[0],0,pan.centre[1]]);wall.rotation.y=Math.atan2(-pan.d[1],pan.d[0]);scene.add(wall);
+    const wall=new THREE.Group();wall.position.set(pan.centre[0]-pan.n[0]*.0275,0,pan.centre[1]-pan.n[1]*.0275);wall.rotation.y=Math.atan2(-pan.d[1],pan.d[0]);scene.add(wall);
     const os=(modele.murs[pan.id]?.ouvertures||[]).map(o=>({...o,u:o.position*pan.signePosition})).sort((a,b)=>a.u-b.u);
     let debut=-pan.long/2;
     for(const o of os){
@@ -53,16 +58,25 @@ export function sceneDe(data,camera){
     }
     if(debut<pan.long/2)boite(wall,pan.long/2-debut,h,.055,(pan.long/2+debut)/2,0,0,'#EBE6DA');
   }
-  const es=items.map(it=>({it,p:catalogue[it.sku]}));
+  const es=items.map(it=>({it,p:it.sku?catalogue[it.sku]:it.p}));
   for(const e of es){
     if(estMural(e.p.fam)&&mursCoupes.has(e.it.mur||e.it.attach_to?.id))continue;
-    const {it,p}=e,g=fixture(p),racine=new THREE.Group(),v=intervalleHauteur(it,p,modele,es);
+    const {it,p}=e,g=constructeurControle?.(p)||fixture(p),racine=new THREE.Group(),v=intervalleHauteur(it,p,modele,es);
     racine.position.set(it.x,estMural(p.fam)?it.y:v.bas,it.z);racine.rotation.y=it.rot||0;racine.add(g);scene.add(racine);
     g.traverse(o=>{if(o.isMesh){const m=o.material;o.material=mat(m.color);}});
     if(estSuspendu(p.fam)){
       const longueur=modele.dims.hauteur-v.haut;
       const cable=new THREE.Mesh(new THREE.CylinderGeometry(.008,.008,longueur,8),mat('#514A40'));
       cable.position.set(it.x,v.haut+longueur/2,it.z);scene.add(cable);
+    }
+  }
+  for(const it of posesStaging(items,data.staging,catalogue)) {
+    if(it.kind==='wall_item'&&mursCoupes.has(it.mur))continue;
+    const root=new THREE.Group();root.position.set(it.x,it.baseY||0,it.z);root.rotation.y=it.rot||0;
+    const g=construireProp(it.p);g.traverse(o=>{if(o.isMesh)o.material=mat(o.material.color);});root.add(g);scene.add(root);
+    if(it.kind==='ceiling_item') {
+      const longueur=modele.dims.hauteur-(it.baseY+it.p.dim[2]);
+      if(longueur>0){const cable=new THREE.Mesh(new THREE.CylinderGeometry(.007,.007,longueur,6),mat('#66584B'));cable.position.set(it.x,it.baseY+it.p.dim[2]+longueur/2,it.z);scene.add(cable);}
     }
   }
   scene.add(new THREE.AmbientLight('#FFFFFF',.55));const lumiere=new THREE.DirectionalLight('#FFFFFF',.45);lumiere.position.set(-4,7,5);scene.add(lumiere);

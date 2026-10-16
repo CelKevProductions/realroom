@@ -1,0 +1,20 @@
+{
+  "zones": 100,
+  "dispositions": 521,
+  "meubles": 242,
+  "props": 155,
+  "regles": 81,
+  "signature_moments": 55,
+  "trous": 219,
+  "dispositionsParPiece": {
+    "SL": 257,
+    "CH": 119,
+    "SAM": 29,
+    "CU": 30,
+    "BU": 23,
+    "SDB": 21,
+    "EN": 10,
+    "BA": 10,
+    "AN": 22
+  }
+}

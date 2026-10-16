@@ -1,5 +1,5 @@
 // Démo sans compte : réponses de l'API servies dans le navigateur, avec les mêmes formes que les
-// vraies routes (app/api). L'aménagement appelle réellement l'IA côté serveur et le même solveur ;
+// vraies routes (app/api). L'assistant utilise le moteur local ; l'option IA appelle le serveur.
 // l'analyse photo, le rendu (vue de la maquette), la visite 3D et les paiements sont simulés.
 import { lire, ecrire, remettreAZero, piece as pieceDe, projet as projetDe, publique, renduPublic, rendusDe, listeProjets, projetComplet, id as nouvelId } from '@/components/demo/magasin.js';
 import { chargerCatalogue } from '@/components/catalogueClient.js';
@@ -9,7 +9,9 @@ import { dimsValides } from '@/lib/piece.js';
 import { moteurGuideActif } from '@/lib/moteur-guide.js';
 import { finitionActive } from '@/lib/finition.js';
 import { compositionSurfaceActive } from '@/lib/composition-surface.js';
+import { referencesSpatialesActives } from '@/lib/ameublement-reference.js';
 import { amenagerParIA } from './ia.js';
+import { assistantEnArrierePlan } from './assistant.js';
 import { verifier } from '@/lib/agencement.js';
 import { corrigerPiece, mesuresConfirmees } from '@/lib/geometrie.js';
 import { CREDITS, PACKS, FONCTIONS, ROLES_PHOTO, LIMITES } from '@/lib/config.js';
@@ -124,6 +126,7 @@ export async function repondre(url, { method = 'GET', corps, formulaire } = {}) 
       }
       if (sous === 'analyse') return analyser(p, langue);
       if (sous === 'amenager') return amenager(p, corps || {}, langue);
+      if (sous === 'variantes' && method === 'POST') return variantes(p, corps || {}, langue);
       if (sous === 'rendus') {
         if (method === 'GET') return ok({ rendus: rendusDe(p.id) });
         return generer(p, corps || {});
@@ -132,6 +135,7 @@ export async function repondre(url, { method = 'GET', corps, formulaire } = {}) 
     return non('introuvable', 404);
   } catch (e) {
     if (e && e.statut) return non(e.code, e.statut);
+    if (['scan-forme','scan-coins','scan-dimensions','scan-repere'].includes(e?.message)) return non(e.message,400);
     console.error('démo', e);
     return non('serveur', 500);
   }
@@ -153,10 +157,10 @@ async function modifier(p, b) {
     if ((b.dims || b.geometrie) && p.modele) {
       Object.assign(p, corrigerPiece(p.modele, Array.isArray(b.agencement) ? b.agencement.slice(0, 80) : p.agencement || [], b.geometrie || { dims: b.dims }, produits));
       p.dims = mesuresConfirmees(p.modele);
-      if (p.proposition) p.proposition = { ...p.proposition, confort: null, densite: null };
+      if (p.proposition) p.proposition = { ...p.proposition, confort: null, densite: null, staging: (b.dims || b.geometrie) ? null : p.proposition.staging };
     }
     if (Array.isArray(b.agencement) && p.modele && !b.dims && !b.geometrie) p.agencement = b.agencement.slice(0, 80);
-    if (Array.isArray(b.agencement) && p.proposition) p.proposition = { ...p.proposition, confort: null, densite: null };
+    if (Array.isArray(b.agencement) && p.proposition) p.proposition = { ...p.proposition, confort: null, densite: null, staging: (b.dims || b.geometrie) ? null : p.proposition.staging };
     if (b.vue && p.modele) p.modele = { ...p.modele, vue: { ...p.modele.vue, ...b.vue } };
     toucher(p);
     if (p.modele) alertes = verifier(p.modele, p.agencement || [], produits);
@@ -200,11 +204,21 @@ async function analyser(p, langue) {
 async function amenager(p, b, langue) {
   if (!p.modele) return non('pas-de-modele', 409);
   const revision = p.maj_le;
-  const r = await amenagerParIA(p, { ...b, moteurGuide: moteurGuideActif(b.moteurGuide), compositionDetails: finitionActive(b.compositionDetails), compositionSurface: compositionSurfaceActive(b.compositionSurface) }, langue);
+  const r = await amenagerParIA(p, { ...b, moteurGuide: moteurGuideActif(b.moteurGuide), compositionDetails: finitionActive(b.compositionDetails), compositionSurface: compositionSurfaceActive(b.compositionSurface),referencesSpatiales:referencesSpatialesActives(b.referencesSpatiales) }, langue);
   if (!r.ok) return r;
   if (pieceDe(p.id) !== p || p.maj_le !== revision) return non('amenagement-conflit', 409);
   ecrire(() => { p.agencement = r.agencement; p.proposition = r.proposition; toucher(p); });
   return ok({ piece: publique(p) });
+}
+
+async function variantes(p, b, langue) {
+  if (!p.modele) return non('pas-de-modele', 409);
+  if (p.etat === 'analyse') return non('en-cours', 409);
+  const revision = p.maj_le, produits = (await chargerCatalogue()).produits;
+  const resultat = await assistantEnArrierePlan({ piece: structuredClone(p), demande: { ...b, langue }, produits });
+  if (pieceDe(p.id) !== p || p.maj_le !== revision) return non('amenagement-conflit', 409);
+  ecrire(() => { p.agencement = resultat.agencement; p.proposition = resultat.proposition; toucher(p); });
+  return ok({ piece: publique(p), assistant: resultat.assistant });
 }
 
 async function generer(p, b) {

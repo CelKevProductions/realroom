@@ -1,5 +1,11 @@
 // Configuration Next.js de RealRoom
+const previewMission5 = process.env.VERCEL_ENV === 'preview'
+  && process.env.VERCEL_GIT_COMMIT_REF === 'codex/realroom-mission5-encyclopedie-2026-10-12'
+  && process.env.REALROOM_ENCYCLOPEDIE !== '0'
+  && process.env.NEXT_PUBLIC_REALROOM_ENCYCLOPEDIE !== '0';
 const nextConfig = {
+  // Activation de cette preview seulement ; aucun secret dans le bundle client.
+  ...(previewMission5 ? { env: { REALROOM_ENCYCLOPEDIE: '1', NEXT_PUBLIC_REALROOM_ENCYCLOPEDIE: '1' } } : {}),
   poweredByHeader: false,
   // Postgres embarqué (développement) : jamais empaqueté ni envoyé en ligne
   serverExternalPackages: ['@electric-sql/pglite'],

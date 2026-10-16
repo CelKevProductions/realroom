@@ -1,0 +1,3 @@
+# Analyse hors serveur ; versions utilisées pour produire les repères.
+pyarrow==26.0.0
+shapely==2.2.0

@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { MURS, boite, produitDe, estSuspendu } from '@/lib/agencement.js';
-import { longueurMur, corrigerPiece } from '@/lib/geometrie.js';
+import { longueurMur, corrigerPiece, retournerPiece } from '@/lib/geometrie.js';
 import s from './PlanPiece.module.css';
 import { contourDe, segmentsDe, pointOuverture, lettreMur } from '@/lib/contour.js';
 
@@ -15,6 +15,7 @@ const textes = {
     position: 'Centre depuis le début du mur', largeur: 'Largeur', hauteur: 'Hauteur', allege: 'Hauteur d’allège', type: 'Type', retirer: 'Retirer',
     meubles: 'Dimensions d’un meuble existant', choisir: 'Choisir un meuble', meublesNote: 'Ces mesures corrigent le relevé. Les dimensions des produits de la boutique viennent de leur fiche.',
     aide: 'Sélectionnez une ouverture sur le plan et glissez-la le long du mur, ou ajustez ses mesures ci-dessous.',
+    orientation: 'Sens du plan', miroirX: 'Inverser gauche/droite', miroirZ: 'Inverser haut/bas', orientationNote: 'Portes, fenêtres et mobilier suivent le plan. Vérifiez l’aperçu puis enregistrez.',
     fermer: 'Fermer', sauver: 'Enregistrer le plan', attente: 'Enregistrement…', erreur: 'Le plan n’a pas pu être enregistré. Réessayez.',
     limites: 'Saisissez des dimensions valides : 1,20–30 m au sol, 1,90–8 m sous plafond.',
     note: 'Le contour peut comporter 3 à 32 coins, des renfoncements et des murs obliques. Vérifiez les cotes sur place.' },
@@ -27,6 +28,7 @@ const textes = {
     position: 'Centre from the start of the wall', largeur: 'Width', hauteur: 'Height', allege: 'Sill height', type: 'Type', retirer: 'Remove',
     meubles: 'Existing furniture dimensions', choisir: 'Choose a piece', meublesNote: 'These measurements correct the survey. Shop product dimensions come from their listing.',
     aide: 'Select an opening on the plan and drag it along the wall, or adjust its measurements below.',
+    orientation: 'Plan orientation', miroirX: 'Flip left/right', miroirZ: 'Flip top/bottom', orientationNote: 'Doors, windows and furniture follow the plan. Check the preview, then save.',
     fermer: 'Close', sauver: 'Save room plan', attente: 'Saving…', erreur: 'The room plan could not be saved. Please try again.',
     limites: 'Enter valid dimensions: 1.20–30 m on the floor, 1.90–8 m ceiling height.',
     note: 'The outline supports 3–32 corners, recesses and angled walls. Check dimensions on site.' }
@@ -79,6 +81,7 @@ export default function PlanPiece({ modele, items, produits, lang = 'fr', onSauv
   const [mesures, setMesures] = useState(() => Object.fromEntries(clesDims.map(k => [k, modele.dims.sources?.[k] === 'mesure' || modele.dims.estimees === false])));
   const [contour,setContour] = useState(()=>modele.contour ? structuredClone(modele.contour) : null);
   const [murs, setMurs] = useState(() => structuredClone(modele.murs));
+  const [miroir, setMiroir] = useState({x:false,z:false});
   const [touches, setTouches] = useState(() => new Set());
   const [mur, setMur] = useState(()=>segmentsDe(modele).find(p=>p.id==='entree')?.id || segmentsDe(modele)[0].id), [selection, setSelection] = useState(null);
   const [meuble, setMeuble] = useState(''), [releve, setReleve] = useState({});
@@ -88,7 +91,7 @@ export default function PlanPiece({ modele, items, produits, lang = 'fr', onSauv
   const valides = clesDims.every((k, i) => { const n = valeur(dims[k]); return Number.isFinite(n) && n >= (i === 2 ? 1.9 : 1.2) && n <= (i === 2 ? 8 : 30); });
   const source = k => mesures[k] ? 'mesure' : valeur(dims[k]) === modele.dims[k] && modele.dims.sources?.[k] === 'scan' ? 'scan' : modele.dims.sources?.[k] === 'estimation' ? 'estimation' : 'photo';
   const correction = { dims: valides ? Object.fromEntries(clesDims.map(k => [k, valeur(dims[k])])) : {},
-    sources: Object.fromEntries(clesDims.map(k => [k, source(k)])), ajouts, ...(contour?{contour}:{}),
+    sources: Object.fromEntries(clesDims.map(k => [k, source(k)])), ajouts, ...(contour?{contour}:{}), ...(miroir.x||miroir.z?{miroir}:{}),
     murs: Object.fromEntries([...touches].map(m => [m, { ouvertures: murs[m]?.ouvertures || [] }])),
     meubles: Object.entries(releve).map(([id, dim]) => ({ id, dim: dim.map(valeur) })) };
   let preview, contourValide=true;
@@ -100,6 +103,22 @@ export default function PlanPiece({ modele, items, produits, lang = 'fr', onSauv
   const contourErreur=lang==='fr' ? 'Le contour se croise, est trop petit ou dépasse le cadre. Corrigez les coins.' : 'The outline crosses itself, is too small or exceeds the frame. Correct the corners.';
   const existants = preview.agencement.filter(it => it.origine === 'existant' && it.garde !== false && it.p?.dim);
   const choisi = existants.find(it => it.id === meuble);
+
+  function retourner(axe) {
+    // Modifier le brouillon dans son repère courant. Le serveur applique la même
+    // symétrie au relevé d'origine une seule fois, à l'enregistrement.
+    const r=retournerPiece({...modele,...(contour?{contour}:{}),murs},ajouts,{[axe]:true});
+    setMiroir(v=>({...v,[axe]:!v[axe]}));
+    if (contour) setContour(r.modele.contour);
+    setMurs(r.modele.murs);setAjouts(r.agencement);
+    const murRetourne=m=>r.correspondanceMurs[m]||m;
+    setTouches(v=>new Set([...v].map(murRetourne)));
+    setMur(murRetourne(mur));setSelection(v=>v?{...v,mur:murRetourne(v.mur)}:null);
+    setAjout(a=>a?{...a,
+      x:axe==='x'&&a.x!==''?modelePlan.dims.largeur-valeur(a.x):a.x,
+      p:axe==='z'&&a.p!==''?modelePlan.dims.profondeur-valeur(a.p):a.p,
+      rot:Math.atan2((axe==='x'?-1:1)*Math.sin(a.rot),(axe==='z'?-1:1)*Math.cos(a.rot))}:null);
+  }
 
   function changerMur(m, ouvertures) {
     setMurs(l => ({ ...l, [m]: { ...l[m], ouvertures } }));
@@ -150,6 +169,7 @@ export default function PlanPiece({ modele, items, produits, lang = 'fr', onSauv
     try {
       const ok = await onSauver({ dims: Object.fromEntries(clesDims.map(k => [k, valeur(dims[k])])),
         sources: Object.fromEntries(clesDims.map(k => [k, source(k)])), ...(contour?{contour}:{}),
+        ...(miroir.x||miroir.z?{miroir}:{}),
         murs: Object.fromEntries([...touches].map(m => [m, { ouvertures: modelePlan.murs[m].ouvertures }])), meubles,
         ajouts: ajouts.map(m => ({ ...m, dim: meubles.find(e => e.id === m.id)?.dim || m.dim })) });
       if (ok !== false) onFermer(); else setErreur(t.erreur);
@@ -170,6 +190,10 @@ export default function PlanPiece({ modele, items, produits, lang = 'fr', onSauv
       <div className={s.corps}>
         <div className={s.visuel}><ApercuPlan modele={modelePlan} items={preview.agencement} produits={produits} label={t.titre} selection={selection} surCoin={contour?glisserCoin:undefined} surPointer={glisser} surChoisir={(m, i) => { setMur(m); setSelection({ mur: m, i }); }} /><p>{t.aide}</p><p>{t.note}</p></div>
         <div className={s.reglages}>
+          <h3>{t.orientation}</h3><div className={s.actions}>
+            <button type="button" aria-pressed={miroir.x} disabled={attente||!valides||!contourValide} onClick={()=>retourner('x')}>{t.miroirX}</button>
+            <button type="button" aria-pressed={miroir.z} disabled={attente||!valides||!contourValide} onClick={()=>retourner('z')}>{t.miroirZ}</button>
+          </div><p className={s.intro}>{t.orientationNote}</p>
           <h3>{contourTexte}</h3>
           {!contour ? <button type="button" onClick={activerContour}>{lang==='fr'?'Modifier la forme de la pièce':'Edit room shape'}</button> : <>
             <p className={s.intro}>{lang==='fr'?'Glissez les coins sur le plan ou saisissez leurs coordonnées. Ajouter/retirer un coin efface les ouvertures : replacez-les ensuite.':'Drag corners or enter coordinates. Adding/removing a corner clears openings: place them again afterwards.'}</p>

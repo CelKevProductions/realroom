@@ -1,0 +1,1312 @@
+[
+  {
+    "nom": "Chambre 9 m²",
+    "fonction": "chambre",
+    "surface": 9,
+    "ouverturesConnues": true,
+    "avant": {
+      "meubles": 1,
+      "props": 0,
+      "zones": [
+        "rangement"
+      ],
+      "coutReferences": 0,
+      "noteReferences": null,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": true,
+      "manquants": [
+        "lit",
+        "chevet",
+        "lampe-chevet"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 5,
+        "candidats": 5,
+        "retenus": 5,
+        "cout": 1959,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 173
+    },
+    "apres": {
+      "meubles": 1,
+      "props": 0,
+      "zones": [
+        "rangement"
+      ],
+      "coutReferences": 0,
+      "noteReferences": null,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": true,
+      "manquants": [
+        "lit",
+        "chevet",
+        "lampe-chevet"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 5,
+        "candidats": 5,
+        "retenus": 5,
+        "cout": 1959,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 331
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Chambre 16 m²",
+    "fonction": "chambre",
+    "surface": 16,
+    "ouverturesConnues": true,
+    "avant": {
+      "meubles": 8,
+      "props": 7,
+      "zones": [
+        "couchage",
+        "rangement"
+      ],
+      "coutReferences": 3.99,
+      "noteReferences": 98.385,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": true,
+      "manquants": [],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 9,
+        "candidats": 9,
+        "retenus": 9,
+        "cout": 3752.99,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 1568
+    },
+    "apres": {
+      "meubles": 8,
+      "props": 7,
+      "zones": [
+        "couchage",
+        "rangement"
+      ],
+      "coutReferences": 3.99,
+      "noteReferences": 98.385,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": true,
+      "manquants": [],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 9,
+        "candidats": 9,
+        "retenus": 9,
+        "cout": 3752.99,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 2299
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Salon 10 m²",
+    "fonction": "salon",
+    "surface": 10,
+    "ouverturesConnues": true,
+    "avant": {
+      "meubles": 4,
+      "props": 4,
+      "zones": [
+        "salon"
+      ],
+      "coutReferences": 18.445,
+      "noteReferences": 83.89,
+      "collisions": 0,
+      "acces": false,
+      "auditPlan": false,
+      "manquants": [
+        "table-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "suspension"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 10,
+        "candidats": 10,
+        "retenus": 10,
+        "cout": 5339,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 612
+    },
+    "apres": {
+      "meubles": 4,
+      "props": 4,
+      "zones": [
+        "salon"
+      ],
+      "coutReferences": 18.445,
+      "noteReferences": 83.89,
+      "collisions": 0,
+      "acces": false,
+      "auditPlan": false,
+      "manquants": [
+        "table-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "suspension"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 10,
+        "candidats": 10,
+        "retenus": 10,
+        "cout": 5339,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 1111
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Salon 20 m² · repas",
+    "fonction": "salon",
+    "surface": 20,
+    "ouverturesConnues": true,
+    "avant": {
+      "meubles": 6,
+      "props": 12,
+      "zones": [
+        "salon"
+      ],
+      "coutReferences": 23.17,
+      "noteReferences": 80.198,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": true,
+      "manquants": [
+        "table-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "suspension"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 12,
+        "candidats": 55,
+        "retenus": 12,
+        "cout": 3804,
+        "prixComplets": true,
+        "plafond": 4000,
+        "approximation": true,
+        "substitutions": [
+          {
+            "initial": "scg-light-2421",
+            "retenu": "lst-min-03",
+            "emplacement": "suspension:suspension"
+          },
+          {
+            "initial": "cmb-310",
+            "retenu": "com-700",
+            "emplacement": "canape:canape"
+          },
+          {
+            "initial": "orange-hexa",
+            "retenu": "tl-420",
+            "emplacement": "fauteuil:fauteuil"
+          }
+        ]
+      },
+      "ms": 2213
+    },
+    "apres": {
+      "meubles": 6,
+      "props": 12,
+      "zones": [
+        "salon"
+      ],
+      "coutReferences": 21.42,
+      "noteReferences": 81.546,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": true,
+      "manquants": [
+        "table-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "suspension"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 12,
+        "candidats": 56,
+        "retenus": 12,
+        "cout": 3804,
+        "prixComplets": true,
+        "plafond": 4000,
+        "approximation": true,
+        "substitutions": [
+          {
+            "initial": "scg-light-2421",
+            "retenu": "lst-min-03",
+            "emplacement": "suspension:suspension"
+          },
+          {
+            "initial": "cmb-310",
+            "retenu": "com-700",
+            "emplacement": "canape:canape"
+          },
+          {
+            "initial": "orange-hexa",
+            "retenu": "tl-420",
+            "emplacement": "fauteuil:fauteuil"
+          }
+        ]
+      },
+      "ms": 3318
+    },
+    "gain": 1.75
+  },
+  {
+    "nom": "Séjour 30 m²",
+    "fonction": "salon",
+    "surface": 30,
+    "ouverturesConnues": true,
+    "avant": {
+      "meubles": 17,
+      "props": 25,
+      "zones": [
+        "salon",
+        "repas",
+        "lecture",
+        "rangement"
+      ],
+      "coutReferences": 23.695,
+      "noteReferences": 90.782,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": true,
+      "manquants": [],
+      "repas": 1,
+      "chaisesRepas": 4,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 18,
+        "candidats": 18,
+        "retenus": 18,
+        "cout": 10669,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": true,
+        "substitutions": []
+      },
+      "ms": 2715
+    },
+    "apres": {
+      "meubles": 17,
+      "props": 25,
+      "zones": [
+        "salon",
+        "repas",
+        "lecture",
+        "rangement"
+      ],
+      "coutReferences": 18.445,
+      "noteReferences": 92.748,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": true,
+      "manquants": [],
+      "repas": 1,
+      "chaisesRepas": 4,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 18,
+        "candidats": 18,
+        "retenus": 18,
+        "cout": 10669,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": true,
+        "substitutions": []
+      },
+      "ms": 4485
+    },
+    "gain": 5.25
+  },
+  {
+    "nom": "Séjour 89 m²",
+    "fonction": "salon",
+    "surface": 89,
+    "ouverturesConnues": true,
+    "avant": {
+      "meubles": 19,
+      "props": 33,
+      "zones": [
+        "salon",
+        "repas",
+        "travail",
+        "cuisine",
+        "bar"
+      ],
+      "coutReferences": 95.62,
+      "noteReferences": 78.008,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 1,
+      "chaisesRepas": 8,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 22,
+        "candidats": 22,
+        "retenus": 22,
+        "cout": 11239,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": true,
+        "substitutions": []
+      },
+      "ms": 31313
+    },
+    "apres": {
+      "meubles": 19,
+      "props": 33,
+      "zones": [
+        "salon",
+        "repas",
+        "travail",
+        "cuisine",
+        "bar"
+      ],
+      "coutReferences": 95.62,
+      "noteReferences": 78.008,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 1,
+      "chaisesRepas": 8,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 22,
+        "candidats": 22,
+        "retenus": 22,
+        "cout": 11239,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": true,
+        "substitutions": []
+      },
+      "ms": 50915
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Test réservé · chambre · petit · rectangle",
+    "fonction": "chambre",
+    "surface": 9.72,
+    "ouverturesConnues": false,
+    "avant": {
+      "meubles": 4,
+      "props": 1,
+      "zones": [
+        "couchage",
+        "rangement"
+      ],
+      "coutReferences": 6.055,
+      "noteReferences": 95.767,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 4,
+        "candidats": 4,
+        "retenus": 4,
+        "cout": 2164,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 173
+    },
+    "apres": {
+      "meubles": 4,
+      "props": 1,
+      "zones": [
+        "couchage",
+        "rangement"
+      ],
+      "coutReferences": 6.055,
+      "noteReferences": 95.767,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 4,
+        "candidats": 4,
+        "retenus": 4,
+        "cout": 2164,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 294
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Test réservé · salon · grand · concave",
+    "fonction": "salon",
+    "surface": 31.48,
+    "ouverturesConnues": false,
+    "avant": {
+      "meubles": 17,
+      "props": 21,
+      "zones": [
+        "salon",
+        "repas",
+        "lecture",
+        "rangement"
+      ],
+      "coutReferences": 23.695,
+      "noteReferences": 90.782,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 1,
+      "chaisesRepas": 4,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 18,
+        "candidats": 18,
+        "retenus": 18,
+        "cout": 10669,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": true,
+        "substitutions": []
+      },
+      "ms": 5418
+    },
+    "apres": {
+      "meubles": 17,
+      "props": 21,
+      "zones": [
+        "salon",
+        "repas",
+        "lecture",
+        "rangement"
+      ],
+      "coutReferences": 23.695,
+      "noteReferences": 90.782,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 1,
+      "chaisesRepas": 4,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 18,
+        "candidats": 18,
+        "retenus": 18,
+        "cout": 10669,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": true,
+        "substitutions": []
+      },
+      "ms": 5645
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Test réservé · salon · grand · rectangle",
+    "fonction": "salon",
+    "surface": 25.2,
+    "ouverturesConnues": false,
+    "avant": {
+      "meubles": 14,
+      "props": 16,
+      "zones": [
+        "salon",
+        "repas"
+      ],
+      "coutReferences": 18.445,
+      "noteReferences": 92.748,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 1,
+      "chaisesRepas": 4,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 15,
+        "candidats": 15,
+        "retenus": 15,
+        "cout": 9784,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 1108
+    },
+    "apres": {
+      "meubles": 14,
+      "props": 16,
+      "zones": [
+        "salon",
+        "repas"
+      ],
+      "coutReferences": 18.445,
+      "noteReferences": 92.748,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 1,
+      "chaisesRepas": 4,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 15,
+        "candidats": 15,
+        "retenus": 15,
+        "cout": 9784,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 1773
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Test réservé · salon · moyen · rectangle",
+    "fonction": "salon",
+    "surface": 20.59,
+    "ouverturesConnues": false,
+    "avant": {
+      "meubles": 5,
+      "props": 9,
+      "zones": [
+        "salon"
+      ],
+      "coutReferences": 46.515,
+      "noteReferences": 64.211,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [
+        "table-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "suspension"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 15,
+        "candidats": 15,
+        "retenus": 15,
+        "cout": 9784,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 918
+    },
+    "apres": {
+      "meubles": 5,
+      "props": 9,
+      "zones": [
+        "salon"
+      ],
+      "coutReferences": 46.515,
+      "noteReferences": 64.211,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [
+        "table-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "suspension"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 15,
+        "candidats": 15,
+        "retenus": 15,
+        "cout": 9784,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 2036
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Test réservé · chambre · moyen · concave",
+    "fonction": "chambre",
+    "surface": 18.34,
+    "ouverturesConnues": false,
+    "avant": {
+      "meubles": 11,
+      "props": 9,
+      "zones": [
+        "couchage",
+        "rangement",
+        "lecture"
+      ],
+      "coutReferences": 3.99,
+      "noteReferences": 98.385,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 12,
+        "candidats": 12,
+        "retenus": 12,
+        "cout": 4267.99,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 2038
+    },
+    "apres": {
+      "meubles": 11,
+      "props": 9,
+      "zones": [
+        "couchage",
+        "rangement",
+        "lecture"
+      ],
+      "coutReferences": 3.99,
+      "noteReferences": 98.385,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 12,
+        "candidats": 12,
+        "retenus": 12,
+        "cout": 4267.99,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 4103
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Test réservé · chambre · moyen · rectangle",
+    "fonction": "chambre",
+    "surface": 14.52,
+    "ouverturesConnues": false,
+    "avant": {
+      "meubles": 8,
+      "props": 6,
+      "zones": [
+        "couchage",
+        "rangement"
+      ],
+      "coutReferences": 3.99,
+      "noteReferences": 98.385,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 9,
+        "candidats": 9,
+        "retenus": 9,
+        "cout": 3752.99,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 710
+    },
+    "apres": {
+      "meubles": 8,
+      "props": 6,
+      "zones": [
+        "couchage",
+        "rangement"
+      ],
+      "coutReferences": 3.99,
+      "noteReferences": 98.385,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 9,
+        "candidats": 9,
+        "retenus": 9,
+        "cout": 3752.99,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 1198
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Test réservé · chambre · petit · concave",
+    "fonction": "chambre",
+    "surface": 12.6,
+    "ouverturesConnues": false,
+    "avant": {
+      "meubles": 1,
+      "props": 0,
+      "zones": [
+        "rangement"
+      ],
+      "coutReferences": 0,
+      "noteReferences": null,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [
+        "lit",
+        "chevet",
+        "chevet",
+        "lampe-chevet",
+        "lampe-chevet"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 6,
+        "candidats": 6,
+        "retenus": 6,
+        "cout": 2108,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 343
+    },
+    "apres": {
+      "meubles": 1,
+      "props": 0,
+      "zones": [
+        "rangement"
+      ],
+      "coutReferences": 0,
+      "noteReferences": null,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [
+        "lit",
+        "chevet",
+        "chevet",
+        "lampe-chevet",
+        "lampe-chevet"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 6,
+        "candidats": 6,
+        "retenus": 6,
+        "cout": 2108,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 652
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Test réservé · salon · moyen · concave",
+    "fonction": "salon",
+    "surface": 19.17,
+    "ouverturesConnues": false,
+    "avant": {
+      "meubles": 5,
+      "props": 9,
+      "zones": [
+        "salon"
+      ],
+      "coutReferences": 18.445,
+      "noteReferences": 83.89,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [
+        "table-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "suspension"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 12,
+        "candidats": 12,
+        "retenus": 12,
+        "cout": 6539,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 924
+    },
+    "apres": {
+      "meubles": 5,
+      "props": 9,
+      "zones": [
+        "salon"
+      ],
+      "coutReferences": 18.445,
+      "noteReferences": 83.89,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [
+        "table-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "suspension"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 12,
+        "candidats": 12,
+        "retenus": 12,
+        "cout": 6539,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 2086
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Test réservé · salon · petit · rectangle",
+    "fonction": "salon",
+    "surface": 10.73,
+    "ouverturesConnues": false,
+    "avant": {
+      "meubles": 4,
+      "props": 4,
+      "zones": [
+        "salon"
+      ],
+      "coutReferences": 18.445,
+      "noteReferences": 83.89,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [
+        "table-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "suspension"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 10,
+        "candidats": 10,
+        "retenus": 10,
+        "cout": 5339,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 343
+    },
+    "apres": {
+      "meubles": 4,
+      "props": 4,
+      "zones": [
+        "salon"
+      ],
+      "coutReferences": 18.445,
+      "noteReferences": 83.89,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [
+        "table-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "suspension"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 10,
+        "candidats": 10,
+        "retenus": 10,
+        "cout": 5339,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 781
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Test réservé · salon · petit · concave",
+    "fonction": "salon",
+    "surface": 13.41,
+    "ouverturesConnues": false,
+    "avant": {
+      "meubles": 4,
+      "props": 4,
+      "zones": [
+        "salon"
+      ],
+      "coutReferences": 57.33,
+      "noteReferences": 57.926,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [
+        "table-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "suspension"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 10,
+        "candidats": 10,
+        "retenus": 10,
+        "cout": 5339,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 450
+    },
+    "apres": {
+      "meubles": 4,
+      "props": 4,
+      "zones": [
+        "salon"
+      ],
+      "coutReferences": 57.33,
+      "noteReferences": 57.926,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [
+        "table-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "chaise-repas",
+        "suspension"
+      ],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 1,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 10,
+        "candidats": 10,
+        "retenus": 10,
+        "cout": 5339,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 1139
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Test réservé · chambre · grand · rectangle",
+    "fonction": "chambre",
+    "surface": 25.48,
+    "ouverturesConnues": false,
+    "avant": {
+      "meubles": 12,
+      "props": 9,
+      "zones": [
+        "couchage",
+        "rangement",
+        "lecture"
+      ],
+      "coutReferences": 3.99,
+      "noteReferences": 98.385,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 12,
+        "candidats": 12,
+        "retenus": 12,
+        "cout": 4267.99,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 3211
+    },
+    "apres": {
+      "meubles": 12,
+      "props": 9,
+      "zones": [
+        "couchage",
+        "rangement",
+        "lecture"
+      ],
+      "coutReferences": 3.99,
+      "noteReferences": 98.385,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 12,
+        "candidats": 12,
+        "retenus": 12,
+        "cout": 4267.99,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 8723
+    },
+    "gain": 0
+  },
+  {
+    "nom": "Test réservé · chambre · grand · concave",
+    "fonction": "chambre",
+    "surface": 25.04,
+    "ouverturesConnues": false,
+    "avant": {
+      "meubles": 12,
+      "props": 9,
+      "zones": [
+        "couchage",
+        "rangement",
+        "lecture"
+      ],
+      "coutReferences": 3.99,
+      "noteReferences": 98.385,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 12,
+        "candidats": 12,
+        "retenus": 12,
+        "cout": 4267.99,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 5104
+    },
+    "apres": {
+      "meubles": 12,
+      "props": 9,
+      "zones": [
+        "couchage",
+        "rangement",
+        "lecture"
+      ],
+      "coutReferences": 3.99,
+      "noteReferences": 98.385,
+      "collisions": 0,
+      "acces": true,
+      "auditPlan": false,
+      "manquants": [],
+      "repas": 0,
+      "chaisesRepas": 0,
+      "television": 0,
+      "budget": {
+        "methode": "sac-a-dos-emplacements",
+        "emplacements": 12,
+        "candidats": 12,
+        "retenus": 12,
+        "cout": 4267.99,
+        "prixComplets": true,
+        "plafond": null,
+        "approximation": false,
+        "substitutions": []
+      },
+      "ms": 12769
+    },
+    "gain": 0
+  }
+]
