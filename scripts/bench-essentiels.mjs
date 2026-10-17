@@ -10,6 +10,7 @@ import { verifierHauteurs } from '../lib/hauteurs.js';
 import { posesStaging } from '../lib/staging.js';
 import { chambres, rectangle } from '../tests/fixtures/bench-chambres.js';
 import { surfacePiece } from '../lib/programme.js';
+import { noteComposition } from '../lib/qualite-composition.js';
 
 const dossier=path.resolve('.data/bench-essentiels'), resultats=[], catalogueAvant=JSON.stringify(PRODUITS);
 fs.mkdirSync(dossier,{recursive:true});
@@ -56,10 +57,10 @@ for(const c of cas.filter(c=>!process.argv[2]||process.argv[2].split(',').includ
    contraintes:confort.score.contraintes,conflits,hauteurs,acces:confort.acces,circulation:confort.circulation,
    spatialOK,programmeComplet:!manquants.length,auditPlan:p.planZones?.audit?.valide??null,statut:p.planZones?.statut,
    geometrieConservee:JSON.stringify(modele)===avant,budgetRespecte:!c.choix.budget||cout<=c.choix.budget+.001,
-   problemesTest,ms:Math.round(performance.now()-debut)};
+   qualite:noteComposition(modele,items,PRODUITS),problemesTest,ms:Math.round(performance.now()-debut)};
   resultats.push(bilan);
   fs.writeFileSync(path.join(dossier,c.id+'.json'),JSON.stringify({modele,items,staging:p.staging,catalogue:PRODUITS,proposition:p,bilan}));
-  console.log(JSON.stringify({cas:c.nom,principal:bilan.principalPresent,tv:tv.length,spatial:spatialOK,complet:!manquants.length,statut:bilan.statut,manquants,problemesTest,ms:bilan.ms}));
+  console.log(JSON.stringify({cas:c.nom,qualite:bilan.qualite.note,principal:bilan.principalPresent,tv:tv.length,spatial:spatialOK,complet:!manquants.length,statut:bilan.statut,manquants,problemesTest,ms:bilan.ms}));
  }catch(e){const bilan={id:c.id,nom:c.nom,refus:e.code==='REGLES_BLOQUANTES',erreur:e.code||e.name,message:e.message,ms:Math.round(performance.now()-debut)};resultats.push(bilan);console.log(JSON.stringify(bilan));}
  fs.writeFileSync(path.join(dossier,'resultats.json'),JSON.stringify({version:'enrichissement-2026-10-15',appelsIA:0,appelsReseau,resultats},null,2));
  assert.equal(JSON.stringify(PRODUITS),catalogueAvant);
