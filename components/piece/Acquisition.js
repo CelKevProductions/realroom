@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { api } from '@/components/api.js';
 import { ApercuPlan } from '@/components/piece/PlanPiece.js';
 import { depuisScan, normaliserScan, VERSION_SCAN, MAX_SCAN_OCTETS } from '@/lib/scan.js';
+import { estZip, scanDepuisArchive, MAX_ARCHIVE_OCTETS, MAX_JSON_OCTETS } from '@/lib/archive-scan.js';
 import s from './Acquisition.module.css';
 import TransfertScan from './TransfertScan.js';
 import Tutoriel from './Tutoriel.js';
@@ -18,7 +19,8 @@ const textes = {
     androidLimite: 'Ce relevé mesure le contour. Il ne reconnaît ni les meubles ni les portes : ajoutez-les ensuite dans le plan.',
     indisponible: 'AR indisponible ici. Utilisez Chrome sur un Android compatible, avec Google Play Services for AR et une connexion HTTPS, ou importez un relevé.',
     verification: 'Vérification de la compatibilité…', hauteur: 'Hauteur mesurée sous plafond (m, facultatif)', hauteurNote: 'Sans mesure saisie, la hauteur restera estimée à 2,50 m.',
-    commencer: 'Démarrer le relevé AR', appleIntro: 'Avec Lagarsoft LiDAR Scanner, relevez la pièce sur un iPhone ou iPad équipé de LiDAR, puis déposez le DXF ici.',
+    commencer: 'Démarrer le relevé AR', appleIntro: 'Avec Lagarsoft LiDAR Scanner, relevez la pièce sur un iPhone ou iPad équipé de LiDAR, puis déposez ici le zip du projet : il apporte les murs, les ouvertures et les meubles. Le DXF seul n’a pas les meubles.',
+    appleZip: 'Déposer le zip Lagarsoft (meubles compris)',
     appleNote: 'L’application est gratuite et nécessite iOS 17 ou plus. Sur Android, choisissez Scan Android dans Chrome ; Lagarsoft est une application Apple.',
     alternativePhotos: 'Utiliser les photos guidées', vigilance: 'Certains éléments du scan ont une confiance moyenne ou faible. Vérifiez leurs dimensions et leur position dans le plan.',
     importer: 'Importer un relevé métrique', prive: 'Seuls les cotes et les éléments du relevé sont enregistrés. Aucune vidéo AR n’est envoyée.',
@@ -29,7 +31,11 @@ const textes = {
     coin: 'Coin', instruction: 'Visez le sol dans le coin, puis validez le point. Restez au même niveau de sol.',
     recherche: 'Déplacez doucement le téléphone jusqu’à voir la mire au sol.', valider: 'Valider ce coin', retour: 'Annuler le dernier coin', terminer: 'Terminer et vérifier le plan',
     erreur: 'Le relevé n’a pas pu être enregistré. Réessayez.',
-    erreurs: { 'capture-expire':'Ce lien a expiré ou a déjà été utilisé. Créez un nouveau QR code sur l’ordinateur.', 'scan-format': 'Choisissez le JSON RoomPlan/CapturedRoom ou RealRoom d’une seule pièce, en mètres. Les fichiers USDZ seuls ne sont pas importables.', 'scan-repere': 'Le repère du scan est invalide ou les éléments sont inclinés.',
+    erreurs: { 'capture-expire':'Ce lien a expiré ou a déjà été utilisé. Créez un nouveau QR code sur l’ordinateur.', 'scan-format': 'Choisissez le JSON RoomPlan/CapturedRoom ou RealRoom d’une seule pièce, en mètres. Les fichiers USDZ seuls ne sont pas importables.',
+      'scan-pieces': 'Ce scan contient plusieurs pièces. Scannez et exportez une seule pièce à la fois.',
+      'scan-archive': 'Ce zip ne contient pas de relevé de pièce (scan.json). Déposez le zip complet exporté par Lagarsoft, ou son DXF.',
+      'scan-navigateur': 'Ce navigateur ne sait pas ouvrir les zip. Mettez-le à jour, ou décompressez le zip et déposez son fichier data/scan.json.',
+      'scan-dxf': 'Ce fichier est un plan DXF : déposez-le dans « Déposer un plan DXF », ou déposez le zip complet pour garder les meubles.', 'scan-repere': 'Le repère du scan est invalide ou les éléments sont inclinés.',
       'scan-dimensions': 'Les cotes sortent des limites du plan : 1,20–30 m au sol, 1,90–8 m sous plafond.',
       'scan-coins': 'Choisissez 3 à 32 coins distincts et consécutifs au sol.', 'scan-sol': 'Les points ne sont pas au même niveau de sol. Recommencez en visant le sol.',
       'scan-forme': 'Le contour se croise ou est trop petit. Annulez le dernier coin et poursuivez dans l’ordre autour de la pièce.',
@@ -37,14 +43,15 @@ const textes = {
       'scan-objet': 'Un objet se trouve hors de la pièce : vérifiez le relevé.', 'scan-conflit': 'La pièce a changé depuis cet aperçu. Rechargez-la et vérifiez de nouveau le relevé.',
       'scan-remplacement': 'Confirmez le remplacement du plan actuel.', 'ar-suivi': 'Le suivi AR est perdu. Attendez que la mire revienne avant de valider.',
       'ar-refuse': 'La session AR n’a pas démarré. Vérifiez la compatibilité et autorisez la caméra si vous souhaitez scanner.',
-      'trop-gros': 'Le fichier dépasse 5 Mo. Exportez le JSON d’une seule pièce, sans images ni maillage.', 'limite-mc': 'Le nombre de relevés inclus dans votre compte Maison Corleone est atteint.' } },
+      'trop-gros': 'Le fichier est trop lourd (25 Mo pour un zip, 5 Mo pour un JSON). Exportez une seule pièce, sans images ni maillage.', 'limite-mc': 'Le nombre de relevés inclus dans votre compte Maison Corleone est atteint.' } },
   en: { titre: 'How would you like to survey your room?', intro: 'A scan provides metric scale. Check the plan and detected elements before use.',
     photos: 'Upload photos', android: 'Scan Android', apple: 'Scan Apple', planMaison: 'House floor plan',
     androidIntro: 'In Chrome on an ARCore-compatible Android, mark the floor corners in order around the room (3–32 corners, including recesses). Finish after the last corner without repeating the first.',
     androidLimite: 'This survey measures the outline. It does not recognise furniture or openings: add them in the room plan.',
     indisponible: 'AR unavailable here. Use Chrome on a compatible Android with Google Play Services for AR and HTTPS, or import a survey.',
     verification: 'Checking compatibility…', hauteur: 'Measured ceiling height (m, optional)', hauteurNote: 'Without a measurement, height stays estimated at 2.50 m.',
-    commencer: 'Start AR survey', appleIntro: 'Scan the room with Lagarsoft LiDAR Scanner on a LiDAR-equipped iPhone or iPad, then upload the DXF here.',
+    commencer: 'Start AR survey', appleIntro: 'Scan the room with Lagarsoft LiDAR Scanner on a LiDAR-equipped iPhone or iPad, then upload the project zip here: it brings walls, openings and furniture. The DXF alone has no furniture.',
+    appleZip: 'Upload the Lagarsoft zip (furniture included)',
     appleNote: 'The app is free and requires iOS 17 or later. On Android, choose Scan Android in Chrome; Lagarsoft is an Apple app.',
     alternativePhotos: 'Use guided photos', vigilance: 'Some scanned elements have medium or low confidence. Check their dimensions and position in the plan.',
     importer: 'Import a metric survey', prive: 'Only dimensions and survey elements are saved. No AR video is uploaded.',
@@ -54,14 +61,18 @@ const textes = {
     coin: 'Corner', instruction: 'Aim at the floor corner and confirm. Keep all points on the same floor level.',
     recherche: 'Move your phone slowly until the floor reticle appears.', valider: 'Confirm this corner', retour: 'Undo last corner', terminer: 'Finish and check plan',
     erreur: 'The survey could not be saved. Please try again.', erreurs: {
-      'capture-expire':'This link expired or was already used. Create a new QR code on your computer.', 'scan-format': 'Choose one-room RoomPlan/CapturedRoom or RealRoom JSON in metres. USDZ files alone cannot be imported.', 'scan-repere': 'Invalid reference frame or tilted elements.',
+      'capture-expire':'This link expired or was already used. Create a new QR code on your computer.', 'scan-format': 'Choose one-room RoomPlan/CapturedRoom or RealRoom JSON in metres. USDZ files alone cannot be imported.',
+      'scan-pieces': 'This scan contains several rooms. Scan and export one room at a time.',
+      'scan-archive': 'This zip contains no room survey (scan.json). Upload the full zip exported by Lagarsoft, or its DXF.',
+      'scan-navigateur': 'This browser cannot open zip files. Update it, or unzip the file and upload its data/scan.json.',
+      'scan-dxf': 'This file is a DXF plan: upload it with “Upload a DXF floor plan”, or upload the full zip to keep the furniture.', 'scan-repere': 'Invalid reference frame or tilted elements.',
       'scan-dimensions': 'Room limits: 1.20–30 m on the floor, 1.90–8 m ceiling height.', 'scan-coins': 'Choose 3–32 distinct consecutive floor corners.',
       'scan-sol': 'Points are not on the same floor level. Aim at the floor and try again.',
       'scan-forme': 'The outline crosses itself or is too small. Undo the last corner and continue in order around the room.',
       'scan-incomplet': 'The outline is incomplete. Scan the whole room again.', 'scan-ouverture': 'An opening extends beyond its wall or ceiling.',
       'scan-objet': 'An object is outside the room.', 'scan-conflit': 'The room changed after this preview. Reload it and check the survey again.',
       'scan-remplacement': 'Confirm replacement of the current room plan.', 'ar-suivi': 'AR tracking lost. Wait for the reticle before confirming.',
-      'ar-refuse': 'AR could not start. Check compatibility and allow camera access if you wish to scan.', 'trop-gros': 'File exceeds 5 MB. Export one room JSON without images or mesh.',
+      'ar-refuse': 'AR could not start. Check compatibility and allow camera access if you wish to scan.', 'trop-gros': 'File too large (25 MB for a zip, 5 MB for a JSON). Export one room without images or mesh.',
       'limite-mc': 'Your Maison Corleone account has reached its included survey limit.' } }
 };
 
@@ -115,8 +126,16 @@ export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr'
     if (!fichier) return;
     setErreur('');
     try {
-      if (fichier.size > 5e6) throw new Error('trop-gros');
-      let scan; try { scan = JSON.parse(await fichier.text()); } catch (_) { throw new Error('scan-format'); }
+      if (/\.dxf$/i.test(fichier.name || '')) throw new Error('scan-dxf');
+      if (fichier.size > MAX_ARCHIVE_OCTETS) throw new Error('trop-gros');
+      const octets = new Uint8Array(await fichier.arrayBuffer());
+      let scan;
+      // Le zip d'export Lagarsoft est lu sur place : seul son relevé JSON en sort.
+      if (estZip(octets)) scan = await scanDepuisArchive(octets);
+      else {
+        if (octets.length > MAX_JSON_OCTETS) throw new Error('trop-gros');
+        try { scan = JSON.parse(new TextDecoder().decode(octets)); } catch (_) { throw new Error('scan-format'); }
+      }
       preparer(scan);
     } catch (e) { setErreur(message(e)); }
   }
@@ -161,13 +180,13 @@ export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr'
     <h2>{t.titre}</h2>
     {piece?.modele?.capture && <p className={s.succes} role="status">{t.courant}</p>}
     {(!mobileSeul||autresModes)&&<div className={s.modes} role="group" aria-label={t.titre}>
-      {['photos', 'android', 'apple','plan'].map(m => <button type="button" key={m} aria-pressed={mode === m} disabled={actif || attente} onClick={() => changerMode(m)}><strong>{t[m==='plan'?'planMaison':m]}</strong><small>{lang==='fr'?(m==='photos'?'Fidélité du plan plus faible · cotes estimées':m==='android'?'Meilleure fidélité · coins mesurés':m==='apple'?'Meilleure fidélité · DXF métrique':'DXF, PDF ou image · échelle vérifiée'):(m==='photos'?'Lower plan fidelity · estimated dimensions':m==='android'?'Higher fidelity · measured corners':m==='apple'?'Higher fidelity · metric DXF':'DXF, PDF or image · verified scale')}</small></button>)}
+      {['photos', 'android', 'apple','plan'].map(m => <button type="button" key={m} aria-pressed={mode === m} disabled={actif || attente} onClick={() => changerMode(m)}><strong>{t[m==='plan'?'planMaison':m]}</strong><small>{lang==='fr'?(m==='photos'?'Fidélité du plan plus faible · cotes estimées':m==='android'?'Meilleure fidélité · coins mesurés':m==='apple'?'Meilleure fidélité · meubles compris':'DXF, PDF ou image · échelle vérifiée'):(m==='photos'?'Lower plan fidelity · estimated dimensions':m==='android'?'Higher fidelity · measured corners':m==='apple'?'Higher fidelity · furniture included':'DXF, PDF or image · verified scale')}</small></button>)}
     </div>}
     <p className={s.note}>{lang==='fr'?'Un scan améliore la géométrie. Le rendu photo final dépend aussi de la photo et de l’IA.':'A scan improves geometry. The final photo also depends on its reference and AI.'}</p>
     <div className={!surTelephone&&['android','apple'].includes(mode)?s.contenu:undefined}>
     <div>
     {mode==='photos'&&<Tutoriel lang={lang} mode="parcours"/>}
-    {mode==='plan'&&<div><h3>{lang==='fr'?'Choisir une pièce dans mon plan':'Choose a room in my floor plan'}</h3><ImportPlan lang={lang} disabled={attente} onScan={preparer}/><details><summary>{lang==='fr'?'Mon plan est un PDF ou une image':'My plan is a PDF or image'}</summary><PlanTrace lang={lang} disabled={attente} onScan={preparer}/></details></div>}
+    {mode==='plan'&&<div><h3>{lang==='fr'?'Choisir une pièce dans mon plan':'Choose a room in my floor plan'}</h3><ImportPlan lang={lang} disabled={attente} onScan={preparer} onArchive={importer}/><details><summary>{lang==='fr'?'Mon plan est un PDF ou une image':'My plan is a PDF or image'}</summary><PlanTrace lang={lang} disabled={attente} onScan={preparer}/></details></div>}
     {mode === 'android' && <div className={s.options}>
       {surTelephone&&<h3>{lang==='fr'?'Scanner ma pièce':'Scan my room'}</h3>}
       <p>{t.androidIntro}</p>
@@ -182,15 +201,16 @@ export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr'
       <a className={s.plein} href={APP_LAGARSOFT} target="_blank" rel="noopener noreferrer">{surTelephone?(lang==='fr'?'Scanner avec Lagarsoft · App Store':'Scan with Lagarsoft · App Store'):(lang==='fr'?'Lagarsoft · App Store':'Lagarsoft · App Store')}</a>
       <p className={s.note}>{lang==='fr'?'iPhone Pro/Pro Max avec LiDAR (12 Pro ou plus récent), ou iPad Pro avec LiDAR. L’application vérifie la compatibilité du capteur.':'LiDAR-equipped iPhone Pro/Pro Max (12 Pro or newer), or LiDAR iPad Pro. The app checks sensor compatibility.'}</p>
       <Tutoriel lang={lang} mode="apple"/>
-      <ImportPlan lang={lang} disabled={attente} onScan={preparer}/>
+      <label className={s.importer}><span>{t.appleZip}</span><input type="file" accept=".zip,application/zip,application/json,.json" aria-label={t.appleZip} disabled={actif || attente} onChange={e => { importer(e.target.files[0]); e.target.value = ''; }} /></label>
+      <ImportPlan lang={lang} disabled={attente} onScan={preparer} onArchive={importer}/>
       <details><summary>{lang==='fr'?'Compatibilité Apple':'Apple compatibility'}</summary><p>{t.appleNote}</p></details>
     </div>}
     </div>
     {!mobileSeul&&!surTelephone&&mode==='android'&&<TransfertScan automatique lang={lang} onScan={scan=>{try{preparer(scan);}catch(e){setErreur(message(e));}}}/>}
-    {!surTelephone&&mode==='apple'&&<aside className={s.qr}><h3>{lang==='fr'?'Ouvrez Lagarsoft sur iPhone':'Open Lagarsoft on iPhone'}</h3>{appQR?<img src={appQR.qr} width="224" height="224" alt={lang==='fr'?'QR code App Store Lagarsoft':'Lagarsoft App Store QR code'}/>:<p role="status">{lang==='fr'?'Préparation du QR…':'Preparing QR…'}</p>}<p>{lang==='fr'?'Scannez, exportez en DXF puis déposez le fichier ici.':'Scan, export as DXF, then upload the file here.'}</p><a href={APP_LAGARSOFT} target="_blank" rel="noopener noreferrer">App Store ↗</a></aside>}
+    {!surTelephone&&mode==='apple'&&<aside className={s.qr}><h3>{lang==='fr'?'Ouvrez Lagarsoft sur iPhone':'Open Lagarsoft on iPhone'}</h3>{appQR?<img src={appQR.qr} width="224" height="224" alt={lang==='fr'?'QR code App Store Lagarsoft':'Lagarsoft App Store QR code'}/>:<p role="status">{lang==='fr'?'Préparation du QR…':'Preparing QR…'}</p>}<p>{lang==='fr'?'Scannez, exportez le projet en zip (ou en DXF) puis déposez le fichier ici.':'Scan, export the project as a zip (or DXF), then upload the file here.'}</p><a href={APP_LAGARSOFT} target="_blank" rel="noopener noreferrer">App Store ↗</a></aside>}
     </div>
     {mobileSeul&&<button type="button" className={s.autreMode} disabled={actif||attente} onClick={()=>setAutresModes(v=>!v)}>{lang==='fr'?'Choisir une autre méthode':'Choose another method'}</button>}
-    {(mode !== 'photos' || mobileSeul) && <details><summary>{lang==='fr'?'Importer un relevé JSON existant':'Import an existing JSON survey'}</summary><label className={s.importer}><span>{t.importer}</span><input type="file" accept="application/json,.json,.realroom" aria-label={t.importer} disabled={actif || attente} onChange={e => { importer(e.target.files[0]); e.target.value = ''; }} /></label><p className={s.note}>{t.prive}</p></details>}
+    {mode !== 'apple' && (mode !== 'photos' || mobileSeul) && <details><summary>{lang==='fr'?'Importer un relevé JSON existant':'Import an existing JSON survey'}</summary><label className={s.importer}><span>{t.importer}</span><input type="file" accept="application/json,.json,.realroom,.zip,application/zip" aria-label={t.importer} disabled={actif || attente} onChange={e => { importer(e.target.files[0]); e.target.value = ''; }} /></label><p className={s.note}>{t.prive}</p></details>}
     {apercu && <div className={s.apercu}>
       <h3 ref={titreApercu} tabIndex={-1}>{t.apercu}</h3><p>{apercu.scan.source === 'apple-roomplan' ? 'Apple RoomPlan' : apercu.scan.source === 'android-arcore-webxr' ? 'Scan Android' : lang==='fr'?'Plan importé':'Imported plan'} · {apercu.agencement.length} {t.mobilier} · {apercu.modele.capture.nbOuvertures} {t.ouvertures}</p>
       <ApercuPlan modele={apercu.modele} items={apercu.agencement} label={t.plan} />
