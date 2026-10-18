@@ -205,6 +205,9 @@ export function creerEditeur(canvas, opts = {}) {
   soleil.shadow.normalBias = .02;
   soleil.shadow.radius = 4;
   scene.add(hemi, soleil, soleil.target);
+  // calque des murs effacés : invisibles pour la caméra, toujours pris par la carte d'ombres
+  const CALQUE_CACHE = 1;
+  soleil.shadow.camera.layers.enable(CALQUE_CACHE);
 
   // plan proche à 10 cm en maquette (5 cm dans la pièce), plan lointain ajusté à la pièce :
   // la précision de profondeur reste fine jusqu'au recul maximal de l'orbite
@@ -220,6 +223,7 @@ export function creerEditeur(canvas, opts = {}) {
     orbite: { theta: .55, phi: .92, r: 9, cible: new THREE.Vector3() },
     regard: { yaw: 0, pitch: 0 },
     anim: null, sale: true, ombres: true, raf: 0, detruit: false,
+    pret: false, introEnAttente: false,   // pret : programmes de rendu compilés (premier affichage)
     tween: null,     // glissé de l'orbite (angle, hauteur, distance, point visé)
     auto: null,      // tour lent autour du meuble cadré
     cadre: null,     // meuble cadré
@@ -235,7 +239,7 @@ export function creerEditeur(canvas, opts = {}) {
   /* ---------- qualité : densité de pixels et ombres, baisse automatique si les images traînent ---------- */
   const NIVEAUX = { haute: { dpr: 2, ombre: 2048, ombres: true }, moyenne: { dpr: 1.5, ombre: 1024, ombres: true }, basse: { dpr: 1, ombre: 512, ombres: false } };
   const ORDRE = ['haute', 'moyenne', 'basse'];
-  const Q = { niveau: null, auto: !NIVEAUX[opts.qualite], intervalles: [], rendus: [], images: 0, baisses: 0, derniereBaisse: 0, continu: false, precedent: 0 };
+  const Q = { niveau: null, auto: !NIVEAUX[opts.qualite], intervalles: [], rendus: [], images: 0, ombres: 0, baisses: 0, derniereBaisse: 0, continu: false, precedent: 0 };
   const tactile = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches;
   function appliquerQualite(n) {
     const c = NIVEAUX[n];
@@ -698,6 +702,9 @@ export function creerEditeur(canvas, opts = {}) {
     if (!E.modele || reduit || E.mode !== 'dessus') return;
     const d = orbiteDefaut();
     poserOrbite({ ...d, theta: d.theta - 1.15, phi: .3, r: d.r * 1.75, cy: d.cy + .5 });
+    // la caméra ne part qu'une fois les programmes de rendu prêts (sinon la première image fige
+    // l'animation déjà commencée)
+    if (!E.pret) { E.introEnAttente = true; return; }
     glisser(d, 3400, 'douce');
     E.tween.vers.theta = d.theta;   // l'arc complet, pas le plus court chemin
   }
@@ -755,10 +762,12 @@ export function creerEditeur(canvas, opts = {}) {
   const feux = Array.from({ length: 6 }, () => { const l = new THREE.PointLight('#FFB46E', 0, 6.5, 2); l.visible = false; scene.add(l); return { l, i: 0 }; });
   const allumer = oui => { for (const f of feux) f.l.visible = oui; };
   let prechauffe = 0;
+  // jamais pendant un mouvement de caméra : la compilation figeait l'arrivée de la caméra
   function prechauffer() {
     clearTimeout(prechauffe);
     prechauffe = setTimeout(() => {
       if (E.detruit || !E.modele) return;
+      if (!E.pret || E.tween || E.anim || E.auto || E.introEnAttente) { prechauffer(); return; }
       const allumees = feux[0].l.visible;
       allumer(true);
       renderer.compileAsync(scene, camera).catch(() => {});
@@ -831,11 +840,10 @@ export function creerEditeur(canvas, opts = {}) {
       const cible = force ? 1 : (!dedans && d > 0 ? 0 : 1);
       if (w.op !== cible) {
         w.op = cible;
-        w.me.material.opacity = cible ? 1 : 0;
-        w.me.visible = cible > 0;
-        w.menuiseries.visible = cible > 0;
-        w.plinthe.visible = cible > 0;
-        w.me.material.depthWrite = true;
+        // un mur effacé quitte seulement la vue (calque 1) : il porte toujours son ombre, donc la
+        // carte d'ombres ne change pas quand la caméra tourne (elle était recalculée à chaque
+        // mur franchi, d'où les à-coups pendant l'arrivée de la caméra et le tour automatique)
+        for (const o of [w.me, w.menuiseries, w.plinthe]) o.traverse(x => x.layers.set(cible > 0 ? 0 : CALQUE_CACHE));
         change = true;
       }
     }
@@ -843,7 +851,6 @@ export function creerEditeur(canvas, opts = {}) {
       const pan=segmentsDe(E.modele).find(p=>p.id===e.item.mur);
       e.g.visible=!pan||force||dedans||(cam.position.x-pan.centre[0])*pan.n[0]+(cam.position.z-pan.centre[1])*pan.n[1]>=0;
     }
-    if (change) E.ombres = true;
     return change;
   }
 
@@ -851,7 +858,7 @@ export function creerEditeur(canvas, opts = {}) {
   function demander() { if (!E.raf && !E.detruit && !E.perdu) E.raf = requestAnimationFrame(rendre); }
   function rendre(t) {
     E.raf = 0;
-    if (!E.modele) return;
+    if (!E.modele || !E.pret) return;
     const maintenant = performance.now();
     const dt = E.dernier ? Math.min(.05, (maintenant - E.dernier) / 1000) : 0;
     E.dernier = maintenant;
@@ -894,7 +901,7 @@ export function creerEditeur(canvas, opts = {}) {
       if (k >= 1) E.anim = null; else demander();
     } else appliquerPose(poseCourante());
     majMurs(camera);
-    if (E.ombres) { renderer.shadowMap.needsUpdate = true; E.ombres = false; }
+    if (E.ombres) { renderer.shadowMap.needsUpdate = true; E.ombres = false; Q.ombres++; }
     const t0 = performance.now();
     renderer.render(scene, camera);
     mesurer(maintenant, performance.now() - t0);
@@ -1057,6 +1064,39 @@ export function creerEditeur(canvas, opts = {}) {
   }
 
   /* ---------- API ---------- */
+  // Premier affichage : les programmes de rendu sont compilés hors de la boucle d'images (en
+  // parallèle quand le navigateur le permet), la maquette apparaît ensuite en fondu et la caméra part.
+  let preparation = 0;
+  function preparer() {
+    const n = ++preparation;
+    E.pret = false;
+    canvas.style.opacity = '0';
+    appliquerPose(poseCourante());
+    const montrer = () => {
+      if (E.detruit || n !== preparation) return;
+      canvas.style.transition = reduit ? '' : 'opacity .45s ease';
+      canvas.style.opacity = '';
+      if (E.introEnAttente) { E.introEnAttente = false; const d = orbiteDefaut(); glisser(d, 3400, 'douce'); if (E.tween) E.tween.vers.theta = d.theta; }
+      demander();
+    };
+    const fini = () => {
+      if (E.detruit || n !== preparation) return;
+      // première image encore cachée (envoi des textures, carte d'ombres), puis on attend que les
+      // images reviennent à un rythme régulier : le mouvement ne commence qu'après
+      E.pret = true;
+      rendre();
+      let avant = performance.now(), calmes = 0;
+      const depart = avant;
+      const attendre = maintenant => {
+        if (E.detruit || n !== preparation) return;
+        calmes = maintenant - avant < 50 ? calmes + 1 : 0;
+        avant = maintenant;
+        if (calmes >= 2 || maintenant - depart > 2500) montrer(); else requestAnimationFrame(attendre);
+      };
+      requestAnimationFrame(attendre);
+    };
+    renderer.compileAsync(scene, camera).then(fini, fini);
+  }
   function charger(modele, items = [], staging = null) {
     E.modele = JSON.parse(JSON.stringify(modele));
     for (const id of [...E.items.keys()]) retirer(id);
@@ -1067,6 +1107,7 @@ export function creerEditeur(canvas, opts = {}) {
     majItems(items);
     redimensionner();
     vue(E.mode, false);
+    preparer();
   }
   return {
     charger,
@@ -1118,7 +1159,7 @@ export function creerEditeur(canvas, opts = {}) {
     // processeur de l'appel de rendu ; le temps GPU n'est pas mesurable ici)
     mesures() {
       const i = renderer.info;
-      return { qualite: Q.niveau, auto: Q.auto, baisses: Q.baisses, dpr: renderer.getPixelRatio(), images: Q.images,
+      return { qualite: Q.niveau, auto: Q.auto, baisses: Q.baisses, dpr: renderer.getPixelRatio(), images: Q.images, cartesOmbres: Q.ombres,
         intervalleMedianMs: +mediane(Q.intervalles).toFixed(1), intervalleP95Ms: +centile(Q.intervalles, .95).toFixed(1),
         renduMedianMs: +mediane(Q.rendus).toFixed(2), appels: i.render.calls, triangles: i.render.triangles,
         geometries: i.memory.geometries, textures: i.memory.textures, programmes: i.programs?.length || 0, contextePerdu: !!E.perdu };
