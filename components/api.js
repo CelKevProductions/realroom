@@ -6,8 +6,8 @@ export async function api(url, { method = 'GET', corps, formulaire, signal } = {
   if (corps && url.endsWith('/amenager') && !moteurGuideActif()) corps = {...corps, moteurGuide:false};
   if (corps && url.endsWith('/amenager') && !finitionActive(corps.compositionDetails)) corps = {...corps, compositionDetails:false};
   if (corps && url.endsWith('/amenager') && !compositionSurfaceActive(corps.compositionSurface)) corps = {...corps, compositionSurface:false};
-  // La démo garde ses projets localement ; seul l'aménagement IA appelle le serveur.
-  if (url !== '/api/demo/amenager' && typeof window !== 'undefined' && /^\/[a-z]{2}\/(maison-corleone\/)?demo(\/|$)/.test(location.pathname)) {
+  // La démo garde ses projets localement ; seules ses routes à elle (/api/demo/…) vont au serveur.
+  if (!url.startsWith('/api/demo/') && typeof window !== 'undefined' && /^\/[a-z]{2}\/(maison-corleone\/)?demo(\/|$)/.test(location.pathname)) {
     const { repondre } = await import('@/components/demo/api.js');
     return repondre(url, { method, corps, formulaire });
   }

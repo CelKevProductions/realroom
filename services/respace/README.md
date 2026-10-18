@@ -23,7 +23,7 @@ Autre hôte possible : toute machine GPU avec `vllm serve gradient-spaces/respac
 | `RESPACE_CODE` | code d'accès demandé sur la page de démo |
 | `RESPACE_ECHANTILLONS` | propositions demandées au modèle par meuble (4 par défaut) |
 
-Page : `/fr/app/respace`. Il faut d'abord une première proposition de l'assistant dans l'atelier ;
+Pages : `/fr/demo/respace` (démo sans compte, pièces de la démo gardées dans le navigateur) et `/fr/app/respace` (compte connecté). Jamais actif en production (`VERCEL_ENV=production`). Il faut d'abord une première proposition de l'assistant dans l'atelier ;
 ReSpace replace ses meubles et la nouvelle proposition s'ajoute à celles de Shuffle.
 
 ## Fonctionnement (lib/moteurs/respace.js)
