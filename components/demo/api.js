@@ -18,6 +18,9 @@ import { CREDITS, PACKS, FONCTIONS, ROLES_PHOTO, LIMITES } from '@/lib/config.js
 import { placePhoto } from '@/lib/references.js';
 import { champsDepuisScan, ErreurScan } from '@/lib/scan.js';
 import {optionsRendu} from '@/lib/rendu-options.js';
+import { normaliserParcours, agencementAvecContraintes, etatVide } from '@/lib/parcours.js';
+import { etatVariantes } from '@/lib/variation-disposition.js';
+import { piecesDuParcours } from '@/components/demo/magasin.js';
 
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const maintenant = () => new Date().toISOString();
@@ -74,6 +77,7 @@ export async function repondre(url, { method = 'GET', corps, formulaire } = {}) 
         ecrire(e => { e.pieces.push(p); toucher(p); });
         return ok({ piece: { id: p.id, nom: p.nom, fonction: p.fonction, etat: p.etat } }, 201);
       }
+      if (sous === 'parcours') return parcours(idRes, method, corps || {});
       if (method === 'GET') return ok({ projet: projetComplet(idRes) });
       if (method === 'PATCH') {
         ecrire(() => { const p = projetDe(idRes); p.nom = String(corps.nom || p.nom).trim().slice(0, 80) || p.nom; p.maj_le = maintenant(); });
@@ -89,6 +93,9 @@ export async function repondre(url, { method = 'GET', corps, formulaire } = {}) 
         return ok();
       }
     }
+
+    // --- approfondissement simulé (comme en préversion sans service GPU)
+    if (type === 'taches') return tacheDemo(idRes, method);
 
     // --- suivi d'un rendu
     if (type === 'rendus') {
@@ -121,12 +128,13 @@ export async function repondre(url, { method = 'GET', corps, formulaire } = {}) 
         let champs;
         try { champs = champsDepuisScan(corps?.scan); }
         catch (e) { if (e instanceof ErreurScan) return non(e.code, 400); throw e; }
-        ecrire(() => { Object.assign(p, champs); toucher(p); });
+        ecrire(() => { Object.assign(p, champs); p.version_scene = (p.version_scene || 0) + 1; toucher(p); });
         return ok({ piece: publique(p) });
       }
       if (sous === 'analyse') return analyser(p, langue);
       if (sous === 'amenager') return amenager(p, corps || {}, langue);
       if (sous === 'variantes' && method === 'POST') return variantes(p, corps || {}, langue);
+      if (sous === 'approfondir') return approfondir(p, method);
       if (sous === 'rendus') {
         if (method === 'GET') return ok({ rendus: rendusDe(p.id) });
         return generer(p, corps || {});
@@ -180,6 +188,8 @@ async function photos(p, method, u, formulaire) {
   const role = ROLES_PHOTO.includes(formulaire.get('role')) ? formulaire.get('role') : 'detail';
   if (!placePhoto(p.photos, role, LIMITES).possible) throw erreur(409, 'limite-photos');
   const photo = { url: await lireFichier(fichier), role, largeur: Math.round(+formulaire.get('largeur')) || null, hauteur: Math.round(+formulaire.get('hauteur')) || null };
+  const meuble = formulaire.get('meuble');
+  if (role === 'detail' && typeof meuble === 'string' && (p.agencement || []).some(it => it.id === meuble && it.origine === 'existant')) photo.meuble = meuble;
   ecrire(() => {
     const { remplace: i, possible } = placePhoto(p.photos, role, LIMITES);
     if (!possible) throw erreur(409, 'limite-photos');
@@ -246,4 +256,66 @@ async function generer(p, b) {
     e.rendus.push(r);
   });
   return ok({ id: r.id }, 201);
+}
+
+// Parcours guidé : même contrat que app/api/projets/[id]/parcours (état, révision, pièces).
+function parcours(projetId, method, b) {
+  const lireEtat = () => { const r = lire().parcours?.[projetId]; return { etat: r ? normaliserParcours(r.etat, piecesDuParcours(projetId)) : etatVide(), revision: r ? r.maj_le : null }; };
+  if (method === 'GET') return ok({ ...lireEtat(), pieces: piecesDuParcours(projetId) });
+  if (method === 'PUT') {
+    const actuel = lire().parcours?.[projetId];
+    if (actuel && (b.revision || null) !== actuel.maj_le) return { ...non('parcours-conflit', 409), ...lireEtat(), pieces: piecesDuParcours(projetId) };
+    const etat = normaliserParcours(b.etat, piecesDuParcours(projetId)), revision = new Date(Math.max(Date.now(), actuel ? Date.parse(actuel.maj_le) + 1 : 0)).toISOString();
+    ecrire(e => { e.parcours = { ...e.parcours, [projetId]: { etat, maj_le: revision } }; });
+    return ok({ etat, revision });
+  }
+  const p = lire().pieces.find(x => x.id === b.piece && x.projet_id === projetId);
+  if (!p) return non('introuvable', 404);
+  if (b.action === 'valider') {
+    if (!p.modele) return non('pas-de-modele', 409);
+    if (!p.version_scene) ecrire(() => { p.version_scene = 1; toucher(p); });
+  } else if (b.action === 'contraintes') {
+    const { etat } = lireEtat();
+    ecrire(() => { p.agencement = agencementAvecContraintes(etat, publique(p)); toucher(p); });
+  } else return non('action', 400);
+  return ok({ pieces: piecesDuParcours(projetId) });
+}
+
+// « Affiner mon aménagement » dans la démo : quelques secondes de calcul simulé, crédits débités
+// une fois et la proposition rendue telle quelle (comme la simulation du serveur).
+const DUREE_APPROFONDISSEMENT = 6000;
+const tachePublique = t => ({ id: t.id, type: 'approfondissement', etat: t.etat, version: t.version, credits: t.credits, progression: t.progression || null,
+  resultat: t.resultat, erreur: t.erreur || null, cree_le: t.cree_le, fini_le: t.fini_le || null });
+function avancer(t) {
+  if (!['attente', 'en_cours'].includes(t.etat)) return t;
+  const ecoule = Date.now() - Date.parse(t.cree_le);
+  ecrire(e => {
+    if (ecoule < DUREE_APPROFONDISSEMENT) { t.etat = 'en_cours'; t.progression = { etape: ecoule < DUREE_APPROFONDISSEMENT / 2 ? 1 : 2, total: 3 }; return; }
+    const p = e.pieces.find(x => x.id === t.piece_id);
+    t.etat = 'fini'; t.fini_le = maintenant(); t.progression = null;
+    t.resultat = { simulation: true, obsolete: !p || (p.version_scene || 0) !== t.version, rapport: { appliques: 0, refuses: [], ignores: 0 } };
+    if (p && !t.resultat.obsolete) p.approfondie = t.version;
+  });
+  return t;
+}
+function approfondir(p, method) {
+  if (method === 'GET') return ok({ taches: (lire().taches || []).filter(t => t.piece_id === p.id).map(t => tachePublique(avancer(t))) });
+  const contexte = etatVariantes(p);
+  if (!contexte || contexte.obsolete) return non('assistant-obsolete', 409);
+  const active = (lire().taches || []).find(t => t.piece_id === p.id && ['attente', 'en_cours'].includes(t.etat));
+  if (active) return ok({ tache: tachePublique(avancer(active)) });
+  const cout = CREDITS.approfondissement;
+  if (lire().credits < cout) return non('credits', 402);
+  const t = { id: nouvelId('t_'), piece_id: p.id, etat: 'attente', version: p.version_scene || 0, credits: cout, cree_le: maintenant() };
+  ecrire(e => { e.credits -= cout; e.mouvements.unshift({ delta: -cout, motif: 'approfondissement', cree_le: maintenant() }); e.taches = [...(e.taches || []), t]; });
+  return ok({ tache: tachePublique(t) });
+}
+function tacheDemo(id, method) {
+  const t = (lire().taches || []).find(x => x.id === id);
+  if (!t) return non('introuvable', 404);
+  if (method === 'DELETE' && ['attente', 'en_cours'].includes(t.etat)) {
+    ecrire(e => { t.etat = 'annule'; t.fini_le = maintenant(); e.credits += t.credits; e.mouvements.unshift({ delta: t.credits, motif: 'remboursement', cree_le: maintenant() }); });
+    return ok({ tache: tachePublique(t) });
+  }
+  return ok({ tache: tachePublique(avancer(t)) });
 }

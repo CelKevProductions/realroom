@@ -6,6 +6,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { api } from '@/components/api.js';
+import { chargerCatalogue } from '@/components/catalogueClient.js';
 import { useRacine } from '@/components/chemins.js';
 import { useFil } from '@/components/fil.js';
 import { Etape } from '@/components/mouvement/react.js';
@@ -30,7 +31,9 @@ export default function Parcours({ lang, t, projetId, projetNom, initial, produi
   // lu par modifier() dans le même geste qu'un ajout de pièce
   const piecesRef = useRef(pieces);
   const setPieces = useCallback(ps => { piecesRef.current = ps; poserPieces(ps); }, []);
-  const [produits] = useState(produitsInitiaux);
+  // le catalogue complet arrive ensuite : les plans des propositions montrent aussi les meubles ajoutés
+  const [produits, setProduits] = useState(produitsInitiaux || {});
+  useEffect(() => { chargerCatalogue().then(c => setProduits(p => ({ ...c.produits, ...p }))).catch(() => {}); }, []);
   const [sens, setSens] = useState(1);
   const [sauvegarde, setSauvegarde] = useState('ok');     // ok | encours | erreur
   const [occupe, setOccupe] = useState('');
@@ -76,14 +79,15 @@ export default function Parcours({ lang, t, projetId, projetNom, initial, produi
     // page quittée ou rechargée : le dernier état part quand même (keepalive)
     const quitter = () => {
       const e = aEnvoyer.current;
-      if (!e) return;
+      // démo : tout est déjà dans le navigateur, rien à envoyer au serveur
+      if (!e || racine.includes('/demo')) return;
       aEnvoyer.current = null; clearTimeout(minuterie.current);
       try { fetch(`/api/projets/${projetId}/parcours`, { method: 'PUT', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ etat: e, revision: revision.current }) }); } catch (_) {}
     };
     addEventListener('pagehide', quitter);
     // navigation dans l'application : envoi normal
     return () => { removeEventListener('pagehide', quitter); if (aEnvoyer.current) envoyer(); };
-  }, [envoyer, projetId]);
+  }, [envoyer, projetId, racine]);
 
   async function recharger() {
     const r = await api(`/api/projets/${projetId}/parcours`);
