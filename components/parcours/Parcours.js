@@ -11,6 +11,7 @@ import { useRacine } from '@/components/chemins.js';
 import { useFil } from '@/components/fil.js';
 import { Etape } from '@/components/mouvement/react.js';
 import { Rouage, Progression } from '@/components/mouvement/Attente.js';
+import { Explication } from '@/components/mouvement/Explication.js';
 import { annoncer } from '@/components/mouvement/regles.js';
 import { reduireImage } from '@/components/piece/image.js';
 import { MiniPlan } from '@/components/piece/Variantes.js';
@@ -22,6 +23,9 @@ import { FONCTIONS } from '@/lib/config.js';
 import { TEXTES } from './textes.js';
 
 const TACHE_ACTIVE = ['attente', 'en_cours'];
+// scène animée qui explique chaque étape (components/mouvement/Explication.js)
+const SCENE = { perimetre: 'pieces', usages: 'usages', capture: 'relever', validation: 'valider', choix: 'conserver', selection: 'conserver',
+  photos: 'photo', preferences: 'preferences', proposition: 'proposition', approfondissement: 'affiner' };
 
 export default function Parcours({ lang, t, projetId, projetNom, initial, produits: produitsInitiaux, approfondissement }) {
   const x = TEXTES[lang] || TEXTES.fr;
@@ -148,6 +152,7 @@ export default function Parcours({ lang, t, projetId, projetNom, initial, produi
           <Etape key={etat.etape} titre={x.etapes[etat.etape].nom} sens={sens} className="parcours__etape">
             <h2 data-titre-etape="">{x.etapes[etat.etape].titre}</h2>
             <p className="parcours__intro">{x.etapes[etat.etape].intro}</p>
+            <Explication scene={SCENE[etat.etape]} texte={x.etapes[etat.etape].panda} geste={i === 0 ? 'salut' : null} />
             {message && <p className={'avis ' + (message.erreur ? 'avis--alerte' : 'avis--note')}>{message.texte}</p>}
             <Contenu {...props} />
             <div className="parcours__actions">

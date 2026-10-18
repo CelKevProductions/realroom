@@ -4,6 +4,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { ouvrirDialogue, fermerDialogue, apparaitre } from '@/components/Mouvement.js';
 import { remplir } from '@/lib/i18n.js';
+import { gsap, initialiser, mouvementPermis } from '@/components/mouvement/regles.js';
+import { Panda } from '@/components/mouvement/Panda.js';
 
 const lu = cle => { try { return localStorage.getItem(cle) === '1'; } catch (_) { return true; } };
 const noter = cle => { try { localStorage.setItem(cle, '1'); } catch (_) { /* navigation privée */ } };
@@ -55,7 +57,7 @@ const ILLUS = {
 };
 
 export default function Tuto({ id, etapes, libelles, auto = true, className = 'btn btn--lien btn--petit' }) {
-  const dlg = useRef(null), corps = useRef(null);
+  const dlg = useRef(null), corps = useRef(null), illu = useRef(null);
   const [i, setI] = useState(0);
   const cle = 'rr-tuto-' + id;
   const ouvrir = () => { setI(0); ouvrirDialogue(dlg.current); };
@@ -68,13 +70,27 @@ export default function Tuto({ id, etapes, libelles, auto = true, className = 'b
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => { apparaitre(corps.current, { y: 8 }); }, [i]);
+  // l'illustration se dessine trait par trait, le trait rouille en dernier
+  useEffect(() => {
+    const svg = illu.current;
+    if (!svg || !mouvementPermis()) return undefined;
+    initialiser();
+    const traits = [...svg.querySelectorAll('path, rect, circle')].filter(e => e.getTotalLength);
+    const tl = gsap.timeline();
+    traits.forEach((e, k) => {
+      const l = e.getTotalLength();
+      tl.fromTo(e, { strokeDasharray: l, strokeDashoffset: l }, { strokeDashoffset: 0, duration: .7, ease: 'power2.inOut', clearProps: 'strokeDasharray,strokeDashoffset' }, (e.classList.contains('tuto__accent') ? .5 : 0) + k * .06);
+    });
+    return () => tl.progress(1).kill();
+  }, [i]);
   const e = etapes[i], dernier = i === etapes.length - 1;
   return (
     <>
       <button type="button" className={className} onClick={ouvrir}>{libelles.guide}</button>
       <dialog ref={dlg} className="dialogue tuto" aria-label={libelles.guide} onCancel={ev => { ev.preventDefault(); fermer(); }} onClick={ev => { if (ev.target === dlg.current) fermer(); }}>
         <div className="tuto__illu" aria-hidden="true">
-          <svg viewBox="0 0 160 120">{ILLUS[e.illu] || ILLUS.maquette}</svg>
+          <svg ref={illu} key={i} viewBox="0 0 160 120">{ILLUS[e.illu] || ILLUS.maquette}</svg>
+          <Panda taille={58} geste={i === 0 ? 'salut' : null} className="tuto__panda" />
         </div>
         <div className="dialogue__corps tuto__corps" ref={corps}>
           <p className="tuto__etape">{remplir(libelles.etape, { n: i + 1, t: etapes.length })}</p>

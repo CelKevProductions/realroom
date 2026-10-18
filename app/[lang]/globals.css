@@ -272,6 +272,9 @@ dialog.tuto { width: min(520px, 100% - 24px); }
 .tuto__illu svg { display: block; width: min(220px, 60%); height: auto; margin: 0 auto; fill: none; stroke: var(--encre); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .tuto__illu .tuto__accent { stroke: var(--rouille); }
 .tuto__illu .tuto__ia { fill: var(--rouille); stroke: none; font: 700 12px var(--m); }
+.tuto__illu { position: relative; }
+.tuto__illu .tuto__panda { position: absolute; right: 16px; bottom: 6px; width: 58px; margin: 0; stroke: none; }
+@media (max-width: 480px) { .tuto__illu .tuto__panda { width: 46px; right: 10px; } }
 .tuto__corps { gap: 14px; }
 .tuto__etape { font: 500 .75rem var(--m); color: var(--graphite); }
 .tuto__texte { color: var(--graphite); line-height: 1.55; }
@@ -635,3 +638,44 @@ html[data-mvt] [data-entree]:not(.is-entre):not([data-entree='trait']), html[dat
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
 .catalogue__sources{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}
+
+/* ---------- le panda (guide) et les explications en mouvement ---------- */
+.panda { flex: none; overflow: visible; }
+.panda__trait { stroke: var(--encre); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.panda__corps, .panda__blanc { fill: var(--blanc); }
+.panda__noir, .panda__noir-plein { fill: var(--encre); }
+.panda__joue { fill: var(--rouille); opacity: .35; }
+.panda__bouche { fill: none; stroke: var(--encre); stroke-width: 2; stroke-linecap: round; }
+.panda__metre rect { fill: var(--rouille); }
+.panda__metre path { fill: none; stroke: var(--rouille); stroke-width: 2.4; stroke-linecap: round; }
+.guide-panda { display: flex; align-items: flex-end; gap: 10px; }
+.guide-panda__bulle {
+  position: relative; margin-bottom: 18px; padding: 9px 13px; max-width: 30ch;
+  border: 1px solid var(--encre); border-radius: 14px 14px 14px 2px; background: var(--blanc);
+  font-size: .9rem; line-height: 1.35; color: var(--encre);
+}
+.explication { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 28px; margin: 0; padding: 18px 0 6px; border-top: 1px solid var(--trait); }
+.explication figcaption { flex: 1 1 220px; min-width: 0; }
+.expl__scene { width: 240px; max-width: 100%; height: auto; flex: none; cursor: default; overflow: visible; }
+.expl__trace, .expl__mur, .expl__meuble, .expl__rail, .expl__viseur, .expl__vignette, .expl__cote path, .expl__cadenas, .expl__loupe { fill: none; stroke: var(--encre); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.expl__trace { stroke-dasharray: 1; stroke-dashoffset: 0; }
+.expl__mur { stroke-width: 2.2; }
+.expl__accent, .expl__accent-trait, .expl__etincelle { stroke: var(--rouille); fill: none; stroke-width: 2; stroke-linecap: round; }
+.expl__etincelle { fill: var(--rouille); stroke: none; }
+.expl__meuble.expl__plein, .expl__teintes .expl__plein { fill: var(--rouille-clair); stroke: var(--rouille); }
+.expl__fond { fill: var(--platre); }
+.expl__plante { fill: var(--sauge-clair); stroke: var(--sauge); }
+.expl__zone { fill: var(--rouille-clair); }
+.expl__cote text { font: 9px var(--m); fill: var(--graphite); letter-spacing: .04em; }
+.expl__sceau { fill: var(--blanc); stroke: var(--rouille); stroke-width: 1.6; }
+.expl__balayage { stroke: var(--rouille); stroke-width: 1.2; stroke-dasharray: 3 3; }
+.expl__garde.is-garde .expl__meuble { stroke: var(--rouille); fill: var(--rouille-clair); }
+.expl__cadenas rect { fill: var(--rouille); stroke: var(--rouille); }
+.expl__cadenas .expl__anse { stroke: var(--rouille); }
+.expl__rail { stroke: var(--trait-fort); }
+.expl__curseur { fill: var(--blanc); stroke: var(--encre); stroke-width: 1.6; }
+.expl__teintes rect { fill: var(--calque); stroke: var(--encre); stroke-width: 1.2; }
+.expl__flash { fill: var(--blanc); opacity: 0; pointer-events: none; }
+.expl__vignette { fill: var(--blanc); }
+.expl__loupe circle { fill: rgba(251, 250, 248, .55); }
+@media (max-width: 560px) { .expl__scene { width: 100%; } .guide-panda__bulle { max-width: none; } }
