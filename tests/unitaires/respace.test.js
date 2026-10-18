@@ -40,3 +40,20 @@ test('ReSpace : une proposition de plus parmi les variantes, dimensions du catal
   assert.ok(r.agencement.some(it => { const a = piece.agencement.find(b => b.id === it.id); return Math.abs(a.x - it.x) > .05; }), 'disposition changée');
   await assert.rejects(varianteRespace(piece, PRODUITS, { appel: async () => '???', echantillons: 1 }), { code: 'respace-aucun' });
 });
+
+test('contraintes : un meuble gardé « peut être déplacé » bouge, un meuble « reste à cet endroit » non', async () => {
+  const { ecartsContraintes, contraintesDe, verrouillerDimensions, sceneDepuisPiece } = await import('../../lib/scene.js');
+  const meuble = { id: 'e1', origine: 'existant', x: 1, z: 0, rot: 0, p: { fam: 'canape', dim: [2, .9, .8], nom: 'Canapé' } };
+  assert.deepEqual(contraintesDe(meuble), { conserver: false, dimensionsFixes: false, positionFixe: true, rotationFixe: true });
+  const bouge = [{ ...meuble, x: -1 }];
+  assert.deepEqual(ecartsContraintes([meuble], bouge, PRODUITS).map(e => e.contrainte), ['positionFixe']);
+  assert.deepEqual(ecartsContraintes([{ ...meuble, contraintes: { positionFixe: false } }], bouge, PRODUITS), []);
+  assert.deepEqual(ecartsContraintes([{ ...meuble, contraintes: { positionFixe: false } }], [{ ...meuble, x: -1, rot: 1 }], PRODUITS), []);
+  assert.deepEqual(ecartsContraintes([{ ...meuble, contraintes: { positionFixe: false, rotationFixe: true } }], [{ ...meuble, x: -1, rot: 1 }], PRODUITS).map(e => e.contrainte), ['rotationFixe']);
+  const verrou = { ...meuble, contraintes: { dimensionsFixes: true } };
+  assert.deepEqual(verrouillerDimensions([verrou], [{ ...verrou, p: { ...verrou.p, dim: [3, .9, .8] } }])[0].p.dim, [2, .9, .8]);
+  const scene = sceneDepuisPiece({ modele: rectangle(4, 3), agencement: [meuble] }, PRODUITS, { version: 2 });
+  assert.equal(scene.format, 'realroom-scene-v1');
+  assert.deepEqual(scene.objets[0].dim, { largeur: 2, profondeur: .9, hauteur: .8 });
+  assert.equal(scene.murs.length, 4);
+});

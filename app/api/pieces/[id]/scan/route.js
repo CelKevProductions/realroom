@@ -2,6 +2,8 @@ import { route, json, exiger, lireJSON, ErreurHTTP } from '@/lib/http.js';
 import { piece, importerScan, publique } from '@/lib/projets.js';
 import { champsDepuisScan, ErreurScan, MAX_SCAN_OCTETS } from '@/lib/scan.js';
 import { analyseMaisonPermise, compterAnalyseMaison } from '@/lib/maison.js';
+import { archiverScan, validerScene } from '@/lib/versions-scene.js';
+import { PRODUITS } from '@/lib/catalogue.js';
 
 // Données métriques seulement. Le serveur refait toute la validation du navigateur.
 export const POST = route(async (request, { params }) => {
@@ -17,6 +19,9 @@ export const POST = route(async (request, { params }) => {
   catch (e) { if (e instanceof ErreurScan) throw new ErreurHTTP(400, e.code); throw e; }
   if (!(await analyseMaisonPermise(u))) throw new ErreurHTTP(429, 'limite-mc');
   const n = await importerScan(u.id, id, champs, p);
+  // le relevé brut est gardé à part, puis le plan qui en découle devient la nouvelle version
+  const brut = await archiverScan(u.id, id, b.scan);
+  await validerScene(u.id, n, PRODUITS, brut?.id);
   await compterAnalyseMaison(u);
   return json({ piece: publique(n) });
 });

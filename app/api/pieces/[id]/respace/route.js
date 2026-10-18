@@ -2,6 +2,7 @@ import { route, json, exiger, lireJSON, ErreurHTTP } from '@/lib/http.js';
 import { piece, majAmenagement, publique } from '@/lib/projets.js';
 import { compter, lireCompteur } from '@/lib/db.js';
 import { PRODUITS } from '@/lib/catalogue.js';
+import { archiverProposition } from '@/lib/versions-scene.js';
 import { ErreurAssistant } from '@/lib/assistant-amenagement.js';
 import { configRespace, codeDemoValide, etatRespace, appelReseau, varianteRespace } from '@/lib/moteurs/respace.js';
 
@@ -31,5 +32,6 @@ export const POST = route(async (request, { params }) => {
     throw e;
   }
   const n = await majAmenagement(u.id, id, resultat, p);
+  await archiverProposition(u.id, p, 'brouillon', resultat.agencement, PRODUITS, resultat.proposition.moteur);
   return json({ piece: publique(n), moteur: resultat.proposition.moteur });
 });
