@@ -1,11 +1,18 @@
 // Textes du parcours guidé (français et anglais). Aucun nom de modèle d'IA : « Première
 // proposition », « Affiner mon aménagement », « Conserver ce meuble ».
 const fr = {
-  locale: 'fr-FR', titre: 'Parcours guidé', recap: 'Étapes du parcours', avancement: 'Avancement réel', fait: 'fait',
+  locale: 'fr-FR', titre: 'Aménager mes pièces', recap: 'Étapes du parcours', avancement: 'Avancement réel', fait: 'fait',
   enregistre: 'Enregistré', enregistrement: 'Enregistrement…', nonEnregistre: 'Non enregistré : vérifiez la connexion.',
   conflit: 'Le parcours a été modifié ailleurs. La version enregistrée a été reprise.',
   retour: 'Retour', continuer: 'Continuer', credits: 'crédits', planReleve: 'plan relevé',
   espaces: { repas: 'Repas', travail: 'Travail', lecture: 'Lecture', rangement: 'Rangement', cuisine: 'Cuisine', bar: 'Bar' },
+  ecrans: {
+    pieces: { nom: 'Vos pièces', titre: 'Vos pièces et leur plan', intro: 'Choisissez les pièces à aménager, puis relevez chacune : scan, plan ou photos.' },
+    verifier: { nom: 'Vérification', titre: 'On vérifie ensemble', intro: 'Le plan de chaque pièce, puis les meubles que vous gardez.' },
+    envies: { nom: 'Vos envies', titre: 'Vos envies', intro: 'Ce que vous faites dans chaque pièce, votre budget et votre style.' },
+    amenagement: { nom: 'Votre aménagement', titre: 'Votre aménagement', intro: 'Une première proposition par pièce. Ensuite, d’autres versions avec Shuffle, ou un aménagement affiné.' }
+  },
+  facultatif: 'facultatif',
   etapes: {
     perimetre: { nom: 'Périmètre', titre: 'Quelles pièces aménager ?', intro: 'Choisissez une ou plusieurs pièces du projet, ou ajoutez-en.', panda: 'On commence par choisir les pièces.', bloque: 'Choisissez au moins une pièce.' },
     usages: { nom: 'Usages', titre: 'Que se passe-t-il dans chaque pièce ?', intro: 'Les activités prévues guident les meubles proposés.', panda: 'Dites-moi ce que vous faites dans chaque pièce.', bloque: 'Confirmez les usages de chaque pièce.' },
@@ -47,11 +54,18 @@ const fr = {
 };
 
 const en = {
-  ...fr, locale: 'en-GB', titre: 'Guided setup', recap: 'Steps', avancement: 'Actual progress', fait: 'done',
+  ...fr, locale: 'en-GB', titre: 'Furnish my rooms', recap: 'Steps', avancement: 'Actual progress', fait: 'done',
   enregistre: 'Saved', enregistrement: 'Saving…', nonEnregistre: 'Not saved: check your connection.',
   conflit: 'The guided setup was changed elsewhere. The saved version has been loaded.',
   retour: 'Back', continuer: 'Continue', credits: 'credits', planReleve: 'plan ready',
   espaces: { repas: 'Dining', travail: 'Work', lecture: 'Reading', rangement: 'Storage', cuisine: 'Kitchen', bar: 'Bar' },
+  ecrans: {
+    pieces: { nom: 'Your rooms', titre: 'Your rooms and their plan', intro: 'Pick the rooms to furnish, then capture each one: scan, plan or photos.' },
+    verifier: { nom: 'Check', titre: 'Let’s check together', intro: 'Each room’s plan, then the furniture you keep.' },
+    envies: { nom: 'Your wishes', titre: 'Your wishes', intro: 'What you do in each room, your budget and your style.' },
+    amenagement: { nom: 'Your layout', titre: 'Your layout', intro: 'A first proposal per room. Then more versions with Shuffle, or a refined layout.' }
+  },
+  facultatif: 'optional',
   etapes: {
     perimetre: { nom: 'Scope', titre: 'Which rooms?', intro: 'Pick one or more rooms of the project, or add some.', panda: 'Let’s start by picking the rooms.', bloque: 'Pick at least one room.' },
     usages: { nom: 'Uses', titre: 'What happens in each room?', intro: 'Planned activities guide the furniture we suggest.', panda: 'Tell me what you do in each room.', bloque: 'Confirm the uses of each room.' },

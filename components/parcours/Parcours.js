@@ -1,5 +1,7 @@
 'use client';
-// Parcours guidé d'un projet, en dix étapes, sur une ou plusieurs pièces. Chaque choix est
+// Parcours guidé d'un projet, sur une ou plusieurs pièces, en quatre écrans : vos pièces, la
+// vérification, vos envies, votre aménagement. Chaque écran regroupe des étapes enregistrées
+// (lib/parcours.js garde ses dix étapes) qui se dévoilent l'une après l'autre. Chaque choix est
 // enregistré tout de suite (reprise à la visite suivante, sur n'importe quel appareil). On peut
 // revenir en arrière à tout moment ; l'avancement affiché vient des données réelles. Les étapes
 // réutilisent l'atelier existant (relevé, plan, Shuffle) au lieu de le refaire.
@@ -9,13 +11,13 @@ import { api } from '@/components/api.js';
 import { chargerCatalogue } from '@/components/catalogueClient.js';
 import { useRacine } from '@/components/chemins.js';
 import { useFil } from '@/components/fil.js';
-import { Etape } from '@/components/mouvement/react.js';
+import { Etape, useIsoLayout } from '@/components/mouvement/react.js';
 import { Rouage, Progression } from '@/components/mouvement/Attente.js';
 import { Explication } from '@/components/mouvement/Explication.js';
-import { annoncer } from '@/components/mouvement/regles.js';
+import { annoncer, entrer } from '@/components/mouvement/regles.js';
 import { reduireImage } from '@/components/piece/image.js';
 import { MiniPlan } from '@/components/piece/Variantes.js';
-import { ETAPES, avancement, gardesDe, demandeProposition, normaliserParcours } from '@/lib/parcours.js';
+import { avancement, gardesDe, demandeProposition, normaliserParcours } from '@/lib/parcours.js';
 import { ESPACES_PAR_FONCTION } from '@/lib/espaces.js';
 import { estInstallation } from '@/lib/usages.js';
 import { contourDe } from '@/lib/contour.js';
@@ -23,6 +25,15 @@ import { FONCTIONS } from '@/lib/config.js';
 import { TEXTES } from './textes.js';
 
 const TACHE_ACTIVE = ['attente', 'en_cours'];
+// les quatre écrans et les étapes enregistrées qu'ils regroupent
+const ECRANS = [
+  { id: 'pieces', etapes: ['perimetre', 'capture'] },
+  { id: 'verifier', etapes: ['validation', 'choix', 'selection', 'photos'] },
+  { id: 'envies', etapes: ['usages', 'preferences'] },
+  { id: 'amenagement', etapes: ['proposition', 'approfondissement'] }
+];
+const FACULTATIVES = ['photos', 'approfondissement'];
+const ecranDe = etape => Math.max(0, ECRANS.findIndex(e => e.etapes.includes(etape)));
 // scène animée qui explique chaque étape (components/mouvement/Explication.js)
 const SCENE = { perimetre: 'pieces', usages: 'usages', capture: 'relever', validation: 'valider', choix: 'conserver', selection: 'conserver',
   photos: 'photo', preferences: 'preferences', proposition: 'proposition', approfondissement: 'affiner' };
@@ -48,7 +59,19 @@ export default function Parcours({ lang, t, projetId, projetNom, initial, produi
 
   const faits = avancement(etat, pieces);
   const choisies = etat.pieces.map(id => pieces.find(p => p.id === id)).filter(Boolean);
-  const i = ETAPES.indexOf(etat.etape);
+  const k = ecranDe(etat.etape), ecran = ECRANS[k];
+  const ecranFait = j => ECRANS[j].etapes.every(e => faits[e] || FACULTATIVES.includes(e));
+  // étapes sans objet pour ces pièces : pas de meubles relevés, aucun meuble choisi un par un, rien de gardé
+  const sansObjet = {
+    choix: !choisies.some(p => existants(p).some(it => !estInstallation(it))),
+    selection: !choisies.some(p => etat.choix[p.id] === 'certains'),
+    photos: !choisies.some(p => gardesDe(etat, p).some(it => !estInstallation(it)))
+  };
+  const visibles = ecran.etapes.filter(e => !sansObjet[e]);
+  // les étapes se dévoilent jusqu'à la première qui reste à faire
+  const aFaire = visibles.findIndex(e => !faits[e] && !FACULTATIVES.includes(e));
+  const montrees = aFaire < 0 ? visibles : visibles.slice(0, aFaire + 1);
+  const active = aFaire < 0 ? visibles[visibles.length - 1] : visibles[aFaire];
 
   // Enregistrement automatique : un envoi à la fois, le dernier état gagne.
   const envoyer = useCallback(() => {
@@ -98,10 +121,9 @@ export default function Parcours({ lang, t, projetId, projetNom, initial, produi
     if (r.ok) setPieces(r.pieces);
     return r;
   }
-  const aller = (cible, direction) => { setSens(direction); setMessage(null); modifier({ etape: cible }); };
-  async function suivant() {
-    // en quittant la sélection, les contraintes des meubles gardés sont écrites sur chaque pièce
-    if (etat.etape === 'selection') {
+  async function aller(j, direction) {
+    // en quittant la vérification vers la suite, les contraintes des meubles gardés sont écrites sur chaque pièce
+    if (ecran.id === 'verifier' && j > k) {
       setOccupe('contraintes');
       await envoyer();
       for (const p of choisies) {
@@ -111,14 +133,14 @@ export default function Parcours({ lang, t, projetId, projetNom, initial, produi
       }
       setOccupe('');
     }
-    if (i < ETAPES.length - 1) aller(ETAPES[i + 1], 1);
+    setSens(direction); setMessage(null); modifier({ etape: ECRANS[j].etapes[0] });
   }
-  const precedent = () => { if (i > 0) aller(ETAPES[i - 1], -1); };
-  // une étape déjà faite, ou la première qui ne l'est pas, est accessible depuis le récapitulatif
-  const premiereAFaire = ETAPES.findIndex(e => !faits[e] && !['photos', 'approfondissement'].includes(e));
-  const accessible = j => j <= (premiereAFaire < 0 ? ETAPES.length - 1 : premiereAFaire) || faits[ETAPES[j]];
-  // les photos des meubles gardés sont facultatives
-  const peutContinuer = faits[etat.etape] || etat.etape === 'photos';
+  const suivant = () => { if (k < ECRANS.length - 1) aller(k + 1, 1); };
+  const precedent = () => { if (k > 0) aller(k - 1, -1); };
+  // un écran fait, ou le premier qui ne l'est pas, est accessible depuis la progression
+  const premierAFaire = ECRANS.findIndex((_, j) => !ecranFait(j));
+  const accessible = j => j <= (premierAFaire < 0 ? ECRANS.length - 1 : premierAFaire) || ecranFait(j);
+  const peutContinuer = ecranFait(k);
 
   const props = { x, t, lang, racine, etat, modifier, pieces, choisies, produits, faits, recharger, setPieces, setMessage, occupe, setOccupe, projetId, approfondissement, envoyer };
   return (
@@ -132,46 +154,55 @@ export default function Parcours({ lang, t, projetId, projetNom, initial, produi
           {sauvegarde === 'encours' ? x.enregistrement : sauvegarde === 'erreur' ? x.nonEnregistre : x.enregistre}
         </p>
       </div>
-      <div className="parcours__grille">
-        <nav className="parcours__recap" aria-label={x.recap}>
-          <Progression libelle={x.avancement} etapes={ETAPES.map(e => ({ id: e, nom: x.etapes[e].nom, fait: !!faits[e], encours: e === etat.etape }))} />
-          <ol className="parcours__etapes">
-            {ETAPES.map((e, j) => (
-              <li key={e}>
-                <button type="button" className={'parcours__lien' + (e === etat.etape ? ' is-actif' : '') + (faits[e] ? ' is-fait' : '')}
-                  disabled={!accessible(j)} aria-current={e === etat.etape ? 'step' : undefined} onClick={() => aller(e, j >= i ? 1 : -1)}>
-                  <span className="parcours__num">{String(j + 1).padStart(2, '0')}</span>
-                  <span>{x.etapes[e].nom}</span>
-                  {faits[e] && <span className="visuel-masque">{x.fait}</span>}
-                </button>
-              </li>
-            ))}
-          </ol>
-        </nav>
-        <div className="parcours__scene">
-          <Etape key={etat.etape} titre={x.etapes[etat.etape].nom} sens={sens} className="parcours__etape">
-            <h2 data-titre-etape="">{x.etapes[etat.etape].titre}</h2>
-            <p className="parcours__intro">{x.etapes[etat.etape].intro}</p>
-            <Explication scene={SCENE[etat.etape]} texte={x.etapes[etat.etape].panda} geste={i === 0 ? 'salut' : null} />
-            {message && <p className={'avis ' + (message.erreur ? 'avis--alerte' : 'avis--note')}>{message.texte}</p>}
-            <Contenu {...props} />
-            <div className="parcours__actions">
-              <button type="button" className="btn btn--clair" onClick={precedent} disabled={i === 0 || !!occupe}>{x.retour}</button>
-              {i < ETAPES.length - 1 && <button type="button" className="btn btn--plein" onClick={suivant} disabled={!peutContinuer || !!occupe}>
-                {occupe === 'contraintes' ? <><Rouage /> {x.enregistrement}</> : x.continuer}
-              </button>}
-            </div>
-            {!peutContinuer && i < ETAPES.length - 1 && <p className="discret">{x.etapes[etat.etape].bloque}</p>}
-          </Etape>
-        </div>
+      <nav className="parcours__ecrans" aria-label={x.recap}>
+        <ol>
+          {ECRANS.map((e, j) => (
+            <li key={e.id} className={(j === k ? 'is-actif' : '') + (ecranFait(j) ? ' is-fait' : '')}>
+              <button type="button" disabled={!accessible(j) || !!occupe} aria-current={j === k ? 'step' : undefined} onClick={() => j !== k && aller(j, j > k ? 1 : -1)}>
+                <span className="parcours__num">{String(j + 1).padStart(2, '0')}</span>
+                <span>{x.ecrans[e.id].nom}</span>
+                {ecranFait(j) && <span className="visuel-masque">{x.fait}</span>}
+              </button>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      <div className="parcours__scene">
+        <Etape key={ecran.id} titre={x.ecrans[ecran.id].nom} sens={sens} className="parcours__etape">
+          <h2 data-titre-etape="">{x.ecrans[ecran.id].titre}</h2>
+          <p className="parcours__intro">{x.ecrans[ecran.id].intro}</p>
+          <Explication key={active} scene={SCENE[active]} texte={x.etapes[active].panda} geste={k === 0 ? 'salut' : null} />
+          {message && <p className={'avis ' + (message.erreur ? 'avis--alerte' : 'avis--note')}>{message.texte}</p>}
+          {montrees.map(e => (
+            <Bloc key={e} etape={e}>
+              <h3>{x.etapes[e].titre}{FACULTATIVES.includes(e) && <span className="discret"> · {x.facultatif}</span>}</h3>
+              <p className="discret">{x.etapes[e].intro}</p>
+              <Contenu {...props} etape={e} />
+            </Bloc>
+          ))}
+          <div className="parcours__actions">
+            <button type="button" className="btn btn--clair" onClick={precedent} disabled={k === 0 || !!occupe}>{x.retour}</button>
+            {k < ECRANS.length - 1 && <button type="button" className="btn btn--plein" onClick={suivant} disabled={!peutContinuer || !!occupe}>
+              {occupe === 'contraintes' ? <><Rouage /> {x.enregistrement}</> : x.continuer}
+            </button>}
+          </div>
+          {!peutContinuer && <p className="discret">{x.etapes[active].bloque}</p>}
+        </Etape>
       </div>
     </div>
   );
 }
 
+// Une étape dans son écran : elle glisse en place quand elle se dévoile.
+function Bloc({ etape, children }) {
+  const ref = useRef(null);
+  useIsoLayout(() => { const tw = entrer(ref.current); return () => { tw?.progress(1).kill(); }; }, []);
+  return <section ref={ref} className="parcours__bloc" data-etape={etape}>{children}</section>;
+}
+
 function Contenu(props) {
   const E = { perimetre: Perimetre, usages: Usages, capture: Capture, validation: Validation, choix: Choix, selection: Selection,
-    photos: PhotosMeubles, preferences: Preferences, proposition: Proposition, approfondissement: Approfondissement }[props.etat.etape];
+    photos: PhotosMeubles, preferences: Preferences, proposition: Proposition, approfondissement: Approfondissement }[props.etape];
   return <E {...props} />;
 }
 
@@ -321,14 +352,14 @@ function Choix({ x, etat, modifier, choisies }) {
 function PlanNumerote({ p, gardes }) {
   const m = p.modele, L = m.dims.largeur, P = m.dims.profondeur, liste = existants(p);
   return <svg viewBox={`${-L / 2 - .15} ${-P / 2 - .15} ${L + .3} ${P + .3}`} className="parcours__svg" aria-hidden="true">
-    <polygon points={contourDe(m).map(q => q.join(',')).join(' ')} fill="#eee5d7" stroke="#85745f" strokeWidth=".035" />
+    <polygon points={contourDe(m).map(q => q.join(',')).join(' ')} className="parcours__sol" strokeWidth=".035" />
     {liste.map((it, n) => {
       const [w, d] = it.p.dim, garde = gardes.has(it.id);
       return <g key={it.id} transform={`translate(${it.x} ${it.z})`}>
         <rect x={-w / 2} y={-d / 2} width={w} height={d} rx=".03" transform={`rotate(${-(it.rot || 0) * 180 / Math.PI})`}
-          fill={garde ? '#7d8f89' : '#d8ccb9'} stroke="#786b58" strokeWidth=".02" />
-        <circle r=".17" fill="#fff" stroke="#3d342a" strokeWidth=".02" />
-        <text textAnchor="middle" dominantBaseline="central" fontSize=".2" fontWeight="700" fill="#3d342a">{n + 1}</text>
+          className={'parcours__meuble' + (garde ? ' is-garde' : '')} strokeWidth=".02" />
+        <circle r=".17" className="parcours__pastille" strokeWidth=".02" />
+        <text textAnchor="middle" dominantBaseline="central" fontSize=".2" fontWeight="700" className="parcours__numero">{n + 1}</text>
       </g>;
     })}
   </svg>;
