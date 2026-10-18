@@ -4,7 +4,7 @@ import { estMural, estSuspendu } from '@/lib/agencement.js';
 import { etatVariantes, signatureBrief } from '@/lib/variation-disposition.js';
 import s from './Variantes.module.css';
 
-function MiniPlan({ modele, items, produits }) {
+export function MiniPlan({ modele, items, produits }) {
   const contour = contourDe(modele), L = modele.dims.largeur, P = modele.dims.profondeur;
   return <svg viewBox={`${-L / 2 - .12} ${-P / 2 - .12} ${L + .24} ${P + .24}`} aria-hidden="true" focusable="false">
     <polygon points={contour.map(p => p.join(',')).join(' ')} fill="#eee5d7" stroke="#85745f" strokeWidth=".035" />
