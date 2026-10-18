@@ -36,6 +36,7 @@ function fantome(el, sens) {
   const copie = el.cloneNode(true);
   copie.removeAttribute('id');
   copie.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+  copie.querySelectorAll('[data-titre-etape]').forEach(n => n.removeAttribute('data-titre-etape'));
   copie.inert = true;
   copie.setAttribute('aria-hidden', 'true');
   copie.dataset.fantome = '';
@@ -61,8 +62,9 @@ export function Etape({ titre, sens = 1, as: Balise = 'section', className, chil
     if (!el) return undefined;
     initialiser();
     const parties = el.querySelectorAll(':scope > *');
+    // opacité seulement (pas autoAlpha) : l'étape reste focalisable et utilisable dès son arrivée
     const tw = mouvementPermis()
-      ? gsap.fromTo(parties, { autoAlpha: 0, x: sensRef.current * ECARTS.grand }, { autoAlpha: 1, x: 0, duration: DUREES.moyen, stagger: DECALAGES.serre, ease: COURBES.arrivee, clearProps: 'opacity,visibility,transform' })
+      ? gsap.fromTo(parties, { opacity: 0, x: sensRef.current * ECARTS.grand }, { opacity: 1, x: 0, duration: DUREES.moyen, stagger: DECALAGES.serre, ease: COURBES.arrivee, clearProps: 'opacity,transform' })
       : null;
     if (focus) focaliser(el.querySelector('[data-titre-etape]') || el);
     if (titre) annoncer(titre);

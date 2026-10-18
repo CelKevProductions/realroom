@@ -371,6 +371,43 @@ dialog.tuto { width: min(520px, 100% - 24px); }
 .progression li.is-fait { color: var(--graphite); }
 .progression li.is-fait::before { content: '● '; color: var(--sauge); }
 
+/* ---------- parcours guidé ---------- */
+.parcours__grille { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+.parcours__recap { position: sticky; top: calc(var(--haut-entete, var(--entete)) + 16px); display: grid; gap: 18px; }
+.parcours__recap .progression ol { display: none; }
+.parcours__etapes { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.parcours__lien { display: flex; gap: 10px; width: 100%; text-align: left; padding: 8px 10px; border: 0; border-radius: var(--rayon); background: none; font: inherit; font-size: .9rem; color: var(--graphite); cursor: pointer; }
+.parcours__lien:disabled { color: var(--gris); cursor: default; opacity: .6; }
+.parcours__lien.is-actif { background: var(--calque); color: var(--encre); font-weight: 600; }
+.parcours__lien.is-fait .parcours__num { color: var(--sauge); }
+.parcours__num { font: 600 .8rem/1.6 var(--m); color: var(--gris); min-width: 1.8em; }
+.parcours__scene { position: relative; min-width: 0; }
+.parcours__etape { display: grid; gap: 18px; }
+.parcours__etape > h2:focus { outline: none; }
+.parcours__intro { color: var(--graphite); max-width: 60ch; margin: 0; }
+.parcours__piece { padding: 16px; display: grid; gap: 12px; margin: 0; min-width: 0; }
+.parcours__piece > legend { padding: 0 4px; }
+.parcours__piece h3 { margin: 0; font-size: 1rem; }
+.parcours__piece--plan { grid-template-columns: minmax(0, 1fr); }
+.parcours__plan svg, .parcours__svg { width: 100%; max-height: 320px; display: block; }
+.parcours__liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.parcours__liste > li { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.parcours__meubles { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.parcours__meubles li { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 280px); gap: 12px; align-items: center; }
+.parcours__meubles .parcours__num { display: inline-grid; place-items: center; width: 26px; height: 26px; border: 1px solid var(--encre); border-radius: 50%; color: var(--encre); }
+.parcours__photo img, .parcours__vignette { width: 72px; height: 72px; object-fit: cover; border-radius: var(--rayon); background: var(--calque); border: 1px solid var(--trait); }
+.parcours__ajout { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.parcours__actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--trait); }
+.parcours__sauvegarde { margin: 0; }
+@media (max-width: 820px) {
+  .parcours__grille { grid-template-columns: minmax(0, 1fr); }
+  .parcours__recap { position: static; }
+  .parcours__etapes { display: flex; overflow-x: auto; gap: 4px; padding-bottom: 4px; }
+  .parcours__lien { white-space: nowrap; }
+  .parcours__meubles li { grid-template-columns: auto minmax(0, 1fr); }
+  .parcours__meubles li > :last-child { grid-column: 1 / -1; }
+}
+
 /* ---------- atelier : maquette 3D et panneau ---------- */
 html:has(.atelier), body:has(.atelier) { overflow: hidden; width: 100%; }
 .atelier { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px); width: 100%; min-width: 0; min-height: 0; overflow: hidden; height: calc(100dvh - var(--haut-entete, var(--entete))); border-top: 1px solid var(--trait); }

@@ -73,6 +73,7 @@ export default function Projet({ lang, t, initial }) {
         <input className="titre-modifiable" data-entree="" value={nom} maxLength={80} aria-label={t.projets.renommer}
           onChange={e => setNom(e.target.value)} onBlur={renommer} onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
         <div className="app-page__actions" data-entree="">
+          <Link className="btn btn--clair" href={`${racine}/projets/${p.id}/parcours`}>{lang === 'en' ? 'Guided setup' : 'Parcours guidé'}</Link>
           {pretes.length > 1 && <button className="btn btn--clair" onClick={analyserTout}>{t.projet.analyserTout}</button>}
           <button className="btn btn--plein" onClick={ouvrir}>{t.projet.ajouter}</button>
         </div>
