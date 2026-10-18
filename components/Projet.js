@@ -11,11 +11,12 @@ import { useEntree, ouvrirDialogue, fermerDialogue } from '@/components/Mouvemen
 import Croquis from '@/components/Croquis.js';
 import { remplir } from '@/lib/i18n.js';
 import { FONCTIONS } from '@/lib/config.js';
+import { Rouage } from '@/components/mouvement/Attente.js';
 
 function Etat({ etat, t }) {
   return (
     <span className={'etat etat--' + etat}>
-      {etat === 'analyse' ? <span className="rouage rouage--petit" /> : <span className="point" />}
+      {etat === 'analyse' ? <Rouage /> : <span className="point" />}
       {t.projet.etats[etat] || etat}
     </span>
   );

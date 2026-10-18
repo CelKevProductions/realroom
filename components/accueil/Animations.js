@@ -11,6 +11,7 @@ import { Draggable } from 'gsap/Draggable';
 import { InertiaPlugin } from 'gsap/InertiaPlugin';
 import { CustomEase } from 'gsap/CustomEase';
 import Lenis from 'lenis';
+import { BEZIER } from '@/components/mouvement/regles.js';
 
 const avantAffichage = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 const REDUIT = '(prefers-reduced-motion: reduce)';
@@ -51,8 +52,9 @@ function demarrer() {
   if (!page) return undefined;
   gsap.registerPlugin(ScrollTrigger, SplitText, Draggable, InertiaPlugin, CustomEase);
   ScrollTrigger.config({ ignoreMobileResize: true });
-  CustomEase.create('acc', '0.76, 0, 0.24, 1');          // entrée-sortie franche
-  CustomEase.create('acc-sortie', '0.22, 1, 0.36, 1');   // arrivée douce
+  // mêmes courbes que le reste du site (components/mouvement/regles.js)
+  CustomEase.create('acc', BEZIER.pivot);          // entrée-sortie franche
+  CustomEase.create('acc-sortie', BEZIER.arrivee);   // arrivée douce
 
   const mouvement = a('mouvement');
   const ouverture = mouvement && a('ouverture');

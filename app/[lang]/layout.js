@@ -5,6 +5,7 @@ import './globals.css';
 import { notFound } from 'next/navigation';
 import { LANGUES, MARQUE, estLangue } from '@/lib/config.js';
 import { texte } from '@/lib/i18n.js';
+import PreferenceMouvement from '@/components/mouvement/Preference.js';
 
 export function generateStaticParams() {
   return LANGUES.map(lang => ({ lang }));
@@ -42,7 +43,7 @@ export default async function Racine({ children, params }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: AMORCE }} />
       </head>
-      <body>{children}</body>
+      <body>{children}<PreferenceMouvement /></body>
     </html>
   );
 }

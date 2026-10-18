@@ -21,6 +21,8 @@ import { estMural, estSuspendu, estAdosse, placerAuMur, demiEmpreinte, resoudre,
 import { deplacerAvecAttaches } from '@/lib/finition.js';
 import { referencesSpatialesActives } from '@/lib/ameublement-reference.js';
 import { TYPES_PROGRAMME } from '@/lib/programme.js';
+import { Rouage } from '@/components/mouvement/Attente.js';
+import Toast from '@/components/mouvement/Toast.js';
 
 const Icone = ({ d }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={d} /></svg>;
 const I = {
@@ -445,7 +447,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
             <span className="plus" aria-hidden="true" />{tp.ajouterMeuble}
           </button>
           <button type="button" className="btn btn--plein" onClick={() => ouvrirBrief()} disabled={attente || inspirationOccupe || !assistantDisponible}>
-            {attente && <span className="rouage rouage--petit" aria-hidden="true" />}{attente ? (lang === 'fr' ? 'Composition en cours…' : 'Arranging…') : (lang === 'fr' ? 'Assistant d’aménagement' : 'Room assistant')}
+            {attente && <Rouage />}{attente ? (lang === 'fr' ? 'Composition en cours…' : 'Arranging…') : (lang === 'fr' ? 'Assistant d’aménagement' : 'Room assistant')}
           </button>
           <button type="button" className="atelier__ia btn btn--lien btn--petit" onClick={() => ouvrirBrief('ia')} disabled={attente || inspirationOccupe || !services.analyse}>{lang === 'fr' ? 'Réaménager avec l’IA et mes inspirations' : 'Redesign with AI and my inspirations'}</button>
           {!assistantDisponible && <p>{lang === 'fr' ? 'Pour une cuisine, une chambre d’enfant ou une pièce sans fonction précise, utilise le réaménagement avec l’IA.' : 'For a kitchen, children’s room or an unspecified room type, use AI redesign.'}</p>}
@@ -470,7 +472,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
 
       {produits && <Catalogue lang={lang} t={t} produits={produits} libelles={libelles} dims={piece.modele.dims} exterieur={piece.fonction === 'terrasse'} famille={cat.famille} ouvert={cat.ouvert}
         fermer={() => setCat({ ouvert: false, famille: '', remplace: null })} choisir={choisirProduit} action={cat.remplace ? tp.catalogue.choisir : tp.catalogue.ajouter} />}
-      {toast && <div key={toast.n} className={'toast' + (toast.erreur ? ' toast--erreur' : '')} role="status">{toast.texte}</div>}
+      {toast && <Toast key={toast.n} erreur={toast.erreur}>{toast.texte}</Toast>}
       {brief && <BriefReamenagement piece={piece} demande={brief} lang={lang} onFermer={() => setBrief(null)} onValider={proposer} />}
     </div>
   );

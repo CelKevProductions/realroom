@@ -9,6 +9,8 @@ import AvantApres from '@/components/piece/AvantApres.js';
 import Croquis from '@/components/Croquis.js';
 import AnglesRendu from './AnglesRendu.js';
 import { remplir } from '@/lib/i18n.js';
+import { Rouage } from '@/components/mouvement/Attente.js';
+import { Balayage } from '@/components/mouvement/Attente.js';
 
 export default function Resultat({ lang, t, piece, rendus, setRendus, solde, setSolde, couts, services, capturer,lireVue,surVue,avant,setPiece }) {
   const tp = t.piece;
@@ -80,6 +82,7 @@ export default function Resultat({ lang, t, piece, rendus, setRendus, solde, set
         {imageEnCours && (
           <div className="rendu-attente">
             {apercu ? <img src={apercu} alt="" /> : <Croquis trace />}
+            <Balayage />
             <span className="rendu-attente__texte">{tp.renduEnCours}</span>
           </div>
         )}
@@ -108,7 +111,7 @@ export default function Resultat({ lang, t, piece, rendus, setRendus, solde, set
           <div className="visite">
             <div className="bloc__tete"><h3>{tp.mondeTitre}</h3><p>{tp.mondeTexte}</p></div>
             {monde && monde.etat === 'en_cours' ? (
-              <p className="avis"><span className="rouage rouage--petit" /> {tp.mondeEnCours}</p>
+              <p className="avis"><Rouage /> {tp.mondeEnCours}</p>
             ) : monde && monde.etat === 'fini' && monde.resultat && monde.resultat.monde ? (
               monde.resultat.monde.url
                 ? <a className="btn btn--plein btn--bloc" href={monde.resultat.monde.url} target="_blank" rel="noopener noreferrer">{tp.ouvrirMonde}</a>

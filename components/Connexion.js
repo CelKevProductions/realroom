@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { api } from '@/components/api.js';
 import { Titre, useEntree, apparaitre } from '@/components/Mouvement.js';
+import { Rouage } from '@/components/mouvement/Attente.js';
 
 export default function Connexion({ lang, t, liens }) {
   const params = useSearchParams();
@@ -61,7 +62,7 @@ export default function Connexion({ lang, t, liens }) {
               <input className="saisie" type="email" name="email" autoComplete="email" inputMode="email" required value={email} onChange={e => setEmail(e.target.value)} />
             </label>
             {erreur && <p className="avis avis--alerte" role="alert">{erreur}</p>}
-            <button className="btn btn--plein btn--large btn--bloc" disabled={attente}>{attente ? <span className="rouage rouage--petit" /> : t.envoyer}</button>
+            <button className="btn btn--plein btn--large btn--bloc" disabled={attente}>{attente ? <Rouage /> : t.envoyer}</button>
           </form>
         ) : (
           <form onSubmit={verifier} className="formulaire">
@@ -72,7 +73,7 @@ export default function Connexion({ lang, t, liens }) {
               <input ref={champCode} className="saisie saisie--code" name="code" autoComplete="one-time-code" inputMode="numeric" pattern="\d{6}" maxLength={6} required value={code} onChange={e => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))} />
             </label>
             {erreur && <p className="avis avis--alerte" role="alert">{erreur}</p>}
-            <button className="btn btn--plein btn--large btn--bloc" disabled={attente || code.length !== 6}>{attente ? <span className="rouage rouage--petit" /> : t.verifier}</button>
+            <button className="btn btn--plein btn--large btn--bloc" disabled={attente || code.length !== 6}>{attente ? <Rouage /> : t.verifier}</button>
             <div className="formulaire__bas">
               <button type="button" className="btn btn--lien" onClick={() => { setEtape('email'); setCode(''); setErreur(''); }}>{t.autreEmail}</button>
               <button type="button" className="btn btn--lien" onClick={envoyer}>{t.renvoyer}</button>

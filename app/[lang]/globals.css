@@ -352,19 +352,24 @@ dialog.tuto { width: min(520px, 100% - 24px); }
 .attente .croquis { width: 112px; height: 112px; color: var(--encre); }
 .croquis { display: block; color: var(--gris); }
 .croquis path { fill: none; stroke: currentColor; stroke-width: 1; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-.croquis--trace path { stroke-width: 1.3; stroke-dasharray: 1; stroke-dashoffset: 1; animation: croquis 3.2s var(--sortie) infinite; }
-.croquis--trace path:nth-child(2) { animation-delay: .25s; }
-.croquis--trace path:nth-child(3) { animation-delay: .5s; }
-.croquis--trace .croquis__tapis { fill: var(--rouille); stroke: none; stroke-dasharray: none; animation: croquis-tapis 3.2s var(--sortie) infinite; }
-@keyframes croquis { 0% { stroke-dashoffset: 1; } 45%, 78% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -1; } }
-@keyframes croquis-tapis { 0%, 30% { opacity: 0; transform: translateY(4px); } 48%, 80% { opacity: 1; transform: none; } 100% { opacity: 0; } }
-.rouage { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--trait); border-top-color: var(--rouille); animation: tourne .9s linear infinite; }
+/* attentes : animées par GSAP (components/mouvement/Attente.js) ; immobiles et entières sans lui */
+.croquis--trace path { stroke-width: 1.3; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.croquis--trace .croquis__tapis { fill: var(--rouille); stroke: none; stroke-dasharray: none; }
+.rouage { display: inline-block; width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--trait); border-top-color: var(--rouille); }
 .rouage--petit { width: 16px; height: 16px; border-width: 2px; }
 .btn--plein .rouage, .btn--accent .rouage { border-color: rgba(237, 234, 228, .3); border-top-color: var(--platre); }
-@keyframes tourne { to { transform: rotate(360deg); } }
-.barre-progres { width: min(320px, 70vw); height: 1px; background: var(--trait-fort); overflow: hidden; }
-.barre-progres span { display: block; height: 100%; background: var(--rouille); transform-origin: 0 50%; animation: progres 2.4s var(--sortie) infinite; }
-@keyframes progres { 0% { transform: scaleX(0); } 60% { transform: scaleX(1); } 100% { transform: scaleX(1); opacity: 0; } }
+/* progression réelle : étapes terminées d'une tâche (jamais une barre qui avance seule) */
+.progression { display: grid; gap: 10px; }
+.progression progress { width: 100%; height: 2px; appearance: none; border: 0; background: var(--trait-fort); }
+.progression progress::-webkit-progress-bar { background: var(--trait-fort); }
+.progression progress::-webkit-progress-value { background: var(--rouille); }
+.progression progress::-moz-progress-bar { background: var(--rouille); }
+.progression ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font: .82rem/1.35 var(--m); color: var(--gris); }
+.progression li::before { content: '○ '; }
+.progression li.is-actif { color: var(--encre); }
+.progression li.is-actif::before { content: '◐ '; color: var(--rouille); }
+.progression li.is-fait { color: var(--graphite); }
+.progression li.is-fait::before { content: '● '; color: var(--sauge); }
 
 /* ---------- atelier : maquette 3D et panneau ---------- */
 html:has(.atelier), body:has(.atelier) { overflow: hidden; width: 100%; }
@@ -546,9 +551,8 @@ dialog.catalogue::backdrop { background: rgba(18, 18, 17, .42); transition: back
 .rendu-seul { width: 100%; border: 1px solid var(--trait); }
 .rendu-attente { position: relative; overflow: hidden; background: var(--calque); border: 1px solid var(--trait); min-height: 140px; display: grid; place-items: center; }
 .rendu-attente img { width: 100%; filter: grayscale(.7); opacity: .7; }
-.rendu-attente::after { content: ''; position: absolute; inset: 0; border-top: 1px solid var(--rouille); pointer-events: none; animation: balayage 2.4s ease-in-out infinite alternate; }
+.rendu-attente__balayage { position: absolute; inset: 0; border-top: 1px solid var(--rouille); pointer-events: none; }
 .rendu-attente__texte { position: absolute; left: 10px; bottom: 10px; font: .72rem var(--m); padding: 4px 7px; background: var(--encre); color: var(--platre); }
-@keyframes balayage { from { transform: translateY(0); } to { transform: translateY(calc(100% - 1px)); } }
 .visite { display: grid; gap: 14px; padding-top: 18px; border-top: 1px solid var(--trait); }
 .etiquette-ia { position: absolute; top: 10px; left: 10px; font: .7rem var(--m); padding: 4px 7px; background: rgba(18, 18, 17, .78); color: var(--platre); pointer-events: none; }
 .vignettes { display: flex; gap: 8px; overflow-x: auto; }
@@ -558,8 +562,7 @@ dialog.catalogue::backdrop { background: rgba(18, 18, 17, .42); transition: back
 .cout { font: .8rem var(--m); color: inherit; opacity: .72; }
 
 /* messages éphémères */
-.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 100; background: var(--nuit); color: var(--platre); padding: 12px 18px; font-size: .92rem; max-width: calc(100% - 32px); border-left: 2px solid var(--platre); animation: toast .55s var(--sortie) both; }
-@keyframes toast { from { opacity: 0; transform: translate(-50%, 14px); } }
+.toast { position: fixed; left: 0; right: 0; bottom: 24px; margin-inline: auto; width: fit-content; z-index: 100; background: var(--nuit); color: var(--platre); padding: 12px 18px; font-size: .92rem; max-width: calc(100% - 32px); border-left: 2px solid var(--platre); }
 .toast--erreur { border-left-color: #E2663F; }
 
 /* ---------- compte ---------- */
