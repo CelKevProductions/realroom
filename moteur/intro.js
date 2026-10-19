@@ -146,8 +146,7 @@ function poussiere() {
 // La construction est découpée en étapes courtes, avec une image peinte entre deux (le
 // préchargement continue de vivre) ; tous les shaders sont compilés et toutes les textures envoyées
 // avant la première image : rien ne se compile pendant le défilement.
-// opts : produits, mobile, avance(q) (0 → 1), annule() (true : on abandonne), mesure(nom, ms) ;
-// habillage (facultatif) : brume { jour, soir }, trait (couleur du plan), maison (coque à découper : {} ou { couleur, toit })
+// opts : produits, mobile, avance(q) (0 → 1), annule() (true : on abandonne), mesure(nom, ms)
 export async function creerIntro(canvas, opts = {}) {
   const produits = opts.produits || {};
   definirProduits(produits);
@@ -182,7 +181,7 @@ export async function creerIntro(canvas, opts = {}) {
   const liberer = () => { try { renderer.dispose(); renderer.forceContextLoss(); } catch (_) { /* déjà libéré */ } };
 
   const scene = new THREE.Scene();
-  const BRUME = { jour: new THREE.Color((opts.brume && opts.brume.jour) || '#E7DDCC'), soir: new THREE.Color((opts.brume && opts.brume.soir) || '#1E160E') };
+  const BRUME = { jour: new THREE.Color('#E7DDCC'), soir: new THREE.Color('#1E160E') };
   scene.background = BRUME.jour.clone();
   scene.fog = new THREE.Fog(BRUME.jour.clone(), 15, 38);
   const pmrem = new THREE.PMREMGenerator(renderer);
@@ -303,44 +302,12 @@ export async function creerIntro(canvas, opts = {}) {
   seg([-L / 2, y, P / 2 + .33], [-L / 2, y, P / 2 + .57]); seg([L / 2, y, P / 2 + .33], [L / 2, y, P / 2 + .57]);
   const gPlan = new THREE.BufferGeometry();
   gPlan.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
-  const mPlan = new THREE.LineBasicMaterial({ color: opts.trait || '#9C7B45', transparent: true, opacity: 1, fog: false });
+  const mPlan = new THREE.LineBasicMaterial({ color: '#9C7B45', transparent: true, opacity: 1, fog: false });
   const plan = new THREE.LineSegments(gPlan, mPlan);
   plan.renderOrder = 6;
   maquette.add(plan);
   const nSegments = pts.length / 6;
   await etape('fenêtre et plan');
-
-  /* ---------- la maison autour de la pièce (option « maison ») ----------
-     Une coque de plâtre se dresse autour de la pièce (deux murs, un toit), puis on la découpe :
-     le toit s'envole, les murs côté caméra s'écartent et s'effacent. Matériaux toujours
-     « transparents » : changer ce réglage recompilerait un shader. */
-  const coque = [];
-  if (opts.maison) {
-    const mCoque = std(opts.maison.couleur || '#F4F0E8', .92, 0, { transparent: true, opacity: 0 });
-    const mToit = std(opts.maison.toit || '#E7E1D6', .9, 0, { transparent: true, opacity: 0 });
-    const panneau = (w, h, d, x, y, z, mat, sortie, ombre) => {
-      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-      m.geometry.translate(0, h / 2, 0);            // l'origine au pied : la pièce « pousse » depuis le sol
-      m.position.set(x, y, z);
-      m.castShadow = !!ombre; m.receiveShadow = true;
-      m.visible = false;
-      m.userData = { base: m.position.clone(), sortie, h };
-      maquette.add(m);
-      coque.push(m);
-      return m;
-    };
-    const E2 = EP * 2, X1 = L / 2 + EP / 2, Z1 = P / 2 + EP / 2;
-    // façade côté caméra (z > 0) : une porte à droite, une baie à gauche
-    const PORTE = { x0: 1.55, x1: 2.45, h: 2.1 }, BAIE = { x0: -1.9, x1: -.4, y0: .55, y1: 2.05 };
-    const tranche = (x0, x1, y0, y1) => panneau(x1 - x0, y1 - y0, EP, (x0 + x1) / 2, y0, Z1, mCoque, [0, 0, .9]);
-    tranche(-L / 2 - EP, BAIE.x0, 0, H); tranche(BAIE.x1, PORTE.x0, 0, H); tranche(PORTE.x1, L / 2 + EP, 0, H);
-    tranche(BAIE.x0, BAIE.x1, 0, BAIE.y0); tranche(BAIE.x0, BAIE.x1, BAIE.y1, H); tranche(PORTE.x0, PORTE.x1, PORTE.h, H);
-    // côté droit (x > 0) : un mur plein
-    panneau(EP, H, P + E2, X1, 0, 0, mCoque, [.9, 0, 0]);
-    // toit : une dalle qui déborde, posée sur les murs
-    panneau(L + E2 + .5, .14, P + E2 + .5, 0, H, 0, mToit, [0, 3.2, 0], true);
-  }
-  const FENETRES_COQUE = [.1, .27, .31];   // apparition [0]→[1] (toit posé quand les murs sont montés), découpe [1]→[2]
 
   /* ---------- les meubles d'avant (gris, ils partiront) ---------- */
   const vieux = [];
@@ -503,17 +470,6 @@ export async function creerIntro(canvas, opts = {}) {
       g.rotation.set(u.dr * (1 - e) * .5, u.rotBase + u.dr * (1 - e), 0);
     }
     fenetre.visible = qm > .82;
-    // la coque : elle se dresse, puis on la découpe
-    if (coque.length) {
-      const [d0, d1, d2] = FENETRES_COQUE, ka = fen(p, d0, d1), kd = fen(p, d1, d2), ea = sortie(ka), ed = lisse(kd);
-      for (const m of coque) {
-        const u = m.userData, toit = u.sortie[1] > 0;
-        m.visible = ka > 0 && kd < 1;
-        m.material.opacity = Math.min(1, ea * 1.6) * (1 - ed);
-        m.scale.y = toit ? 1 : Math.max(.02, ea);
-        m.position.set(u.base.x + u.sortie[0] * ed, u.base.y + (toit ? (1 - ea) * 2.6 + u.sortie[1] * ed : 0), u.base.z + u.sortie[2] * ed);
-      }
-    }
     // le sol prend son parquet ; le plan s'efface sous les murs
     mSol.opacity = lisse(fen(p, ...TEMPS.sol));
     mPlan.opacity = 1 - lisse(fen(p, .2, .32));
