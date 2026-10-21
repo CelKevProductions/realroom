@@ -90,7 +90,7 @@ export default function DemoRespace({ lang, pieces: initiales, produits, demo = 
     setEnCours(null);
     if (!r.ok) {
       if (r.erreur === 'respace-demarrage') setEtat('demarrage');
-      const texte = ERREURS[r.erreur] || 'Erreur : ' + (r.erreur || r.statut);
+      const texte = (ERREURS[r.erreur] || 'Erreur : ' + (r.erreur || r.statut)) + (r.erreur === 'respace-aucun' && r.message && r.message !== r.erreur ? ' (' + r.message + ')' : '');
       setRetour({ n: Date.now(), id: p.id, erreur: texte }); annoncer(texte); return;
     }
     const m = r.moteur, agencement = r.piece.agencement || [];

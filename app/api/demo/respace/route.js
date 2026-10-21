@@ -35,7 +35,7 @@ export const POST = route(async request => {
   let resultat;
   try { resultat = await varianteRespace(piece, PRODUITS, { appel: appelReseau(cfg), echantillons: cfg.echantillons, signal: request.signal }); }
   catch (e) {
-    if (e instanceof ErreurAssistant) throw new ErreurHTTP(e.statut, e.code);
+    if (e instanceof ErreurAssistant) throw new ErreurHTTP(e.statut, e.code, e.diagnostic);
     if (e.statut === 401 || e.statut === 403) throw new ErreurHTTP(503, 'respace-acces');
     throw e;
   }
