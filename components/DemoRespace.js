@@ -43,7 +43,7 @@ export default function DemoRespace({ lang, pieces: initiales, produits, demo = 
   const racine = demo ? `/${lang}/demo` : `/${lang}/app`;
   const page = useRef(null), resultat = useRef(null);
   const [code, setCode] = useState('');
-  const [etat, setEtat] = useState('inconnu');
+  const [etat, setEtat] = useState('inconnu'), [detail, setDetail] = useState('');
   const [pieces, setPieces] = useState(initiales);
   const [enCours, setEnCours] = useState(null);
   const [retour, setRetour] = useState(null);
@@ -67,7 +67,7 @@ export default function DemoRespace({ lang, pieces: initiales, produits, demo = 
       }
       try { sessionStorage.setItem('rr-respace-code', codeEtat); } catch (_) {}
       const e = r.etat || 'indisponible';
-      setEtat(e);
+      setEtat(e); setDetail(e === 'indisponible' && r.detail ? String(r.detail) : '');
       if (e === 'demarrage') minuterie = setTimeout(verifier, 15000);
     };
     verifier();
@@ -109,7 +109,7 @@ export default function DemoRespace({ lang, pieces: initiales, produits, demo = 
         Démo privée et non commerciale. Les poids de ReSpace sont sous licence CC BY-NC-SA 4.0. Le moteur de RealRoom choisit les meubles ;
         ReSpace décide où les poser et comment les orienter ; le moteur vérifie ensuite chaque position.
       </p>
-      <p className="etat" role="status" data-entree="">{etat === 'demarrage' && <Rouage />} {ETATS[etat]}</p>
+      <p className="etat" role="status" data-entree="">{etat === 'demarrage' && <Rouage />} {ETATS[etat]}{detail ? ` (${detail})` : ''}</p>
       <label className="champ" data-entree="">
         <span>Code d’accès</span>
         <input className="saisie" type="password" autoComplete="off" value={code} onChange={e => setCode(e.target.value)}
