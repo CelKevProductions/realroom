@@ -421,7 +421,8 @@ html:has(.atelier), body:has(.atelier) { overflow: hidden; width: 100%; }
 .atelier__scene { position: relative; min-height: 0; background: #EFEBE3; overflow: hidden; }
 .atelier__scene canvas { width: 100%; height: 100%; touch-action: none; }
 .atelier__scene canvas.is-deplace { cursor: grabbing !important; }
-.atelier__panneau { border-left: 1px solid var(--trait); background: var(--platre); display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; min-width: 0; min-height: 0; overflow: hidden; }
+.atelier__panneau { border-left: 1px solid var(--trait); background: var(--platre); display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; }
+.atelier__panneau > * { flex: none; }
 .atelier__actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 8px; padding: 12px; border-bottom: 1px solid var(--trait); }
 .atelier__actions .btn { min-width: 0; min-height: 48px; padding: 8px 10px; font-size: .8rem; white-space: normal; line-height: 1.35; }
 .atelier__actions .plus, .atelier__actions .rouage { flex-shrink: 0; }
@@ -437,7 +438,7 @@ html:has(.atelier), body:has(.atelier) { overflow: hidden; width: 100%; }
 .onglets__num { font: .72rem var(--m); }
 .onglets button[aria-selected='true'] .onglets__num { color: var(--rouille); }
 .onglets__nom { font-weight: 600; font-size: .95rem; }
-.panneau__corps { min-width: 0; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; padding: 22px 20px 28px; display: grid; gap: 20px; align-content: start; }
+.panneau__corps { flex: 1 1 0; min-width: 0; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; padding: 22px 20px 28px; display: grid; gap: 20px; align-content: start; }
 .panneau__corps > * { min-width: 0; }
 .panneau__pied { padding: 14px 20px 16px; border-top: 1px solid var(--trait); background: var(--platre); display: grid; gap: 8px; }
 .panneau__pied:empty { display: none; }
