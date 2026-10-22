@@ -26,6 +26,7 @@ import {
 } from './animaux.js';
 import { grille, chemin, pointLibre } from './chemins.js';
 import { avancer, boitesDe, corpsDebout, pieds as piedsDu, CENTRE, PRISE } from './physique.js';
+import { definitionAdaptative } from './definition.js';
 
 const RAD = Math.PI / 180, R = Math.PI / 2;
 const REDUIT = '(prefers-reduced-motion: reduce)';
@@ -270,7 +271,6 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   const renderer = new THREE.WebGLRenderer({ canvas: toile, antialias: true, alpha: true, powerPreference: 'default' });
   let im, ma, ombres, mm;
   try {
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.25 : 1.75));
     renderer.setClearColor(0x000000, 0);
     im = construireImmeuble();
     ma = matieresAnimaux();
@@ -1028,6 +1028,7 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     raf = requestAnimationFrame(boucle);
     if (avant && now - avant < 14) return;
     const dt = avant ? Math.min(.05, (now - avant) / 1000) : 0;
+    if (avant) definition(now - avant);
     avant = now;
     t += dt;
     const k = 1 - Math.exp(-dt * 4);
@@ -1443,6 +1444,8 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   }
   const ro = new ResizeObserver(mesurer);
   ro.observe(boite);
+  // définition de l'écran plafonnée, puis baissée si les images arrivent trop lentement
+  const definition = definitionAdaptative(renderer, Math.min(window.devicePixelRatio || 1, mobile ? 1.25 : 1.5), mesurer);
   const io = new IntersectionObserver(entrees => {
     visible = entrees[entrees.length - 1].isIntersecting;
     if (visible) relancer();

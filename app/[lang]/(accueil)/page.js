@@ -6,6 +6,7 @@ import Logo from '@/components/Logo.js';
 import Animations from '@/components/accueil/Animations.js';
 import PieceAccueil from '@/components/accueil/PieceAccueil.js';
 import PlanOuverture from '@/components/accueil/PlanOuverture.js';
+import PiedAccueil from '@/components/accueil/PiedAccueil.js';
 import { texte, remplir, prix } from '@/lib/i18n.js';
 import { PACKS, CREDITS, LIMITES, MARQUE, LANGUES } from '@/lib/config.js';
 import { PRODUITS, LIBELLES } from '@/lib/catalogue.js';
@@ -280,14 +281,15 @@ export default async function Accueil({ params }) {
               <Etiquette data-anim="fondu">{a.faqSurtitre}</Etiquette>
               <h2 id="faq-titre" className="acc-h2" data-anim="lignes">{a.faqTitre}</h2>
             </div>
-            <div className="acc-faq__liste">
-              {a.faq.map(([q, r]) => (
-                <details key={q} className="acc-question" data-anim="fondu">
-                  <summary><span>{q}</span><i aria-hidden="true" /></summary>
+            <ul className="acc-faq__liste" role="list">
+              {a.faq.map(([q, r], i) => (
+                <li key={q} className="acc-question" data-anim="fondu">
+                  <span className="acc-mono acc-question__num" aria-hidden="true">{deux(i + 1)}</span>
+                  <h3 className="acc-question__titre">{q}</h3>
                   <p>{r}</p>
-                </details>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </section>
 
@@ -328,9 +330,12 @@ export default async function Accueil({ params }) {
             {LANGUES.filter(l => l !== lang).map(l => <Link key={l} href={`/${l}`} hrefLang={l} lang={l}><Roule>{l === 'en' ? 'English' : 'Français'}</Roule></Link>)}
           </nav>
         </div>
-        <p className="acc-pied__geant" aria-hidden="true" data-lettres>
-          {'RealRoom'.split('').map((l, i) => <span key={i}>{l}</span>)}
-        </p>
+        <div className="acc-pied__scene">
+          <p className="acc-pied__geant" aria-hidden="true" data-lettres>
+            {'RealRoom'.split('').map((l, i) => <span key={i}>{l}</span>)}
+          </p>
+          <PiedAccueil lang={lang} />
+        </div>
         <div className="acc-grille acc-pied__bas acc-mono">
           <span>© {new Date().getFullYear()} KPW · RealRoom</span>
           <a href="#acc" data-ancre><Roule>{a.menu.haut} ↑</Roule></a>

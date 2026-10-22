@@ -60,8 +60,8 @@ const STYLES = {
   masque: { position: 'absolute', width: 1, height: 1, overflow: 'hidden', clipPath: 'inset(50%)', whiteSpace: 'nowrap' }
 };
 
-// three.js demande WebGL 2 : on le vérifie sans charger la bibliothèque
-function webgl2() {
+// three.js demande WebGL 2 : on le vérifie sans charger la bibliothèque (aussi pour le pied de page)
+export function webgl2() {
   try {
     const gl = document.createElement('canvas').getContext('webgl2');
     if (!gl) return false;

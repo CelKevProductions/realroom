@@ -199,6 +199,7 @@ function demarrer() {
     vitrine.addEventListener('click', bloquer, true);
     nettoyages.push(() => { glisse.kill(); vitrine.removeEventListener('click', bloquer, true); });
   }
+  if (vitrine && mouvement) nettoyages.push(arcVitrine(vitrine));
 
   // défilement doux, une fois le préchargement passé
   const lancerLenis = () => {
@@ -445,11 +446,19 @@ function revelations(page) {
     reveler(el, st => (st ? ScrollTrigger.create({ ...st, onEnter: () => decoder(el) }) : decoder(el)));
   });
 
-  // cartes du catalogue : arrivent de la droite (seulement si elles sont encore plus bas)
+  // cartes du catalogue : distribuées comme un jeu de cartes, depuis un paquet posé à gauche, chacune
+  // un peu de travers, qui s'étale ensuite (seulement si elles sont encore plus bas)
   const vitrine = page.querySelector('[data-vitrine]');
   const cartes = gsap.utils.toArray('.acc-produit', page);
   if (vitrine && cartes.length && position(vitrine) === 'plus-bas') {
-    gsap.from(cartes, { x: 80, opacity: 0, duration: 1.2, ease: 'acc-sortie', stagger: 0.05, onComplete: () => gsap.set(cartes, { clearProps: A_EFFACER }), scrollTrigger: { trigger: vitrine, start: `top ${ETAPE * 100}%`, once: true } });
+    const depart = cartes[0].offsetLeft;
+    gsap.fromTo(cartes, {
+      x: (i, el) => depart - el.offsetLeft + i * 3, y: i => 40 + i * 2, rotation: i => (i % 2 ? 1 : -1) * (3 + (i * 7) % 6), opacity: i => (i < 8 ? 1 : 0)
+    }, {
+      x: 0, y: 0, rotation: 0, opacity: 1, duration: 1.5, ease: 'acc-sortie', stagger: { each: 0.06, from: 'end' },
+      onComplete: () => gsap.set(cartes, { clearProps: 'opacity,transform' }),
+      scrollTrigger: { trigger: vitrine, start: `top ${ETAPE * 100}%`, once: true }
+    });
   }
 
   // le nom géant du pied de page monte lettre par lettre
@@ -458,6 +467,50 @@ function revelations(page) {
     const anime = reveler(nom, st => gsap.fromTo(nom.children, { yPercent: 105, y: 0 }, { yPercent: 0, y: 0, duration: 1.3, ease: 'acc-sortie', stagger: 0.045, onComplete: () => vu(nom, nom.children), scrollTrigger: st }));
     if (!anime) nom.classList.add('is-vu');
   }
+}
+
+// vitrine en arc : les cartes suivent une courbe douce selon leur place à l'écran (le centre en haut), penchent
+// avec la vitesse du glissé (souris, doigt ou pavé), et la photo glisse dans son cadre (parallaxe) ; tout
+// revient en ressort à l'arrêt. Propriétés translate et rotate seules : l'inclinaison au survol
+// (Interactions.js) et la distribution (transform) s'y ajoutent sans se gêner. Rend la fonction qui retire tout.
+function arcVitrine(vitrine) {
+  const cartes = [...vitrine.querySelectorAll('.acc-produit')];
+  const images = cartes.map(c => c.querySelector('img'));
+  let centres = [], largeur = 1, dernier = vitrine.scrollLeft, vitesse = 0, penche = 0, calme = 0, tourne = false;
+  const mesurer = () => {
+    largeur = vitrine.clientWidth || 1;
+    centres = cartes.map(c => c.offsetLeft + c.offsetWidth / 2);
+    peindre();
+  };
+  function peindre() {
+    const x = vitrine.scrollLeft, demi = largeur / 2, lean = Math.max(-7, Math.min(7, penche * 0.004));
+    cartes.forEach((c, i) => {
+      const p = Math.max(-1.6, Math.min(1.6, (centres[i] - x - demi) / demi));
+      c.style.translate = `0 ${(p * p * 28).toFixed(1)}px`;
+      c.style.rotate = `${(p * 3 + lean).toFixed(2)}deg`;
+      if (images[i]) images[i].style.translate = `${(-p * 4.5 - lean * 0.6).toFixed(2)}% 0`;
+    });
+  }
+  function pas(_t, dms) {
+    const dt = Math.max(1, dms) / 1000, x = vitrine.scrollLeft;
+    vitesse = (x - dernier) / dt;
+    dernier = x;
+    penche += (vitesse - penche) * (1 - Math.exp(-dt * 9));
+    peindre();
+    if (Math.abs(vitesse) < 1 && Math.abs(penche) < 2) calme += dt; else calme = 0;
+    if (calme > 0.3) { penche = 0; peindre(); gsap.ticker.remove(pas); tourne = false; }
+  }
+  const surDefile = () => { if (!tourne) { tourne = true; calme = 0; dernier = vitrine.scrollLeft; gsap.ticker.add(pas); } };
+  vitrine.addEventListener('scroll', surDefile, { passive: true });
+  const ro = new ResizeObserver(mesurer);
+  ro.observe(vitrine);
+  mesurer();
+  return () => {
+    vitrine.removeEventListener('scroll', surDefile);
+    ro.disconnect();
+    gsap.ticker.remove(pas);
+    cartes.forEach((c, i) => { c.style.translate = c.style.rotate = ''; if (images[i]) images[i].style.translate = ''; });
+  };
 }
 
 // sections sous la 3D : chaque arrêt du défilement guidé y change de « diapositive » : le contenu de la
@@ -475,8 +528,8 @@ function diapositives(page) {
   });
 }
 
-// petites réactions (souris et clavier) : pilule du menu, curseur compagnon, réponses qui arrivent,
-// lettres du pied de page qui sautent en vague. Les cartes, boutons et éclats sont communs à tout le site
+// petites réactions (souris et clavier) : pilule du menu, curseur compagnon, lettres du pied de page
+// qui sautent en vague. Les cartes, boutons et éclats sont communs à tout le site
 // (components/mouvement/Interactions.js). Rend la fonction qui retire tout.
 function reactions(page, ctx) {
   const fins = [suivreCurseur()];
@@ -506,16 +559,6 @@ function reactions(page, ctx) {
     ecouter(menu, 'pointerleave', cacher);
     ecouter(menu, 'focusout', e => { if (!menu.contains(e.relatedTarget)) cacher(); });
   }
-
-  // questions : la réponse sort du flou en glissant, l'icône fait un tour (toggle ne remonte pas : capture)
-  ecouter(page, 'toggle', e => {
-    const q = e.target;
-    if (!q.matches || !q.matches('.acc-question') || !q.open) return;
-    ctx.add(() => {
-      gsap.fromTo(q.querySelectorAll(':scope > :not(summary)'), { y: 14, opacity: 0, filter: 'blur(6px)' }, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.6, delay: 0.08, ease: 'acc-sortie', clearProps: 'transform,opacity,filter' });
-      gsap.fromTo(q.querySelector('summary i'), { rotation: -180 }, { rotation: 0, duration: 0.7, ease: 'back.out(1.8)', clearProps: 'transform' });
-    });
-  }, true);
 
   // nom géant du pied de page : la lettre survolée saute, ses voisines suivent en vague
   const nom = page.querySelector('[data-lettres]');
