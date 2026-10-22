@@ -9,10 +9,10 @@ const ETAPES = {
   en: ['Reading the plan, doors and windows', 'Living zones and clear passages', 'Picking furniture from the catalogue', 'Placement, collisions and access', 'Comparing proposals']
 };
 
-// ReSpace : le moteur choisit les meubles, puis ReSpace les pose un à un dans la pièce vide
+// ReSpace seul : le moteur choisit les meubles, puis ReSpace les pose un à un dans la pièce vide, sans retouche
 const RESPACE = {
-  fr: ['Lecture du plan, des portes et des fenêtres', 'Choix des meubles dans le catalogue', 'La pièce est vidée pour ReSpace', 'ReSpace pose les meubles un par un', 'Le moteur vérifie chaque position'],
-  en: ['Reading the plan, doors and windows', 'Picking furniture from the catalogue', 'Emptying the room for ReSpace', 'ReSpace places the pieces one by one', 'The engine checks every position']
+  fr: ['Lecture du plan, des portes et des fenêtres', 'Choix des meubles dans le catalogue', 'La pièce est vidée pour ReSpace', 'ReSpace pose les meubles un par un', 'Résultat brut, sans retouche du moteur'],
+  en: ['Reading the plan, doors and windows', 'Picking furniture from the catalogue', 'Emptying the room for ReSpace', 'ReSpace places the pieces one by one', 'Raw result, no engine correction']
 };
 
 export default function Journal({ lang, ia = false, respace = false }) {

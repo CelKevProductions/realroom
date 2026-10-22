@@ -2,10 +2,22 @@
 import { moteurGuideActif } from '@/lib/moteur-guide.js';
 import { finitionActive } from '@/lib/finition.js';
 import { compositionSurfaceActive } from '@/lib/composition-surface.js';
-import { codeRespace, lanceLeMoteur } from '@/components/respace.js';
-export async function api(url, { method = 'GET', corps, formulaire, signal } = {}) {
-  // démo privée ReSpace : avec le code, chaque « Aménager » fait poser les meubles par ReSpace
-  if (corps && !corps.respace && lanceLeMoteur(url, corps)) { const code = codeRespace(); if (code) corps = { ...corps, respace: code }; }
+import { codeRespace, garderCodeRespace, lanceLeMoteur, surRealRoom, publierRapportRespace } from '@/components/respace.js';
+
+// Version « ReSpace seul » : sur RealRoom, chaque « Aménager » passe par ReSpace avec le code de
+// la démo privée ; sans code, rien n'est lancé (pas de repli sur le moteur). Le bilan ou
+// l'erreur est publié pour la carte ReSpace. Maison Corleone garde le moteur seul.
+export async function api(url, options = {}) {
+  const { corps } = options;
+  if (!corps || !lanceLeMoteur(url, corps) || !surRealRoom()) return appeler(url, options);
+  const code = corps.respace || codeRespace();
+  const r = code ? await appeler(url, { ...options, corps: { ...corps, respace: code } }) : { ok: false, erreur: 'respace-sans-code', statut: 0 };
+  if (r.erreur === 'respace-code') garderCodeRespace('');
+  if (r.erreur !== 'annule') publierRapportRespace(r.ok ? r.respace : { erreur: r.erreur, message: r.message });
+  return r;
+}
+
+async function appeler(url, { method = 'GET', corps, formulaire, signal } = {}) {
   if (corps && url.endsWith('/amenager') && !moteurGuideActif()) corps = {...corps, moteurGuide:false};
   if (corps && url.endsWith('/amenager') && !finitionActive(corps.compositionDetails)) corps = {...corps, compositionDetails:false};
   if (corps && url.endsWith('/amenager') && !compositionSurfaceActive(corps.compositionSurface)) corps = {...corps, compositionSurface:false};

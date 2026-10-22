@@ -1,6 +1,7 @@
 'use client';
 // Démo privée ReSpace : une proposition ReSpace s'ajoute aux propositions de l'assistant
-// (à côté de celles de Shuffle) ; on la compare ensuite dans l'atelier.
+// (à côté de celles de Shuffle) ; on la compare ensuite dans l'atelier. Version « ReSpace seul » :
+// la disposition est celle de ReSpace, brute, sans contrôle ni retouche du moteur.
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { api } from '@/components/api.js';
@@ -20,8 +21,9 @@ const ETATS = { pret: 'Le serveur ReSpace est prêt.', demarrage: 'Le serveur Re
   code: 'Entre le code d’accès : le serveur n’est vérifié (et réveillé) qu’avec lui.' };
 const ERREURS = { 'respace-code': 'Code d’accès incorrect.', limite: 'Trop d’essais pour l’instant. Réessaie dans une heure.',
   'assistant-obsolete': 'Lance d’abord une première proposition dans l’atelier, puis reviens ici.',
-  'respace-aucun': 'ReSpace n’a placé aucun meuble de façon valable dans cette pièce. La proposition actuelle est inchangée.',
+  'respace-aucun': 'ReSpace n’a rendu aucune position lisible pour cette pièce. La proposition actuelle est inchangée.',
   'respace-demarrage': 'Le serveur sort de veille. Réessaie dans un moment.', 'respace-acces': 'Le serveur ReSpace refuse le jeton d’accès.',
+  'respace-indisponible': 'ReSpace ne répond pas. Vérifie que ton serveur Hugging Face est allumé. La proposition actuelle est inchangée.',
   'amenagement-conflit': 'La pièce a changé pendant le calcul. Recharge la page.' };
 const secondes = ms => (ms / 1000).toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' s';
 
@@ -91,12 +93,12 @@ export default function DemoRespace({ lang, pieces: initiales, produits, demo = 
     setEnCours(null);
     if (!r.ok) {
       if (r.erreur === 'respace-demarrage') setEtat('demarrage');
-      const texte = (ERREURS[r.erreur] || 'Erreur : ' + (r.erreur || r.statut)) + (r.erreur === 'respace-aucun' && r.message && r.message !== r.erreur ? ' (' + r.message + ')' : '');
+      const texte = (ERREURS[r.erreur] || 'Erreur : ' + (r.erreur || r.statut)) + (r.message && r.message !== r.erreur ? ' (' + r.message + ')' : '');
       setRetour({ n: Date.now(), id: p.id, erreur: texte }); annoncer(texte); return;
     }
     const m = r.moteur, agencement = r.piece.agencement || [];
     setPieces(ps => ps.map(x => (x.id === p.id ? { ...x, agencement, variantes: x.variantes + 1 } : x)));
-    const texte = `ReSpace a placé ${m.places} meubles sur ${m.total}. Les autres gardent la place proposée par le moteur.`;
+    const texte = `ReSpace a posé seul ${m.places} meubles sur ${m.total}, sans aucune retouche du moteur.${m.nonPoses?.length ? ' Retirés faute de réponse lisible : ' + m.nonPoses.join(', ') + '.' : ''}`;
     setRetour({ n: Date.now(), id: p.id, avant: p.agencement, apres: agencement, modele: p.modele, m, texte });
     annoncer(texte);
   }
@@ -107,8 +109,8 @@ export default function DemoRespace({ lang, pieces: initiales, produits, demo = 
         <h1 data-entree="">Démo ReSpace</h1>
       </div>
       <p className="avis avis--note app-page__avis" data-entree="">
-        Démo privée et non commerciale. Les poids de ReSpace sont sous licence CC BY-NC-SA 4.0. Le moteur de RealRoom choisit les meubles ;
-        ReSpace décide où les poser et comment les orienter ; le moteur vérifie ensuite chaque position.
+        Démo privée et non commerciale. Les poids de ReSpace sont sous licence CC BY-NC-SA 4.0. Version « ReSpace seul » : le moteur de RealRoom
+        choisit seulement les meubles ; ReSpace décide seul où les poser et comment les orienter, sans contrôle ni retouche du moteur.
       </p>
       <p className="etat" role="status" data-entree="">{etat === 'demarrage' && <Rouage />} {ETATS[etat]}{detail ? ` (${detail})` : ''}</p>
       <label className="champ" data-entree="">
@@ -143,7 +145,7 @@ export default function DemoRespace({ lang, pieces: initiales, produits, demo = 
             </div>
             <p className="discret">
               {retour.m.mesures.appels} appels au modèle, médiane {secondes(retour.m.mesures.medianeAppelMs || 0)} par appel, {secondes(retour.m.mesures.dureeMs)} au total.
-              {' '}{retour.m.mesures.illisibles} réponses illisibles, {retour.m.mesures.rejets} positions refusées par le moteur.
+              {' '}{retour.m.mesures.illisibles} réponses illisibles, {retour.m.mesures.echecs || 0} échecs du serveur.
               {retour.m.mesures.orientation && ` Dos des meubles adossés à ${retour.m.mesures.orientation.dosMurMedianM} m du mur (médiane).`}
             </p>
             <p>La proposition est rangée avec les autres propositions de l’assistant : ouvre la pièce pour la comparer avec Shuffle et la choisir.</p>

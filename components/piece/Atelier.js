@@ -17,7 +17,7 @@ import Inspirations from '@/components/piece/Inspirations.js';
 import Resultat from '@/components/piece/Resultat.js';
 import Journal from '@/components/piece/Journal.js';
 import BarreCommande from '@/components/piece/BarreCommande.js';
-import AccesRespace, { messageRespace, useCodeRespace } from '@/components/piece/AccesRespace.js';
+import AccesRespace, { messageRespace, erreurRespace, useCodeRespace } from '@/components/piece/AccesRespace.js';
 import { bilanRespace } from '@/lib/moteurs/bilan-respace.js';
 import Tuto from '@/components/Tuto.js';
 import { apparaitre, deplier, animer } from '@/components/Mouvement.js';
@@ -102,7 +102,8 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   useEffect(() => { setItems(piece.agencement || []); }, [piece.agencement]);
   const dire = (texte, erreur) => { setToast({ texte, erreur, n: Date.now() }); };
   const respace = !!useCodeRespace();
-  useEffect(() => { if (!toast) return; const h = setTimeout(() => setToast(null), 3800); return () => clearTimeout(h); }, [toast]);
+  // une erreur (ReSpace surtout) reste plus longtemps à l'écran
+  useEffect(() => { if (!toast) return; const h = setTimeout(() => setToast(null), toast.erreur ? 10000 : 3800); return () => clearTimeout(h); }, [toast]);
 
   // changement de chapitre : le panneau glisse en place ; sur grand écran la pièce se range à côté
   useEffect(() => {
@@ -353,7 +354,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       'assistant-fonction': fr ? 'Pour cette fonction de pièce, utilise l’option de réaménagement avec l’IA.' : 'Use the AI redesign option for this room type.',
       'amenagement-conflit': fr ? 'Une autre modification a été enregistrée pendant le calcul. Recharge la pièce avant de réessayer.' : 'The room changed during the calculation. Reload before trying again.'
     };
-    return messages[e?.erreur] || t.demo.erreurs[e?.erreur] || (e?.erreur === 'limite' ? t.connexion.erreurs.limite : t.erreurs.generique);
+    return erreurRespace(e, lang) || messages[e?.erreur] || t.demo.erreurs[e?.erreur] || (e?.erreur === 'limite' ? t.connexion.erreurs.limite : t.erreurs.generique);
   }
   async function proposer(demande) {
     const assistant = demande.methode !== 'ia';
@@ -527,7 +528,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       <div className="panneau__corps" role="tabpanel" inert={!!attente || undefined}>
         {prop && prop.concept && (
           <div className="concept">
-            <b>{tp.concept}{prop.moteur?.type === 'ia' ? ' · ' + t.demo.ia : ''}{bilanRespace(prop) ? ' · ReSpace' : ''}</b>
+            <b>{tp.concept}{prop.moteur?.type === 'ia' ? ' · ' + t.demo.ia : ''}{bilanRespace(prop) ? (bilanRespace(prop).brut ? ' · ReSpace seul' : ' · ReSpace') : ''}</b>
             <p>{prop.concept}</p>
             <PlanVie proposition={prop} langue={lang} />
             {prop.conseils && prop.conseils.length > 0 && <><b className="concept__sous">{tp.conseils}</b><ul>{prop.conseils.map(c => <li key={c}>{c}</li>)}</ul></>}

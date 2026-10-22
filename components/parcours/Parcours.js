@@ -8,7 +8,7 @@
 // réutilisent l'atelier existant (relevé, plan, Shuffle) au lieu de le refaire.
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import AccesRespace, { messageRespace } from '@/components/piece/AccesRespace.js';
+import AccesRespace, { messageRespace, erreurRespace } from '@/components/piece/AccesRespace.js';
 import { api } from '@/components/api.js';
 import { chargerCatalogue } from '@/components/catalogueClient.js';
 import { useRacine } from '@/components/chemins.js';
@@ -638,7 +638,7 @@ function Proposition(props) {
       for (const p of choisies) {
         n[p.id] = 'encours'; setSuivi({ ...n });
         const r = await api(`/api/pieces/${p.id}/variantes`, { method: 'POST', corps: demandeProposition(etat, p, lang) }).catch(e => ({ ok: false, erreur: e?.code }));
-        n[p.id] = r.ok ? 'fait' : (x.erreurs[r.erreur] || x.erreurs.generique);
+        n[p.id] = r.ok ? 'fait' : (erreurRespace(r, lang) || x.erreurs[r.erreur] || x.erreurs.generique);
         setSuivi({ ...n });
         if (r.ok && r.respace) setNotes(v => ({ ...v, [p.id]: messageRespace(r.respace, lang) }));
         annoncer(p.nom + ' : ' + (r.ok ? x.proposition.prete : n[p.id]));

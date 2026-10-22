@@ -1,10 +1,11 @@
 'use client';
-// Démo privée ReSpace dans l'atelier et le parcours : le code d'accès (gardé dans ce navigateur)
-// et l'état du serveur. Avec le code, chaque « Aménager » fait poser les meubles par ReSpace.
+// Démo privée ReSpace dans l'atelier et le parcours : le code d'accès (gardé dans ce navigateur),
+// l'état du serveur et le dernier bilan. Version « ReSpace seul » : avec le code, chaque
+// « Aménager » fait poser les meubles par ReSpace, sans le moteur ; sans code, rien n'est lancé.
 // Invisible quand la démo n'existe pas (production, Maison Corleone).
 import { useEffect, useState } from 'react';
 import { api } from '@/components/api.js';
-import { codeRespace, garderCodeRespace, suivreCodeRespace } from '@/components/respace.js';
+import { codeRespace, garderCodeRespace, suivreCodeRespace, rapportRespace, suivreRapportRespace } from '@/components/respace.js';
 import { Rouage } from '@/components/mouvement/Attente.js';
 
 const enDemo = () => /^\/[a-z]{2}\/demo(\/|$)/.test(location.pathname);
@@ -16,42 +17,48 @@ export function useCodeRespace() {
 }
 
 const ETATS = {
-  fr: { pret: 'ReSpace est prêt : il pose tous les meubles à chaque « Aménager ».',
-    demarrage: 'ReSpace se réveille, cela peut prendre quelques minutes. En attendant, le moteur RealRoom place les meubles.',
-    indisponible: 'ReSpace ne répond pas : le moteur RealRoom place les meubles. Vérifie que ton serveur Hugging Face est allumé.',
+  fr: { pret: 'ReSpace est prêt : à chaque « Aménager », il pose seul tous les meubles, sans le moteur.',
+    demarrage: 'ReSpace se réveille, cela peut prendre quelques minutes. Attends qu’il soit prêt avant d’aménager.',
+    indisponible: 'ReSpace ne répond pas. Vérifie que ton serveur Hugging Face est allumé.',
     inconnu: 'Vérification du serveur ReSpace…' },
-  en: { pret: 'ReSpace is ready: it places every piece each time you arrange.',
-    demarrage: 'ReSpace is waking up, this can take a few minutes. Meanwhile the RealRoom engine places the furniture.',
-    indisponible: 'ReSpace is not answering: the RealRoom engine places the furniture.',
+  en: { pret: 'ReSpace is ready: each time you arrange, it places every piece alone, without the engine.',
+    demarrage: 'ReSpace is waking up, this can take a few minutes. Wait until it is ready.',
+    indisponible: 'ReSpace is not answering. Check that your Hugging Face server is on.',
     inconnu: 'Checking the ReSpace server…' }
 };
 
-// Phrase à afficher après un « Aménager » (réponse.respace) ; vide si ReSpace n'a pas été demandé.
+// Phrase à afficher après un « Aménager » réussi (réponse.respace) ; vide si ReSpace n'a pas été demandé.
 export function messageRespace(respace, lang) {
-  if (!respace) return '';
-  const fr = lang !== 'en';
-  if (respace.places != null) {
-    const reste = respace.total - respace.places;
-    return fr ? `ReSpace a posé ${respace.places} meuble${respace.places > 1 ? 's' : ''} sur ${respace.total} dans la pièce vide.${reste ? ` ${reste > 1 ? 'Les autres gardent' : 'Le dernier garde'} la place du moteur.` : ''}`
-      : `ReSpace placed ${respace.places} of ${respace.total} pieces in the empty room.${reste ? ' The others keep the engine’s spot.' : ''}`;
-  }
-  if (respace.erreur === 'respace-code') garderCodeRespace('');
+  if (!respace || respace.places == null) return '';
+  const fr = lang !== 'en', n = respace.places, rates = respace.nonPoses || [];
+  return fr ? `ReSpace a posé seul ${n} meuble${n > 1 ? 's' : ''} sur ${respace.total}, sans aucune retouche du moteur.${rates.length ? ` Retiré${rates.length > 1 ? 's' : ''} faute de réponse lisible : ${rates.join(', ')}.` : ''}`
+    : `ReSpace alone placed ${n} of ${respace.total} pieces, with no engine correction.${rates.length ? ` Removed (no readable answer): ${rates.join(', ')}.` : ''}`;
+}
+
+// Erreur d'un « Aménager » par ReSpace : la pièce n'a pas changé. Vide si l'erreur ne vient pas de ReSpace.
+export function erreurRespace(e, lang) {
+  const fr = lang !== 'en', code = e?.erreur;
   const cause = {
+    'respace-sans-code': fr ? 'Dans cette version, c’est ReSpace qui aménage : entre d’abord le code d’accès sur la carte « ReSpace »' : 'In this version ReSpace does the layout: enter the access code on the “ReSpace” card first',
     'respace-code': fr ? 'Code ReSpace incorrect' : 'Wrong ReSpace code',
-    limite: fr ? 'ReSpace a atteint sa limite pour cette heure' : 'ReSpace hit its hourly limit',
-    'respace-demarrage': fr ? 'ReSpace se réveille encore' : 'ReSpace is still waking up',
-    'respace-indisponible': fr ? 'ReSpace ne répond pas' : 'ReSpace is not answering',
-    'respace-aucun': fr ? 'ReSpace n’a trouvé aucune place valable' : 'ReSpace found no valid spot',
-    'respace-acces': fr ? 'Le serveur ReSpace refuse le jeton d’accès' : 'The ReSpace server refuses the token'
-  }[respace.erreur];
-  if (respace.erreur === 'respace-inactif') return '';
-  return (cause || (fr ? 'ReSpace n’a pas pu poser les meubles' : 'ReSpace could not place the furniture')) + (fr ? ' : le moteur RealRoom a placé les meubles.' : ': the RealRoom engine placed the furniture.');
+    'respace-inactif': fr ? 'ReSpace n’est pas configuré sur cette version (variables RESPACE_… absentes sur Vercel)' : 'ReSpace is not configured on this version',
+    'respace-demarrage': fr ? 'Le serveur ReSpace se réveille encore. Réessaie dans quelques minutes' : 'The ReSpace server is still waking up. Try again in a few minutes',
+    'respace-indisponible': fr ? 'ReSpace ne répond pas. Vérifie que ton serveur Hugging Face est allumé' : 'ReSpace is not answering. Check your Hugging Face server',
+    'respace-acces': fr ? 'Le serveur ReSpace refuse le jeton d’accès (RESPACE_JETON)' : 'The ReSpace server refuses the access token',
+    'respace-aucun': fr ? 'ReSpace n’a rendu aucune position lisible' : 'ReSpace returned no readable position'
+  }[code];
+  if (!cause) return '';
+  const detail = e.message && e.message !== code ? ` (${e.message})` : '';
+  return cause + detail + (code === 'respace-sans-code' ? '.' : fr ? '. La pièce n’a pas changé.' : '. The room did not change.');
 }
 
 export default function AccesRespace({ lang }) {
   const fr = lang !== 'en', code = useCodeRespace();
   const [actif, setActif] = useState(false), [etat, setEtat] = useState('inconnu');
   const [saisie, setSaisie] = useState(''), [erreur, setErreur] = useState('');
+  const [rapport, setRapport] = useState(null);
+  useEffect(() => { const lire = () => setRapport(rapportRespace()); lire(); return suivreRapportRespace(lire); }, []);
+  const bilan = rapport && (rapport.erreur ? erreurRespace(rapport, lang) : messageRespace(rapport, lang));
   // la démo existe-t-elle ? (sans code, sans réveiller le serveur GPU)
   useEffect(() => {
     if (location.pathname.includes('/maison-corleone')) return;
@@ -85,12 +92,12 @@ export default function AccesRespace({ lang }) {
   if (!code) return (
     <form className="respace-acces" onSubmit={e => { e.preventDefault(); if (saisie.trim()) { setErreur(''); garderCodeRespace(saisie.trim()); setSaisie(''); } }}>
       <p className="respace-acces__titre"><span className="respace-acces__point" aria-hidden="true" />ReSpace <span className="discret">· {fr ? 'démo privée' : 'private demo'}</span></p>
-      <p className="respace-acces__texte">{fr ? 'Avec le code, ReSpace part de la pièce vide et pose tous les meubles à chaque « Aménager ».' : 'With the code, ReSpace starts from the empty room and places every piece each time you arrange.'}</p>
+      <p className="respace-acces__texte">{fr ? 'Version « ReSpace seul » : ReSpace part de la pièce vide et pose tous les meubles, sans le moteur. Sans le code, « Aménager » ne se lance pas.' : '“ReSpace alone” version: ReSpace starts from the empty room and places every piece, without the engine. Without the code, arranging does not start.'}</p>
       <div className="respace-acces__ligne">
         <input className="saisie" type="password" autoComplete="off" aria-label={fr ? 'Code d’accès ReSpace' : 'ReSpace access code'} placeholder={fr ? 'Code d’accès' : 'Access code'} value={saisie} onChange={e => setSaisie(e.target.value)} />
         <button type="submit" className="btn btn--clair btn--petit" disabled={!saisie.trim()}>{fr ? 'Activer' : 'Turn on'}</button>
       </div>
-      {erreur && <p className="respace-acces__erreur" role="alert">{erreur}</p>}
+      {(erreur || rapport?.erreur && bilan) && <p className="respace-acces__erreur" role="alert">{erreur || bilan}</p>}
     </form>
   );
   return (
@@ -99,6 +106,7 @@ export default function AccesRespace({ lang }) {
         <button type="button" className="btn btn--lien btn--petit respace-acces__retirer" onClick={() => garderCodeRespace('')}>{fr ? 'Retirer le code' : 'Remove code'}</button>
       </p>
       <p className="respace-acces__texte">{textes[etat]}</p>
+      {bilan && <p className={rapport.erreur ? 'respace-acces__erreur' : 'respace-acces__texte'} role={rapport.erreur ? 'alert' : undefined}>{fr ? 'Dernier essai : ' : 'Last try: '}{bilan}</p>}
     </div>
   );
 }

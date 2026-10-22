@@ -26,7 +26,7 @@ import { bilanRespace } from '@/lib/moteurs/bilan-respace.js';
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const maintenant = () => new Date().toISOString();
 const ok = (corps = {}, statut = 200) => ({ ...corps, ok: true, statut });
-const non = (erreur, statut) => ({ ok: false, erreur, statut });
+const non = (erreur, statut, message) => ({ ok: false, erreur, statut, ...(message ? { message } : {}) });
 const lireFichier = blob => new Promise((res, rej) => { const f = new FileReader(); f.onload = () => res(f.result); f.onerror = rej; f.readAsDataURL(blob); });
 const toucher = p => { p.maj_le = maintenant(); const pr = projetDe(p.projet_id); if (pr) pr.maj_le = p.maj_le; };
 
@@ -212,9 +212,9 @@ async function analyser(p, langue) {
   return ok({ piece: publique(p) });
 }
 
-// Démo privée ReSpace (code d'accès dans la demande) : le moteur a choisi les meubles, ReSpace
-// les pose dans la pièce vidée. S'il dort ou échoue, la proposition du moteur reste et l'atelier
-// dit pourquoi.
+// Démo privée ReSpace, version « ReSpace seul » (code d'accès dans la demande) : le moteur a
+// seulement choisi les meubles, ReSpace les pose dans la pièce vidée, tels quels. S'il dort,
+// refuse le code ou échoue, rien n'est remplacé : l'erreur remonte, sans repli sur le moteur.
 async function avecRespace(p, resultat, b) {
   if (!b.respace || b.action === 'choisir' || location.pathname.includes('/maison-corleone')) return { resultat };
   try {
@@ -222,9 +222,9 @@ async function avecRespace(p, resultat, b) {
       body: JSON.stringify({ code: b.respace, remplacer: true, assistant: resultat.assistant,
         piece: { fonction: p.fonction, modele: p.modele, agencement: resultat.agencement, proposition: resultat.proposition } }) });
     const j = await r.json().catch(() => ({}));
-    if (!r.ok || j.ok === false) return { resultat, respace: { erreur: r.status === 404 ? 'respace-inactif' : j.erreur || 'respace-indisponible', message: j.message } };
+    if (!r.ok || j.ok === false) return { erreur: non(r.status === 404 ? 'respace-inactif' : j.erreur || 'respace-indisponible', r.status || 503, j.message !== j.erreur ? j.message : '') };
     return { resultat: { ...resultat, agencement: j.agencement, proposition: j.proposition, assistant: { message: 'proposition', selection: j.proposition?.variantes?.selection } }, respace: bilanRespace(j.proposition) };
-  } catch (_) { return { resultat, respace: { erreur: 'respace-indisponible' } }; }
+  } catch (_) { return { erreur: non('respace-indisponible', 503) }; }
 }
 
 async function amenager(p, b, langue) {
@@ -232,7 +232,8 @@ async function amenager(p, b, langue) {
   const revision = p.maj_le;
   const r = await amenagerParIA(p, { ...b, moteurGuide: moteurGuideActif(b.moteurGuide), compositionDetails: finitionActive(b.compositionDetails), compositionSurface: compositionSurfaceActive(b.compositionSurface),referencesSpatiales:referencesSpatialesActives(b.referencesSpatiales) }, langue);
   if (!r.ok) return r;
-  const { resultat, respace } = await avecRespace(p, { agencement: r.agencement, proposition: r.proposition }, b);
+  const { resultat, respace, erreur } = await avecRespace(p, { agencement: r.agencement, proposition: r.proposition }, b);
+  if (erreur) return erreur;
   if (pieceDe(p.id) !== p || p.maj_le !== revision) return non('amenagement-conflit', 409);
   ecrire(() => { p.agencement = resultat.agencement; p.proposition = resultat.proposition; toucher(p); });
   return ok({ piece: publique(p), respace });
@@ -246,8 +247,9 @@ async function variantes(p, b, langue) {
   // refus de l'assistant (aucune disposition, budget, meubles conservés) : même réponse que le serveur
   try { resultat = await assistantEnArrierePlan({ piece: structuredClone(p), demande: { ...b, langue }, produits }); }
   catch (e) { if (e?.code) return non(e.code, e.statut || 409); throw e; }
-  let respace;
-  ({ resultat, respace } = await avecRespace(p, resultat, b));
+  let respace, erreur;
+  ({ resultat, respace, erreur } = await avecRespace(p, resultat, b));
+  if (erreur) return erreur;
   if (pieceDe(p.id) !== p || p.maj_le !== revision) return non('amenagement-conflit', 409);
   ecrire(() => { p.agencement = resultat.agencement; p.proposition = resultat.proposition; toucher(p); });
   return ok({ piece: publique(p), assistant: resultat.assistant, respace });

@@ -19,7 +19,7 @@ test('ReSpace : repères, format d’entrée du modèle et accès de la démo', 
   assert.equal(codeDemoValide(cfg, 'autre'), false);
 });
 
-test('ReSpace : une proposition de plus parmi les variantes, dimensions du catalogue, repli du moteur', async t => {
+test('ReSpace seul : une proposition de plus parmi les variantes, dimensions du catalogue, positions brutes', async t => {
   t.mock.method(globalThis, 'fetch', () => { throw new Error('Aucun appel externe autorisé'); });
   const base = executerAssistant({ fonction: 'salon', modele: rectangle(5, 5), agencement: [] }, { action: 'generer', espaces: ['repas'], placesRepas: 4, budget: 9000 }, PRODUITS);
   const piece = JSON.parse(JSON.stringify({ fonction: 'salon', modele: rectangle(5, 5), agencement: base.agencement, proposition: base.proposition }));
@@ -38,7 +38,16 @@ test('ReSpace : une proposition de plus parmi les variantes, dimensions du catal
   assert.equal(r.proposition.variantes.liste.length, 2, 'la première proposition est gardée');
   assert.deepEqual(r.agencement.map(it => it.sku).sort(), piece.agencement.map(it => it.sku).sort(), 'mêmes meubles, mêmes dimensions');
   assert.ok(r.agencement.some(it => { const a = piece.agencement.find(b => b.id === it.id); return Math.abs(a.x - it.x) > .05; }), 'disposition changée');
+  // aucune retouche du moteur : chaque meuble posé est exactement là où le modèle l'a dit
+  const poses = r.agencement.filter(it => { const a = piece.agencement.find(b => b.id === it.id); return a && Math.abs(it.x + a.x) < 1e-9 && it.x !== a.x; });
+  assert.ok(poses.length >= m.places, 'positions du modèle, telles quelles (objets posés dessus compris)');
   await assert.rejects(varianteRespace(piece, PRODUITS, { appel: async () => '???', echantillons: 1 }), { code: 'respace-aucun' });
+  // un meuble sans réponse lisible est retiré et nommé, sans place reprise du moteur
+  remplir();
+  const plusGrand = piece.agencement.map(it => ({ it, p: produitDe(it, PRODUITS) })).filter(e => e.it.usageProgramme === 'canape')[0];
+  const sansCanape = await varianteRespace(piece, PRODUITS, { appel: async (texte, o) => (texte.includes('<add>' + descriptionAnglaise(plusGrand.it, plusGrand.p) + '</add>') ? '???' : appel(texte, o)) });
+  assert.ok(!sansCanape.agencement.some(it => it.id === plusGrand.it.id), 'canapé retiré');
+  assert.deepEqual(sansCanape.proposition.moteur.nonPoses, [plusGrand.p.nom]);
   // « Aménager » : la pose de ReSpace remplace la proposition du moteur au lieu de s'y ajouter
   remplir();
   const a = await amenagerAvecRespace(piece, base, PRODUITS, { appel, echantillons: 1 });
