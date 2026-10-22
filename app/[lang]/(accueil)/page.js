@@ -171,7 +171,7 @@ export default async function Accueil({ params }) {
                       <p className="acc-chapitre__texte" data-mots>{c.texte}</p>
                       {i === 1 && (
                         <ol className="acc-etapes">
-                          {a.propositions.map((p, k) => <li key={p} data-etape={k}><span className="acc-etapes__point" aria-hidden="true" />{p}</li>)}
+                          {a.propositions.map((p, k) => <li key={p} data-etape={k}><button type="button" className="acc-etapes__bouton"><span className="acc-etapes__point" aria-hidden="true" />{p}</button></li>)}
                         </ol>
                       )}
                       {fin && <p className="acc-visiter"><span className="acc-point" aria-hidden="true" />{a.visiter}</p>}

@@ -4,7 +4,8 @@
 // les meubles arrivent, Shuffle les change de place sous leurs pattes, puis on visite chaque appartement
 // et tout le monde dit merci. On joue avec les animaux : clic, caresse, on les attrape, on les secoue.
 // Événements (document) : écoute rr:piece-intro (sinon l'intro part 3 s après le montage) et
-// rr:piece-chapitre (detail.chapitre 0 à 3, detail.visite : l'étape d'Aménager ou de Visiter) ; émet
+// rr:piece-chapitre (detail.chapitre 0 à 3, detail.visite : l'étape d'Aménager ou de Visiter) et
+// rr:piece-shuffle (on reclique sur Shuffle : une autre idée) ; émet
 // rr:piece-prete à la première image. three.js n'est chargé qu'après l'affichage (piece3d/scene.js).
 // Sans WebGL : une image fixe ; mouvement réduit : l'état de chaque chapitre, immobile.
 import { useEffect, useRef, useState } from 'react';
@@ -97,8 +98,10 @@ export default function PieceAccueil({ lang = 'fr' }) {
       el.dataset.etat = 'secours';
       setSecours(true);
     };
+    const surShuffle = () => piece?.encore();
     document.addEventListener('rr:piece-intro', lancer);
     document.addEventListener('rr:piece-chapitre', surChapitre);
+    document.addEventListener('rr:piece-shuffle', surShuffle);
     const minuteur = setTimeout(lancer, ATTENTE_INTRO);
 
     if (!webgl2()) panne();
@@ -124,6 +127,7 @@ export default function PieceAccueil({ lang = 'fr' }) {
       clearTimeout(minuteur);
       document.removeEventListener('rr:piece-intro', lancer);
       document.removeEventListener('rr:piece-chapitre', surChapitre);
+      document.removeEventListener('rr:piece-shuffle', surShuffle);
       piece?.detruire();
       piece = null;
     };

@@ -64,7 +64,7 @@ function fenetre(face, u, y0, nu, { allumee = false, l = FENETRE.l, h = FENETRE.
 
 // le hall : façade pêche, porte corail sous un auvent, boîtes aux lettres, deux vitrines
 function hall() {
-  const p = [['peche', bloc(W, RDC, D, .06, 0, 0, 0)], ['clair', bloc(W + .16, .12, D + .16, .04, 0, RDC - .02, 0)]];
+  const p = [['peche', bloc(W, RDC, D, .06, 0, 0, 0)], ['clair', bloc(W + .16, .12, D + .16, .04, 0, RDC - .04, 0)]];
   p.push(['corail', bloc(1.1, 2.05, .08, .03, 0, 0, D / 2 + .02)]);
   p.push(['beurre', cyl(.04, .04, .04, .36, 1, D / 2 + .08, 10)]);
   p.push(['clair', bloc(1.7, .1, .55, .03, 0, -.1, D / 2 + .27)]);
@@ -83,9 +83,10 @@ function etage(base, couleur) {
     p.push([couleur, bloc(EP, AH + .25, D, .03, s * (W / 2 - EP / 2), base - .1, 0)]);
     [-.9, .9].forEach(u => p.push(...fenetre(s < 0 ? 'gauche' : 'droite', u, base + FENETRE.bas, s * W / 2, { jardiniere: s > 0 && u > 0 })));
   }
-  // dalle (sol de l'étage) et mur mitoyen
-  p.push(['platre', bloc(W - 2 * EP, .1, D - EP, 0, 0, base - .1, EP / 2)]);
-  p.push(['platre', bloc(EP, AH, D - EP, 0, 0, base, EP / 2)]);
+  // dalle (sol de l'étage, 2 cm sous le parquet des appartements : deux faces à la même hauteur
+  // scintilleraient) et mur mitoyen
+  p.push(['platre', bloc(W - 2 * EP, .08, D - EP, 0, 0, base - .1, EP / 2)]);
+  p.push(['platre', bloc(EP, AH + .02, D - EP, 0, 0, base - .02, EP / 2)]);
   // plafond et corniche en façade
   p.push(['platre', bloc(W - 2 * EP, .15, D - EP, 0, 0, base + AH, EP / 2)]);
   p.push(['clair', bloc(W + .16, .1, D + .16, .04, 0, base + AH + .05, 0)]);

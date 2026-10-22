@@ -654,14 +654,15 @@ export function surprise(gsap, a, { haut = .24, revenir = true } = {}) {
   if (revenir) tl.call(() => a.regard('normal'), null, 1.4);
   return tl;
 }
-// chute sur le dos, étoiles qui tournent
+// chute sur le dos, étoiles qui tournent (couché, les pieds restent en l'air : le dos et la tête
+// touchent le sol sans y entrer)
 export function chute(gsap, a, dx = 0, dz = 0) {
   const o = a.objet;
   return gsap.timeline()
     .call(() => a.regard('surpris'))
     .to(o.position, { x: o.position.x + dx, z: o.position.z + dz, duration: .45, ease: 'power2.out' }, 0)
-    .to(o.position, { y: .2, duration: .18, ease: 'power2.out' }, 0)
-    .to(o.position, { y: .05, duration: .25, ease: 'bounce.out' }, .18)
+    .to(o.position, { y: .34, duration: .18, ease: 'power2.out' }, 0)
+    .to(o.position, { y: .17, duration: .25, ease: 'bounce.out' }, .18)
     .to(o.rotation, { x: -1.35, duration: .4, ease: 'power2.in' }, .02)
     .call(() => a.regard('etourdi'), null, .4)
     .set(a.etoiles, { visible: true }, .42)

@@ -360,12 +360,15 @@ html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-
 .acc-chapitre--etapes::after { content: ''; display: block; height: calc((var(--etapes) - 1) * 55svh + 40svh); }
 .acc-chapitre--etapes .acc-chapitre__corps { position: sticky; top: calc(var(--entete) + 20px + min(50svh, 112vw)); }
 .acc-etapes { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 0; padding: 0; list-style: none; }
-.acc-etapes li {
-  display: inline-flex; align-items: center; gap: 9px; padding: 8px 14px 8px 11px; border-radius: 999px;
-  background: color-mix(in srgb, var(--blanc) 70%, transparent); color: var(--c-doux); font-weight: 600; opacity: .6;
-  transition: opacity .4s, background-color .4s, color .4s, scale .6s cubic-bezier(.34, 1.56, .64, 1);
+/* une étape se choisit aussi d'un clic : on y va comme au défilement (Shuffle, encore : une autre idée) */
+.acc-etapes__bouton {
+  display: inline-flex; align-items: center; gap: 9px; padding: 8px 14px 8px 11px; border: 0; border-radius: 999px; cursor: pointer;
+  background: color-mix(in srgb, var(--blanc) 70%, transparent); color: var(--c-doux); font: inherit; font-weight: 600; opacity: .6;
+  transition: opacity .4s, background-color .4s, color .4s, box-shadow .4s, scale .6s cubic-bezier(.34, 1.56, .64, 1);
 }
-.acc-etapes li.is-actif { opacity: 1; background: var(--blanc); color: var(--c-ton); box-shadow: var(--ombre-legere); scale: 1.04; }
+.acc-etapes__bouton:hover { opacity: .9; }
+.acc-etapes__bouton:active { scale: .96; }
+.acc-etapes li.is-actif .acc-etapes__bouton { opacity: 1; background: var(--blanc); color: var(--c-ton); box-shadow: var(--ombre-legere); scale: 1.04; }
 .acc-etapes__point { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--peche); transition: background-color .4s, scale .6s cubic-bezier(.34, 1.56, .64, 1); }
 .acc-etapes li.is-actif .acc-etapes__point { background: var(--rouille); scale: 1.3; }
 .acc-visiter { display: flex; align-items: center; gap: 10px; margin-top: 22px; font-weight: 600; color: var(--c-ton); }

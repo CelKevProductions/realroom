@@ -9,7 +9,8 @@
 //  - « rr:piece-prete » (reçu) : la 3D est prête, le compteur du préchargement peut finir ;
 //  - « rr:piece-intro » (émis) : fin du préchargement, ou tout de suite s'il n'y en a pas ;
 //  - « rr:piece-chapitre » (émis, detail.chapitre de 0 à 3, detail.visite) : chapitre actif au défilement
-//    (0 = héros) ; dans le dernier, la visite en cours (un appartement après l'autre, puis tous).
+//    (0 = héros) ; dans le dernier, la visite en cours (un appartement après l'autre, puis tous) ;
+//  - « rr:piece-shuffle » (émis) : on reclique sur « Shuffle » alors qu'on y est déjà : une autre idée.
 // Ils restent lisibles après coup (window.__rrPieceIntro, window.__rrPieceChapitre) pour une 3D montée plus tard ;
 // le chapitre courant est renvoyé chaque fois que la 3D se dit prête.
 import { useEffect, useLayoutEffect } from 'react';
@@ -90,6 +91,7 @@ function demarrer() {
   const nettoyages = [];
   let annule = false;
   let lenis = null;
+  let guide = null;
   let image = 0;
   const ctx = gsap.context(() => {}, page);
   const entete = page.querySelector('[data-entete]');
@@ -106,7 +108,11 @@ function demarrer() {
     window.__rrPieceChapitre = n;
     window.__rrPieceVisite = k;
     if (scene) scene.setAttribute('data-actif', String(n));
-    page.querySelectorAll('[data-etape]').forEach(li => li.classList.toggle('is-actif', Number(li.closest('[data-chapitre]')?.dataset.chapitre) === n && Number(li.dataset.etape) === k));
+    page.querySelectorAll('[data-etape]').forEach(li => {
+      const actif = Number(li.closest('[data-chapitre]')?.dataset.chapitre) === n && Number(li.dataset.etape) === k;
+      li.classList.toggle('is-actif', actif);
+      if (actif) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
+    });
     // tout le monde est heureux : la conclusion prend la place du dernier chapitre
     if (scene) scene.toggleAttribute('data-conclusion', n === 3 && k === 4);
     emettre('rr:piece-chapitre', { chapitre: n, visite: k });
@@ -161,6 +167,21 @@ function demarrer() {
   page.addEventListener('click', ancre);
   nettoyages.push(() => page.removeEventListener('click', ancre));
 
+  // ---------- 4 bis. étapes d'Aménager : un clic y emmène comme le défilement ; Shuffle, encore : une autre idée
+  const surEtape = e => {
+    const bouton = e.target.closest && e.target.closest('.acc-etapes__bouton');
+    const li = bouton && bouton.closest('[data-etape]');
+    const el = li && li.closest('[data-chapitre]');
+    if (!el) return;
+    const n = Number(el.dataset.chapitre), k = Number(li.dataset.etape);
+    if (n === chapitre && k === visite) { if (k > 0) emettre('rr:piece-shuffle'); return; }
+    const cible = arretChapitre(el, page) + k * innerHeight * VISITE;
+    if (guide) guide.allerA(cible);
+    else window.scrollTo({ top: cible, behavior: mouvement ? 'smooth' : 'auto' });
+  };
+  page.addEventListener('click', surEtape);
+  nettoyages.push(() => page.removeEventListener('click', surEtape));
+
   // ---------- 5. vitrine du catalogue : glisser à la souris, avec inertie (le doigt et le pavé tactile défilent déjà)
   const vitrine = page.querySelector('[data-vitrine]');
   if (vitrine && pointeurFin) {
@@ -183,8 +204,8 @@ function demarrer() {
   const lancerLenis = () => {
     if (annule || lenis) return;
     // défilement guidé : un geste emmène à l'arrêt suivant (guide.js)
-    const guide = guider(() => lenis, page, entete);
-    nettoyages.push(guide.arreter);
+    guide = guider(() => lenis, page);
+    nettoyages.push(() => { guide.arreter(); guide = null; });
     lenis = new Lenis({ lerp: 0.1, smoothWheel: true, autoRaf: false, virtualScroll: guide.molette });
     lenis.on('scroll', ScrollTrigger.update);
     const tic = t => lenis.raf(t * 1000);
