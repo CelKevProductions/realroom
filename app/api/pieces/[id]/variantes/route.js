@@ -3,6 +3,7 @@ import { piece, majAmenagement, publique } from '@/lib/projets.js';
 import { compter } from '@/lib/db.js';
 import { PRODUITS } from '@/lib/catalogue.js';
 import { executerAssistant, ErreurAssistant } from '@/lib/assistant-amenagement.js';
+import { passerParRespace } from '@/lib/moteurs/respace-amenager.js';
 
 export const maxDuration = 300;
 
@@ -19,6 +20,9 @@ export const POST = route(async (request, { params }) => {
     if (e.code === 'REGLES_BLOQUANTES') throw new ErreurHTTP(422, 'regles-bloquantes', e.message);
     throw e;
   }
+  // démo privée : le moteur a choisi les meubles, ReSpace les pose dans la pièce vidée
+  let respace;
+  if (b.action !== 'choisir') ({ resultat, respace } = await passerParRespace({ piece: p, resultat, produits: PRODUITS, code: b.respace, cle: u.id, signal: request.signal }));
   const n = await majAmenagement(u.id, id, resultat, p);
-  return json({ piece: publique(n), assistant: resultat.assistant });
+  return json({ piece: publique(n), assistant: resultat.assistant, respace });
 });

@@ -21,6 +21,7 @@ import {optionsRendu} from '@/lib/rendu-options.js';
 import { normaliserParcours, agencementAvecContraintes, etatVide } from '@/lib/parcours.js';
 import { etatVariantes } from '@/lib/variation-disposition.js';
 import { piecesDuParcours } from '@/components/demo/magasin.js';
+import { bilanRespace } from '@/lib/moteurs/bilan-respace.js';
 
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const maintenant = () => new Date().toISOString();
@@ -211,14 +212,30 @@ async function analyser(p, langue) {
   return ok({ piece: publique(p) });
 }
 
+// Démo privée ReSpace (code d'accès dans la demande) : le moteur a choisi les meubles, ReSpace
+// les pose dans la pièce vidée. S'il dort ou échoue, la proposition du moteur reste et l'atelier
+// dit pourquoi.
+async function avecRespace(p, resultat, b) {
+  if (!b.respace || b.action === 'choisir' || location.pathname.includes('/maison-corleone')) return { resultat };
+  try {
+    const r = await fetch('/api/demo/respace', { method: 'POST', cache: 'no-store', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: b.respace, remplacer: true, assistant: resultat.assistant,
+        piece: { fonction: p.fonction, modele: p.modele, agencement: resultat.agencement, proposition: resultat.proposition } }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || j.ok === false) return { resultat, respace: { erreur: r.status === 404 ? 'respace-inactif' : j.erreur || 'respace-indisponible', message: j.message } };
+    return { resultat: { ...resultat, agencement: j.agencement, proposition: j.proposition, assistant: { message: 'proposition', selection: j.proposition?.variantes?.selection } }, respace: bilanRespace(j.proposition) };
+  } catch (_) { return { resultat, respace: { erreur: 'respace-indisponible' } }; }
+}
+
 async function amenager(p, b, langue) {
   if (!p.modele) return non('pas-de-modele', 409);
   const revision = p.maj_le;
   const r = await amenagerParIA(p, { ...b, moteurGuide: moteurGuideActif(b.moteurGuide), compositionDetails: finitionActive(b.compositionDetails), compositionSurface: compositionSurfaceActive(b.compositionSurface),referencesSpatiales:referencesSpatialesActives(b.referencesSpatiales) }, langue);
   if (!r.ok) return r;
+  const { resultat, respace } = await avecRespace(p, { agencement: r.agencement, proposition: r.proposition }, b);
   if (pieceDe(p.id) !== p || p.maj_le !== revision) return non('amenagement-conflit', 409);
-  ecrire(() => { p.agencement = r.agencement; p.proposition = r.proposition; toucher(p); });
-  return ok({ piece: publique(p) });
+  ecrire(() => { p.agencement = resultat.agencement; p.proposition = resultat.proposition; toucher(p); });
+  return ok({ piece: publique(p), respace });
 }
 
 async function variantes(p, b, langue) {
@@ -229,9 +246,11 @@ async function variantes(p, b, langue) {
   // refus de l'assistant (aucune disposition, budget, meubles conservés) : même réponse que le serveur
   try { resultat = await assistantEnArrierePlan({ piece: structuredClone(p), demande: { ...b, langue }, produits }); }
   catch (e) { if (e?.code) return non(e.code, e.statut || 409); throw e; }
+  let respace;
+  ({ resultat, respace } = await avecRespace(p, resultat, b));
   if (pieceDe(p.id) !== p || p.maj_le !== revision) return non('amenagement-conflit', 409);
   ecrire(() => { p.agencement = resultat.agencement; p.proposition = resultat.proposition; toucher(p); });
-  return ok({ piece: publique(p), assistant: resultat.assistant });
+  return ok({ piece: publique(p), assistant: resultat.assistant, respace });
 }
 
 async function generer(p, b) {

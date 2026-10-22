@@ -2,7 +2,10 @@
 import { moteurGuideActif } from '@/lib/moteur-guide.js';
 import { finitionActive } from '@/lib/finition.js';
 import { compositionSurfaceActive } from '@/lib/composition-surface.js';
+import { codeRespace, lanceLeMoteur } from '@/components/respace.js';
 export async function api(url, { method = 'GET', corps, formulaire, signal } = {}) {
+  // démo privée ReSpace : avec le code, chaque « Aménager » fait poser les meubles par ReSpace
+  if (corps && !corps.respace && lanceLeMoteur(url, corps)) { const code = codeRespace(); if (code) corps = { ...corps, respace: code }; }
   if (corps && url.endsWith('/amenager') && !moteurGuideActif()) corps = {...corps, moteurGuide:false};
   if (corps && url.endsWith('/amenager') && !finitionActive(corps.compositionDetails)) corps = {...corps, compositionDetails:false};
   if (corps && url.endsWith('/amenager') && !compositionSurfaceActive(corps.compositionSurface)) corps = {...corps, compositionSurface:false};

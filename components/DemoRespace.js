@@ -13,6 +13,7 @@ import { chargerCatalogue } from '@/components/catalogueClient.js';
 import { lire, ecrire, piece as pieceDemo, projet as projetDemo } from '@/components/demo/magasin.js';
 import { TYPES_PROGRAMME } from '@/lib/programme.js';
 import { etatVariantes } from '@/lib/variation-disposition.js';
+import { codeRespace, garderCodeRespace } from '@/components/respace.js';
 
 const ETATS = { pret: 'Le serveur ReSpace est prêt.', demarrage: 'Le serveur ReSpace sort de veille. Cela peut prendre quelques minutes.',
   indisponible: 'Le serveur ReSpace ne répond pas.', inactif: 'La démo ReSpace n’est pas configurée.', inconnu: 'Vérification du serveur…',
@@ -52,7 +53,7 @@ export default function DemoRespace({ lang, pieces: initiales, produits, demo = 
 
   // démo : le code n'est envoyé qu'au clic (un code tapé à moitié compterait comme un essai raté)
   const [codeSoumis, setCodeSoumis] = useState('');
-  useEffect(() => { try { const c = sessionStorage.getItem('rr-respace-code') || ''; setCode(c); setCodeSoumis(c); } catch (_) {} }, []);
+  useEffect(() => { const c = codeRespace(); setCode(c); setCodeSoumis(c); }, []);
   // démo : l'état n'est demandé qu'avec un code (sinon un visiteur réveillerait le serveur GPU)
   const codeEtat = demo ? codeSoumis.trim() : '';
   useEffect(() => {
@@ -62,10 +63,10 @@ export default function DemoRespace({ lang, pieces: initiales, produits, demo = 
       const r = demo ? await api('/api/demo/respace', { method: 'POST', corps: { code: codeEtat, action: 'etat' } }) : await api('/api/respace/etat');
       if (fini) return;
       if (r.erreur === 'respace-code' || r.erreur === 'limite') {
-        try { sessionStorage.removeItem('rr-respace-code'); } catch (_) {}
+        garderCodeRespace('');
         setEtat('code'); setRetour({ n: Date.now(), erreur: ERREURS[r.erreur] }); return;
       }
-      try { sessionStorage.setItem('rr-respace-code', codeEtat); } catch (_) {}
+      if (codeEtat) garderCodeRespace(codeEtat);
       const e = r.etat || 'indisponible';
       setEtat(e); setDetail(e === 'indisponible' && r.detail ? String(r.detail) : '');
       if (e === 'demarrage') minuterie = setTimeout(verifier, 15000);
@@ -75,7 +76,7 @@ export default function DemoRespace({ lang, pieces: initiales, produits, demo = 
   }, [demo, codeEtat]);
 
   async function proposer(p) {
-    try { sessionStorage.setItem('rr-respace-code', code); } catch (_) {}
+    garderCodeRespace(code);
     setEnCours(p.id); setRetour(null);
     annoncer('ReSpace place les meubles de « ' + p.nom + ' ».');
     let r;

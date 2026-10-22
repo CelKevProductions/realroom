@@ -884,6 +884,18 @@ html:has(.plateau), body:has(.plateau) { overflow: hidden; width: 100%; }
 .journal__barre { height: 3px; border-radius: 3px; background: var(--trait); overflow: hidden; }
 .journal__barre span { display: block; height: 100%; background: var(--rouille); transform-origin: 0 50%; transition: transform .9s var(--sortie); }
 .journal__pied { display: flex; justify-content: space-between; gap: 12px; font: .72rem var(--m); color: var(--graphite); }
+
+/* Démo privée ReSpace : code d'accès et état du serveur (atelier, parcours) */
+.respace-acces { display: grid; gap: 8px; padding: 12px 14px; margin-bottom: 12px; border-radius: var(--rayon); background: var(--calque); border: 1px solid var(--bord); box-shadow: var(--ombre-legere); }
+.respace-acces__titre { display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 600; letter-spacing: -.01em; }
+.respace-acces__point { width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--gris); }
+.respace-acces.is-pret .respace-acces__point { background: var(--sauge); box-shadow: 0 0 0 4px var(--sauge-clair); }
+.respace-acces.is-indisponible .respace-acces__point { background: var(--rouille); box-shadow: 0 0 0 4px var(--rouille-clair); }
+.respace-acces__texte { margin: 0; font-size: .82rem; line-height: 1.45; color: var(--graphite); }
+.respace-acces__ligne { display: flex; gap: 8px; }
+.respace-acces__ligne .saisie { flex: 1; min-width: 0; }
+.respace-acces__retirer { margin-left: auto; }
+.respace-acces__erreur { margin: 0; font-size: .8rem; color: var(--rouille-fonce); }
 @media (prefers-reduced-motion: reduce) { .journal__point, .journal__lignes li { animation: none; } }
 
 @media (max-width: 900px) {

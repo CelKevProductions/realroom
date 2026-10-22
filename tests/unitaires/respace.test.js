@@ -4,7 +4,7 @@ import { executerAssistant } from '../../lib/assistant-amenagement.js';
 import { PRODUITS } from '../../lib/catalogue.js';
 import { produitDe } from '../../lib/agencement.js';
 import { rectangle } from '../fixtures/bench-chambres.js';
-import { quatDepuisRot, rotDepuisQuat, jsonPython, instruction, sceneSSR, descriptionAnglaise, varianteRespace, configRespace, codeDemoValide } from '../../lib/moteurs/respace.js';
+import { quatDepuisRot, rotDepuisQuat, jsonPython, instruction, sceneSSR, descriptionAnglaise, varianteRespace, amenagerAvecRespace, configRespace, codeDemoValide } from '../../lib/moteurs/respace.js';
 
 test('ReSpace : repères, format d’entrée du modèle et accès de la démo', () => {
   for (const r of [0, Math.PI / 2, Math.PI, -Math.PI / 2, .3]) assert.ok(Math.abs(Math.sin((rotDepuisQuat(quatDepuisRot(r)) - r) / 2)) < 1e-4);
@@ -24,8 +24,8 @@ test('ReSpace : une proposition de plus parmi les variantes, dimensions du catal
   const base = executerAssistant({ fonction: 'salon', modele: rectangle(5, 5), agencement: [] }, { action: 'generer', espaces: ['repas'], placesRepas: 4, budget: 9000 }, PRODUITS);
   const piece = JSON.parse(JSON.stringify({ fonction: 'salon', modele: rectangle(5, 5), agencement: base.agencement, proposition: base.proposition }));
   // faux modèle : rend la position du moteur, en miroir gauche-droite (une autre disposition)
-  const libres = new Map();
-  for (const it of piece.agencement) { const d = descriptionAnglaise(it, produitDe(it, PRODUITS)); libres.set(d, [...(libres.get(d) || []), it]); }
+  const libres = new Map(), remplir = () => { libres.clear(); for (const it of piece.agencement) { const d = descriptionAnglaise(it, produitDe(it, PRODUITS)); libres.set(d, [...(libres.get(d) || []), it]); } };
+  remplir();
   const appel = async texte => {
     const desc = texte.match(/<add>(.*)<\/add>/)[1], it = libres.get(desc)?.shift();
     if (!it) return 'pas du JSON';
@@ -39,6 +39,11 @@ test('ReSpace : une proposition de plus parmi les variantes, dimensions du catal
   assert.deepEqual(r.agencement.map(it => it.sku).sort(), piece.agencement.map(it => it.sku).sort(), 'mêmes meubles, mêmes dimensions');
   assert.ok(r.agencement.some(it => { const a = piece.agencement.find(b => b.id === it.id); return Math.abs(a.x - it.x) > .05; }), 'disposition changée');
   await assert.rejects(varianteRespace(piece, PRODUITS, { appel: async () => '???', echantillons: 1 }), { code: 'respace-aucun' });
+  // « Aménager » : la pose de ReSpace remplace la proposition du moteur au lieu de s'y ajouter
+  remplir();
+  const a = await amenagerAvecRespace(piece, base, PRODUITS, { appel, echantillons: 1 });
+  assert.equal(a.proposition.moteur.type, 'respace');
+  assert.equal(a.proposition.variantes.liste.length, 1);
 });
 
 test('contraintes : un meuble gardé « peut être déplacé » bouge, un meuble « reste à cet endroit » non', async () => {

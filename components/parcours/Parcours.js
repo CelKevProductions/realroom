@@ -8,6 +8,7 @@
 // réutilisent l'atelier existant (relevé, plan, Shuffle) au lieu de le refaire.
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import AccesRespace, { messageRespace } from '@/components/piece/AccesRespace.js';
 import { api } from '@/components/api.js';
 import { chargerCatalogue } from '@/components/catalogueClient.js';
 import { useRacine } from '@/components/chemins.js';
@@ -628,16 +629,18 @@ function Preferences({ x, etat, modifier }) {
 /* 9. Première proposition : l'assistant de l'atelier, pièce par pièce */
 function Proposition(props) {
   const { x, lang, racine, etat, choisies, faits, recharger, setPieces, occupe, setOccupe } = props;
-  const [suivi, setSuivi] = useState({});
+  const [suivi, setSuivi] = useState({}), [notes, setNotes] = useState({});
   async function lancer() {
     setOccupe('proposition');
     const n = { ...suivi };
+    setNotes({});
     try {
       for (const p of choisies) {
         n[p.id] = 'encours'; setSuivi({ ...n });
         const r = await api(`/api/pieces/${p.id}/variantes`, { method: 'POST', corps: demandeProposition(etat, p, lang) }).catch(e => ({ ok: false, erreur: e?.code }));
         n[p.id] = r.ok ? 'fait' : (x.erreurs[r.erreur] || x.erreurs.generique);
         setSuivi({ ...n });
+        if (r.ok && r.respace) setNotes(v => ({ ...v, [p.id]: messageRespace(r.respace, lang) }));
         annoncer(p.nom + ' : ' + (r.ok ? x.proposition.prete : n[p.id]));
       }
       const r = await recharger();
@@ -648,6 +651,7 @@ function Proposition(props) {
   return (
     <>
       {occupe === 'proposition' && <Progression libelle={x.proposition.calcul} etapes={choisies.map(p => ({ id: p.id, nom: p.nom, fait: suivi[p.id] === 'fait', encours: suivi[p.id] === 'encours' }))} />}
+      <AccesRespace lang={lang} />
       <button type="button" className="btn btn--plein" disabled={!!occupe} onClick={lancer}>
         {occupe === 'proposition' ? <><Rouage /> {x.proposition.calcul}</> : faits.proposition ? x.proposition.relancer : x.proposition.lancer}
       </button>
@@ -661,6 +665,7 @@ function Proposition(props) {
             </div>}
           </div>
           {typeof suivi[p.id] === 'string' && !['fait', 'encours'].includes(suivi[p.id]) && <p className="avis avis--alerte">{suivi[p.id]}</p>}
+          {notes[p.id] && <p className="discret">{notes[p.id]}</p>}
         </section>
       ))}
     </>

@@ -17,6 +17,8 @@ import Inspirations from '@/components/piece/Inspirations.js';
 import Resultat from '@/components/piece/Resultat.js';
 import Journal from '@/components/piece/Journal.js';
 import BarreCommande from '@/components/piece/BarreCommande.js';
+import AccesRespace, { messageRespace, useCodeRespace } from '@/components/piece/AccesRespace.js';
+import { bilanRespace } from '@/lib/moteurs/bilan-respace.js';
 import Tuto from '@/components/Tuto.js';
 import { apparaitre, deplier, animer } from '@/components/Mouvement.js';
 import { prix, remplir } from '@/lib/i18n.js';
@@ -99,6 +101,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   useEffect(() => { chargerCatalogue().then(c => { setProduits(c.produits); setLibelles(c.libelles || {}); }); }, []);
   useEffect(() => { setItems(piece.agencement || []); }, [piece.agencement]);
   const dire = (texte, erreur) => { setToast({ texte, erreur, n: Date.now() }); };
+  const respace = !!useCodeRespace();
   useEffect(() => { if (!toast) return; const h = setTimeout(() => setToast(null), 3800); return () => clearTimeout(h); }, [toast]);
 
   // changement de chapitre : le panneau glisse en place ; sur grand écran la pièce se range à côté
@@ -368,7 +371,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       setSelection(null);
       aCadrer.current = null;
       setOnglet(assistant ? 'propositions' : 'meubles');
-      dire(tp.reamenage);
+      dire(messageRespace(r.respace, lang) || tp.reamenage);
       // la nouvelle pièce se dévoile : la caméra fait un lent quart de tour
       if (vue === 'dessus') editeur.current?.balayer();
     } catch (e) {
@@ -380,14 +383,15 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   }
   async function changerVariante(id) {
     if (reamenagement.current) return;
-    reamenagement.current = true; setAttente(true);
+    // Shuffle avec ReSpace : la pose prend du temps, le journal le montre
+    reamenagement.current = true; setAttente(!id && respace ? 'assistant' : true);
     try {
       await vider();
       const r = await api(`/api/pieces/${piece.id}/variantes`, { method:'POST', corps:{ action:id ? 'choisir' : 'shuffle', id, session:piece.proposition?.variantes?.session } });
       if (!r.ok) throw r;
       setPiece(r.piece); setSelection(null); aCadrer.current = null;
       if (r.assistant?.message === 'aucune-autre-variante') dire(lang === 'fr' ? 'Aucune autre disposition aussi complète n’a été trouvée. Tu peux conserver celle-ci ou ajuster le brief.' : 'No equally complete alternative was found. Keep this one or adjust your brief.');
-      else { dire(lang === 'fr' ? 'Proposition affichée et enregistrée.' : 'Proposal displayed and saved.'); if (vue === 'dessus') editeur.current?.balayer(); }
+      else { dire(messageRespace(r.respace, lang) || (lang === 'fr' ? 'Proposition affichée et enregistrée.' : 'Proposal displayed and saved.')); if (vue === 'dessus') editeur.current?.balayer(); }
     } catch (e) { dire(erreurAssistant(e), true); }
     finally { reamenagement.current = false; setAttente(false); }
   }
@@ -507,6 +511,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         </details>
       </div>
       <div className="panneau__pied">
+        <AccesRespace lang={lang} />
         <button type="button" className="btn btn--plein btn--bloc" onClick={() => ouvrirBrief()} disabled={!!attente || inspirationOccupe || !assistantDisponible}>
           {fr ? 'Composer avec l’assistant' : 'Arrange with the assistant'}
         </button>
@@ -522,7 +527,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       <div className="panneau__corps" role="tabpanel" inert={!!attente || undefined}>
         {prop && prop.concept && (
           <div className="concept">
-            <b>{tp.concept}{prop.moteur?.type === 'ia' ? ' · ' + t.demo.ia : ''}</b>
+            <b>{tp.concept}{prop.moteur?.type === 'ia' ? ' · ' + t.demo.ia : ''}{bilanRespace(prop) ? ' · ReSpace' : ''}</b>
             <p>{prop.concept}</p>
             <PlanVie proposition={prop} langue={lang} />
             {prop.conseils && prop.conseils.length > 0 && <><b className="concept__sous">{tp.conseils}</b><ul>{prop.conseils.map(c => <li key={c}>{c}</li>)}</ul></>}
@@ -635,7 +640,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         </div>
       )}
 
-      {attente === 'assistant' || attente === 'ia' ? <Journal key={attente} lang={lang} ia={attente === 'ia'} /> : null}
+      {attente === 'assistant' || attente === 'ia' ? <Journal key={attente} lang={lang} ia={attente === 'ia'} respace={respace} /> : null}
 
       {/* barre de commande : écrire ce qu'on veut changer */}
       {vue === 'dessus' && <BarreCommande lang={lang} exemples={(EXEMPLES[fr ? 'fr' : 'en'][piece.fonction] || EXEMPLES[fr ? 'fr' : 'en'].autre)} desactive={!produits || !!attente} surCommande={commander} />}
