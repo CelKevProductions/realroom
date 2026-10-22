@@ -45,6 +45,13 @@ const mots = s => {
     return em ? [<em key={j}>{liste}</em>] : liste;
   });
 };
+// icônes au trait des invitations à essayer, une par chapitre : relever (téléphone qui scanne), aménager
+// (canapé), visiter (volume 3D)
+const ICONES = [
+  <svg key="r" viewBox="0 0 24 24"><rect x="7.5" y="3.5" width="9" height="17" rx="2.4" /><path d="M3.5 8V6a2.5 2.5 0 0 1 2.5-2.5M20.5 8V6A2.5 2.5 0 0 0 18 3.5M3.5 16v2A2.5 2.5 0 0 0 6 20.5M20.5 16v2a2.5 2.5 0 0 1-2.5 2.5M10 12h4" /></svg>,
+  <svg key="a" viewBox="0 0 24 24"><path d="M5.5 11V8.5A2.5 2.5 0 0 1 8 6h8a2.5 2.5 0 0 1 2.5 2.5V11" /><path d="M3.5 12.5a1.5 1.5 0 0 1 3 0V14h11v-1.5a1.5 1.5 0 0 1 3 0V17a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1zM6 18v2M18 18v2" /></svg>,
+  <svg key="v" viewBox="0 0 24 24"><path d="M12 3.5 19.5 7.7v8.6L12 20.5l-7.5-4.2V7.7z" /><path d="M4.5 7.7 12 12l7.5-4.3M12 12v8.5" /></svg>
+];
 // chapitres (data-chapitre) qui ont plusieurs arrêts du défilement guidé : Aménager, Visiter (quatre appartements et la fin)
 const ETAPES = { 2: 2, 3: 5 };
 // étiquette : une pastille blanche avec un point corail (dessiné en CSS)
@@ -71,6 +78,9 @@ export default async function Accueil({ params }) {
   const { lang } = await params;
   const t = texte(lang), a = t.accueil;
   const vitrine = VITRINE.map(id => PRODUITS[id]).filter(p => p && p.vign);
+  const rangees = [vitrine.slice(0, Math.ceil(vitrine.length / 2)), vitrine.slice(Math.ceil(vitrine.length / 2))];
+  // le site de Maison Corleone : celui des fiches produits
+  const catalogue = (() => { try { return new URL(vitrine[0].url).origin; } catch (_) { return null; } })();
   const demo = `/${lang}/demo`;
   const inscription = `/${lang}/connexion?inscription=1`;
   const offerts = remplir(a.inscriptionNote, { n: CREDITS.bienvenue });
@@ -176,13 +186,23 @@ export default async function Accueil({ params }) {
                         </ol>
                       )}
                       {fin && <p className="acc-visiter"><span className="acc-point" aria-hidden="true" />{a.visiter}</p>}
+                      <Link href={demo} className="acc-essai">
+                        <span className="acc-essai__icone" aria-hidden="true">{ICONES[i]}</span>
+                        <span className="acc-essai__texte"><strong>{a.essais[i][0]}</strong><span>{a.essais[i][1]}</span></span>
+                        <i className="acc-bouton__fleche" aria-hidden="true" />
+                      </Link>
                     </>
                   );
                   return (
                     <li key={c.titre} className={'acc-chapitre' + (etapes ? ' acc-chapitre--etapes' : '') + (fin ? ' acc-chapitre--fin' : '')} data-chapitre={i + 1} data-etapes={etapes} style={etapes ? { '--etapes': etapes } : undefined}>
                       <div className="acc-chapitre__corps">
                         {fin ? <div className="acc-chapitre__contenu">{contenu}</div> : contenu}
-                        {fin && <p className="acc-conclusion">{mots(a.conclusion)}</p>}
+                        {fin && (
+                          <div className="acc-conclusion">
+                            <p className="acc-conclusion__phrase">{mots(a.conclusion)}</p>
+                            <div className="acc-conclusion__actions"><Bouton href={demo}>{a.cta}</Bouton><span className="acc-mono">{a.ctaNote}</span></div>
+                          </div>
+                        )}
                       </div>
                     </li>
                   );
@@ -218,21 +238,29 @@ export default async function Accueil({ params }) {
             <Etiquette data-anim="fondu">{a.catalogueSurtitre}</Etiquette>
             <h2 id="catalogue-titre" className="acc-h2 acc-catalogue__titre" data-anim="lignes">{a.catalogueTitre}</h2>
             <p className="acc-catalogue__texte" data-anim="fondu">{remplir(a.catalogueTexte, { n: NB_MEUBLES })}</p>
-            <p className="acc-mono acc-catalogue__aide" aria-hidden="true"><i className="acc-fleche acc-fleche--gauche" />{a.glisser}<i className="acc-fleche" /></p>
+            {catalogue && <a className="acc-lien acc-catalogue__tout" href={catalogue} target="_blank" rel="noopener">{a.catalogueTout}<i className="acc-fleche acc-fleche--haut" aria-hidden="true" /></a>}
           </div>
-          <div className="acc-vitrine" data-vitrine data-curseur={a.curseur.glisser}>
-            <ul className="acc-vitrine__piste">
-              {vitrine.map(p => (
-                <li key={p.id} className="acc-produit">
-                  <a href={p.url} target="_blank" rel="noopener" className="acc-produit__lien">
-                    <span className="acc-produit__image"><img src={taille(p.vign, 480)} srcSet={`${taille(p.vign, 360)} 360w, ${taille(p.vign, 720)} 720w`} sizes="(min-width: 960px) 22vw, 64vw" alt={p.titre || p.nom} width="480" height="600" loading="lazy" decoding="async" draggable="false" /></span>
-                    <span className="acc-produit__nom">{p.nom}</span>
-                    <span className="acc-mono acc-produit__meta">{LIBELLES[p.fam] || p.cat} · {cm(p)}</span>
-                    <span className="acc-produit__prix"><span>{prix(Math.round(p.prix * 100), lang)}</span><span className="acc-mono acc-produit__fiche">{a.ficheProduit}<i className="acc-fleche acc-fleche--haut" /></span></span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+          {/* deux rangées qui défilent en sens contraire (chaque rangée deux fois, pour boucler sans couture) ;
+              elles s'arrêtent sous la souris et accélèrent avec le défilement de la page (Animations.js) */}
+          <div className="acc-defile" data-defile>
+            {rangees.map((rang, r) => (
+              <div key={r} className={'acc-defile__rang' + (r ? ' acc-defile__rang--inverse' : '')}>
+                <ul className="acc-defile__piste">
+                  {[...rang, ...rang].map((p, k) => {
+                    const copie = k >= rang.length;
+                    return (
+                      <li key={k} className={'acc-produit acc-produit--t' + ((k % rang.length) % 4)} aria-hidden={copie || undefined}>
+                        <a href={p.url} target="_blank" rel="noopener" className="acc-produit__lien" tabIndex={copie ? -1 : undefined}>
+                          <span className="acc-produit__image"><img src={taille(p.vign, 480)} srcSet={`${taille(p.vign, 360)} 360w, ${taille(p.vign, 720)} 720w`} sizes="(min-width: 960px) 17vw, 56vw" alt={copie ? '' : p.titre || p.nom} width="480" height="600" loading="lazy" decoding="async" draggable="false" /></span>
+                          <span className="acc-produit__ligne"><span className="acc-produit__nom">{p.nom}</span><span className="acc-produit__prix">{prix(Math.round(p.prix * 100), lang)}</span></span>
+                          <span className="acc-mono acc-produit__meta">{LIBELLES[p.fam] || p.cat} · {cm(p)}</span>
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -280,6 +308,10 @@ export default async function Accueil({ params }) {
             <div className="acc-faq__tete">
               <Etiquette data-anim="fondu">{a.faqSurtitre}</Etiquette>
               <h2 id="faq-titre" className="acc-h2" data-anim="lignes">{a.faqTitre}</h2>
+            </div>
+            <div className="acc-faq__autre" data-anim="fondu">
+              <p><strong>{a.faqAutre[0]}</strong> {a.faqAutre[1]}</p>
+              <Bouton href={demo} className="acc-bouton--petit">{a.cta}</Bouton>
             </div>
             <ul className="acc-faq__liste" role="list">
               {a.faq.map(([q, r], i) => (

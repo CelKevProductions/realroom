@@ -1,5 +1,5 @@
 'use client';
-// Animations de la page d'accueil « Plan vivant » : GSAP (ScrollTrigger, SplitText, Draggable, Inertia) et Lenis.
+// Animations de la page d'accueil « Plan vivant » : GSAP (ScrollTrigger, SplitText) et Lenis.
 // Le contenu est déjà complet dans le HTML : ce composant ne fait que le révéler et l'animer.
 // Sans JavaScript, ou avec « réduire les animations », la page reste entière et immobile :
 // les états de départ (accueil.css) n'existent que si data-acc contient « mouvement » (et « ouverture »
@@ -17,8 +17,6 @@ import { useEffect, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
-import { Draggable } from 'gsap/Draggable';
-import { InertiaPlugin } from 'gsap/InertiaPlugin';
 import { CustomEase } from 'gsap/CustomEase';
 import Lenis from 'lenis';
 import { BEZIER } from '@/components/mouvement/regles.js';
@@ -78,7 +76,7 @@ export default function Animations() {
 function demarrer() {
   const page = document.getElementById('acc');
   if (!page) return undefined;
-  gsap.registerPlugin(ScrollTrigger, SplitText, Draggable, InertiaPlugin, CustomEase);
+  gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase);
   ScrollTrigger.config({ ignoreMobileResize: true });
   // mêmes courbes que le reste du site (components/mouvement/regles.js)
   CustomEase.create('acc', BEZIER.pivot);           // entrée-sortie franche
@@ -87,7 +85,6 @@ function demarrer() {
   const mouvement = a('mouvement');
   const ouverture = mouvement && a('ouverture');
   poser([...jetons(), 'anime']);
-  const pointeurFin = matchMedia('(pointer: fine)').matches;
   const nettoyages = [];
   let annule = false;
   let lenis = null;
@@ -182,24 +179,9 @@ function demarrer() {
   page.addEventListener('click', surEtape);
   nettoyages.push(() => page.removeEventListener('click', surEtape));
 
-  // ---------- 5. vitrine du catalogue : glisser à la souris, avec inertie (le doigt et le pavé tactile défilent déjà)
-  const vitrine = page.querySelector('[data-vitrine]');
-  if (vitrine && pointeurFin) {
-    let deplace = false;
-    const [glisse] = Draggable.create(vitrine, {
-      type: 'scrollLeft', inertia: mouvement, dragClickables: true, edgeResistance: 0.9, minimumMovement: 6,
-      cursor: 'grab', activeCursor: 'grabbing',
-      onPress() { deplace = false; },
-      onDrag() { deplace = true; },
-      onDragStart() { vitrine.classList.add('is-glisse'); },
-      onRelease() { vitrine.classList.remove('is-glisse'); }
-    });
-    // un glisser ne doit pas ouvrir la fiche produit sous le curseur
-    const bloquer = e => { if (deplace) { e.preventDefault(); e.stopPropagation(); deplace = false; } };
-    vitrine.addEventListener('click', bloquer, true);
-    nettoyages.push(() => { glisse.kill(); vitrine.removeEventListener('click', bloquer, true); });
-  }
-  if (vitrine && mouvement) nettoyages.push(arcVitrine(vitrine));
+  // ---------- 5. catalogue : les rangées de meubles accélèrent avec le défilement de la page
+  const defile = page.querySelector('[data-defile]');
+  if (defile && mouvement) nettoyages.push(elan(defile));
 
   // défilement doux, une fois le préchargement passé
   const lancerLenis = () => {
@@ -446,18 +428,13 @@ function revelations(page) {
     reveler(el, st => (st ? ScrollTrigger.create({ ...st, onEnter: () => decoder(el) }) : decoder(el)));
   });
 
-  // cartes du catalogue : distribuées comme un jeu de cartes, depuis un paquet posé à gauche, chacune
-  // un peu de travers, qui s'étale ensuite (seulement si elles sont encore plus bas)
-  const vitrine = page.querySelector('[data-vitrine]');
-  const cartes = gsap.utils.toArray('.acc-produit', page);
-  if (vitrine && cartes.length && position(vitrine) === 'plus-bas') {
-    const depart = cartes[0].offsetLeft;
-    gsap.fromTo(cartes, {
-      x: (i, el) => depart - el.offsetLeft + i * 3, y: i => 40 + i * 2, rotation: i => (i % 2 ? 1 : -1) * (3 + (i * 7) % 6), opacity: i => (i < 8 ? 1 : 0)
-    }, {
-      x: 0, y: 0, rotation: 0, opacity: 1, duration: 1.5, ease: 'acc-sortie', stagger: { each: 0.06, from: 'end' },
-      onComplete: () => gsap.set(cartes, { clearProps: 'opacity,transform' }),
-      scrollTrigger: { trigger: vitrine, start: `top ${ETAPE * 100}%`, once: true }
+  // catalogue : les deux rangées entrent chacune de leur côté (seulement si elles sont encore plus bas)
+  const defile = page.querySelector('[data-defile]');
+  const rangs = gsap.utils.toArray('.acc-defile__rang', page);
+  if (defile && rangs.length && position(defile) === 'plus-bas') {
+    gsap.fromTo(rangs, { xPercent: i => (i ? -14 : 14), opacity: 0 }, {
+      xPercent: 0, opacity: 1, duration: 1.6, ease: 'acc-sortie', stagger: 0.12, onComplete: () => gsap.set(rangs, { clearProps: 'opacity,transform' }),
+      scrollTrigger: { trigger: defile, start: `top ${ETAPE * 100}%`, once: true }
     });
   }
 
@@ -469,62 +446,39 @@ function revelations(page) {
   }
 }
 
-// vitrine en arc : les cartes suivent une courbe douce selon leur place à l'écran (le centre en haut), penchent
-// avec la vitesse du glissé (souris, doigt ou pavé), et la photo glisse dans son cadre (parallaxe) ; tout
-// revient en ressort à l'arrêt. Propriétés translate et rotate seules : l'inclinaison au survol
-// (Interactions.js) et la distribution (transform) s'y ajoutent sans se gêner. Rend la fonction qui retire tout.
-function arcVitrine(vitrine) {
-  const cartes = [...vitrine.querySelectorAll('.acc-produit')];
-  const images = cartes.map(c => c.querySelector('img'));
-  let centres = [], largeur = 1, dernier = vitrine.scrollLeft, vitesse = 0, penche = 0, calme = 0, tourne = false;
-  const mesurer = () => {
-    largeur = vitrine.clientWidth || 1;
-    centres = cartes.map(c => c.offsetLeft + c.offsetWidth / 2);
-    peindre();
-  };
-  function peindre() {
-    const x = vitrine.scrollLeft, demi = largeur / 2, lean = Math.max(-7, Math.min(7, penche * 0.004));
-    cartes.forEach((c, i) => {
-      const p = Math.max(-1.6, Math.min(1.6, (centres[i] - x - demi) / demi));
-      c.style.translate = `0 ${(p * p * 28).toFixed(1)}px`;
-      c.style.rotate = `${(p * 3 + lean).toFixed(2)}deg`;
-      if (images[i]) images[i].style.translate = `${(-p * 4.5 - lean * 0.6).toFixed(2)}% 0`;
-    });
-  }
+// élan du catalogue : les rangées (animation CSS) vont plus vite quand la page défile, puis reprennent leur pas ;
+// seulement quand elles sont à l'écran. Rend la fonction qui retire tout.
+function elan(defile) {
+  const animations = () => [...defile.querySelectorAll('.acc-defile__piste')].flatMap(p => p.getAnimations?.() || []);
+  let dernier = window.scrollY, vitesse = 1, actif = false;
   function pas(_t, dms) {
-    const dt = Math.max(1, dms) / 1000, x = vitrine.scrollLeft;
-    vitesse = (x - dernier) / dt;
-    dernier = x;
-    penche += (vitesse - penche) * (1 - Math.exp(-dt * 9));
-    peindre();
-    if (Math.abs(vitesse) < 1 && Math.abs(penche) < 2) calme += dt; else calme = 0;
-    if (calme > 0.3) { penche = 0; peindre(); gsap.ticker.remove(pas); tourne = false; }
+    const dt = Math.max(1, dms) / 1000, y = window.scrollY;
+    const voulue = 1 + Math.min(5, Math.abs(y - dernier) / dt / 450);
+    dernier = y;
+    vitesse += (voulue - vitesse) * (1 - Math.exp(-dt * (voulue > vitesse ? 10 : 2.5)));
+    animations().forEach(a => { a.playbackRate = vitesse; });
   }
-  const surDefile = () => { if (!tourne) { tourne = true; calme = 0; dernier = vitrine.scrollLeft; gsap.ticker.add(pas); } };
-  vitrine.addEventListener('scroll', surDefile, { passive: true });
-  const ro = new ResizeObserver(mesurer);
-  ro.observe(vitrine);
-  mesurer();
-  return () => {
-    vitrine.removeEventListener('scroll', surDefile);
-    ro.disconnect();
-    gsap.ticker.remove(pas);
-    cartes.forEach((c, i) => { c.style.translate = c.style.rotate = ''; if (images[i]) images[i].style.translate = ''; });
-  };
+  const io = new IntersectionObserver(([e]) => {
+    if (e.isIntersecting === actif) return;
+    actif = e.isIntersecting;
+    if (actif) { dernier = window.scrollY; gsap.ticker.add(pas); } else gsap.ticker.remove(pas);
+  });
+  io.observe(defile);
+  return () => { io.disconnect(); gsap.ticker.remove(pas); animations().forEach(a => { a.playbackRate = 1; }); };
 }
 
 // sections sous la 3D : chaque arrêt du défilement guidé y change de « diapositive » : le contenu de la
 // section qui arrive monte à sa place, celui de la section qui part pâlit et recule un peu
 function diapositives(page) {
   gsap.utils.toArray('.acc-section', page).forEach(section => {
-    const blocs = gsap.utils.toArray(section.querySelectorAll(':scope > :not(.acc-vitrine, .acc-reperes, [data-anim], [data-trait])'));
+    const blocs = gsap.utils.toArray(section.querySelectorAll(':scope > :not(.acc-defile, .acc-reperes, [data-anim], [data-trait])'));
     if (!blocs.length) return;
     gsap.fromTo(blocs, { y: 70 }, { y: 0, ease: 'none', scrollTrigger: { trigger: section, start: 'top bottom', end: 'top 35%', scrub: 0.6 } });
     const part = { trigger: section, start: 'bottom 75%', end: 'bottom 10%', scrub: 0.6 };
     gsap.to(blocs, { opacity: 0.22, scale: 0.97, transformOrigin: '50% 0%', ease: 'none', scrollTrigger: part });
-    // la vitrine se fait glisser (Draggable tient sa position) : elle pâlit seulement
-    const vitrine = section.querySelector(':scope > .acc-vitrine');
-    if (vitrine) gsap.to(vitrine, { opacity: 0.22, ease: 'none', scrollTrigger: { ...part } });
+    // les rangées du catalogue (elles défilent déjà) pâlissent seulement
+    const defile = section.querySelector(':scope > .acc-defile');
+    if (defile) gsap.to(defile, { opacity: 0.22, ease: 'none', scrollTrigger: { ...part } });
   });
 }
 

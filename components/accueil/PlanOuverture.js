@@ -1,8 +1,9 @@
 // Plan au trait du préchargement de l'accueil : la même pièce que la 3D du héros (piece3d/maquette.js,
 // 5 m × 4 m, disposition A), vue de dessus à 70 px le mètre : murs, porte et son arc, fenêtre, cotes, meubles.
-// accueil.css le dessine dès le premier affichage, sans attendre le JavaScript : chaque trait connaît sa
-// longueur réelle (--long, calculée ici) et son moment (--d, --t, en secondes) ; les meubles se remplissent
-// ensuite de leur couleur pastel, le fauteuil corail en dernier. Tout le tracé dure environ 3,8 s.
+// accueil.css le dessine dès le premier affichage, sans attendre le JavaScript : chaque trait porte ses
+// pointillés en chiffres (longueur réelle calculée ici ; pas de var() ni de calc() dans stroke-dasharray,
+// que tous les navigateurs ne lisent pas : le plan y apparaissait d'un coup) et son moment (--d, --t) ; les meubles
+// se remplissent ensuite de leur couleur pastel, le fauteuil corail en dernier. Le tracé dure environ 3,8 s.
 const TRAITS = [
   // murs (nu intérieur et nu extérieur), ouverts à la porte (mur de gauche) et à la fenêtre (mur du fond)
   ['mur', 'M62 246V42H119', .15, 1.15],
@@ -58,10 +59,13 @@ export default function PlanOuverture({ cotes = ['5,00 m', '4,00 m'] }) {
         </pattern>
       </defs>
       <rect className="acc-plan__trame" x="62" y="42" width="366" height="296" fill="url(#acc-plan-points)" />
-      {TRAITS.map(([classe, d, debut, duree, fond, transform], i) => (
-        <path key={i} className={'acc-plan__' + classe + (fond ? ' acc-plan--' + fond : '')} d={d} transform={transform}
-          style={{ '--long': longueur(d), '--d': r1(debut) + 's', '--t': r1(duree) + 's' }} />
-      ))}
+      {TRAITS.map(([classe, d, debut, duree, fond, transform], i) => {
+        const l = longueur(d);
+        return (
+          <path key={i} className={'acc-plan__' + classe + (fond ? ' acc-plan--' + fond : '')} d={d} transform={transform}
+            style={{ strokeDasharray: `${l} ${l + 2}`, strokeDashoffset: String(l), '--d': r1(debut) + 's', '--t': r1(duree) + 's' }} />
+        );
+      })}
       <text className="acc-plan__texte" x="245" y="17.5" textAnchor="middle" style={{ '--d': '2.35s' }}>{cotes[0]}</text>
       <text className="acc-plan__texte" x="14" y="193.5" textAnchor="middle" transform="rotate(-90 14 190)" style={{ '--d': '2.45s' }}>{cotes[1]}</text>
     </svg>

@@ -13,8 +13,8 @@ import { useEffect, useRef, useState } from 'react';
 const IMAGE = '/images/chambre-maquette-1200.jpg';
 const ATTENTE_INTRO = 3000;   // ms
 const DESCRIPTION = {
-  fr: 'Un petit immeuble pastel sur une île, posé étage par étage. Sa façade s’ouvre comme une maison de poupée : quatre appartements vides, où des chiens, des chats, des tortues et des lapins vivent leur vie. Le plan de chaque pièce se trace, puis les meubles arrivent, et Shuffle les change de place sous leurs pattes : un lapin tombe à la renverse, les tortues rentrent dans leur carapace, le fauteuil boude. Ensuite, chacun profite de son appartement : les chiens jouent à la console, les chats aux échecs, les tortues lisent en buvant du thé, les lapins regardent une série sous un plaid, dans le noir. À la fin, tout le monde est heureux. On peut cliquer sur un animal, le caresser, l’attraper et le secouer : tout bouge dans la pièce.',
-  en: 'A small pastel building on an island, assembled floor by floor. Its front opens like a doll’s house: four empty flats where dogs, cats, turtles and bunnies live their lives. The plan of each room draws itself, then the furniture arrives, and Shuffle moves it under their paws: a bunny falls over, the turtles hide in their shells, the armchair sulks. Then everyone enjoys their home: the dogs play video games, the cats play chess, the turtles read with a cup of tea, the bunnies watch a show under a blanket, in the dark. In the end, everyone is happy. You can click an animal, pet it, grab it and shake it: everything in the room moves.'
+  fr: 'Un petit immeuble pastel sur une île, posé étage par étage. Sa façade s’ouvre comme une maison de poupée : quatre appartements vides, que des chiens, des chats, des tortues et des lapins relèvent avec leur téléphone pendant que le plan de chaque pièce se trace. Puis les meubles arrivent, et Shuffle les change de place sous leurs pattes : un lapin tombe à la renverse, les tortues rentrent dans leur carapace, le fauteuil boude. Ensuite, chacun profite de son appartement : les chiens jouent à la console, les chats aux échecs, les tortues lisent en buvant du thé, les lapins regardent une série sous un plaid, dans le noir. À la fin, tout le monde est heureux. On peut cliquer sur un animal, le caresser, l’attraper et le secouer : tout bouge dans la pièce.',
+  en: 'A small pastel building on an island, assembled floor by floor. Its front opens like a doll’s house: four empty flats that dogs, cats, turtles and bunnies scan with their phones while the plan of each room draws itself. Then the furniture arrives, and Shuffle moves it under their paws: a bunny falls over, the turtles hide in their shells, the armchair sulks. Then everyone enjoys their home: the dogs play video games, the cats play chess, the turtles read with a cup of tea, the bunnies watch a show under a blanket, in the dark. In the end, everyone is happy. You can click an animal, pet it, grab it and shake it: everything in the room moves.'
 };
 // ce que disent les animaux (bulle) : une phrase par visite, merci, Shuffle, et selon l'espèce : au clic,
 // quand on les attrape, quand on les secoue, à l'atterrissage, quand on les caresse
@@ -25,7 +25,7 @@ const TEXTES = {
     shuffle: 'Shuffle !',
     visites: ['Ouaf ! Encore une partie ?', 'Échec et… miaou.', 'Chut, c’est le meilleur chapitre.', 'Pas de spoiler, c’est la fin !'],
     clic: {
-      chien: ['Ouaf ! Tu joues avec nous ?', 'Lance la balle !', 'Encore une partie ?'],
+      chien: ['Ouaf ! Tu joues avec nous ?', 'Ouaf, ouaf !', 'Encore une partie ?'],
       chat: ['Miaou ?', 'Échec et miaou.', 'Chut, je réfléchis.'],
       tortue: ['Doucement…', 'Chut, je lis.', 'Un peu de thé ?'],
       lapin: ['Pas de spoiler !', 'Tu as une carotte ?', 'Viens sous le plaid !']
@@ -41,7 +41,7 @@ const TEXTES = {
     shuffle: 'Shuffle!',
     visites: ['Woof! One more game?', 'Check… meowte.', 'Shh, best chapter ever.', 'No spoilers, it’s the end!'],
     clic: {
-      chien: ['Woof! Want to play?', 'Throw the ball!', 'One more game?'],
+      chien: ['Woof! Want to play?', 'Woof woof!', 'One more game?'],
       chat: ['Meow?', 'Checkmeowte.', 'Shh, I’m thinking.'],
       tortue: ['Slowly…', 'Shh, I’m reading.', 'Some tea?'],
       lapin: ['No spoilers!', 'Got a carrot?', 'Come under the blanket!']

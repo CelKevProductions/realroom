@@ -5,7 +5,8 @@
 //  - vivre(t) à chaque image pour le reste : respiration, clin d'œil, oreilles, queue, bras, accessoires,
 //    selon l'état (etat.lit, joue, dort, salut…, de 0 à 1, que la scène fait varier avec GSAP).
 // Ils vivent comme des humains : ils lisent (livre, lunettes), jouent à la console (manette), dorment
-// (Zzz), arrosent, grignotent (carotte, pop-corn), réfléchissent (échecs), applaudissent, saluent.
+// (Zzz), arrosent, grignotent (carotte, pop-corn), réfléchissent (échecs), applaudissent, saluent,
+// relèvent une pièce au téléphone (scanne : un faisceau balaie la pièce devant eux).
 // Expressions : normal, content (sourire ouvert), surpris (bouche ronde), étourdi, amoureux (yeux en
 // cœur), endormi ; la bouche bouge quand ils parlent. Émotes partagées : « ! », étoiles, cœurs, nuage d'orage.
 // Pour qu'ils aient l'air vivants : les yeux suivent ce qu'on leur montre (viser), oreilles et queue ont
@@ -17,7 +18,7 @@ import * as THREE from 'three';
 const COULEURS = {
   oeil: '#26232B', reflet: '#FFFFFF', joue: '#FF9DB4', rose: '#FFB7C5', corail: '#F2613F', menthe: '#9ECDA9',
   beurre: '#FFE08A', lilas: '#B9AEEA', orage: '#8D86A3', eau: '#8FCBEA', papier: '#FFFBF3', carotte: '#F79A5B',
-  vert: '#7DBE8C', zzz: '#9C8FD0', clair: '#FFFBF6', popcorn: '#FFF6DC'
+  vert: '#7DBE8C', zzz: '#9C8FD0', clair: '#FFFBF6', popcorn: '#FFF6DC', ecran: '#D2F5DF', scan: '#5FD39C'
 };
 // allure de chaque espèce : longueur, durée et hauteur d'un pas, roulis du corps
 export const ESPECES = {
@@ -38,6 +39,7 @@ export function matieresAnimaux() {
   m.reflet = new THREE.MeshBasicMaterial({ color: COULEURS.reflet });
   m.eau = new THREE.MeshBasicMaterial({ color: COULEURS.eau, transparent: true, opacity: .9 });
   m.trait = new THREE.LineBasicMaterial({ color: COULEURS.oeil, transparent: true, opacity: .55 });
+  m.ecran = new THREE.MeshBasicMaterial({ color: COULEURS.ecran });
   return m;
 }
 
@@ -204,6 +206,30 @@ function manette(mat) {
   g.add(corps, boule(.03, mat.lilas, -.06, -.008, .018, [1, 1, 1.2], 10), boule(.03, mat.lilas, .06, -.008, .018, [1, 1, 1.2], 10));
   g.add(boule(.011, mat.corail, .03, .022, -.005, [1, .6, 1], 8), boule(.011, mat.beurre, .045, .02, .01, [1, .6, 1], 8), boule(.014, mat.clair, -.035, .022, 0, [1, .5, 1], 8));
   g.rotation.x = -.5;
+  g.visible = false;
+  return g;
+}
+// téléphone (coque de la couleur de l'animal, écran tourné vers lui, objectif devant)
+function telephone(mat, coque) {
+  const g = new THREE.Group();
+  g.add(new THREE.Mesh(new THREE.BoxGeometry(.085, .15, .018), coque));
+  const e = new THREE.Mesh(new THREE.PlaneGeometry(.068, .126), mat.ecran);
+  e.position.z = -.0095; e.rotation.y = Math.PI;
+  g.add(e, boule(.011, mat.oeil, -.022, .05, .011, [1, 1, .5], 8));
+  g.visible = false;
+  return g;
+}
+// faisceau du relevé : une pyramide translucide qui part du téléphone (sommet à l'origine, ouverte
+// vers +z), et un cadre qui la parcourt (L : portée, R : demi-diagonale du bout)
+const L_SCAN = .75, R_SCAN = .32;
+function faisceau(scan, cadre) {
+  const g = new THREE.Group();
+  g.rotation.order = 'YXZ';   // penché vers le sol, puis balayé de gauche à droite
+  const cone = new THREE.Mesh(new THREE.ConeGeometry(R_SCAN, L_SCAN, 4, 1, true, Math.PI / 4).translate(0, -L_SCAN / 2, 0).rotateX(-Math.PI / 2), scan);
+  const balai = new THREE.Mesh(new THREE.RingGeometry(.84, 1, 4, 1, Math.PI / 4), cadre);
+  cone.renderOrder = balai.renderOrder = 2;
+  g.add(cone, balai);
+  g.userData.balai = balai;
   g.visible = false;
   return g;
 }
@@ -394,7 +420,15 @@ export function creerAnimal(mat, look = {}) {
   lecture.position.set(0, .21, .2);
   const jeu = manette(mat);
   jeu.position.set(0, .2, .19);
-  corps.add(lecture, jeu);
+  const tel = telephone(mat, acc);
+  tel.position.set(0, .28, .23);
+  tel.rotation.x = .25;
+  mats.scan = new THREE.MeshBasicMaterial({ color: COULEURS.scan, transparent: true, opacity: .2, depthWrite: false, side: THREE.DoubleSide });
+  mats.cadre = new THREE.MeshBasicMaterial({ color: COULEURS.scan, transparent: true, opacity: .7, depthWrite: false, side: THREE.DoubleSide });
+  const releve = faisceau(mats.scan, mats.cadre);
+  releve.position.set(0, .28, .25);
+  releve.rotation.x = .32;
+  corps.add(lecture, jeu, tel, releve);
   // émotes au-dessus de la tête
   const etoiles = couronneEtoiles(mat);
   etoiles.position.y = .42;
@@ -407,10 +441,11 @@ export function creerAnimal(mat, look = {}) {
   tete.add(etoiles, alerte, zzz);
 
   // état animé par la scène (GSAP), de 0 à 1 sauf teteX, teteY (radians)
-  // parle : la bouche bouge (bulle) ; tenu : on le tient en l'air (bras et jambes s'agitent)
+  // parle : la bouche bouge (bulle) ; tenu : on le tient en l'air (bras et jambes s'agitent) ;
+  // scanne : il relève la pièce au téléphone
   const etat = {
     souffle: 1, salut: 0, arrose: 0, lit: 0, joue: 0, dort: 0, mange: 0, grignote: 0, pense: 0, pousse: 0,
-    acclame: 0, assis: 0, cache: 0, remue: 0, teteX: 0, teteY: 0, parle: 0, tenu: 0
+    acclame: 0, assis: 0, cache: 0, remue: 0, teteX: 0, teteY: 0, parle: 0, tenu: 0, scanne: 0
   };
   let regardCourant = 'normal', vue = '', prochainClin = 1.5 + graine * 1.3, clinDebut = -1;
   const regard = nom => { regardCourant = nom; };
@@ -442,6 +477,7 @@ export function creerAnimal(mat, look = {}) {
       x = melange(x, -1.15 + Math.sin(t * 19 + s) * .07 * e.joue, tient);
       z = melange(z, -s * .28, tient);
     }
+    if (e.scanne > 0) { x = melange(x, -1.4, e.scanne); z = melange(z, -s * .38, e.scanne); }
     if (s > 0) {
       if (e.arrose > 0) { x = melange(x, -.6, e.arrose); z = melange(z, .45 + .9, e.arrose); }
       const bouche = Math.max(e.mange * (.35 + .65 * bosse(t, 2.2, 1.1, graine)), e.grignote * bosse(t, 3.4, 1, graine * 1.3));
@@ -484,7 +520,7 @@ export function creerAnimal(mat, look = {}) {
     suivi.t = t; suivi.x = X; suivi.y = Y; suivi.z = Z;
     marche = suivi.marche; phase = suivi.phase;
     // repos : rien à faire et immobile ; alors il bâille de temps en temps, et a son petit geste
-    const occupe = Math.max(e.lit, e.joue, e.dort, e.mange, e.grignote, e.pense, e.acclame, e.salut, e.arrose, e.cache, e.parle, e.tenu, e.pousse);
+    const occupe = Math.max(e.lit, e.joue, e.dort, e.mange, e.grignote, e.pense, e.acclame, e.salut, e.arrose, e.cache, e.parle, e.tenu, e.pousse, e.scanne);
     const libre = (1 - occupe) * (1 - marche) * (nom === 'normal' || nom === 'content' ? 1 : 0);
     gBaille = libre * lisse(borne(bosse(t, 13 + graine % 4, 1.9, graine * 1.7) * 1.6));
     gGeste = gBaille > .01 ? 0 : libre * lisse(borne(bosse(t, 7 + graine % 3, 1.4, graine * 3.1) * 1.5));
@@ -500,10 +536,12 @@ export function creerAnimal(mat, look = {}) {
     const cou = tortue ? gGeste : 0;   // la tortue tend le cou
     tete.position.set(0, .33 + respire * .2 - c * .14 + cou * .03, .01 - c * .08 + cou * .07);
     tete.scale.setScalar(1 - c * .6);
-    const suit = (1 - e.dort) * (1 - e.lit * .6);
-    tete.rotation.x = e.teteX + .25 * e.lit + .35 * e.dort + .12 * e.pense + .1 * e.joue + Math.sin(t * .9 + graine) * .03
+    const suit = (1 - e.dort) * (1 - e.lit * .6) * (1 - e.scanne * .6);
+    // en relevant la pièce, le faisceau balaie de gauche à droite et la tête suit l'écran
+    const balaye = Math.sin(t * 1.25 + graine * 2) * .55 * e.scanne;
+    tete.rotation.x = e.teteX + .25 * e.lit + .35 * e.dort + .12 * e.pense + .1 * e.joue + .14 * e.scanne + Math.sin(t * .9 + graine) * .03
       + regardVu.y * .22 * suit - gBaille * .3 + (chat ? gGeste * .25 : 0) - e.tenu * .15;
-    tete.rotation.y = e.teteY + Math.sin(t * .6 + graine * 3) * .07 * (1 - e.dort) + regardVu.x * .45 * suit - (chat ? gGeste * .35 : 0);
+    tete.rotation.y = e.teteY + Math.sin(t * .6 + graine * 3) * .07 * (1 - e.dort) + regardVu.x * .45 * suit - (chat ? gGeste * .35 : 0) + balaye * .4;
     // le chien penche la tête, curieux
     visage.rotation.z = chien ? gGeste * .38 : 0;
     bras.forEach(b => b.scale.setScalar(1 - c * .7));
@@ -584,6 +622,20 @@ export function creerAnimal(mat, look = {}) {
     }
     jeu.visible = e.joue > .01;
     jeu.scale.setScalar(Math.max(.001, e.joue));
+    tel.visible = e.scanne > .01;
+    tel.scale.setScalar(Math.max(.001, e.scanne));
+    tel.rotation.y = balaye * .3;
+    const f = lisse(borne((e.scanne - .4) / .6));
+    releve.visible = f > .01;
+    if (releve.visible) {
+      releve.scale.setScalar(f);
+      releve.rotation.y = balaye;
+      const p = (t * .8 + graine * .37) % 1, b = releve.userData.balai;
+      b.position.z = L_SCAN * p;
+      b.scale.setScalar(Math.max(.001, R_SCAN * p));
+      mats.cadre.opacity = .9 * (1 - p) * f;
+      mats.scan.opacity = (.2 + .06 * Math.sin(t * 5 + graine)) * f;
+    }
     // émotes
     if (etoiles.visible) { etoiles.rotation.y = t * 4.5; etoiles.rotation.z = Math.sin(t * 3) * .15; }
     zzz.visible = e.dort > .5;

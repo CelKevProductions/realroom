@@ -202,8 +202,8 @@ html[data-acc~="ouverture"] .acc-ouverture__barre span { animation: acc-barre 3.
 @keyframes acc-compte { from { --compte: 0; } to { --compte: 96; } }
 @keyframes acc-barre { from { transform: scaleX(0); } to { transform: scaleX(.96); } }
 
-/* le plan au trait (components/accueil/PlanOuverture.js) : chaque trait a sa longueur (--long), son
-   départ (--d) et sa durée (--t) ; les meubles se remplissent de pastel une fois tracés */
+/* le plan au trait (components/accueil/PlanOuverture.js) : chaque trait porte ses pointillés (sa longueur,
+   en chiffres), son départ (--d) et sa durée (--t) ; les meubles se remplissent de pastel une fois tracés */
 .acc-plan { align-self: center; justify-self: center; width: min(640px, 100%); height: auto; max-height: 100%; overflow: visible; }
 .acc-plan path { fill: none; stroke: var(--encre); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
 .acc-plan__mur { stroke-width: 2.2; }
@@ -219,10 +219,7 @@ html[data-acc~="ouverture"] .acc-ouverture__barre span { animation: acc-barre 3.
 .acc-plan__trame { fill: none; }
 #acc-plan-points circle { fill: var(--gris); }
 .acc-plan__texte { font: 600 11px var(--m); fill: var(--graphite); }
-html[data-acc~="ouverture"] .acc-plan path {
-  stroke-dasharray: var(--long) calc(var(--long) + 2); stroke-dashoffset: var(--long);
-  animation: acc-trace var(--t) cubic-bezier(.65, 0, .35, 1) var(--d) both;
-}
+html[data-acc~="ouverture"] .acc-plan path { animation: acc-trace var(--t) cubic-bezier(.65, 0, .35, 1) var(--d) both; }
 /* le meuble tracé se remplit et se pose avec un petit rebond ; le fauteuil (déjà tourné) se remplit seulement */
 html[data-acc~="ouverture"] .acc-plan .acc-plan__meuble {
   animation: acc-trace var(--t) cubic-bezier(.65, 0, .35, 1) var(--d) both, acc-remplit .5s ease-out calc(var(--d) + var(--t) * .7) both,
@@ -372,9 +369,26 @@ html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-
 .acc-etapes__point { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--peche); transition: background-color .4s, scale .6s cubic-bezier(.34, 1.56, .64, 1); }
 .acc-etapes li.is-actif .acc-etapes__point { background: var(--rouille); scale: 1.3; }
 .acc-visiter { display: flex; align-items: center; gap: 10px; margin-top: 22px; font-weight: 600; color: var(--c-ton); }
+/* invitation à essayer, sous chaque chapitre : une carte blanche, son icône pastel, la flèche corail des boutons */
+.acc-essai {
+  display: flex; align-items: center; gap: 14px; width: min(100%, 430px); margin-top: clamp(26px, 4svh, 44px); padding: 11px 11px 11px 11px;
+  border-radius: 24px; background: var(--blanc); box-shadow: var(--ombre-legere); transition: box-shadow .4s, translate .6s var(--sortie);
+}
+.acc-essai:hover, .acc-essai:focus-visible { translate: 0 -3px; box-shadow: var(--ombre); }
+.acc-essai:hover .acc-bouton__fleche, .acc-essai:focus-visible .acc-bouton__fleche { background: var(--encre); rotate: -45deg; }
+.acc-essai__icone { flex: none; display: grid; place-items: center; width: 50px; height: 50px; border-radius: 17px; background: var(--peche); }
+[data-chapitre="2"] .acc-essai__icone { background: var(--menthe); }
+[data-chapitre="3"] .acc-essai__icone { background: var(--lilas); }
+.acc-essai__icone svg { width: 25px; height: 25px; fill: none; stroke: var(--encre); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.acc-essai__texte { display: grid; flex: 1; gap: 3px; min-width: 0; }
+.acc-essai__texte strong { font: 700 1.06rem/1.2 var(--display); letter-spacing: -.02em; }
+.acc-essai__texte span { color: var(--c-doux); font-size: .9rem; line-height: 1.35; }
+@media (max-width: 959.98px) { .acc-chapitre--etapes .acc-essai { display: none; } }
+.acc-conclusion__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 32px; color: var(--c-doux); }
 /* conclusion : quand tout le monde est heureux, une grande phrase prend la place du dernier chapitre, mot à mot
    (sans le script, elle suit simplement le chapitre) */
-.acc-conclusion { margin: 32px 0 0; font: 700 clamp(1.85rem, 3.2vw, 3.1rem)/1.08 var(--display); letter-spacing: -.035em; text-wrap: pretty; }
+.acc-conclusion { margin: 32px 0 0; }
+.acc-conclusion__phrase { margin: 0; font: 700 clamp(1.85rem, 3.2vw, 3.1rem)/1.08 var(--display); letter-spacing: -.035em; text-wrap: pretty; }
 .acc-conclusion em { font-style: normal; padding: 0 .12em; margin: 0 -.04em; border-radius: .2em; background: var(--peche); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 /* téléphone : sous la pièce, la place manque ; les étapes passent juste sous le titre */
 @media (max-width: 959.98px) {
@@ -391,7 +405,15 @@ html[data-acc~="anime"] .acc-chapitre__contenu { transition: opacity .5s .25s, t
 html[data-acc~="anime"] .acc-conclusion__mot { display: inline-block; opacity: 0; translate: 0 .45em; filter: blur(8px); transition: opacity .45s, translate .8s var(--sortie), filter .5s; }
 html[data-acc~="anime"] .acc-scene[data-conclusion] .acc-chapitre__contenu { opacity: 0; translate: 0 -28px; filter: blur(6px); pointer-events: none; transition-delay: 0s; }
 html[data-acc~="anime"] .acc-scene[data-conclusion] .acc-conclusion { pointer-events: auto; }
+html[data-acc~="anime"] .acc-conclusion__actions { opacity: 0; translate: 0 16px; transition: opacity .4s, translate .6s var(--sortie); }
+html[data-acc~="anime"] .acc-scene[data-conclusion] .acc-conclusion__actions { opacity: 1; translate: none; transition: opacity .6s 1.3s, translate .9s var(--sortie) 1.3s; }
 html[data-acc~="anime"] .acc-scene[data-conclusion] .acc-conclusion__mot { opacity: 1; translate: none; filter: none; transition-delay: calc(.35s + var(--i) * 32ms); }
+/* le surlignage n'est là qu'avec ses mots : il se passe comme un coup de feutre, une fois la phrase écrite */
+html[data-acc~="anime"] .acc-conclusion em {
+  background: linear-gradient(var(--peche), var(--peche)) no-repeat 0 0 / 0% 100%;
+  transition: background-size .2s;
+}
+html[data-acc~="anime"] .acc-scene[data-conclusion] .acc-conclusion em { background-size: 100% 100%; transition: background-size .7s cubic-bezier(.65, 0, .35, 1) 1.1s; }
 .acc-scene[data-actif="1"] [data-chapitre="1"] .acc-chapitre__tete::before,
 .acc-scene[data-actif="2"] [data-chapitre="2"] .acc-chapitre__tete::before,
 .acc-scene[data-actif="3"] [data-chapitre="3"] .acc-chapitre__tete::before { background: var(--rouille); border-color: var(--rouille); }
@@ -435,42 +457,43 @@ html[data-acc~="anime"] .acc-scene[data-conclusion] .acc-conclusion__mot { opaci
 .acc-cellule .acc-cellule__texte { margin-top: 14px; max-width: 30ch; font-size: .875rem; line-height: 1.45; color: color-mix(in srgb, var(--encre) 78%, transparent); }
 @media (min-width: 760px) { .acc-cellule { padding: 20px 20px 24px; } .acc-cellule .acc-cellule__texte { font-size: .95rem; } }
 
-/* catalogue : cartes à filets, glissables */
+/* catalogue : deux rangées de meubles qui défilent en continu, en sens contraire, bords fondus ; une rangée
+   s'arrête sous la souris (ou au clavier) ; sans animation, elle se fait défiler à la main */
 .acc-catalogue__titre { max-width: 14ch; }
 .acc-catalogue__texte { margin-top: 20px; max-width: 48ch; color: var(--c-doux); }
-.acc-catalogue__aide { display: inline-flex; align-items: center; gap: 12px; margin-top: 28px; color: var(--c-doux); }
+.acc-catalogue__tout { margin-top: 24px; justify-self: start; align-items: center; gap: .5em; }
 @media (min-width: 760px) {
   .acc-catalogue__titre { grid-column: 1 / span 8; }
   .acc-catalogue__texte { grid-column: 1 / span 6; grid-row: 3; }
-  .acc-catalogue__aide { grid-column: 8 / -1; grid-row: 3; justify-self: end; align-self: end; margin-top: 0; }
+  .acc-catalogue__tout { grid-column: 9 / -1; grid-row: 3; justify-self: end; align-self: end; margin-top: 0; }
 }
-.acc-vitrine { padding-block: 6px 64px; margin-top: clamp(30px, 5vw, 58px); overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scroll-padding-inline: var(--marge); }
-.acc-vitrine::-webkit-scrollbar { display: none; }
-@media (pointer: fine) {
-  .acc-vitrine { cursor: grab; scroll-snap-type: none; }
-  .acc-vitrine.is-glisse { cursor: grabbing; }
-}
-.acc-vitrine__piste { position: relative; display: flex; gap: 14px; width: max-content; margin: 0; padding: 0 var(--marge); list-style: none; }
-.acc-produit { width: clamp(232px, 21vw, 320px); border-radius: 26px; background: var(--blanc); box-shadow: var(--ombre-legere); scroll-snap-align: start; transition: translate .5s var(--sortie); }
-.acc-produit:hover { translate: 0 -4px; }
-.acc-produit__lien { display: grid; align-content: start; gap: 6px; height: 100%; padding: 10px 10px 16px; border-radius: inherit; -webkit-user-drag: none; user-select: none; }
+.acc-defile { display: grid; gap: 16px; margin-top: clamp(32px, 5vw, 60px); padding-block: 8px 12px; }
+.acc-defile__rang { overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.acc-defile__piste { display: flex; width: max-content; margin: 0; padding: 6px 0 10px; list-style: none; animation: acc-defile 80s linear infinite; }
+.acc-defile__rang--inverse .acc-defile__piste { animation-direction: reverse; animation-duration: 95s; }
+.acc-defile__rang:hover .acc-defile__piste, .acc-defile__rang:focus-within .acc-defile__piste { animation-play-state: paused; }
+@keyframes acc-defile { to { transform: translateX(-50%); } }
+/* chaque carte porte sa marge (pas de gap) : la moitié de la piste tombe pile sur le début de la copie */
+.acc-produit { flex: none; width: clamp(200px, 16vw, 268px); margin-right: 16px; border-radius: 26px; background: var(--blanc); box-shadow: var(--ombre-legere); transition: box-shadow .4s, translate .6s var(--sortie); }
+.acc-produit:hover { translate: 0 -6px; box-shadow: var(--ombre); }
+.acc-produit__lien { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 6px; height: 100%; padding: 8px 8px 14px; border-radius: inherit; -webkit-user-drag: none; }
 .acc-produit__lien:focus-visible { outline-offset: -3px; }
-.acc-produit__image { display: block; aspect-ratio: 4 / 5; overflow: hidden; margin-bottom: 10px; border-radius: 18px; background: var(--platre); }
-.acc-produit__image img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; transition: scale .9s var(--sortie); }
-.acc-produit__lien:hover img { scale: 1.04; }
-/* vitrine animée (Animations.js : arc et parallaxe) : l'image a de la marge pour glisser dans son cadre */
-html[data-acc~="mouvement"] .acc-produit__image img { scale: 1.14; }
-html[data-acc~="mouvement"] .acc-produit__lien:hover img { scale: 1.2; }
-html[data-acc~="mouvement"] .acc-produit:hover { translate: none; }
-.acc-produit__nom { padding-inline: 4px; font: 700 1.1rem/1.2 var(--display); letter-spacing: -.02em; }
-.acc-produit__meta { padding-inline: 4px; color: var(--c-doux); }
-.acc-produit__prix {
-  display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 8px; padding: 12px 4px 0;
-  border-top: 1px solid var(--c-filet); font: 600 .95rem/1 var(--m); font-variant-numeric: tabular-nums;
+.acc-produit__image { display: block; aspect-ratio: 4 / 5; overflow: hidden; margin-bottom: 6px; border-radius: 19px; background: var(--peche); }
+/* la couleur suit la place du meuble dans sa rangée (pas nth-child : la copie doit être identique) */
+.acc-produit--t1 .acc-produit__image { background: var(--menthe); }
+.acc-produit--t2 .acc-produit__image { background: var(--lilas); }
+.acc-produit--t3 .acc-produit__image { background: var(--beurre); }
+.acc-produit__image img { width: 100%; height: 100%; object-fit: cover; color: transparent; pointer-events: none; transition: scale .9s var(--sortie); }
+.acc-produit__lien:hover img { scale: 1.06; }
+.acc-produit__ligne { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding-inline: 6px; }
+.acc-produit__nom { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 1.05rem/1.25 var(--display); letter-spacing: -.02em; }
+.acc-produit__prix { flex: none; font: 600 .9rem/1 var(--m); font-variant-numeric: tabular-nums; }
+.acc-produit__meta { padding-inline: 6px; color: var(--c-doux); font-size: .78rem; }
+@media (prefers-reduced-motion: reduce) {
+  .acc-defile__rang { overflow-x: auto; scrollbar-width: none; -webkit-mask: none; mask: none; }
+  .acc-defile__piste { animation: none; padding-inline: var(--marge); }
+  .acc-produit[aria-hidden] { display: none; }
 }
-.acc-produit__fiche { display: inline-flex; align-items: center; gap: 6px; color: var(--c-doux); opacity: 0; translate: -6px 0; transition: opacity .4s, translate .5s var(--sortie); }
-.acc-produit__lien:hover .acc-produit__fiche, .acc-produit__lien:focus-visible .acc-produit__fiche { opacity: 1; translate: 0 0; }
-@media (hover: none) { .acc-produit__fiche { opacity: 1; translate: 0 0; } }
 
 /* tarifs : trois cellules, prix en chasse fixe */
 .acc-tarifs__titre { max-width: 16ch; }
@@ -511,11 +534,15 @@ html[data-acc~="mouvement"] .acc-pack.is-conseille .acc-pack__puce { animation: 
 .acc-faq { row-gap: clamp(32px, 4vw, 56px); }
 .acc-faq__tete { grid-column: 1 / -1; }
 @media (min-width: 960px) { .acc-faq__tete { grid-column: 1 / span 7; } }
+.acc-faq__autre { grid-column: 1 / -1; display: grid; justify-items: start; gap: 18px; max-width: 420px; color: var(--c-doux); }
+.acc-faq__autre strong { color: var(--c-ton); font-family: var(--display); letter-spacing: -.02em; }
+@media (min-width: 960px) { .acc-faq__autre { grid-column: 9 / -1; justify-self: end; align-self: end; } }
 .acc-faq__liste { grid-column: 1 / -1; display: grid; gap: var(--gouttiere); margin: 0; padding: 0; list-style: none; }
 @media (min-width: 640px) { .acc-faq__liste { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1100px) {
   .acc-faq__liste { grid-template-columns: repeat(3, minmax(0, 1fr)); padding-bottom: 56px; }
-  .acc-question:nth-child(3n + 2) { translate: 0 56px; }
+  /* position relative + top (et non translate, que l'apparition GSAP reprendrait puis lâcherait d'un coup) */
+  .acc-question:nth-child(3n + 2) { position: relative; top: 56px; }
 }
 .acc-question {
   display: flex; flex-direction: column; gap: 10px; min-height: clamp(220px, 19vw, 280px); padding: clamp(22px, 2.2vw, 30px);

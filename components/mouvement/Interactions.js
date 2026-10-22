@@ -11,7 +11,7 @@
 import { useEffect } from 'react';
 import { gsap, initialiser, mouvementPermis } from './regles.js';
 
-const INCLINE = '[data-incline], .acc-pack, .acc-produit, .carte-projet__image, .carte-vide';
+const INCLINE = '[data-incline], .acc-pack, .carte-projet__image, .carte-vide';
 const AIMANT = '[data-aimant], .acc-bouton, .btn--large, .parcours__boutons .btn--plein';
 const PRESSE = '[data-presse], .btn, .acc-bouton, .puce-bouton, .carte-piece, .carte-vide';
 const ECLAT = '[data-eclat], .acc-bouton, .btn--plein, .btn--accent';
