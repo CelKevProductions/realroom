@@ -2,6 +2,7 @@
 import { avecStylesVisuels } from '@/lib/styles-index.js';
 import { avecObjetsGeneriques } from '@/lib/catalogue-generique.js';
 import { normaliserDimensionsCatalogue } from '@/lib/catalogue-dimensions.js';
+import { DESIGN_OBJECTS } from '@/lib/design-objects.js';
 let promesse = null;
 const lireCatalogue = () => fetch('/catalogue.json').then(r => {
   if (!r.ok) throw new Error('catalogue ' + r.status);
@@ -9,5 +10,6 @@ const lireCatalogue = () => fetch('/catalogue.json').then(r => {
 });
 export const chargerCatalogue = () => (promesse ||= Promise.all([
   lireCatalogue(), fetch('/styles-visuels.json').then(r => r.ok ? r.json() : null).catch(() => null)
-]).then(([catalogue, index]) => { const c = avecObjetsGeneriques(normaliserDimensionsCatalogue(catalogue)); return { ...c, produits: avecStylesVisuels(c.produits, index) }; })
+]).then(([catalogue, index]) => { const c = avecObjetsGeneriques(normaliserDimensionsCatalogue(catalogue)); return { ...c, produits: { ...avecStylesVisuels(c.produits, index), ...Object.fromEntries(DESIGN_OBJECTS.map(p => [p.id,p])) } }; })
   .catch(e => { promesse = null; throw e; }));
+

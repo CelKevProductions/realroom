@@ -1,7 +1,7 @@
 {
   "name": "realroom",
   "private": true,
-  "description": "RealRoom (KPW) : photographiez votre pièce, réaménagez-la en 3D avec de vrais meubles, rendu réaliste et visite 3D.",
+  "description": "RealRoom (KPW) : photographiez votre pi\u00e8ce, r\u00e9am\u00e9nagez-la en 3D avec de vrais meubles, rendu r\u00e9aliste et visite 3D.",
   "type": "module",
   "engines": {
     "node": ">=20.9"
@@ -16,7 +16,9 @@
     "test": "node --test tests/unitaires/*.test.js",
     "e2e": "python3 tests/e2e.py",
     "test:api": "node tests/api.mjs",
-    "test:accueil": "python3 tests/accueil.py"
+    "test:accueil": "python3 tests/accueil.py",
+    "test:design": "node --test tests/design.test.mjs tests/furnishing.test.mjs tests/semlayout.test.mjs",
+    "test:spatial": "python3 -m unittest discover -s tests -p 'semlayout_geometry_test.py' -v"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",
@@ -38,7 +40,8 @@
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "stripe": "^22.6.2",
-    "three": "^0.180.0"
+    "three": "^0.180.0",
+    "dxf-parser": "^1.1.2"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8",

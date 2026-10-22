@@ -951,3 +951,7 @@ html:has(.plateau), body:has(.plateau) { overflow: hidden; width: 100%; }
 .rr-curseur[data-etat='mot'] .rr-curseur__mot { scale: 1; opacity: 1; }
 .rr-curseur.is-presse .rr-curseur__point { scale: 3.2; }
 .rr-curseur.is-presse[data-etat='point'] .rr-curseur__point { scale: .7; }
+
+
+/* Fallback for devices without WebGL; the existing room editor is preserved. */
+.plan-secours{height:100%;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px}.plan-secours>svg{height:calc(100% - 40px);width:100%;min-height:200px}.plan-secours>p{font-size:.75rem;color:var(--graphite);text-align:center}.atelier>.plan-secours{position:absolute;inset:0}.atelier .plan-secours>svg{max-width:65vw;margin-left:25vw}

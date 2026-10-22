@@ -9,7 +9,7 @@ const textes = {
   fr: {
     titre: 'Quelles idées pour cette pièce ?', intro: 'Choisis les coins à aménager et indique ce que tu imagines. Nous organiserons le mobilier autour de ces usages.',
     espaces: 'Des coins ou espaces à créer ?', repas: ['Coin repas', 'Une table à manger et ses chaises'], travail: ['Coin bureau', 'Un bureau, son siège et une lampe'],
-    lecture: ['Coin lecture', 'Un fauteuil et un éclairage adapté'], rangement: ['Rangement', 'Un buffet ou des étagères utiles'],
+    musique: ['Coin musique', 'Instrument, écoute ou collection de vinyles'], lecture: ['Coin lecture', 'Un fauteuil et un éclairage adapté'], rangement: ['Rangement', 'Un buffet ou des étagères utiles'],
     cuisine:['Coin cuisine','Îlot et assises de mise en scène'],bar:['Coin bar','Comptoir et accessoires de mise en scène'],
     places: 'Combien de places à table ?', place: 'places', envies: 'Tes idées et envies', exemple: 'Une table près de la fenêtre, un coin lecture dans l’angle, du bois clair…',
     budget: 'Budget mobilier', budgetAide: 'Facultatif · vide = sans plafond', annuler: 'Annuler', lancer: 'Réaménager avec ces idées',
@@ -19,7 +19,7 @@ const textes = {
   en: {
     titre: 'What do you imagine for this room?', intro: 'Choose the areas to create and share your ideas. We will arrange furniture around these activities.',
     espaces: 'Which areas would you like?', repas: ['Dining area', 'A dining table and its chairs'], travail: ['Work area', 'A desk, chair and task light'],
-    lecture: ['Reading corner', 'An armchair and a suitable light'], rangement: ['Storage', 'Useful shelves or a sideboard'],
+    musique: ['Music corner', 'An instrument, listening space or vinyl collection'], lecture: ['Reading corner', 'An armchair and a suitable light'], rangement: ['Storage', 'Useful shelves or a sideboard'],
     cuisine:['Kitchen area','Staged island and seating'],bar:['Bar area','Staged counter and accessories'],
     places: 'How many seats at the table?', place: 'seats', envies: 'Your ideas and wishes', exemple: 'A table near the window, a reading corner, light wood…',
     budget: 'Furniture budget', budgetAide: 'Optional · leave empty for no limit', annuler: 'Cancel', lancer: 'Rearrange with these ideas',
@@ -42,7 +42,7 @@ export default function BriefReamenagement({ piece, demande, lang = 'fr', onFerm
     onCancel={e => { e.preventDefault(); onFermer(); }} onClick={e => { if (e.target === dialogue.current) onFermer(); }}>
     <form onSubmit={e => { e.preventDefault(); onValider({...demandeDepuisBrief(piece, demande, brief),encyclopedie:encyclopedieActive(demande?.encyclopedie)}); }}>
       <header className={s.entete}><h2 id={titre}>{t.titre}</h2><button type="button" aria-label={t.annuler} onClick={onFermer}>×</button></header>
-      <p className={s.intro}>{t.intro} {assistant && (lang === 'en' ? 'Once the first proposal is ready, use Shuffle to explore other layouts.' : 'Après la première proposition, utilise Shuffle pour explorer d’autres dispositions.')}</p>
+      <p className={s.intro}>{t.intro} {assistant && !demande.design && (lang === 'en' ? 'Once the first proposal is ready, use Shuffle to explore other layouts.' : 'Après la première proposition, utilise Shuffle pour explorer d’autres dispositions.')}</p>
       {options.length > 0 && <fieldset className={s.espaces}><legend>{t.espaces}</legend><div className={s.choix}>
         {options.map(id => <label key={id} className={s.option}>
           <input type="checkbox" checked={brief.espaces.includes(id)} onChange={e => cocher(id, e.target.checked)} />
@@ -61,3 +61,4 @@ export default function BriefReamenagement({ piece, demande, lang = 'fr', onFerm
     </form>
   </dialog>;
 }
+

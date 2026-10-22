@@ -36,18 +36,18 @@ export default function CadreDemo({ lang, t, children }) {
     <RacineApp value={`/${lang}/demo`}>
       <header className="app-entete" ref={entete}>
         <div className="app-entete__barre">
-          <Link href={`/${lang}`} className="logo" aria-label="RealRoom"><Logo />RealRoom</Link>
+          <Link href={`/${lang}/demo`} className="logo" aria-label="RealRoom"><Logo />RealRoom</Link>
           <span className="badge-demo">{t.demo.badge}</span>
           <Fil libelle={t.nav.fil} />
           <nav className="app-entete__compte" aria-label={t.nav.compte}>
-            {credits !== null && <Solde key={cle} lang={lang} initial={credits} libelle={t.nav.credits} />}
-            <Link className="btn btn--plein btn--petit lien-creer" href={`/${lang}/connexion?inscription=1`}>{t.demo.creer}</Link>
+            <Link href={`/${lang}/demo`}>{lang === 'fr' ? 'Mes projets' : 'My projects'}</Link>
+            
           </nav>
         </div>
         <div className="bandeau-demo">
-          <span>{t.demo.bandeau}</span>
+          <span>{lang === 'fr' ? 'Atelier expérimental · Plans et projets conservés dans cet onglet · Connexion IA à configurer' : 'Experimental studio · Projects saved in this tab · AI connection required'}</span>
           <span className="bandeau-demo__actions">
-            <Link className="btn btn--lien btn--petit lien-creer-bandeau" href={`/${lang}/connexion?inscription=1`}>{t.demo.creer}</Link>
+            
             <button type="button" className="btn btn--lien btn--petit" onClick={recommencer}>{t.demo.recommencer}</button>
           </span>
         </div>
@@ -56,3 +56,4 @@ export default function CadreDemo({ lang, t, children }) {
     </RacineApp>
   );
 }
+

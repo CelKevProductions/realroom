@@ -1,0 +1,15 @@
+{
+  "repository": "https://github.com/3dlg-hcvc/SemLayoutDiff",
+  "commit": "6b12bc4c42aa8377445af108093539073f0495c1",
+  "license": "MIT",
+  "files": {
+    "src/semlayoutdiff/sldn/model.py": "9de00c346310ad36319133564c72c7a152ab8d037d8bbc11e73b1c87bb95bde5",
+    "src/semlayoutdiff/sldn/diffusion_utils/diffusion_multinomial.py": "9e8929579125527efe75dce81ec26370c919cbf49b06173c12663ad72590f5ff",
+    "src/semlayoutdiff/sldn/layers/layers.py": "bcd7b8e1d873600f9330759c7ad3a23c66496f86908246b1217c1691c10b4147",
+    "src/semlayoutdiff/apm/attr_module.py": "2a06fe5c757fefa27dda641fbb74b966b877c5a929cebe1fb40f9dac4a0eb7a8",
+    "preprocess/metadata/unified_idx_to_generic_label.json": "e2dcd6cc36ea6f079e8524bceacea44073108d861b5a79d6c457dbd716b44ab9",
+    "preprocess/metadata/unified_pix_ratio_threshold.json": "0a9f0e63b9903586a63a706cde20fd829da01c632d88a449824030f0835036a6",
+    "configs/apm/unified_config.yaml": "b997a22fb9ba4b816bc3d27740afbc579fc6c02e69eb799e6987307fb94d3392",
+    "LICENSE.txt": "3923faa6d282bfe9ed77bdf0b6d4a26d49f5c04a3f8b3a310df1c12b430e1f8f"
+  }
+}

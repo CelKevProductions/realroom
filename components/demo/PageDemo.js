@@ -12,7 +12,7 @@ import { useFil } from '@/components/fil.js';
 import { lire, piece, publique, rendusDe, listeProjets, projetComplet, projet } from '@/components/demo/magasin.js';
 import { repondre } from '@/components/demo/api.js';
 
-const SERVICES = { analyse: true, rendu: true, monde: true, simulation: true };
+const SERVICES = { analyse: true, rendu: false, monde: false, simulation: true };
 
 function Introuvable({ lang, t }) {
   useFil([{ nom: t.projets.titre, href: `/${lang}/demo` }, { nom: t.erreurs.introuvable }]);
@@ -55,3 +55,4 @@ export default function PageDemo({ lang, t, vue, id, couts, packs, approfondisse
   }
   return <Introuvable lang={lang} t={t} />;
 }
+

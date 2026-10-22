@@ -2,6 +2,7 @@
 // La maquette 3D dans React : le moteur (moteur/editeur.js) est chargé à la demande, après
 // affichage ; React lui transmet l'agencement, la sélection et la vue. À l'ouverture, la caméra
 // arrive d'en haut et se pose sur la pièce.
+import { ApercuPlan } from './PlanPiece.js';
 import { useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 export { chargerCatalogue } from '@/components/catalogueClient.js';
@@ -17,6 +18,7 @@ export default function Editeur3D({ ref, modele, items, staging, selection, vue,
   const rappels = useRef({});
   rappels.current = { surSelection, surDeplacement, surCadre, surNavigation };
   const [panne, setPanne] = useState(false);
+  const [catalogueSecours,setCatalogueSecours] = useState({});
   const cle = JSON.stringify(modele && [modele.dims, modele.contour, modele.murs, modele.sol, modele.plafond]);
 
   useEffect(() => {
@@ -25,6 +27,7 @@ export default function Editeur3D({ ref, modele, items, staging, selection, vue,
       try {
         const [{ creerEditeur }, cat] = await Promise.all([import('@/moteur/editeur.js'), chargerCatalogue()]);
         if (!vivant || !canvas.current) return;
+        setCatalogueSecours(cat.produits);
         ed.current = creerEditeur(canvas.current, {
           produits: cat.produits,
           navigationActive,
@@ -79,6 +82,7 @@ export default function Editeur3D({ ref, modele, items, staging, selection, vue,
     pret: () => !!ed.current
   }), []);
 
-  if (panne) return <div className="attente"><p>{erreurWebgl}</p></div>;
+  if (panne) return <div className="plan-secours"><ApercuPlan modele={modele} items={items} produits={catalogueSecours} label="Plan coté · vue 2D" selection={selection} surChoisir={surSelection}/><p>{erreurWebgl || "WebGL indisponible sur cet appareil : le plan 2D reste utilisable."}</p></div>;
   return <canvas ref={canvas} aria-label="3D" tabIndex={0} />;
 }
+
