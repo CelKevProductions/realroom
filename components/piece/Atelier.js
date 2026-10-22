@@ -16,6 +16,7 @@ import Variantes from '@/components/piece/Variantes.js';
 import Inspirations from '@/components/piece/Inspirations.js';
 import Resultat from '@/components/piece/Resultat.js';
 import Journal from '@/components/piece/Journal.js';
+import BarreCommande from '@/components/piece/BarreCommande.js';
 import Tuto from '@/components/Tuto.js';
 import { apparaitre, deplier, animer } from '@/components/Mouvement.js';
 import { prix, remplir } from '@/lib/i18n.js';
@@ -25,6 +26,7 @@ import { referencesSpatialesActives } from '@/lib/ameublement-reference.js';
 import { TYPES_PROGRAMME } from '@/lib/programme.js';
 import { etatVariantes } from '@/lib/variation-disposition.js';
 import { contourDe } from '@/lib/contour.js';
+import { lireCommande, choisirDansCatalogue, meublesVises, pointPres, nomObjet } from '@/lib/commande.js';
 import { Rouage } from '@/components/mouvement/Attente.js';
 import Toast from '@/components/mouvement/Toast.js';
 
@@ -35,6 +37,17 @@ const I = {
 };
 // chapitres du dock ; « propositions » s'affiche en bande en bas, les autres en panneau flottant
 const ONGLETS = ['amenager', 'propositions', 'meubles', 'resultat'];
+// exemples proposés au-dessus de la barre de commande, selon la pièce
+const EXEMPLES = {
+  fr: { salon: ['Ajoute un fauteuil', 'Retire le tapis', 'Mets une plante près de la fenêtre'], chambre: ['Ajoute une commode', 'Un fauteuil dans le coin', 'Retire le tapis'],
+    salle_a_manger: ['Ajoute deux chaises', 'Ajoute une suspension', 'Retire le buffet'], bureau: ['Ajoute une étagère', 'Ajoute un lampadaire', 'Retire le tapis'],
+    salle_de_bain: ['Ajoute un miroir', 'Mets une plante dans le coin', 'Retire le tapis'], terrasse: ['Ajoute une balancelle', 'Ajoute une jardinière', 'Retire le tapis'],
+    autre: ['Ajoute un fauteuil', 'Mets une plante dans le coin', 'Retire le tapis'] },
+  en: { salon: ['Add an armchair', 'Remove the rug', 'Put a plant near the window'], chambre: ['Add a dresser', 'An armchair in the corner', 'Remove the rug'],
+    salle_a_manger: ['Add two chairs', 'Add a pendant light', 'Remove the sideboard'], bureau: ['Add a shelf', 'Add a floor lamp', 'Remove the rug'],
+    salle_de_bain: ['Add a mirror', 'Put a plant in the corner', 'Remove the rug'], terrasse: ['Add a swing seat', 'Add a planter', 'Remove the rug'],
+    autre: ['Add an armchair', 'Put a plant in the corner', 'Remove the rug'] }
+};
 const m2 = (v, lang) => v.toLocaleString(lang === 'en' ? 'en-GB' : 'fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 // zone dépliée sous la ligne choisie (s'ouvre une fois, à l'apparition)
@@ -46,6 +59,7 @@ function Depliant({ children }) {
 
 export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, solde, setSolde, couts, services, retourPhotos }) {
   const tp = t.piece;
+  const fr = lang !== 'en';
   const assistantDisponible = TYPES_PROGRAMME.includes(piece.fonction);
   const [items, setItems] = useState(piece.agencement || []);
   const [selection, setSelection] = useState(null);
@@ -211,25 +225,25 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     const p = produitDe(it);
     ouvrirCatalogue(p && produits && Object.values(produits).some(x => x.fam === p.fam) ? p.fam : '', it.id);
   };
-  // ajout ou échange depuis le catalogue : le nouveau meuble prend la place (et le rôle) de l'ancien
-  function choisirProduit(p) {
+  // pose d'un meuble du catalogue : à la place d'un ancien (il en prend le rôle), près d'un endroit
+  // demandé dans la barre de commande, sinon contre le mur du fond (meubles adossés), dans un coin
+  // (lampadaires, plantes, sculptures) ou au centre. Le moteur cherche ensuite une place libre.
+  function poserProduit(p, { remplace = null, depart = null } = {}) {
     const { largeur: L, profondeur: P } = piece.modele.dims;
-    const ancien = cat.remplace && items.find(x => x.id === cat.remplace);
-    const id = 'c' + Date.now().toString(36);
-    // point de départ : la place de l'ancien meuble, sinon contre le mur du fond (meubles adossés),
-    // dans un coin (lampadaires, plantes, sculptures) ou au centre
-    const [hx0, hz0] = demiEmpreinte(p.dim, ANGLES.entree);
-    const coin = ['lampadaire', 'lampe', 'sculpture', 'jardiniere', 'plante'].includes(p.fam);
-    let it = { id, origine: 'catalogue', sku: p.id, rot: ancien ? ancien.rot : ANGLES.entree,
-      x: ancien ? ancien.x : coin ? L / 2 - hx0 - .1 : 0,
-      z: ancien ? ancien.z : estAdosse(p.fam) || coin ? -P / 2 + hz0 + .02 : 0 };
-    if (estMural(p.fam)) it = placerAuMur(piece.modele, { ...it, mur: ancien && ancien.mur ? ancien.mur : undefined, y: ancien && ancien.y ? ancien.y : 1.6 }, p.dim, ancien && ancien.mur ? ancien.mur : 'fond');
-    else if (!estSuspendu(p.fam)) {
-      const [hx, hz] = demiEmpreinte(p.dim, it.rot);
-      it.x = Math.max(-L / 2 + hx, Math.min(L / 2 - hx, it.x));
-      it.z = Math.max(-P / 2 + hz, Math.min(P / 2 - hz, it.z));
-    }
+    const id = 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
     modifier(l => {
+      const ancien = remplace && l.find(x => x.id === remplace);
+      const [hx0, hz0] = demiEmpreinte(p.dim, ANGLES.entree);
+      const coin = ['lampadaire', 'lampe', 'sculpture', 'jardiniere', 'plante'].includes(p.fam);
+      let it = { id, origine: 'catalogue', sku: p.id, rot: ancien ? ancien.rot : ANGLES.entree,
+        x: ancien ? ancien.x : depart ? depart[0] : coin ? L / 2 - hx0 - .1 : 0,
+        z: ancien ? ancien.z : depart ? depart[1] : estAdosse(p.fam) || coin ? -P / 2 + hz0 + .02 : 0 };
+      if (estMural(p.fam)) it = placerAuMur(piece.modele, { ...it, mur: ancien && ancien.mur ? ancien.mur : undefined, y: ancien && ancien.y ? ancien.y : 1.6 }, p.dim, ancien && ancien.mur ? ancien.mur : 'fond');
+      else if (!estSuspendu(p.fam)) {
+        const [hx, hz] = demiEmpreinte(p.dim, it.rot);
+        it.x = Math.max(-L / 2 + hx, Math.min(L / 2 - hx, it.x));
+        it.z = Math.max(-P / 2 + hz, Math.min(P / 2 - hz, it.z));
+      }
       let n = l;
       if (ancien) n = ancien.origine === 'existant' ? n.map(x => (x.id === ancien.id ? { ...x, garde: false } : x)) : n.filter(x => x.id !== ancien.id);
       // une place libre pour le nouveau meuble, les autres ne bougent pas
@@ -238,10 +252,90 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       if (!place) dire(tp.alertes + ' : ' + p.nom, true);
       return [...n, place ? { ...it, x: place.x, z: place.z, rot: place.rot, ...(place.mur ? { mur: place.mur, y: place.y } : {}) } : it];
     });
+    return id;
+  }
+  // ajout ou échange depuis le catalogue
+  function choisirProduit(p) {
+    const id = poserProduit(p, { remplace: cat.remplace });
     setCat({ ouvert: false, famille: '', remplace: null });
     setSelection(id);
     setOnglet('meubles');
     if (vue === 'dessus') aCadrer.current = id;
+  }
+
+  // barre de commande : « ajoute un fauteuil », « retire le tapis », « remplace la table basse par
+  // une ronde », « déplace le fauteuil près de la fenêtre » (lib/commande.js, sans IA)
+  function commander(texte) {
+    if (!produits || attente || reamenagement.current) return false;
+    const commandes = lireCommande(texte);
+    if (!commandes.length) {
+      dire(fr ? 'Je n’ai pas compris. Essaie « ajoute un fauteuil » ou « retire le tapis ».' : 'I didn’t get that. Try “add an armchair” or “remove the rug”.', true);
+      return false;
+    }
+    const faits = [], rates = [], pris = new Set();
+    let dernier = null;
+    const exterieur = piece.fonction === 'terrasse', dims = piece.modele.dims;
+    // un endroit : fenêtre, porte, centre, coin, ou un meuble déjà là (« près du canapé »)
+    const departDe = pres => {
+      if (!pres) return null;
+      if (pres.meuble) {
+        const r = meublesVises(items, produitDe, { objet: pres.meuble })[0];
+        if (!r) return null;
+        const d = Math.hypot(r.x, r.z) || 1, k = Math.min(.9, d);
+        return [r.x - r.x / d * k, r.z - r.z / d * k];
+      }
+      return pointPres(piece.modele, pres);
+    };
+    // le meuble visé : celui qu'on a choisi s'il correspond, sinon le dernier posé
+    const viser = (objet, qualifs) => {
+      const v = meublesVises(items, produitDe, { objet, qualifs }).filter(it => !pris.has(it.id));
+      return v.sort((a, b) => (a.id === selection) - (b.id === selection) || (a.origine === 'catalogue') - (b.origine === 'catalogue')).reverse();
+    };
+    for (const c of commandes) {
+      const nom = nomObjet(c.objet);
+      if (c.action === 'ajouter') {
+        const deja = items.filter(it => it.origine === 'catalogue' && it.garde !== false).map(it => it.sku);
+        const p = choisirDansCatalogue(produits, { objet: c.objet, qualifs: c.qualifs, dims, exterieur, deja });
+        if (!p) { rates.push(fr ? `pas de ${nom} qui tienne dans la pièce` : `no ${nom} that fits the room`); continue; }
+        const depart = departDe(c.pres);
+        const n = c.quantite === 'tous' ? 1 : c.quantite;
+        for (let k = 0; k < n; k++) dernier = poserProduit(p, { depart });
+        faits.push((fr ? 'ajouté : ' : 'added: ') + (n > 1 ? n + ' × ' : '') + p.nom);
+      } else if (c.action === 'retirer') {
+        const v = viser(c.objet, c.qualifs);
+        if (!v.length) { rates.push(fr ? `pas de ${nom} dans la pièce` : `no ${nom} in the room`); continue; }
+        const cibles = c.quantite === 'tous' ? v : v.slice(0, c.quantite);
+        for (const it of cibles) { pris.add(it.id); retirer(it.id); }
+        faits.push((fr ? 'retiré : ' : 'removed: ') + (cibles.length > 1 ? cibles.length + ' × ' : '') + (produitDe(cibles[0])?.nom || nom));
+      } else if (c.action === 'remplacer') {
+        const ancien = viser(c.objet, c.qualifsSource)[0];
+        if (!ancien) { rates.push(fr ? `pas de ${nom} à remplacer` : `no ${nom} to replace`); continue; }
+        const p = choisirDansCatalogue(produits, { objet: c.cible, qualifs: c.qualifs, dims, exterieur, eviter: [ancien.sku].filter(Boolean) });
+        if (!p) { rates.push(fr ? `pas d’autre ${nomObjet(c.cible)} dans le catalogue` : `no other ${nomObjet(c.cible)} in the catalogue`); continue; }
+        pris.add(ancien.id);
+        dernier = poserProduit(p, { remplace: ancien.id });
+        faits.push((fr ? 'remplacé par : ' : 'replaced with: ') + p.nom);
+      } else if (c.action === 'deplacer') {
+        const it = viser(c.objet, c.qualifs)[0];
+        const depart = departDe(c.pres);
+        const q = it && produitDe(it);
+        if (!it || !q) { rates.push(fr ? `pas de ${nom} à déplacer` : `no ${nom} to move`); continue; }
+        if (!depart || estMural(q.fam)) { rates.push(fr ? `dis-moi où mettre le ${nom} (« près de la fenêtre », « au milieu »…)` : `tell me where to put the ${nom} (“near the window”, “in the middle”…)`); continue; }
+        pris.add(it.id);
+        modifier(l => {
+          const bouge = { ...it, x: depart[0], z: depart[1], fixe: false };
+          const { items: places } = resoudre(piece.modele, [...l.filter(x => x.id !== it.id).map(x => ({ ...x, fixe: true })), bouge], produits);
+          const place = places.find(x => x.id === it.id);
+          return l.map(x => (x.id === it.id && place ? { ...x, x: place.x, z: place.z, rot: place.rot } : x));
+        });
+        dernier = it.id;
+        faits.push((fr ? 'déplacé : ' : 'moved: ') + q.nom);
+      }
+    }
+    if (dernier) setSelection(dernier);
+    const phrase = [...faits, ...rates].join(' · ');
+    dire(phrase.charAt(0).toUpperCase() + phrase.slice(1), !faits.length);
+    return faits.length > 0;
   }
   function ouvrirBrief(methode = 'assistant') {
     setBrief({ mode, envies, budget: +budget || 0, garder: [...garder], aRemplacer: [...aRemplacer], espaces, placesRepas, langue: lang, methode });
@@ -320,7 +414,6 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const numerotes = [...nouveaux, ...existants].filter(it => it.garde !== false && produitDe(it));
   const numero = id => String(numerotes.findIndex(it => it.id === id) + 1).padStart(2, '0');
   const variantes = etatVariantes(piece, items);
-  const fr = lang !== 'en';
   const nomOnglet = o => (o === 'propositions' ? (fr ? 'Propositions' : 'Proposals') : o === 'resultat' ? (fr ? 'Rendu photo' : 'Photo render') : tp.panneau[o]);
 
   const ligne = it => {
@@ -543,6 +636,9 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       )}
 
       {attente === 'assistant' || attente === 'ia' ? <Journal key={attente} lang={lang} ia={attente === 'ia'} /> : null}
+
+      {/* barre de commande : écrire ce qu'on veut changer */}
+      {vue === 'dessus' && <BarreCommande lang={lang} exemples={(EXEMPLES[fr ? 'fr' : 'en'][piece.fonction] || EXEMPLES[fr ? 'fr' : 'en'].autre)} desactive={!produits || !!attente} surCommande={commander} />}
 
       {/* dock : ajouter un meuble, les quatre chapitres, le guide */}
       <nav className="plateau__dock" aria-label={tp.ameublement}>

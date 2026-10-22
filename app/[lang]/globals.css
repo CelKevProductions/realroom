@@ -565,6 +565,9 @@ dialog.catalogue::backdrop { background: rgba(17, 17, 16, .42); transition: back
 /* messages éphémères */
 .toast { position: fixed; left: 0; right: 0; bottom: 24px; margin-inline: auto; width: fit-content; z-index: 100; background: var(--nuit); color: var(--platre); padding: 12px 18px; font-size: .92rem; max-width: calc(100% - 32px); border-radius: 999px; border-left: 0; box-shadow: 0 16px 40px -16px rgba(17, 17, 16, .45); }
 .toast--erreur { box-shadow: inset 0 0 0 1px var(--rouille), 0 16px 40px -16px rgba(17, 17, 16, .45); }
+/* dans l'atelier, le message s'affiche au-dessus de la barre de commande et du dock */
+.plateau .toast { bottom: 150px; }
+@media (max-width: 900px) { .plateau .toast { bottom: 128px; } }
 
 /* ---------- compte ---------- */
 .compte { display: grid; gap: clamp(40px, 5vw, 64px); }
@@ -779,7 +782,7 @@ html:has(.plateau), body:has(.plateau) { overflow: hidden; width: 100%; }
 .plateau__etiquette { font: 500 .68rem/1.4 var(--m); letter-spacing: .1em; text-transform: uppercase; color: var(--graphite); }
 
 /* colonne de gauche : fiche, caméra photo, chapitre ouvert */
-.plateau__gauche { position: absolute; z-index: 5; top: 16px; left: 16px; bottom: 88px; width: min(400px, calc(100% - 32px)); display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+.plateau__gauche { position: absolute; z-index: 5; top: 16px; left: 16px; bottom: 146px; width: min(400px, calc(100% - 32px)); display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
 .plateau__gauche > * { pointer-events: auto; flex: none; }
 .plateau__fiche { align-self: start; display: grid; gap: 3px; padding: 14px 16px; max-width: 100%; }
 .plateau__nom { font: 600 1.35rem/1.1 var(--d); letter-spacing: -.035em; }
@@ -807,7 +810,7 @@ html:has(.plateau), body:has(.plateau) { overflow: hidden; width: 100%; }
 .plateau__total .btn { margin-top: 8px; }
 
 /* propositions : bande en bas, au-dessus du dock */
-.plateau__film { position: absolute; z-index: 5; left: 50%; bottom: 88px; transform: translateX(-50%); width: min(940px, calc(100% - 32px)); }
+.plateau__film { position: absolute; z-index: 5; left: 50%; bottom: 146px; transform: translateX(-50%); width: min(940px, calc(100% - 32px)); }
 .plateau__vide { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; padding: 16px 18px; font-size: .9rem; color: var(--graphite); }
 .plateau__vide b { color: var(--encre); }
 .plateau__vide { background: color-mix(in srgb, var(--platre) 88%, transparent); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid var(--trait); border-radius: var(--rayon-carte); }
@@ -829,6 +832,23 @@ html:has(.plateau), body:has(.plateau) { overflow: hidden; width: 100%; }
 .plateau__guide { padding: 0 18px; font: 500 .85rem var(--d); color: var(--encre); background: color-mix(in srgb, var(--platre) 86%, transparent); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
 .plateau__guide:hover { background: var(--calque); }
 .plateau__aide { position: absolute; z-index: 4; right: 16px; bottom: 26px; max-width: 34ch; font: .7rem/1.45 var(--m); color: var(--graphite); text-align: right; pointer-events: none; }
+
+/* barre de commande : on écrit ce qu'on veut changer, au-dessus du dock */
+.commande { position: absolute; z-index: 6; left: 50%; bottom: 82px; transform: translateX(-50%); width: min(560px, calc(100% - 24px)); }
+.commande__barre { display: flex; align-items: center; gap: 10px; padding: 6px 6px 6px 16px; border-radius: 999px; border: 1px solid var(--trait);
+  background: color-mix(in srgb, var(--blanc) 90%, transparent); -webkit-backdrop-filter: blur(16px) saturate(1.2); backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow: 0 18px 50px -24px rgba(17, 17, 16, .4); transition: border-color .2s, box-shadow .2s; }
+.commande__barre:focus-within { border-color: var(--encre); box-shadow: 0 0 0 3px color-mix(in srgb, var(--rouille) 22%, transparent), 0 18px 50px -24px rgba(17, 17, 16, .4); }
+.commande__etoile { color: var(--rouille); font-size: 1rem; line-height: 1; }
+.commande__barre input { flex: 1; min-width: 0; border: 0; background: transparent; font: 400 .95rem/1.2 var(--d); color: var(--encre); outline: none; padding: 8px 0; }
+.commande__barre input::placeholder { color: var(--gris); }
+.commande__envoyer { flex: none; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; border: 0; background: var(--encre); color: var(--platre); cursor: pointer; transition: background-color .2s, opacity .2s; }
+.commande__envoyer:hover:not([disabled]) { background: var(--rouille); }
+.commande__envoyer[disabled] { opacity: .35; cursor: default; }
+.commande__exemples { position: absolute; left: 0; right: 0; bottom: calc(100% + 8px); display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity .25s, transform .35s var(--sortie); }
+.commande:focus-within .commande__exemples { opacity: 1; transform: none; pointer-events: auto; }
+.commande__exemples button { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--trait); background: color-mix(in srgb, var(--platre) 92%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); font: 500 .8rem/1.2 var(--d); color: var(--graphite); cursor: pointer; }
+.commande__exemples button:hover { color: var(--encre); border-color: var(--encre); }
 
 /* repères numérotés posés sur les meubles */
 .reperes { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
@@ -855,7 +875,7 @@ html:has(.plateau), body:has(.plateau) { overflow: hidden; width: 100%; }
 @media (prefers-reduced-motion: reduce) { .journal__point, .journal__lignes li { animation: none; } }
 
 @media (max-width: 900px) {
-  .plateau__gauche { top: 10px; left: 10px; right: 10px; width: auto; bottom: 78px; }
+  .plateau__gauche { top: 10px; left: 10px; right: 10px; width: auto; bottom: 124px; }
   .plateau__fiche { padding: 10px 12px; max-width: calc(100% - 150px); }
   .plateau__nom { font-size: 1.05rem; }
   .plateau__cotes { font-size: .7rem; }
@@ -867,7 +887,9 @@ html:has(.plateau), body:has(.plateau) { overflow: hidden; width: 100%; }
   .plateau__compte { font-size: .66rem; }
   .is-panneau .plateau__total { display: none; }
   .is-panneau .plateau__fiche { max-width: 100%; }
-  .plateau__film { bottom: 78px; width: calc(100% - 20px); }
+  .plateau__film { bottom: 124px; width: calc(100% - 20px); }
+  .commande { bottom: 68px; width: calc(100% - 20px); }
+  .commande__barre input { font-size: 1rem; }
   .plateau__dock { bottom: 12px; gap: 6px; }
   .plateau__chapitres button { padding: 10px 12px; }
   .plateau__rond { height: 46px; min-width: 46px; }
