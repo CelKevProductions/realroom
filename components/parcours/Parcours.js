@@ -1,6 +1,7 @@
 'use client';
 // Parcours guidé d'un projet, sur une ou plusieurs pièces, en quatre écrans : vos pièces, la
-// vérification, vos envies, votre aménagement. Chaque écran regroupe des étapes enregistrées
+// vérification, vos envies, votre aménagement. Mise en page de configurateur : la pièce en grand
+// plan à gauche (on y touche les meubles à garder), les choix à droite, un pied fixe pour avancer. Chaque écran regroupe des étapes enregistrées
 // (lib/parcours.js garde ses dix étapes) qui se dévoilent l'une après l'autre. Chaque choix est
 // enregistré tout de suite (reprise à la visite suivante, sur n'importe quel appareil). On peut
 // revenir en arrière à tout moment ; l'avancement affiché vient des données réelles. Les étapes
@@ -16,11 +17,11 @@ import { Rouage, Progression } from '@/components/mouvement/Attente.js';
 import { Explication } from '@/components/mouvement/Explication.js';
 import { annoncer, entrer } from '@/components/mouvement/regles.js';
 import { reduireImage } from '@/components/piece/image.js';
-import { MiniPlan } from '@/components/piece/Variantes.js';
 import { avancement, gardesDe, demandeProposition, normaliserParcours } from '@/lib/parcours.js';
 import { ESPACES_PAR_FONCTION } from '@/lib/espaces.js';
 import { estInstallation } from '@/lib/usages.js';
-import { contourDe } from '@/lib/contour.js';
+import { contourDe, segmentsDe, pointOuverture } from '@/lib/contour.js';
+import { estMural, estSuspendu } from '@/lib/agencement.js';
 import { FONCTIONS } from '@/lib/config.js';
 import { TEXTES } from './textes.js';
 
@@ -59,6 +60,11 @@ export default function Parcours({ lang, t, projetId, projetNom, initial, produi
 
   const faits = avancement(etat, pieces);
   const choisies = etat.pieces.map(id => pieces.find(p => p.id === id)).filter(Boolean);
+  // la pièce montrée en grand à gauche (pastilles pour changer de pièce)
+  const [vueId, setVueId] = useState(null);
+  const montrables = choisies.length ? choisies : pieces;
+  const vuePiece = montrables.find(p => p.id === vueId) || montrables.find(p => p.modele) || montrables[0] || null;
+
   const k = ecranDe(etat.etape), ecran = ECRANS[k];
   const ecranFait = j => ECRANS[j].etapes.every(e => faits[e] || FACULTATIVES.includes(e));
   // étapes sans objet pour ces pièces : pas de meubles relevés, aucun meuble choisi un par un, rien de gardé
@@ -116,6 +122,12 @@ export default function Parcours({ lang, t, projetId, projetNom, initial, produi
     return () => { removeEventListener('pagehide', quitter); if (aEnvoyer.current) envoyer(); };
   }, [envoyer, projetId, racine]);
 
+  const poserSelection = useCallback((pid, id, v) => modifier(e => {
+    const sel = { ...(e.selection[pid] || {}) };
+    if (v) sel[id] = v; else delete sel[id];
+    return { ...e, selection: { ...e.selection, [pid]: sel } };
+  }), [modifier]);
+
   async function recharger() {
     const r = await api(`/api/projets/${projetId}/parcours`);
     if (r.ok) setPieces(r.pieces);
@@ -142,17 +154,15 @@ export default function Parcours({ lang, t, projetId, projetNom, initial, produi
   const accessible = j => j <= (premierAFaire < 0 ? ECRANS.length - 1 : premierAFaire) || ecranFait(j);
   const peutContinuer = ecranFait(k);
 
-  const props = { x, t, lang, racine, etat, modifier, pieces, choisies, produits, faits, recharger, setPieces, setMessage, occupe, setOccupe, projetId, approfondissement, envoyer };
+  const props = { x, t, lang, racine, etat, modifier, pieces, choisies, produits, faits, recharger, setPieces, setMessage, occupe, setOccupe, projetId, approfondissement, envoyer, poserSelection, vuePiece, setVueId };
+  const fr = lang !== 'en';
   return (
-    <div className="conteneur app-page parcours">
+    <div className="conteneur app-page parcours parcours--plateau">
       <div className="app-page__tete">
         <div>
-          <p className="discret">{projetNom}</p>
+          <p className="parcours__projet">[ {projetNom} ]</p>
           <h1>{x.titre}</h1>
         </div>
-        <p className="parcours__sauvegarde discret" role="status">
-          {sauvegarde === 'encours' ? x.enregistrement : sauvegarde === 'erreur' ? x.nonEnregistre : x.enregistre}
-        </p>
       </div>
       <nav className="parcours__ecrans" aria-label={x.recap}>
         <ol>
@@ -167,29 +177,139 @@ export default function Parcours({ lang, t, projetId, projetNom, initial, produi
           ))}
         </ol>
       </nav>
-      <div className="parcours__scene">
-        <Etape key={ecran.id} titre={x.ecrans[ecran.id].nom} sens={sens} className="parcours__etape">
-          <h2 data-titre-etape="">{x.ecrans[ecran.id].titre}</h2>
-          <p className="parcours__intro">{x.ecrans[ecran.id].intro}</p>
-          <Explication key={active} scene={SCENE[active]} texte={x.etapes[active].panda} geste={k === 0 ? 'salut' : null} />
-          {message && <p className={'avis ' + (message.erreur ? 'avis--alerte' : 'avis--note')}>{message.texte}</p>}
-          {montrees.map(e => (
-            <Bloc key={e} etape={e}>
-              <h3>{x.etapes[e].titre}{FACULTATIVES.includes(e) && <span className="discret"> · {x.facultatif}</span>}</h3>
-              <p className="discret">{x.etapes[e].intro}</p>
-              <Contenu {...props} etape={e} />
-            </Bloc>
-          ))}
-          <div className="parcours__actions">
-            <button type="button" className="btn btn--clair" onClick={precedent} disabled={k === 0 || !!occupe}>{x.retour}</button>
-            {k < ECRANS.length - 1 && <button type="button" className="btn btn--plein" onClick={suivant} disabled={!peutContinuer || !!occupe}>
-              {occupe === 'contraintes' ? <><Rouage /> {x.enregistrement}</> : x.continuer}
-            </button>}
-          </div>
-          {!peutContinuer && <p className="discret">{x.etapes[active].bloque}</p>}
-        </Etape>
+      <div className="parcours__grille">
+        {/* la pièce en grand : plan dessiné, meubles numérotés, cotes */}
+        <section className="parcours__vue" aria-label={fr ? 'Plan de la pièce' : 'Room plan'}>
+          {montrables.length > 1 && <div className="parcours__pastilles" role="group" aria-label={fr ? 'Pièce affichée' : 'Room shown'}>
+            {montrables.map(p => <button key={p.id} type="button" className="puce puce-bouton" aria-pressed={vuePiece?.id === p.id} onClick={() => setVueId(p.id)}>{p.nom}</button>)}
+          </div>}
+          <VuePiece {...props} p={vuePiece} ecran={ecran.id} active={active} />
+        </section>
+        <div className="parcours__scene">
+          <Etape key={ecran.id} titre={x.ecrans[ecran.id].nom} sens={sens} className="parcours__etape">
+            <p className="parcours__chapitre chiffre">{String(k + 1).padStart(2, '0')} / {String(ECRANS.length).padStart(2, '0')}</p>
+            <h2 data-titre-etape="">{x.ecrans[ecran.id].titre}</h2>
+            <p className="parcours__intro">{x.ecrans[ecran.id].intro}</p>
+            <Explication key={active} scene={SCENE[active]} texte={x.etapes[active].panda} geste={k === 0 ? 'salut' : null} />
+            {message && <p className={'avis ' + (message.erreur ? 'avis--alerte' : 'avis--note')}>{message.texte}</p>}
+            {montrees.map(e => (
+              <Bloc key={e} etape={e}>
+                <h3>{x.etapes[e].titre}{FACULTATIVES.includes(e) && <span className="discret"> · {x.facultatif}</span>}</h3>
+                <p className="discret">{x.etapes[e].intro}</p>
+                <Contenu {...props} etape={e} />
+              </Bloc>
+            ))}
+          </Etape>
+        </div>
+      </div>
+      {/* pied fixe : avancement, enregistrement, retour et suite */}
+      <div className="parcours__pied">
+        <div className="parcours__avance">
+          <span className="chiffre">{String(k + 1).padStart(2, '0')} / {String(ECRANS.length).padStart(2, '0')}</span>
+          <span className="parcours__jauge" aria-hidden="true">{ECRANS.map((e, j) => <i key={e.id} className={ecranFait(j) ? 'is-fait' : j === k ? 'is-actif' : ''} />)}</span>
+          <span className="parcours__sauvegarde" role="status">{sauvegarde === 'encours' ? x.enregistrement : sauvegarde === 'erreur' ? x.nonEnregistre : x.enregistre}</span>
+        </div>
+        {!peutContinuer && <p className="parcours__bloque">{x.etapes[active].bloque}</p>}
+        <div className="parcours__boutons">
+          <button type="button" className="btn btn--clair" onClick={precedent} disabled={k === 0 || !!occupe}>{x.retour}</button>
+          {k < ECRANS.length - 1 && <button type="button" className="btn btn--plein" onClick={suivant} disabled={!peutContinuer || !!occupe}>
+            {occupe === 'contraintes' ? <><Rouage /> {x.enregistrement}</> : <>{x.continuer} <span aria-hidden="true">→</span></>}
+          </button>}
+        </div>
       </div>
     </div>
+  );
+}
+
+// État d'un meuble relevé pour le plan : reste à sa place, peut bouger, remplacé, installation.
+function etatMeuble(etat, p, it) {
+  if (estInstallation(it)) return 'installation';
+  const choix = etat.choix[p.id];
+  if (choix === 'certains') return etat.selection[p.id]?.[it.id] || 'remplace';
+  if (choix === 'reagencer') return 'deplacable';
+  if (choix === 'tout') return 'remplace';
+  return 'neutre';
+}
+const CYCLE = { remplace: 'fixe', fixe: 'deplacable', deplacable: '' };
+
+// La pièce en grand, au trait : sol, murs, fenêtres, portes, cotes et meubles numérotés.
+// À l'étape « quels meubles conserver », toucher un meuble change son devenir.
+function VuePiece({ x, t, lang, racine, etat, p, produits, ecran, poserSelection }) {
+  const fr = lang !== 'en';
+  if (!p) return <div className="plan-vide"><p>{fr ? 'Choisissez ou ajoutez une pièce : son plan s’affichera ici.' : 'Pick or add a room: its plan will show here.'}</p></div>;
+  if (!p.modele) return (
+    <div className="plan-vide">
+      <p className="parcours__projet">[ {t.fonctions[p.fonction]} ]</p>
+      <p><b>{p.nom}</b></p>
+      <p className="discret">{fr ? 'Pas encore de plan pour cette pièce. Scan, plan DXF ou photos : quelques minutes suffisent.' : 'No plan yet for this room. Scan, DXF plan or photos: it only takes a few minutes.'}</p>
+      <Link className="btn btn--plein btn--petit" href={`${racine}/pieces/${p.id}`}>{x.capture.relever}</Link>
+    </div>
+  );
+  const m = p.modele, L = m.dims.largeur, P = m.dims.profondeur, pad = .62;
+  const f = v => v.toLocaleString(x.locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const proposition = ecran === 'amenagement' && (p.agencement || []).some(it => it.origine === 'catalogue');
+  const liste = proposition ? (p.agencement || []).filter(it => it.garde !== false) : existants(p);
+  const modifiable = ecran === 'verifier' && etat.choix[p.id] === 'certains';
+  const produitDe = it => (it.sku && produits?.[it.sku]) || it.p;
+  const etats = new Set();
+  // tapis d'abord, meubles ensuite, et tous les numéros par-dessus pour qu'aucun ne soit caché
+  const formes = [], numeros = [], places = [];
+  liste.forEach((it, n) => {
+    const q = produitDe(it);
+    if (!q || estMural(q.fam) || estSuspendu(q.fam)) return;
+    const e = it.origine === 'catalogue' ? 'propose' : etatMeuble(etat, p, it);
+    etats.add(e);
+    const [w, d] = q.dim, clic = modifiable && e !== 'installation', tapis = q.fam === 'tapis';
+    const basculer = () => poserSelection(p.id, it.id, CYCLE[e] ?? '');
+    // un tapis porte son numéro dans un coin, pour ne pas cacher celui du meuble posé dessus
+    const a = -(it.rot || 0), cx = tapis ? -w / 2 + .22 : 0, cy = tapis ? -d / 2 + .22 : 0;
+    // deux numéros au même endroit (meuble TV et télévision) : le second se décale
+    const base = [it.x + cx * Math.cos(a) - cy * Math.sin(a), it.z + cx * Math.sin(a) + cy * Math.cos(a)];
+    const [nx, nz] = [[0, 0], [0, .34], [0, -.34], [-.34, 0], [.34, 0]].map(([u, v]) => [base[0] + u, base[1] + v])
+      .find(([u, v]) => places.every(([pu, pv]) => Math.hypot(u - pu, v - pv) > .3)) || base;
+    places.push([nx, nz]);
+    const pos = `translate(${nx} ${nz})`;
+    const classe = 'plan-scene__meuble is-' + e + (clic ? ' is-cliquable' : '');
+    formes.push({ tapis, el: (
+      <g key={it.id} transform={`translate(${it.x} ${it.z})`} className={classe + (tapis ? ' is-tapis' : '')}
+        {...(clic ? { role: 'button', tabIndex: 0, 'aria-label': `${n + 1} ${q.nom || q.fam}`, onClick: basculer, onKeyDown: ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); basculer(); } } } : {})}>
+        <rect x={-w / 2} y={-d / 2} width={w} height={d} rx=".035" transform={`rotate(${a * 180 / Math.PI})`} />
+      </g>
+    ) });
+    numeros.push(
+      <g key={'n-' + it.id} transform={pos} className={classe} aria-hidden="true" onClick={clic ? basculer : undefined}>
+        <circle r=".15" className="plan-scene__pastille" />
+        <text textAnchor="middle" dominantBaseline="central" className="plan-scene__numero">{n + 1}</text>
+      </g>
+    );
+  });
+  const meubles = [...formes.filter(f => f.tapis), ...formes.filter(f => !f.tapis)].map(f => f.el);
+  const ouvertures = segmentsDe(m).flatMap(pan => (m.murs[pan.id]?.ouvertures || []).map((o, i) => {
+    const a = pointOuverture(pan, o.position - o.largeur / 2), b = pointOuverture(pan, o.position + o.largeur / 2);
+    return <line key={`${pan.id}-${i}`} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} className={o.type === 'fenetre' ? 'plan-scene__fenetre' : 'plan-scene__porte'} />;
+  }));
+  const LEGENDE = { fixe: x.selection.fixe.split(' · ').pop(), deplacable: x.selection.deplacable.split(' · ').pop(), remplace: x.selection.remplacer, installation: x.selection.installation,
+    propose: fr ? 'Proposé par RealRoom' : 'Suggested by RealRoom', neutre: fr ? 'Meuble relevé' : 'Surveyed item' };
+  return (
+    <figure className="plan-scene-cadre">
+      <svg viewBox={`${-L / 2 - pad} ${-P / 2 - pad} ${L + 2 * pad} ${P + 2 * pad}`} className="plan-scene" role="img" aria-label={`${p.nom} · ${f(L)} × ${f(P)} m`}>
+        <polygon points={contourDe(m).map(q => q.join(',')).join(' ')} className="plan-scene__sol" />
+        <g className="plan-scene__cote">
+          <line x1={-L / 2} y1={-P / 2 - .32} x2={L / 2} y2={-P / 2 - .32} /><line x1={-L / 2} y1={-P / 2 - .42} x2={-L / 2} y2={-P / 2 - .22} /><line x1={L / 2} y1={-P / 2 - .42} x2={L / 2} y2={-P / 2 - .22} />
+          <text x="0" y={-P / 2 - .4} textAnchor="middle">{f(L)}</text>
+          <line x1={-L / 2 - .32} y1={-P / 2} x2={-L / 2 - .32} y2={P / 2} /><line x1={-L / 2 - .42} y1={-P / 2} x2={-L / 2 - .22} y2={-P / 2} /><line x1={-L / 2 - .42} y1={P / 2} x2={-L / 2 - .22} y2={P / 2} />
+          <text x={-L / 2 - .4} y="0" textAnchor="middle" transform={`rotate(-90 ${-L / 2 - .4} 0)`}>{f(P)}</text>
+        </g>
+        {meubles}
+        {ouvertures}
+        {numeros}
+      </svg>
+      <figcaption>
+        <span className="chiffre">{p.nom} · {f(L)} × {f(P)} m{m.dims.estimees ? ' · ' + x.validation.estimees : ''}</span>
+        {etats.size > 0 && <span className="plan-scene__legende">{['fixe', 'deplacable', 'remplace', 'installation', 'propose', 'neutre'].filter(e => etats.has(e)).map(e => <span key={e} className={'is-' + e}><i aria-hidden="true" />{LEGENDE[e]}</span>)}</span>}
+        {modifiable && <span className="plan-scene__astuce">{fr ? 'Touchez un meuble sur le plan pour changer son devenir.' : 'Tap an item on the plan to change what happens to it.'}</span>}
+      </figcaption>
+    </figure>
   );
 }
 
@@ -206,45 +326,81 @@ function Contenu(props) {
   return <E {...props} />;
 }
 
-/* 1. Périmètre : les pièces concernées */
-function Perimetre({ x, t, etat, modifier, pieces, setPieces, projetId, recharger }) {
+// Montrer une pièce dans le grand plan (sur téléphone, on y remonte).
+function VoirPlan({ x, p, vuePiece, setVueId, choisies }) {
+  if (!p.modele || choisies.length < 2) return null;
+  const affiche = vuePiece?.id === p.id;
+  const montrer = () => {
+    setVueId(p.id);
+    if (matchMedia('(max-width: 900px)').matches) document.querySelector('.parcours__vue')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  return <button type="button" className="btn btn--clair btn--petit" aria-pressed={affiche} onClick={montrer}>{affiche ? x.planAffiche : x.voirPlan}</button>;
+}
+
+// Petit plan au trait d'une pièce, pour sa carte.
+function Croquis({ m }) {
+  if (!m) return <svg viewBox="0 0 10 10" className="carte-piece__plan is-vide" aria-hidden="true"><rect x="1.5" y="1.5" width="7" height="7" rx=".5" /></svg>;
+  const L = m.dims.largeur, P = m.dims.profondeur, pad = Math.max(L, P) * .1;
+  return <svg viewBox={`${-L / 2 - pad} ${-P / 2 - pad} ${L + 2 * pad} ${P + 2 * pad}`} className="carte-piece__plan" aria-hidden="true">
+    <polygon points={contourDe(m).map(q => q.join(',')).join(' ')} />
+  </svg>;
+}
+
+/* 1. Périmètre : les pièces concernées, en cartes, plus une carte pour en ajouter */
+function Perimetre({ x, t, etat, modifier, pieces, setPieces, projetId, recharger, setVueId }) {
   const [fonction, setFonction] = useState('salon'), [nom, setNom] = useState(''), [attente, setAttente] = useState(false);
-  const basculer = id => modifier(e => ({ ...e, pieces: e.pieces.includes(id) ? e.pieces.filter(p => p !== id) : [...e.pieces, id] }));
+  const [ouvert, setOuvert] = useState(!pieces.length);
+  const basculer = id => {
+    if (!etat.pieces.includes(id)) setVueId(id);
+    modifier(e => ({ ...e, pieces: e.pieces.includes(id) ? e.pieces.filter(p => p !== id) : [...e.pieces, id] }));
+  };
   async function ajouter(ev) {
     ev.preventDefault(); setAttente(true);
     const r = await api(`/api/projets/${projetId}/pieces`, { method: 'POST', corps: { nom: nom.trim() || t.fonctions[fonction], fonction } });
     setAttente(false);
     if (!r.ok) return;
     const n = await recharger();
-    if (n.ok) { setPieces(n.pieces); modifier(e => ({ ...e, pieces: [...e.pieces, r.piece.id] })); setNom(''); }
+    if (n.ok) { setPieces(n.pieces); modifier(e => ({ ...e, pieces: [...e.pieces, r.piece.id] })); setNom(''); setOuvert(false); setVueId(r.piece.id); }
   }
   return (
-    <>
-      {pieces.length > 0 && <fieldset className="champ champ--groupe">
-        <legend>{x.perimetre.pieces}</legend>
-        <div className="coches">
-          {pieces.map(p => <label key={p.id} className="coche coche--cadre">
-            <input type="checkbox" checked={etat.pieces.includes(p.id)} onChange={() => basculer(p.id)} />
-            <span>{p.nom} <span className="discret">· {t.fonctions[p.fonction]}{p.modele ? ' · ' + x.planReleve : ''}</span></span>
-          </label>)}
-        </div>
-      </fieldset>}
-      <form className="parcours__ajout" onSubmit={ajouter}>
-        <label className="champ"><span>{x.perimetre.fonction}</span>
-          <select className="saisie" value={fonction} onChange={e => setFonction(e.target.value)}>
-            {FONCTIONS.map(f => <option key={f} value={f}>{t.fonctions[f]}</option>)}
-          </select>
-        </label>
-        <label className="champ"><span>{x.perimetre.nom}</span>
-          <input className="saisie" value={nom} maxLength={80} placeholder={t.fonctions[fonction]} onChange={e => setNom(e.target.value)} />
-        </label>
-        <button className="btn btn--clair" disabled={attente}>{attente ? <Rouage /> : null} {x.perimetre.ajouter}</button>
-      </form>
-    </>
+    <div className="cartes-pieces" role="group" aria-label={x.perimetre.pieces}>
+      {pieces.map(p => {
+        const choisie = etat.pieces.includes(p.id);
+        return (
+          <button key={p.id} type="button" className="carte-piece" aria-pressed={choisie} onClick={() => basculer(p.id)}>
+            <Croquis m={p.modele} />
+            <span className="carte-piece__nom">{p.nom}</span>
+            <span className="carte-piece__info">{t.fonctions[p.fonction]} · {p.modele ? x.planReleve : x.sansPlan}</span>
+            <span className="carte-piece__coche" aria-hidden="true">{choisie ? '✓' : '+'}</span>
+          </button>
+        );
+      })}
+      {ouvert ? (
+        <form className="carte-piece carte-piece--form" onSubmit={ajouter}>
+          <label className="champ"><span>{x.perimetre.fonction}</span>
+            <select className="saisie" value={fonction} onChange={e => setFonction(e.target.value)}>
+              {FONCTIONS.map(f => <option key={f} value={f}>{t.fonctions[f]}</option>)}
+            </select>
+          </label>
+          <label className="champ"><span>{x.perimetre.nom}</span>
+            <input className="saisie" value={nom} maxLength={80} placeholder={t.fonctions[fonction]} onChange={e => setNom(e.target.value)} />
+          </label>
+          <div className="rangee">
+            <button className="btn btn--plein btn--petit" disabled={attente}>{attente ? <Rouage /> : null} {x.perimetre.ajouter}</button>
+            {pieces.length > 0 && <button type="button" className="btn btn--lien btn--petit" onClick={() => setOuvert(false)}>{x.perimetre.annuler}</button>}
+          </div>
+        </form>
+      ) : (
+        <button type="button" className="carte-piece carte-piece--plus" onClick={() => setOuvert(true)}>
+          <span className="carte-piece__signe" aria-hidden="true">+</span>
+          <span className="carte-piece__nom">{x.perimetre.ajouter}</span>
+        </button>
+      )}
+    </div>
   );
 }
 
-/* 2. Usages : ce qui se passe dans chaque pièce */
+/* 2. Usages : ce qui se passe dans chaque pièce, en pastilles à cocher */
 function Usages({ x, t, etat, modifier, choisies }) {
   const maj = (id, champ, v) => modifier(e => ({ ...e, usages: { ...e.usages, [id]: { espaces: [], envies: '', ...e.usages[id], [champ]: v } } }));
   return choisies.map(p => {
@@ -252,11 +408,14 @@ function Usages({ x, t, etat, modifier, choisies }) {
     return (
       <fieldset key={p.id} className="carte parcours__piece">
         <legend><b>{p.nom}</b> <span className="discret">· {t.fonctions[p.fonction]}</span></legend>
-        {possibles.length > 0 && <div className="coches">
-          {possibles.map(s => <label key={s} className="coche">
-            <input type="checkbox" checked={u.espaces.includes(s)} onChange={() => maj(p.id, 'espaces', u.espaces.includes(s) ? u.espaces.filter(v => v !== s) : [...u.espaces, s])} />
-            {x.espaces[s]}
-          </label>)}
+        {possibles.length > 0 && <div className="puces">
+          {possibles.map(s => {
+            const on = u.espaces.includes(s);
+            return <button key={s} type="button" className="puce puce-bouton parcours__usage" aria-pressed={on}
+              onClick={() => maj(p.id, 'espaces', on ? u.espaces.filter(v => v !== s) : [...u.espaces, s])}>
+              <span aria-hidden="true">{on ? '✓' : '+'}</span>{x.espaces[s]}
+            </button>;
+          })}
         </div>}
         {u.espaces.includes('repas') && <label className="champ"><span>{x.usages.places}</span>
           <input className="saisie" type="number" min="2" max="12" value={u.placesRepas || 4} onChange={e => maj(p.id, 'placesRepas', +e.target.value)} />
@@ -299,8 +458,9 @@ function Cotes({ m, x }) {
     {' '}{ouv.filter(o => o.type === 'fenetre').length} {x.validation.fenetres}{m.dims.estimees ? ' · ' + x.validation.estimees : ''}</p>;
 }
 
-/* 4. Validation du plan */
-function Validation({ x, racine, etat, modifier, choisies, produits, projetId, setPieces, setMessage }) {
+/* 4. Validation du plan (le plan lui-même est à gauche) */
+function Validation(props) {
+  const { x, racine, etat, modifier, choisies, projetId, setPieces, setMessage } = props;
   const [attente, setAttente] = useState('');
   async function valider(p) {
     setAttente(p.id);
@@ -312,10 +472,9 @@ function Validation({ x, racine, etat, modifier, choisies, produits, projetId, s
     modifier(e => ({ ...e, valides: { ...e.valides, [p.id]: n.version_scene || 0 } }));
   }
   return choisies.map(p => (
-    <section key={p.id} className="carte parcours__piece parcours__piece--plan">
-      <h3>{p.nom}</h3>
+    <section key={p.id} className="carte parcours__piece">
+      <div className="parcours__rang"><h3>{p.nom}</h3><VoirPlan {...props} p={p} /></div>
       {!p.modele ? <p>{x.validation.pasDePlan}</p> : <>
-        <div className="parcours__plan"><MiniPlan modele={p.modele} items={p.agencement || []} produits={produits} /></div>
         <Cotes m={p.modele} x={x} />
         {etat.valides[p.id] === (p.version_scene || 0)
           ? <p className="puce puce--vert">{x.validation.valide}</p>
@@ -348,49 +507,27 @@ function Choix({ x, etat, modifier, choisies }) {
   });
 }
 
-// Plan numéroté des meubles relevés ; les meubles gardés sont mis en avant.
-function PlanNumerote({ p, gardes }) {
-  const m = p.modele, L = m.dims.largeur, P = m.dims.profondeur, liste = existants(p);
-  return <svg viewBox={`${-L / 2 - .15} ${-P / 2 - .15} ${L + .3} ${P + .3}`} className="parcours__svg" aria-hidden="true">
-    <polygon points={contourDe(m).map(q => q.join(',')).join(' ')} className="parcours__sol" strokeWidth=".035" />
-    {liste.map((it, n) => {
-      const [w, d] = it.p.dim, garde = gardes.has(it.id);
-      return <g key={it.id} transform={`translate(${it.x} ${it.z})`}>
-        <rect x={-w / 2} y={-d / 2} width={w} height={d} rx=".03" transform={`rotate(${-(it.rot || 0) * 180 / Math.PI})`}
-          className={'parcours__meuble' + (garde ? ' is-garde' : '')} strokeWidth=".02" />
-        <circle r=".17" className="parcours__pastille" strokeWidth=".02" />
-        <text textAnchor="middle" dominantBaseline="central" fontSize=".2" fontWeight="700" className="parcours__numero">{n + 1}</text>
-      </g>;
-    })}
-  </svg>;
-}
-
-/* 6. Sélection sur le plan */
-function Selection({ x, t, etat, modifier, choisies }) {
-  const poser = (pid, id, v) => modifier(e => {
-    const s = { ...(e.selection[pid] || {}) };
-    if (v) s[id] = v; else delete s[id];
-    return { ...e, selection: { ...e.selection, [pid]: s } };
-  });
+/* 6. Sélection : sur le plan à gauche (toucher un meuble) ou dans cette liste, mêmes numéros */
+function Selection(props) {
+  const { x, t, etat, choisies, poserSelection } = props;
   return choisies.map(p => {
     const liste = existants(p), choix = etat.choix[p.id] || 'tout', gardes = new Set(gardesDe(etat, p).map(it => it.id));
     if (!liste.length || !p.modele) return <section key={p.id} className="carte parcours__piece"><h3>{p.nom}</h3><p className="discret">{x.choix.vide}</p></section>;
     return (
-      <section key={p.id} className="carte parcours__piece parcours__piece--plan">
-        <h3>{p.nom} <span className="discret">· {x.choix[choix]}</span></h3>
-        <div className="parcours__plan"><PlanNumerote p={p} gardes={gardes} /></div>
+      <section key={p.id} className="carte parcours__piece">
+        <div className="parcours__rang"><h3>{p.nom} <span className="discret">· {x.choix[choix]}</span></h3><VoirPlan {...props} p={p} /></div>
         <ol className="parcours__meubles">
           {liste.map((it, n) => {
             const installation = estInstallation(it), [w, d, h] = it.p.dim;
             const valeur = installation ? 'fixe' : choix === 'certains' ? (etat.selection[p.id]?.[it.id] || '') : choix === 'reagencer' ? 'deplacable' : '';
             return (
-              <li key={it.id}>
+              <li key={it.id} className={'is-' + (installation ? 'installation' : valeur || 'remplace')}>
                 <span className="parcours__num">{n + 1}</span>
                 <span><b>{it.p.nom || t.fonctions?.[it.p.fam] || it.p.fam}</b><br />
                   <span className="discret">{[w, d, h].map(v => Math.round(v * 100)).join(' × ')} cm{gardes.has(it.id) ? ' · ' + x.selection.verrou : ''}</span></span>
                 {installation ? <span className="puce">{x.selection.installation}</span>
                   : choix === 'certains' ? (
-                    <select className="saisie" aria-label={x.selection.devenir + ' ' + (n + 1)} value={valeur} onChange={e => poser(p.id, it.id, e.target.value)}>
+                    <select className="saisie" aria-label={x.selection.devenir + ' ' + (n + 1)} value={valeur} onChange={e => poserSelection(p.id, it.id, e.target.value)}>
                       <option value="">{x.selection.remplacer}</option>
                       <option value="deplacable">{x.selection.deplacable}</option>
                       <option value="fixe">{x.selection.fixe}</option>
@@ -448,18 +585,38 @@ function PhotosMeubles({ x, etat, modifier, choisies, setPieces, recharger, setM
   });
 }
 
-/* 8. Préférences */
+/* 8. Préférences : budget au curseur, style en suggestions d'un clic */
+const BUDGET_MAX = 10000;
 function Preferences({ x, etat, modifier }) {
   const pr = etat.preferences, maj = (k, v) => modifier(e => ({ ...e, preferences: { ...e.preferences, [k]: v } }));
+  const budget = pr.budget || 0, euros = v => v.toLocaleString(x.locale) + ' €';
+  // une suggestion de style s'ajoute au champ, ou s'en retire si elle y est déjà
+  const mots = (pr.style || '').split(',').map(v => v.trim()).filter(Boolean);
+  const aStyle = s => mots.some(v => v.toLowerCase() === s.toLowerCase());
+  const basculerStyle = s => maj('style', (aStyle(s) ? mots.filter(v => v.toLowerCase() !== s.toLowerCase()) : [...mots, s]).join(', ').slice(0, 120));
   return (
     <div className="formulaire">
-      <label className="champ"><span>{x.preferences.budget}</span>
-        <input className="saisie" type="number" min="0" step="100" value={pr.budget || ''} placeholder={x.preferences.sansBudget} onChange={e => maj('budget', +e.target.value || 0)} />
+      <div className="champ parcours__budget">
+        <span id="parcours-budget">{x.preferences.budget}</span>
+        <output className="parcours__montant" htmlFor="parcours-budget-curseur">{budget ? euros(budget) : x.preferences.sansBudget}</output>
+        <input id="parcours-budget-curseur" type="range" min="0" max={Math.max(BUDGET_MAX, budget)} step="100" value={budget}
+          aria-labelledby="parcours-budget" aria-valuetext={budget ? euros(budget) : x.preferences.sansBudget}
+          style={{ '--part': `${budget / Math.max(BUDGET_MAX, budget) * 100}%` }} onChange={e => maj('budget', +e.target.value)} />
+        <span className="parcours__bornes chiffre"><span>{x.preferences.sansBudget}</span><span>{euros(Math.max(BUDGET_MAX, budget))}</span></span>
+        <label className="parcours__exact"><span className="discret">{x.preferences.exact}</span>
+          <input className="saisie" type="number" min="0" step="100" value={budget || ''} placeholder={x.preferences.sansBudget} onChange={e => maj('budget', +e.target.value || 0)} />
+        </label>
         <small>{x.preferences.budgetAide}</small>
-      </label>
-      <label className="champ"><span>{x.preferences.style}</span>
-        <input className="saisie" maxLength={120} value={pr.style} placeholder={x.preferences.styleExemple} onChange={e => maj('style', e.target.value)} />
-      </label>
+      </div>
+      <div className="champ">
+        <label htmlFor="parcours-style">{x.preferences.style}</label>
+        <div className="puces">
+          {x.preferences.styles.map(s => <button key={s} type="button" className="puce puce-bouton parcours__usage" aria-pressed={aStyle(s)} onClick={() => basculerStyle(s)}>
+            <span aria-hidden="true">{aStyle(s) ? '✓' : '+'}</span>{s}
+          </button>)}
+        </div>
+        <input id="parcours-style" className="saisie" maxLength={120} value={pr.style} placeholder={x.preferences.styleExemple} onChange={e => maj('style', e.target.value)} />
+      </div>
       <label className="champ"><span>{x.preferences.envies}</span>
         <textarea className="saisie" rows={3} maxLength={800} value={pr.envies} onChange={e => maj('envies', e.target.value)} />
       </label>
@@ -469,21 +626,23 @@ function Preferences({ x, etat, modifier }) {
 }
 
 /* 9. Première proposition : l'assistant de l'atelier, pièce par pièce */
-function Proposition({ x, lang, racine, etat, choisies, produits, faits, recharger, setPieces, occupe, setOccupe }) {
+function Proposition(props) {
+  const { x, lang, racine, etat, choisies, faits, recharger, setPieces, occupe, setOccupe } = props;
   const [suivi, setSuivi] = useState({});
   async function lancer() {
     setOccupe('proposition');
     const n = { ...suivi };
-    for (const p of choisies) {
-      n[p.id] = 'encours'; setSuivi({ ...n });
-      const r = await api(`/api/pieces/${p.id}/variantes`, { method: 'POST', corps: demandeProposition(etat, p, lang) });
-      n[p.id] = r.ok ? 'fait' : (x.erreurs[r.erreur] || x.erreurs.generique);
-      setSuivi({ ...n });
-      annoncer(p.nom + ' : ' + (r.ok ? x.proposition.prete : n[p.id]));
-    }
-    const r = await recharger();
-    if (r.ok) setPieces(r.pieces);
-    setOccupe('');
+    try {
+      for (const p of choisies) {
+        n[p.id] = 'encours'; setSuivi({ ...n });
+        const r = await api(`/api/pieces/${p.id}/variantes`, { method: 'POST', corps: demandeProposition(etat, p, lang) }).catch(e => ({ ok: false, erreur: e?.code }));
+        n[p.id] = r.ok ? 'fait' : (x.erreurs[r.erreur] || x.erreurs.generique);
+        setSuivi({ ...n });
+        annoncer(p.nom + ' : ' + (r.ok ? x.proposition.prete : n[p.id]));
+      }
+      const r = await recharger();
+      if (r.ok) setPieces(r.pieces);
+    } finally { setOccupe(''); }
   }
   const prete = p => (p.proposition?.variantes?.liste || []).length > 0;
   return (
@@ -493,13 +652,15 @@ function Proposition({ x, lang, racine, etat, choisies, produits, faits, recharg
         {occupe === 'proposition' ? <><Rouage /> {x.proposition.calcul}</> : faits.proposition ? x.proposition.relancer : x.proposition.lancer}
       </button>
       {choisies.map(p => (
-        <section key={p.id} className="carte parcours__piece parcours__piece--plan">
-          <h3>{p.nom}</h3>
+        <section key={p.id} className="carte parcours__piece">
+          <div className="parcours__rang">
+            <h3>{p.nom} {prete(p) && <span className="puce puce--vert">{x.proposition.prete}</span>}</h3>
+            {prete(p) && p.modele && <div className="rangee">
+              <VoirPlan {...props} p={p} />
+              <Link className="btn btn--plein btn--petit" href={`${racine}/pieces/${p.id}`}>{x.proposition.atelier}</Link>
+            </div>}
+          </div>
           {typeof suivi[p.id] === 'string' && !['fait', 'encours'].includes(suivi[p.id]) && <p className="avis avis--alerte">{suivi[p.id]}</p>}
-          {prete(p) && p.modele && <>
-            <div className="parcours__plan"><MiniPlan modele={p.modele} items={p.agencement || []} produits={produits} /></div>
-            <Link className="btn btn--clair btn--petit" href={`${racine}/pieces/${p.id}`}>{x.proposition.atelier}</Link>
-          </>}
         </section>
       ))}
     </>

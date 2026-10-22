@@ -225,7 +225,10 @@ async function variantes(p, b, langue) {
   if (!p.modele) return non('pas-de-modele', 409);
   if (p.etat === 'analyse') return non('en-cours', 409);
   const revision = p.maj_le, produits = (await chargerCatalogue()).produits;
-  const resultat = await assistantEnArrierePlan({ piece: structuredClone(p), demande: { ...b, langue }, produits });
+  let resultat;
+  // refus de l'assistant (aucune disposition, budget, meubles conservés) : même réponse que le serveur
+  try { resultat = await assistantEnArrierePlan({ piece: structuredClone(p), demande: { ...b, langue }, produits }); }
+  catch (e) { if (e?.code) return non(e.code, e.statut || 409); throw e; }
   if (pieceDe(p.id) !== p || p.maj_le !== revision) return non('amenagement-conflit', 409);
   ecrire(() => { p.agencement = resultat.agencement; p.proposition = resultat.proposition; toucher(p); });
   return ok({ piece: publique(p), assistant: resultat.assistant });
