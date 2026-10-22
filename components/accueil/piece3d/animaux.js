@@ -25,8 +25,7 @@ export const ESPECES = {
   lapin: { pas: .36, duree: .3, hauteur: .12, roulis: 0 },
   chien: { pas: .2, duree: .15, hauteur: .05, roulis: .07 },
   chat: { pas: .22, duree: .19, hauteur: .035, roulis: .04 },
-  tortue: { pas: .13, duree: .32, hauteur: .015, roulis: .13 },
-  bonhomme: { pas: .2, duree: .2, hauteur: .04, roulis: .05 }
+  tortue: { pas: .13, duree: .32, hauteur: .015, roulis: .13 }
 };
 export const ECHELLE = 1.2;
 
@@ -246,22 +245,16 @@ function carotte(mat) {
 
 /* ---------- l'animal ---------- */
 
-// look : { espece, pelage, clair, sombre, carapace, accessoire, couleurAcc, couverture, graine } ;
-// le bonhomme a aussi vetement, cheveux et chaussures (pelage : sa peau)
+// look : { espece, pelage, clair, sombre, carapace, accessoire, couleurAcc, couverture, graine }
 // accessoire : 'echarpe', 'noeud', 'collier', 'grelot', 'lunettes'. Repère : posé à y = 0, face vers +z.
 export function creerAnimal(mat, look = {}) {
   const { espece = 'lapin', graine = 0, accessoire = '', couleurAcc = 'menthe', couverture = 'corail' } = look;
-  const lapin = espece === 'lapin', chien = espece === 'chien', chat = espece === 'chat', tortue = espece === 'tortue', bonhomme = espece === 'bonhomme';
+  const lapin = espece === 'lapin', chien = espece === 'chien', chat = espece === 'chat', tortue = espece === 'tortue';
   const lambert = c => new THREE.MeshLambertMaterial({ color: c });
   const mats = { pelage: lambert(look.pelage || '#FFFDFB') };
   mats.clair = look.clair ? lambert(look.clair) : mats.pelage;
   mats.sombre = look.sombre ? lambert(look.sombre) : mats.pelage;
   if (tortue) mats.carapace = new THREE.MeshLambertMaterial({ color: look.carapace || '#7FBF8F', flatShading: true });
-  if (bonhomme) {
-    mats.vetement = lambert(look.vetement || '#E7DED2');
-    mats.cheveux = lambert(look.cheveux || '#4A3A33');
-    mats.chaussures = lambert(look.chaussures || '#3B3640');
-  }
   const P = mats.pelage, Cl = mats.clair, S = mats.sombre, acc = mat[couleurAcc] || mat.menthe;
 
   const objet = new THREE.Group();
@@ -275,9 +268,8 @@ export function creerAnimal(mat, look = {}) {
   echelle.add(corps);
 
   // corps : ventre (il respire), poitrail clair, carapace de la tortue
-  const ventre = boule(.165, tortue ? Cl : bonhomme ? mats.vetement : P, 0, .19, 0, bonhomme ? [.9, 1.1, .86] : [1, 1.04, .94]);
+  const ventre = boule(.165, tortue ? Cl : P, 0, .19, 0, [1, 1.04, .94]);
   corps.add(ventre);
-  const base = ventre.scale.clone();
   if (chien || chat) corps.add(boule(.1, Cl, 0, .17, .095, [1, 1.25, .55], 12));
   if (tortue) {
     corps.add(new THREE.Mesh(new THREE.IcosahedronGeometry(.19, 1).scale(1.02, 1.1, .62).translate(0, .21, -.085), mats.carapace));
@@ -296,12 +288,11 @@ export function creerAnimal(mat, look = {}) {
   }
   if (tortue) { const c = new THREE.Mesh(new THREE.ConeGeometry(.025, .07, 8), P); c.rotation.x = -1.9; c.position.set(0, -.07, -.02); queue.add(c); }
   // pieds (sur echelle : ils restent au sol quand le corps s'écrase)
-  const pieds = [-1, 1].map(s => { const p = boule(.058, bonhomme ? mats.chaussures : tortue ? P : (chien || chat) ? Cl : P, s * .08, .028, .06, [1, .55, lapin ? 1.45 : 1.25], 12); echelle.add(p); return p; });
+  const pieds = [-1, 1].map(s => { const p = boule(.058, tortue ? P : (chien || chat) ? Cl : P, s * .08, .028, .06, [1, .55, lapin ? 1.45 : 1.25], 12); echelle.add(p); return p; });
   // bras : pivot à l'épaule
   const bras = [-1, 1].map(s => {
     const b = pivot(s * .13, .27, .02);
-    b.add(gelule(.033, .06, bonhomme ? mats.vetement : P, 0, -.055, 0));
-    if (bonhomme) b.add(boule(.03, P, 0, -.12, 0, [1, 1, 1], 10));
+    b.add(gelule(.033, .06, P, 0, -.055, 0));
     b.rotation.z = s * .45;
     corps.add(b);
     return b;
@@ -335,7 +326,6 @@ export function creerAnimal(mat, look = {}) {
     sourire.position.set(0, .1, .175); sourire.rotation.z = Math.PI;
     visage.add(sourire);
   }
-  [-1, 1].forEach(s => { const j = boule(.036, mat.joue, s * .1, .1, .13, [1, .75, .35], 10); j.rotation.y = s * .55; visage.add(j); });
   // yeux : normaux, contents (arcs ∩), endormis (arcs ∪), étourdis (spirales) ; bouche ronde (surpris)
   const yeux = new THREE.Group(), arcs = new THREE.Group(), spirales = new THREE.Group();
   const arc = new THREE.TorusGeometry(.021, .0065, 6, 14, Math.PI), spi = geoSpirale();
@@ -390,14 +380,6 @@ export function creerAnimal(mat, look = {}) {
     }
   }
   oreilles.forEach(o => visage.add(o));
-  // le bonhomme : des cheveux (une calotte posée en arrière, le front dégagé) et une petite mèche
-  if (bonhomme) {
-    const calotte = new THREE.Mesh(new THREE.SphereGeometry(.174, 18, 10, 0, Math.PI * 2, 0, Math.PI * .46), mats.cheveux);
-    calotte.position.set(0, .15, -.008); calotte.rotation.x = -.32; calotte.scale.set(1.08, .98, 1.02);
-    const meche = boule(.05, mats.cheveux, .05, .3, .07, [1.5, .55, 1], 10);
-    meche.rotation.z = -.4;
-    visage.add(calotte, meche);
-  }
 
   // accessoires portés
   if (accessoire === 'echarpe') {
@@ -547,7 +529,7 @@ export function creerAnimal(mat, look = {}) {
     yeux.children.forEach((o, i) => o.position.set(baseYeux[i].x + regardVu.x * .013, baseYeux[i].y - regardVu.y * .011, baseYeux[i].z));
     const ph = t * (e.dort > .5 ? 1.2 : 2.2) + graine * 2.1;
     const respire = Math.sin(ph) * .018 * e.souffle * (1 + e.dort * .8);
-    ventre.scale.set(base.x * (1 - respire * .5), base.y * (1 + respire), base.z * (1 - respire * .5));
+    ventre.scale.set(1 - respire * .5, 1.04 * (1 + respire), .94 * (1 - respire * .5));
     // tête : respire, se rentre (tortue cachée), se penche (lecture, sommeil, réflexion)
     const c = e.cache;
     const cou = tortue ? gGeste : 0;   // la tortue tend le cou

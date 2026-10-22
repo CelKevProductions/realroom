@@ -1,12 +1,12 @@
 // Moteur de la scène d'accueil, chargé à la demande par PieceAccueil (three.js n'est pas dans le
-// paquet initial). Un immeuble jouet de quatre appartements, deux petits bonhommes dans
-// chacun (même squelette que les animaux d'animaux.js, espèce « bonhomme »). L'histoire suit les chapitres de la page (défilement guidé) :
+// paquet initial). Un immeuble jouet de quatre appartements : des chiens, des chats, des tortues et des
+// lapins y vivent comme des humains. L'histoire suit les chapitres de la page (défilement guidé) :
 //   0 (héros) : l'immeuble s'assemble étage par étage, façade fermée ;
 //   1 (Relever) : la façade s'ouvre comme une maison de poupée, le plan de chaque pièce se trace ; les
 //     pièces sont vides et leurs habitants les relèvent au téléphone (l'un tourne sur lui-même, l'autre
 //     fait le tour des murs, un faisceau balaie la pièce devant eux) ;
 //   2 (Aménager), deux arrêts : les meubles arrivent (première proposition), puis Shuffle les change de
-//     place sous leurs pieds : surprises, l'un tombe à la renverse, les autres sursautent, le
+//     place sous leurs pattes : surprises, un lapin tombe, les tortues rentrent dans leur carapace, le
 //     fauteuil boude ; et tout le monde est content ;
 //   3 (Visiter), une visite par arrêt du défilement : on s'approche de chaque appartement (console, échecs,
 //     lecture, série sous le plaid dans le noir), puis tout le monde salue et dit merci.
@@ -54,7 +54,7 @@ const MURS = { x: 1.85, zMin: -1.45, zMax: 1.3, plafond: 1.1 };
 // proposition (A) et de celle de Shuffle (B) ; avant, les pièces sont vides. Quand on reclique sur
 // « Shuffle », une autre idée (C) : B en miroir (coord)
 const PIECES = [
-  { // 0 console : A, le canapé contre le mur de gauche face à la console ; B, deux poufs devant la console
+  { // 0 chiens : A, le canapé contre le mur de gauche face à la console ; B, deux poufs devant la console
     tapis: { A: [.1, -.1, 0], B: [-.5, .05, 0] },
     canape: { A: [-1.7, 0, R], B: [.55, -1.3, 0] },
     meubleTV: { A: [1.95, -.1, -R], B: [-1.6, -.1, R - .4] },
@@ -63,7 +63,7 @@ const PIECES = [
     plante: { A: [-1.85, -1.45, 0], B: [1.9, -1.45, 0] },
     lampadaire: { A: [-1.85, 1.4, 0], B: [-1.9, -1.45, 0] }
   },
-  { // 1 échecs : A, un coin lecture (fauteuil, lampe, guéridon) ; B, le guéridon et son échiquier entre le fauteuil et le pouf
+  { // 1 chats : A, un coin lecture (fauteuil, lampe, guéridon) ; B, le guéridon et son échiquier entre le fauteuil et le pouf
     tapisRond: { A: [.9, -.4, 0], B: [0, .25, 0] },
     gueridon: { A: [.55, -.95, 0], B: [0, .2, 0] },
     fauteuil: { A: [1.45, -1, -.6], B: [-.85, .2, R - .35] },
@@ -72,7 +72,7 @@ const PIECES = [
     plante: { A: [-1.9, -1.45, 0], B: [1.9, 1.2, 0] },
     lampadaire: { A: [1.95, -1.5, 0], B: [-1.9, 1.2, 0] }
   },
-  { // 2 lecture : A, le canapé contre le mur de gauche, la table devant ; B, le canapé face à nous, la table basse et le thé
+  { // 2 tortues : A, le canapé contre le mur de gauche, la table devant ; B, le canapé face à nous, la table basse et le thé
     tapis: { A: [-.6, -.2, R], B: [-.2, -.45, 0] },
     canape: { A: [-1.7, -.2, R], B: [-.2, -1.3, 0] },
     table: { A: [-.85, -.2, R], B: [-.2, -.25, 0] },
@@ -80,7 +80,7 @@ const PIECES = [
     lampadaire: { A: [-1.85, -1.5, 0], B: [-1.75, -1.42, 0] },
     plante: { A: [1.85, -1.4, 0], B: [1.85, 1.25, 0] }
   },
-  { // 3 série : A, la télé à gauche, le canapé à droite ; B, le canapé en biais face à la télé
+  { // 3 lapins : A, la télé à gauche, le canapé à droite ; B, le canapé en biais face à la télé
     tapis: { A: [0, -.1, 0], B: [-.45, .2, 0] },
     canape: { A: [1.7, -.1, -R], B: [.95, .1, -R + .45] },
     meubleTV: { A: [-1.95, -.1, R], B: [-1.6, .05, R - .4] },
@@ -89,16 +89,16 @@ const PIECES = [
     plante: { A: [-1.9, -1.45, 0], B: [1.9, 1.3, 0] }
   }
 ];
-// habitants (deux par appartement) : des petits bonhommes, peaux, cheveux et vêtements variés
+// habitants (deux par appartement)
 const HABITANTS = [
-  [{ espece: 'bonhomme', pelage: '#F1D3BC', vetement: '#F2613F', cheveux: '#3B2D27', graine: 0 },
-    { espece: 'bonhomme', pelage: '#8D5B3E', vetement: '#EFE7DC', cheveux: '#1E1817', graine: 1 }],
-  [{ espece: 'bonhomme', pelage: '#E8C4A4', vetement: '#A9BFA8', cheveux: '#C9974F', graine: 2 },
-    { espece: 'bonhomme', pelage: '#C99A76', vetement: '#D9C3A5', cheveux: '#231C1A', graine: 3 }],
-  [{ espece: 'bonhomme', pelage: '#A8714F', vetement: '#5B6785', cheveux: '#2A2220', couverture: 'corail', graine: 4 },
-    { espece: 'bonhomme', pelage: '#F3D9C6', vetement: '#B9B1CB', cheveux: '#8A5A3B', couverture: 'menthe', graine: 5 }],
-  [{ espece: 'bonhomme', pelage: '#D6A982', vetement: '#E3B75C', cheveux: '#3B2D27', graine: 6 },
-    { espece: 'bonhomme', pelage: '#F1D3BC', vetement: '#F6F0E8', cheveux: '#5A3E30', graine: 7 }]
+  [{ espece: 'chien', pelage: '#F1C08B', clair: '#FFF3E2', sombre: '#B9835A', graine: 0 },
+    { espece: 'chien', pelage: '#FFF6EA', clair: '#FFFFFF', sombre: '#A0806C', graine: 1 }],
+  [{ espece: 'chat', pelage: '#F6B07A', clair: '#FFF0E0', graine: 2 },
+    { espece: 'chat', pelage: '#B8B2AC', clair: '#F2EEEA', graine: 3 }],
+  [{ espece: 'tortue', pelage: '#AEC9A4', clair: '#F4ECD6', carapace: '#7FA48A', accessoire: 'lunettes', couverture: 'corail', graine: 4 },
+    { espece: 'tortue', pelage: '#B9CFAE', clair: '#F4ECD6', carapace: '#C9A27A', couverture: 'menthe', graine: 5 }],
+  [{ espece: 'lapin', graine: 6 },
+    { espece: 'lapin', graine: 7 }]
 ];
 // où ils sont et ce qu'ils font : le relevé des pièces vides (chapitres 0 et 1), debout parmi les
 // meubles de la première proposition (2, premier arrêt) puis de Shuffle (2, second arrêt), à leur
@@ -691,10 +691,10 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
       .call(bouder, null, x + 1);
     allerVers(tl, hc1, [[D[1][0].x, D[1][0].z]], x + 1.5, D[1][0].r, vers);
     allerVers(tl, hc2, [[D[1][1].x, D[1][1].z]], x + 1.7, D[1][1].r, vers);
-    // troisième appartement : ils sursautent l'un après l'autre
+    // tortues : elles rentrent dans leur carapace, puis ressortent, tout doucement
     x = T[2];
-    tl.add(surprise(gsap, ht1.a, { haut: .2 }), x - .05)
-      .add(surprise(gsap, ht2.a, { haut: .26 }), x + .15);
+    tl.add(seCacher(gsap, ht1.a, 1.3), x - .05)
+      .add(seCacher(gsap, ht2.a, 1.2), x + .05);
     allerVers(tl, ht1, [[D[2][0].x, D[2][0].z]], x + 2, D[2][0].r, vers);
     allerVers(tl, ht2, [[D[2][1].x, D[2][1].z]], x + 2.1, D[2][1].r, vers);
     // lapins : le tapis part sous l'un (il tombe), l'autre sursaute ; le lampadaire est sonné

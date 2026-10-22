@@ -25,11 +25,11 @@ const EL = 34 * Math.PI / 180;                       // la caméra regarde le mo
 const MOT_CADRE = [-3.52, 3.52, 0, HAUT, -.6, .6], CIEL = 1.8;
 // les joueurs : leur allure, et leur place de départ (lettre, place sur la lettre)
 const JOUEURS = [
-  { look: { espece: 'bonhomme', pelage: '#F1D3BC', vetement: '#F2613F', cheveux: '#3B2D27', graine: 6 }, k: 0, s: 0 },
-  { look: { espece: 'bonhomme', pelage: '#C99A76', vetement: '#EFE7DC', cheveux: '#231C1A', graine: 0 }, k: 2, s: 1 },
-  { look: { espece: 'bonhomme', pelage: '#8D5B3E', vetement: '#A9BFA8', cheveux: '#1E1817', graine: 4 }, k: 3, s: 1 },
-  { look: { espece: 'bonhomme', pelage: '#E8C4A4', vetement: '#D9C3A5', cheveux: '#C9974F', graine: 3 }, k: 5, s: 0 },
-  { look: { espece: 'bonhomme', pelage: '#A8714F', vetement: '#B9B1CB', cheveux: '#4A3A33', graine: 7 }, k: 7, s: 2 }
+  { look: { espece: 'lapin', graine: 6 }, k: 0, s: 0 },
+  { look: { espece: 'chien', pelage: '#F1C08B', clair: '#FFF3E2', sombre: '#B9835A', graine: 0 }, k: 2, s: 1 },
+  { look: { espece: 'tortue', pelage: '#AEC9A4', clair: '#F4ECD6', carapace: '#7FA48A', accessoire: 'lunettes', graine: 4 }, k: 3, s: 1 },
+  { look: { espece: 'chat', pelage: '#B8B2AC', clair: '#F2EEEA', graine: 3 }, k: 5, s: 0 },
+  { look: { espece: 'lapin', graine: 7 }, k: 7, s: 2 }
 ];
 
 const hasard = (a, b) => a + Math.random() * (b - a);
