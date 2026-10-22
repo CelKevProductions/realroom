@@ -76,3 +76,8 @@ Le prototype implémente sa propre orchestration autour d’une API multimodale.
 # État du branchement Hugging Face
 
 Un service GPU expérimental et son raccordement asynchrone sont préparés dans `services/furnishing/`. Voir [la configuration et les vérifications](./huggingface-backend.md) et [les choix de modèles encore ouverts](./choix-moteur-ameublement.md). Les modèles spécialisés ne sont pas encore intégrés. Aucune génération réelle sur L4 n’a été validée. Aucun calcul payant ne doit être lancé sans le « lets go » de Kevin.
+
+
+## Moteur spatial spécialisé
+
+Le service Hugging Face utilise désormais le worker SemLayoutDiff (SLDN + APM), puis Qwen pour personnaliser et réviser. Voir [le workflow et ses limites](huggingface-backend.md). Les sources et tests sont intégrés ; les poids et la qualité réelle restent à vérifier après autorisation de lancer une carte. Les chemins historiques hors de la démo ne sont pas remplacés silencieusement.

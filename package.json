@@ -17,7 +17,8 @@
     "e2e": "python3 tests/e2e.py",
     "test:api": "node tests/api.mjs",
     "test:accueil": "python3 tests/accueil.py",
-    "test:design": "node --test tests/design.test.mjs tests/furnishing.test.mjs"
+    "test:design": "node --test tests/design.test.mjs tests/furnishing.test.mjs tests/semlayout.test.mjs",
+    "test:spatial": "python3 -m unittest discover -s tests -p 'semlayout_geometry_test.py' -v"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",

@@ -5,6 +5,8 @@ import { runDesign, validateDesignInput } from '../../lib/model.mjs';
 import { providerURL } from '../../lib/design-provider.mjs';
 import { DesignJobs } from './jobs.mjs';
 import { renderPlan } from './render-plan.mjs';
+import {SingleGpuRuntime} from './runtime.mjs';
+import {checkLayoutRoom} from '../../lib/design-layout.mjs';
 
 export function serviceConfig(env = process.env) {
   return {
@@ -16,6 +18,14 @@ export function serviceConfig(env = process.env) {
     port:Number(env.PORT || 7860), host:env.REALROOM_HOST || '0.0.0.0',
     candidateCount:Number(env.REALROOM_CANDIDATES || 3), repairPasses:Number(env.REALROOM_REPAIR_PASSES || 3),
     planReview:env.REALROOM_PLAN_REVIEW !== 'false',
+    spatialEngine:'semlayoutdiff',
+    layoutWeights:env.REALROOM_LAYOUT_WEIGHTS || '/opt/realroom-weights',
+    layoutPython:env.REALROOM_LAYOUT_PYTHON || '/opt/semlayoutdiff/bin/python',
+    languagePython:env.REALROOM_LANGUAGE_PYTHON || '/usr/bin/python3',
+    layoutDevice:env.REALROOM_LAYOUT_DEVICE || 'cuda',
+    layoutSamples:Math.min(12,Math.max(1,Number(env.REALROOM_LAYOUT_SAMPLES || 6))),
+    languageStartMs:Math.min(15*60_000,Math.max(30_000,Number(env.REALROOM_LANGUAGE_START_MS || 8*60_000))),
+    jobTimeoutMs:Math.min(120*60_000,Math.max(60_000,Number(env.REALROOM_JOB_TIMEOUT_MS || 45*60_000))),
   };
 }
 const sameSecret = (a,b) => typeof a === 'string' && Buffer.byteLength(a) === Buffer.byteLength(b) && timingSafeEqual(Buffer.from(a), Buffer.from(b));
@@ -33,21 +43,26 @@ async function readInput(req) {
   } catch (e) { e.status=400; throw e; }
   return input;
 }
-export async function createFurnishingServer(config, { runner=runDesign, ready, renderer=renderPlan, pollMs=500 }={}) {
+export async function createFurnishingServer(config, { runner=runDesign, ready, renderer=renderPlan, pollMs=500, runtime }={}) {
   if (config.serviceKey.length < 32 || !/^[\x21-\x7e]+$/.test(config.serviceKey)) throw Error('REALROOM_SERVICE_KEY doit contenir au moins 32 caractères ASCII sans espace.');
   providerURL(config.baseURL, 'models');
-  const checkReady = ready || (async () => {
+  const engines=runtime || (config.spatialEngine==='semlayoutdiff'?new SingleGpuRuntime(config):null);
+  const checkReady = ready || (engines ? ()=>engines.ready() : async () => {
     try {
       const r=await fetch(providerURL(config.baseURL,'models'), {headers:config.key ? {Authorization:'Bearer '+config.key} : {},signal:AbortSignal.timeout(3000),redirect:'error'});
       if (!r.ok) return false;
       const body=await r.json(); return !!body.data?.some(m=>m.id===config.model);
     } catch { return false; }
   });
-  const jobs=await new DesignJobs({directory:config.directory, run:(input,options)=>runner(input,{
+  const jobs=await new DesignJobs({directory:config.directory,timeoutMs:config.jobTimeoutMs, run:async(input,options)=>{
+    try{return await runner(input,{
     ...options, key:config.key, model:config.model, provider:'chat', baseURL:config.baseURL,
     candidateCount:config.candidateCount, repairPasses:config.repairPasses,
     renderPlan:config.planReview ? renderer : undefined,
-  })}).init();
+    layoutGenerator:engines?(input,options)=>engines.layouts(input,options):undefined,
+    prepareLanguage:engines?options=>engines.prepareLanguage(options):undefined,
+  });}finally{if(options.signal.aborted)await engines?.cancelLanguage();}
+  }}).init();
   const housekeeping=setInterval(()=>jobs.prune().catch(()=>{}),60_000); housekeeping.unref();
   const server=createServer(async (req,res)=>{
     res.setHeader('Cache-Control','private, no-store'); res.setHeader('X-Content-Type-Options','nosniff');
@@ -56,7 +71,9 @@ export async function createFurnishingServer(config, { runner=runDesign, ready, 
     try {
       if (path==='/health' && req.method==='GET') {
         const available=await checkReady();
-        return reply({status:available?'ready':'starting',provider:'huggingface-vllm',model:config.model,revision:config.modelRevision,queue:jobs.queue.length,running:!!jobs.active,capabilities:{structuredOutput:true,images:true,planReview:config.planReview}},available?200:503);
+        return reply({status:available?'ready':'unprepared',runtime:engines?'sequential-single-gpu':'language-only',spatialEngine:engines?'semlayoutdiff':null,
+          modelResident:!!engines?.language,provider:'huggingface-vllm',model:config.model,revision:config.modelRevision,queue:jobs.queue.length,running:!!jobs.active,
+          capabilities:{structuredOutput:true,images:true,planReview:config.planReview,learnedPlacements:!!engines,roomTypes:engines?['salon','chambre','salle_a_manger']:null}},available?200:503);
       }
       if (!sameSecret(req.headers['x-realroom-service-key'],config.serviceKey)) return reply({error:'Connexion au service refusée.'},401);
       const match=path.match(/^\/v1\/jobs\/([a-f0-9-]{36})(\/cancel)?$/);
@@ -67,7 +84,8 @@ export async function createFurnishingServer(config, { runner=runDesign, ready, 
       }
       if(req.method!=='POST' || !['/v1/jobs','/v1/design'].includes(path)) return reply({error:'Route introuvable.'},404);
       const input=await readInput(req);
-      if(!await checkReady()) return reply({error:'Le modèle GPU démarre encore. Réessayez dans quelques instants.'},503);
+      if(engines && input.operation==='create')try{checkLayoutRoom(input.room,input.brief);}catch(e){return reply({error:e.message},422);}
+      if(!await checkReady()) return reply({error:'Les poids et les interpréteurs du service ne sont pas encore préparés.'},503);
       const submitted=await jobs.submit(input,req.headers['idempotency-key']);
       if(path==='/v1/jobs') return reply(submitted,202);
       res.writeHead(200,{'Content-Type':'application/x-ndjson; charset=utf-8','X-Accel-Buffering':'no'});
@@ -95,7 +113,7 @@ export async function createFurnishingServer(config, { runner=runDesign, ready, 
     }
   });
   server.requestTimeout=30_000; server.headersTimeout=15_000;
-  server.on('close',()=>{clearInterval(housekeeping);jobs.close().catch(()=>{});});
+  server.on('close',()=>{clearInterval(housekeeping);jobs.close().catch(()=>{});engines?.close().catch(()=>{});});
   return {server,jobs};
 }
 if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {

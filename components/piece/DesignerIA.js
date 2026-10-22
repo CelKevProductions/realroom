@@ -423,7 +423,7 @@ export function useDesignerIA({
       cancel={() => abort.current?.abort()}
       configure={async () => {
         setError("");
-        setDesignConnection(settings);
+        setDesignConnection(server?.provider === 'huggingface' ? {...settings,key:''} : settings);
         if (!settings.key && !(server?.provider === 'huggingface' && settings.code)) {
           setStatus(
             settings.code
@@ -529,7 +529,9 @@ function DesignerDialog({
       </header>
       {modal === "settings" ? (
         <div className={s.settings}>
-          {server?.provider === 'huggingface' && <p>Le service d’ameublement Hugging Face est configuré. Saisissez le code de connexion pour utiliser le GPU.</p>}
+          {server?.provider === 'huggingface' && <p>{server.configured
+            ? 'Le service d’ameublement est configuré. Saisissez le code de connexion pour composer votre pièce.'
+            : 'Le service d’ameublement est en attente de connexion. L’éditeur et l’exemple aménagé restent disponibles.'}</p>}
           {server?.provider !== 'huggingface' && <><p>
             La clé est utilisée uniquement pendant cet onglet. Elle est envoyée
             au serveur de cette démo, puis à OpenAI. Les appels utilisent les

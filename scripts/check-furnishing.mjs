@@ -24,7 +24,7 @@ const input={operation:'create',room:structuredClone(process.argv.includes('--ro
 input.room.verified=true;
 async function compute(payload) {
   const job=await request('/v1/jobs',{method:'POST',headers:{'Idempotency-Key':randomUUID()},body:JSON.stringify(payload)});
-  const deadline=Date.now()+35*60_000;
+  const deadline=Date.now()+50*60_000;
   let last='';
   try {
     while(Date.now()<deadline) {
@@ -34,13 +34,15 @@ async function compute(payload) {
       if(['failed','cancelled'].includes(status.status))throw Error(status.error);
       await new Promise(resolve=>setTimeout(resolve,1500));
     }
-    throw Error('Le test a dépassé 35 minutes.');
+    throw Error('Le test a dépassé 50 minutes.');
   } catch(e) {await request('/v1/jobs/'+job.id+'/cancel',{method:'POST'}).catch(()=>{});throw e;}
 }
 const started=Date.now(), result=await compute(input);
 const checked=result.candidates.map(c=>({scene:normalizeScene(c.scene,input.room),report:assess(input.room,c.scene,input.brief,evaluate)}));
 const summary={testedAt:new Date().toISOString(),model:health.model,revision:health.revision,elapsedSeconds:Math.round((Date.now()-started)/1000),
   room:process.argv.includes('--room-l')?'L':'rectangle',calls:result.calls,planReview:result.planReview,
+  spatialEngine:result.spatialEngine,spatialProvenance:result.candidates.map(c=>({engine:c.scene.provenance?.spatialEngine,
+    revision:c.scene.provenance?.checkpointRevision,source:c.scene.provenance?.upstreamCommit,seed:c.scene.provenance?.seed})),
   candidates:checked.map(c=>({title:c.scene.title,items:c.scene.items.length,errors:c.report.errors,warnings:c.report.warnings,missing:c.report.functional.missing,valid:c.report.valid})),
   aestheticQuality:'not-rated: requires human review'};
 if(process.argv.includes('--edit') && checked.some(c=>c.report.valid)) {
@@ -54,4 +56,4 @@ await mkdir(dirname(output),{recursive:true});
 await writeFile(output,JSON.stringify({summary,input,result},null,2)+'\n');
 console.log('REALROOM_BENCHMARK '+JSON.stringify(summary));
 console.log(JSON.stringify({output}));
-if(!checked.some(c=>c.report.valid)||summary.edit && Object.values(summary.edit).some(v=>!v))process.exitCode=2;
+if(result.spatialEngine!=='semlayoutdiff' || !checked.some(c=>c.report.valid && !c.report.functional.missing.length)||summary.edit && Object.values(summary.edit).some(v=>!v))process.exitCode=2;

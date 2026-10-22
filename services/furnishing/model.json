@@ -5,5 +5,10 @@
   "license": "Apache-2.0",
   "runtime": "vllm/vllm-openai:v0.18.1",
   "hardware": "l4x1",
-  "contextTokens": 32768
+  "contextTokens": 32768,
+  "role": "brief-enrichment-visual-review-chat",
+  "spatialEngine": "semlayoutdiff",
+  "spatialSourceCommit": "6b12bc4c42aa8377445af108093539073f0495c1",
+  "gpuScheduling": "sequential-exclusive-processes",
+  "trainedInferenceValidated": false
 }

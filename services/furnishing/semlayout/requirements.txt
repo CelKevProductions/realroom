@@ -1,0 +1,11 @@
+# Isolated interpreter: do not replace vLLM's own torch installation.
+torch==2.4.1
+torchvision==0.19.1
+pytorch-lightning==2.4.0
+torchmetrics==1.4.2
+numpy==1.26.4
+scipy==1.14.1
+einops==0.8.0
+omegaconf==2.3.0
+Pillow==10.4.0
+huggingface-hub==0.25.2

@@ -1,6 +1,6 @@
 # Backend GPU — préparation expérimentale
 
-État au 23 octobre 2026 : infrastructure et protocole testés localement avec des réponses simulées. Aucune inférence réelle ni qualité esthétique validée. Le premier essai Hugging Face a échoué au démarrage du conteneur (`python` absent ; la commande utilise maintenant `python3`). Le second a été annulé pendant l’attente du matériel. Aucun job ne reste actif.
+État au 22 octobre 2026 : infrastructure et protocole testés localement avec des réponses simulées. Aucune inférence réelle ni qualité esthétique validée. Le premier essai Hugging Face a échoué au démarrage du conteneur (`python` absent ; la commande utilise maintenant `python3`). Le second a été annulé pendant l’attente du matériel. Aucun job ne reste actif.
 
 **Consigne de cette session : ne lancer aucun GPU ni aucun appel d’inférence payant avant le « lets go » explicite de Kevin.** Les scripts de préparation et les tests locaux ne lancent pas de GPU. Les commandes de déploiement avec `--start-l4` et de test avec `--generate` sont des actions distinctes à exécuter seulement après cet accord.
 
@@ -8,15 +8,34 @@
 
 Le code conserve l’interface, les meubles et le moteur de rendu de RealRoom. Le nouvel endpoint ne réutilise pas son ancien générateur de placement. Il comprend une file de calcul, l’annulation, les identifiants de requêtes, le transport vers un serveur de modèle, le contrôle des dimensions et les rendus de plans pour analyse visuelle.
 
-L’adaptateur Qwen est une **configuration de comparaison**, pas le moteur final retenu pour la qualité d’ameublement. Il utilise `RedHatAI/Qwen3.5-9B-FP8-dynamic` avec `vllm/vllm-openai:v0.18.1`. Son démarrage, sa consommation mémoire et ses résultats sur L4 restent à tester. Le modèle est généraliste ; aucune amélioration de qualité par rapport au moteur historique n’est démontrée. Sa révision est résolue au démarrage et exposée dans `/health` ; `REALROOM_MODEL_REVISION` permet de figer un commit après validation.
+Le service utilise désormais **SemLayoutDiff pour les implantations initiales**. Le code des réseaux SLDN et APM est inclus sans modification, à la révision officielle `6b12bc4c42aa8377445af108093539073f0495c1`, avec licence MIT et empreintes des sources. Le worker charge les vrais checkpoints publiés, exécute les étapes de diffusion conditionnées par l’architecture et le prédicteur d’attributs. Il n’a pas besoin de charger 3D-FRONT ni les meshes 3D-FUTURE.
 
-**MiDiffusion, LayoutVLM, Function2Scene et SemLayoutDiff ne sont pas intégrés ni exécutés.** Ne pas présenter leurs noms comme des composants fonctionnels du backend. Voir `docs/choix-moteur-ameublement.md` pour les rôles envisagés et les éléments vérifiés.
+Le code est intégré et les tests locaux passent, **mais les poids n’ont pas été téléchargés ou exécutés dans cette session, et le Dockerfile complet n’a pas été construit**. Le chargement strict des checkpoints, la compatibilité CUDA/L4, le temps, la mémoire et la qualité restent à vérifier sur le runtime cible. Un nom de modèle dans un rapport de test simulé ne constitue pas une inférence réelle.
 
-## Exécution de la configuration de comparaison
+Qwen `RedHatAI/Qwen3.5-9B-FP8-dynamic` via `vllm/vllm-openai:v0.18.1` interprète le brief, choisit une palette et un inventaire, complète les usages/décors, critique les plans et traite les retouches. **Il ne crée plus seul l’implantation initiale du service Hugging Face.** Le chemin Responses et la fonction sans moteur spatial restent disponibles pour comparaison, mais l’API web exige par défaut le backend spatial : aucune clé de session résiduelle ne peut le contourner. Sans service raccordé, la génération reste indisponible. Le mode de comparaison historique exige explicitement `REALROOM_DESIGN_ENGINE=language-comparison` côté serveur, sans service spatial configuré.
 
-Le service Node accepte le plan normalisé en mètres issu de l’import DXF et le brief. Un modèle est appelé successivement pour préparer un programme d’usages, produire jusqu’à trois propositions, réviser leurs conflits géométriques et comparer leurs plans exacts. Les dimensions des SKU et les objets verrouillés sont conservés. Les propositions invalides restent identifiées par leur rapport de contrôle. Les vues 3D disponibles dans l’interface peuvent alimenter une révision supplémentaire.
+MiDiffusion, LayoutVLM et Function2Scene ne sont ni intégrés ni exécutés. Voir `docs/choix-moteur-ameublement.md`. Le code MIT de SemLayoutDiff ne prouve pas les droits sur tous ses poids ou données : aucune licence de checkpoint n’est explicitée dans la fiche Hugging Face consultée. Clarifier ce point avant une exploitation commerciale.
 
-Le processus vLLM écoute seulement sur `127.0.0.1:8000`. L’API RealRoom écoute sur le port `7860`. Une seule requête d’ameublement utilise le GPU à la fois ; quatre autres peuvent attendre. Chaque calcul a une limite de 20 minutes et chaque appel de modèle de 10 minutes. Ces limites évitent une exécution sans fin ; elles ne constituent pas une mesure du temps nécessaire au modèle, qui reste à tester.
+## Enchaînement de l’ameublement
+
+1. Import DXF, vérification des unités et ouvertures, conversion métrique. Le plan exact reste l’autorité.
+2. Raster architectural fixe de 12 × 12 m, 120 × 120 pixels : extérieur 0, sol 1, portes 2, fenêtres 3. On centre la pièce sans la déformer. Le réseau reçoit le type de pièce et la condition architecture, pas un simple rectangle englobant.
+3. SLDN génère six implantations par défaut, une à la fois. APM prédit les dimensions/hauteurs et orientations des instances. L’empreinte sémantique et la hauteur prédite servent à rechercher les objets, comme dans l’exporteur officiel. Les attributs bruts restent disponibles pour diagnostic.
+4. Le processus spatial se termine, puis vLLM démarre sur **la même carte**. Qwen prépare le programme à partir des envies et du catalogue.
+5. Recherche des SKU réels selon catégorie, dimensions, matières et programme. Ajustement local maximal de 30 cm par axe pour les faire tenir ; aucun redimensionnement des meubles. Sélection de trois candidats selon conflits et couverture des usages. Ce tri ne mesure pas l’esthétique.
+6. Qwen enrichit ces implantations : lecture, piano, éclairage, murs, sols et décoration. Les IDs et SKU du noyau spatial sont conservés ; ses déplacements restent dans un rayon de 65 cm de chaque ancrage. Les ajouts sont contrôlés comme les autres meubles.
+7. Contrôle métrique, jusqu’à trois réparations, comparaison visuelle des plans exacts. Les vues 3D de RealRoom peuvent déclencher une révision supplémentaire. Les conflits restent visibles et empêchent l’application.
+8. Le chat peut ensuite déplacer/remplacer/supprimer les objets selon la demande du client, avec respect des verrouillages. Les ancrages sont actualisés pour qu’une révision visuelle n’annule pas la retouche.
+
+SemLayoutDiff ne conditionne pas nativement ce checkpoint sur les envies textuelles. Le programme filtre les catégories, intervient dans la recherche de meubles, puis dans l’enrichissement. Les usages absents de son vocabulaire, comme le piano, sont ajoutés à cette étape ; ils ne sont pas attribués au réseau spatial. Les hauteurs d’allège, débattements et circulations sont mesurés côté RealRoom, car le masque 2D n’en porte pas toutes les informations.
+
+**Périmètre initial : salons, chambres et salles à manger, emprise ≤ 11,80 m par axe.** Autres types et plans trop grands donnent une erreur explicite avant chargement d’un modèle. Ni réduction artificielle du plan ni substitution silencieuse par un générateur généraliste. La diffusion ne conditionne pas les meubles existants verrouillés ; ils sont conservés à la récupération et dans tous les contrôles.
+
+## Une seule carte, des étapes successives
+
+Le service Node écoute sur 7860. Le modèle de dialogue écoute seulement sur `127.0.0.1:8000`. Node démarre le worker spatial dans un interpréteur isolé PyTorch 2.4.1, attend sa fin et la libération de ses processus, puis démarre vLLM. Une nouvelle génération termine d’abord vLLM ; une retouche seule peut réutiliser le modèle de dialogue. Aucun autoscaling, aucun deuxième GPU, aucun appel payant externe de secours.
+
+Une seule demande s’exécute ; quatre peuvent attendre. Limite de calcul par défaut : 45 minutes, configurable par `REALROOM_JOB_TIMEOUT_MS` (maximum 120 minutes). Chaque appel de modèle garde une limite de 10 minutes. `REALROOM_LAYOUT_SAMPLES` règle le nombre de propositions spatiales (1–12, défaut 6). Ces limites sont des budgets de calcul, pas des temps mesurés. Arrêter les processus ne suspend pas la facturation du matériel Hugging Face : il faut mettre le Space en pause pour cela.
 
 L’interface soumet un job puis interroge sa progression : aucune fonction web ne doit rester ouverte pendant toute la génération. Les résultats sont conservés 24 heures sur le disque du service. Un redémarrage du processus conserve les résultats si le disque est intact et marque les calculs interrompus en échec. **Le disque d’un Space étant éphémère, une reconstruction ou un remplacement du conteneur peut perdre ces résultats.** Une production multi-utilisateur nécessite un stockage durable et une autorisation par projet ; le code d’accès partagé correspond à la démo.
 
@@ -25,11 +44,12 @@ L’interface soumet un job puis interroge sa progression : aucune fonction web 
 Depuis la racine du dépôt :
 
 ```bash
-node --test tests/design.test.mjs tests/furnishing.test.mjs
+node --test tests/design.test.mjs tests/furnishing.test.mjs tests/semlayout.test.mjs
+python3 -m unittest discover -s tests -p 'semlayout_geometry_test.py' -v
 node scripts/prepare-hf-space.mjs outputs/hf-space
 ```
 
-Le dossier de sortie doit être nouveau. Le script copie une liste explicite de fichiers sans secrets ni historique Git. Le rendu des tests locaux nécessite Python 3 et Pillow. Le Dockerfile inclut le runtime vLLM et Node ; son build complet reste à vérifier après choix définitif du moteur.
+Le dossier de sortie doit être nouveau. Le script copie une liste explicite de fichiers sans secrets ni historique Git. Les tests CPU nécessitent Python 3, NumPy, SciPy et Pillow, sans PyTorch ni GPU. Le Dockerfile sépare les dépendances spatiales de celles de vLLM. Au build, `semlayout/assets.py` télécharge les deux fichiers officiels depuis une même révision immuable du Hub, vérifie les SHA-256 LFS et prépare un manifeste local. `SEMLAYOUT_HUB_REVISION` permet de reproduire ce build avec la révision du manifeste. Aucune donnée client, aucun token ni checkpoint volumineux n’est ajouté au dépôt Git. Le chargement des poids utilise `weights_only=True`; les arguments pickle n’acceptent que `argparse.Namespace`. Un checkpoint incompatible échoue explicitement.
 
 ## Raccordement serveur
 
@@ -50,10 +70,10 @@ Le script `scripts/deploy-hf-space.py OWNER/SPACE DOSSIER` charge le code dans u
 
 | Route | Effet |
 |---|---|
-| `GET /health` | HTTP 200 quand le modèle configuré apparaît dans `/v1/models`, sinon 503 ; aucune génération |
+| `GET /health` | HTTP 200 quand les fichiers de poids et interpréteurs existent ; sinon 503. Ne charge aucun modèle et ne prouve pas une inférence réussie |
 | `POST /v1/jobs` | Valide le projet puis retourne HTTP 202 avec un ID |
 | `GET /v1/jobs/:id` | Retourne `queued`, `running`, `succeeded`, `failed` ou `cancelled` |
-| `POST /v1/jobs/:id/cancel` | Annule la file ou propage l’annulation à l’appel de modèle |
+| `POST /v1/jobs/:id/cancel` | Annule la file ou arrête le groupe de processus actif avant de libérer le GPU |
 | `POST /v1/design` | Variante NDJSON pour clients qui préfèrent le streaming |
 
 Les routes `/v1/*` exigent `x-realroom-service-key`. Un Space privé exige en plus l’authentification Hugging Face. `Idempotency-Key` évite de lancer deux fois une demande identique ; réutiliser la même clé avec un autre projet retourne 409.
@@ -71,6 +91,6 @@ node scripts/check-furnishing.mjs --generate --edit --output outputs/salon-check
 node scripts/check-furnishing.mjs --generate --room-l --output outputs/l-check.json
 ```
 
-Le test sauvegarde les sorties réelles, le modèle, sa révision, les appels, les erreurs de géométrie et les usages manquants. Un résultat sans candidat valide donne un code de sortie d’échec. La qualité esthétique est explicitement marquée non évaluée : elle nécessite une comparaison humaine sur les mêmes pièces et les mêmes briefs.
+Le test sauvegarde les sorties réelles, les deux modèles, leurs révisions, la graine spatiale, les appels, les erreurs de géométrie et les usages manquants. Un résultat sans provenance SemLayoutDiff, sans candidat géométriquement valide couvrant les usages vérifiables, ou avec une retouche ratée donne un code de sortie d’échec. La qualité esthétique est explicitement marquée non évaluée : elle nécessite une comparaison humaine sur les mêmes pièces et les mêmes briefs.
 
 Références de configuration : [modèle RedHatAI](https://huggingface.co/RedHatAI/Qwen3.5-9B-FP8-dynamic), [sorties structurées vLLM](https://docs.vllm.ai/en/v0.18.0/features/structured_outputs/), [configuration Spaces](https://huggingface.co/docs/hub/spaces-config-reference), [gestion et pause des Spaces](https://huggingface.co/docs/huggingface_hub/guides/manage-spaces).
