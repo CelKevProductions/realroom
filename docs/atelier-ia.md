@@ -73,3 +73,6 @@ Le script peut recevoir un fichier JSON de cas `{name, room, brief}` puis un ré
 - [FuncRoom-Agent, version 2](https://arxiv.org/html/2608.29519v2) : raisonnement sur les usages et composition structurée.
 
 Le prototype implémente sa propre orchestration autour d’une API multimodale. Il ne présente pas ces travaux comme des modèles chargés ou évalués localement.
+# État du branchement Hugging Face
+
+Un service GPU expérimental et son raccordement asynchrone sont préparés dans `services/furnishing/`. Voir [la configuration et les vérifications](./huggingface-backend.md) et [les choix de modèles encore ouverts](./choix-moteur-ameublement.md). Les modèles spécialisés ne sont pas encore intégrés. Aucune génération réelle sur L4 n’a été validée. Aucun calcul payant ne doit être lancé sans le « lets go » de Kevin.

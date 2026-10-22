@@ -28,7 +28,7 @@ export async function designRequest(
     method: "POST",
     cache: "no-store",
     signal,
-    headers: designHeaders(),
+    headers: {...designHeaders(), 'Idempotency-Key':crypto.randomUUID()},
     body: JSON.stringify(input),
   });
   if (!response.ok) {
@@ -37,6 +37,35 @@ export async function designRequest(
       Error(body.error || "Le serveur ne peut pas composer cette pièce."),
       { code: body.code },
     );
+  }
+  if(response.status===202) {
+    const submitted=await response.json();
+    if(!/^[a-f0-9-]{36}$/.test(submitted.id || ''))throw Error('Identifiant de calcul invalide.');
+    const path='/api/design?job='+submitted.id;
+    let finished=false;
+    const cancel=()=>fetch(path,{method:'DELETE',headers:designHeaders(),keepalive:true}).catch(()=>{});
+    signal?.addEventListener('abort',cancel,{once:true});
+    try {
+      signal?.throwIfAborted();
+      for(;;) {
+        const r=await fetch(path,{headers:designHeaders(),cache:'no-store',signal});
+        const job=await r.json();
+        if(!r.ok)throw Error(job.error || 'Impossible de suivre le calcul.');
+        if(job.progress)onEvent({type:'progress',stage:job.progress});
+        if(job.status==='queued')onEvent({type:'progress',stage:'En attente du GPU…'});
+        if(job.status==='succeeded'){finished=true;onEvent({type:'result',result:job.result});return job.result;}
+        if(['failed','cancelled'].includes(job.status)){finished=true;throw Error(job.error || 'Le calcul a échoué.');}
+        await new Promise((resolve,reject)=>{
+          const stop=()=>{clearTimeout(timer);reject(signal.reason);};
+          const timer=setTimeout(()=>{signal?.removeEventListener('abort',stop);resolve();},1500);
+          signal?.addEventListener('abort',stop,{once:true});
+          if(signal?.aborted)stop();
+        });
+      }
+    } finally {
+      signal?.removeEventListener('abort',cancel);
+      if(!finished)await cancel();
+    }
   }
   const reader = response.body.getReader(),
     decoder = new TextDecoder();

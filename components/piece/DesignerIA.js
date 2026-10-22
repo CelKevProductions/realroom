@@ -180,7 +180,7 @@ export function useDesignerIA({
             room,
             c.signal,
           );
-        if (images.length) {
+        if (images.length && (!result.planReview || images.some(i=>i.kind==='3d'))) {
           const reviewed = await designRequest(
             {
               operation: "review",
@@ -424,7 +424,7 @@ export function useDesignerIA({
       configure={async () => {
         setError("");
         setDesignConnection(settings);
-        if (!settings.key) {
+        if (!settings.key && !(server?.provider === 'huggingface' && settings.code)) {
           setStatus(
             settings.code
               ? "Code conservé pour cette session."
@@ -529,7 +529,8 @@ function DesignerDialog({
       </header>
       {modal === "settings" ? (
         <div className={s.settings}>
-          <p>
+          {server?.provider === 'huggingface' && <p>Le service d’ameublement Hugging Face est configuré. Saisissez le code de connexion pour utiliser le GPU.</p>}
+          {server?.provider !== 'huggingface' && <><p>
             La clé est utilisée uniquement pendant cet onglet. Elle est envoyée
             au serveur de cette démo, puis à OpenAI. Les appels utilisent les
             crédits de votre compte API.
@@ -558,7 +559,7 @@ function DesignerDialog({
               }
               placeholder="Clé API"
             />
-          </label>
+          </label></>}
           {server?.requiresCode && (
             <label>
               Code de la démo
