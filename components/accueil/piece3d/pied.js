@@ -17,7 +17,7 @@ const S = 1 / 700;                                   // m par unité de la polic
 const MOT = 'RealRoom', SERRE = 40, EPAIS = 120, BISEAU = 24, BORD = 18;
 const HAUT = (EPAIS + 2 * BISEAU) * S;               // dessus des lettres (m)
 const MILIEU = 360;                                  // hauteur (unités) qui devient z = 0, une fois couchée
-const COULEURS = ['#F2613F', '#FFD36B', '#8ACB9B', '#FFB494', '#F2613F', '#A99BEE', '#FFD36B', '#8ACB9B'];
+const ENCRE = '#2E2A33';                             // les lettres, toutes de la couleur de l'encre
 const REDUIT = '(prefers-reduced-motion: reduce)';
 const EL = 34 * Math.PI / 180;                       // la caméra regarde le mot d'un peu haut
 // ce que la caméra cadre : le mot sur toute la largeur, posé en bas de la toile, et assez de ciel pour
@@ -25,11 +25,11 @@ const EL = 34 * Math.PI / 180;                       // la caméra regarde le mo
 const MOT_CADRE = [-3.52, 3.52, 0, HAUT, -.6, .6], CIEL = 1.8;
 // les joueurs : leur allure, et leur place de départ (lettre, place sur la lettre)
 const JOUEURS = [
-  { look: { espece: 'lapin', accessoire: 'echarpe', couleurAcc: 'menthe', graine: 6 }, k: 0, s: 0 },
-  { look: { espece: 'chien', pelage: '#F1C08B', clair: '#FFF3E2', sombre: '#B9835A', accessoire: 'collier', couleurAcc: 'corail', graine: 0 }, k: 2, s: 1 },
-  { look: { espece: 'tortue', pelage: '#A9D69E', clair: '#FBEFC4', carapace: '#78B98A', accessoire: 'lunettes', graine: 4 }, k: 3, s: 1 },
-  { look: { espece: 'chat', pelage: '#B9B1CB', clair: '#F3F0F9', accessoire: 'grelot', couleurAcc: 'corail', graine: 3 }, k: 5, s: 0 },
-  { look: { espece: 'lapin', accessoire: 'noeud', couleurAcc: 'corail', graine: 7 }, k: 7, s: 2 }
+  { look: { espece: 'bonhomme', pelage: '#F1D3BC', vetement: '#F2613F', cheveux: '#3B2D27', graine: 6 }, k: 0, s: 0 },
+  { look: { espece: 'bonhomme', pelage: '#C99A76', vetement: '#EFE7DC', cheveux: '#231C1A', graine: 0 }, k: 2, s: 1 },
+  { look: { espece: 'bonhomme', pelage: '#8D5B3E', vetement: '#A9BFA8', cheveux: '#1E1817', graine: 4 }, k: 3, s: 1 },
+  { look: { espece: 'bonhomme', pelage: '#E8C4A4', vetement: '#D9C3A5', cheveux: '#C9974F', graine: 3 }, k: 5, s: 0 },
+  { look: { espece: 'bonhomme', pelage: '#A8714F', vetement: '#B9B1CB', cheveux: '#4A3A33', graine: 7 }, k: 7, s: 2 }
 ];
 
 const hasard = (a, b) => a + Math.random() * (b - a);
@@ -61,7 +61,7 @@ function construireLettres(mobile) {
       // centrée, à l'échelle, couchée : la hauteur de la lettre part vers le fond, l'épaisseur monte
       geos[c].translate(-g.l / 2, -MILIEU, BISEAU).scale(S, S, S).rotateX(-Math.PI / 2);
     }
-    const mesh = new THREE.Mesh(geos[c], new THREE.MeshLambertMaterial({ color: COULEURS[i] }));
+    const mesh = new THREE.Mesh(geos[c], new THREE.MeshLambertMaterial({ color: ENCRE }));
     mesh.castShadow = mesh.receiveShadow = true;
     mesh.userData.k = i;
     const groupe = new THREE.Group();
@@ -346,7 +346,8 @@ export function creerPied({ toile, boite, zone, textes = {}, surPrete, surPanne 
         ? gsap.timeline().call(() => a.regard('content')).add(tournoyer(gsap, a, 1 + Math.floor(Math.random() * 2))).to(a.etat, { remue: 1, parle: 1, duration: .1 }, 0).to(a.etat, { remue: 0, parle: 0, duration: .3 }, 1).call(() => a.regard('normal'))
         : bondir(j, 1, 2);
       if (x >= .35 && x < .7) encore = 1 + Math.floor(Math.random() * 2);
-    } else tl = x < .6 ? bondir(j, 1, 1, { haut: .2 }) : seCacher(gsap, a, 1);
+    } else if (a.espece === 'bonhomme') tl = x < .45 ? bondir(j, 1, 2) : x < .7 ? bondir(j, 2, 3, { salto: Math.random() < .5 ? 1 : 0 }) : gsap.timeline().to(a.etat, { assis: 1, duration: .3 }).to(a.etat, { assis: 0, duration: .3 }, '+=2');
+    else tl = x < .6 ? bondir(j, 1, 1, { haut: .2 }) : seCacher(gsap, a, 1);
     if (tl) occuper(j, tl, encore);
     else j.prochain = t + 1;
   }

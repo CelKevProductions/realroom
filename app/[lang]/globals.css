@@ -928,11 +928,9 @@ html:has(.plateau), body:has(.plateau) { overflow: hidden; width: 100%; }
 }
 
 /* ---------- petites réactions communes (components/mouvement/Interactions.js) ---------- */
-/* éclat pastel au clic sur une action principale */
+/* anneau au clic sur une action principale */
 .rr-eclats { position: fixed; inset: 0; z-index: 9999; pointer-events: none; overflow: hidden; }
 .rr-eclats > span { position: absolute; left: 0; top: 0; }
-.rr-eclats__forme { width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; }
-.rr-eclats__forme.is-etoile { width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px; border-radius: 0; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); }
 .rr-eclats__anneau { width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%; border: 2px solid var(--rouille); }
 
 /* curseur compagnon (accueil, souris) : point corail, anneau sur ce qui se clique, mot sur les zones marquées */

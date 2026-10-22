@@ -9,7 +9,7 @@ import PlanOuverture from '@/components/accueil/PlanOuverture.js';
 import PiedAccueil from '@/components/accueil/PiedAccueil.js';
 import { texte, remplir, prix } from '@/lib/i18n.js';
 import { PACKS, CREDITS, LIMITES, MARQUE, LANGUES } from '@/lib/config.js';
-import { PRODUITS, LIBELLES } from '@/lib/catalogue.js';
+import { PRODUITS } from '@/lib/catalogue.js';
 
 export async function generateMetadata({ params }) {
   const { lang } = await params;
@@ -21,17 +21,14 @@ export async function generateMetadata({ params }) {
   };
 }
 
-// pièces du catalogue montrées sur l'accueil, telles qu'on les achète
-const VITRINE = ['cbb-03', 'fauteuil-velours-terracotta-pietement-plein-terra', 'lst-min-03', 'wom-wall-2414', 'sofa-220', 'terracotta', 'rce-05', 'fpf-lamp-7705', 'cm-950', 'abbraccio', 'wa908', 'scg-light-2409', 'hl-550', 'table-a-manger-marbre-bois-sculpte-zenoza'];
-const cm = p => p.dim.slice(0, 2).map(v => Math.round(v * 100)).join(' × ') + ' cm';
-// vignettes Shopify à la bonne taille (le CDN redimensionne selon « width »)
-const taille = (u, w) => u.replace(/([?&])width=\d+/, `$1width=${w}`);
 const deux = n => String(n).padStart(2, '0');
 
 // chiffres clés, tous lus dans le code (rien d'inventé) : les objets génériques de planification ne comptent pas
 const REELS = Object.values(PRODUITS).filter(p => !p.generique);
 const NB_MEUBLES = REELS.length;
 const NB_FAMILLES = new Set(REELS.map(p => p.fam)).size;
+// la boutique du catalogue (l'adresse d'une fiche produit, sans le chemin)
+const BOUTIQUE = (() => { try { return new URL(REELS.find(p => p.url).url).origin; } catch (_) { return null; } })();
 
 // « *mot* » : le mot est surligné de pêche
 const accent = s => s.split(/(\*[^*]+\*)/).filter(Boolean).map((m, i) => (m.startsWith('*') ? <em key={i}>{m.slice(1, -1)}</em> : m));
@@ -77,10 +74,6 @@ const Regle = ({ className = '', ...p }) => (
 export default async function Accueil({ params }) {
   const { lang } = await params;
   const t = texte(lang), a = t.accueil;
-  const vitrine = VITRINE.map(id => PRODUITS[id]).filter(p => p && p.vign);
-  const rangees = [vitrine.slice(0, Math.ceil(vitrine.length / 2)), vitrine.slice(Math.ceil(vitrine.length / 2))];
-  // le site de Maison Corleone : celui des fiches produits
-  const catalogue = (() => { try { return new URL(vitrine[0].url).origin; } catch (_) { return null; } })();
   const demo = `/${lang}/demo`;
   const inscription = `/${lang}/connexion?inscription=1`;
   const offerts = remplir(a.inscriptionNote, { n: CREDITS.bienvenue });
@@ -238,29 +231,7 @@ export default async function Accueil({ params }) {
             <Etiquette data-anim="fondu">{a.catalogueSurtitre}</Etiquette>
             <h2 id="catalogue-titre" className="acc-h2 acc-catalogue__titre" data-anim="lignes">{a.catalogueTitre}</h2>
             <p className="acc-catalogue__texte" data-anim="fondu">{remplir(a.catalogueTexte, { n: NB_MEUBLES })}</p>
-            {catalogue && <a className="acc-lien acc-catalogue__tout" href={catalogue} target="_blank" rel="noopener">{a.catalogueTout}<i className="acc-fleche acc-fleche--haut" aria-hidden="true" /></a>}
-          </div>
-          {/* deux rangées qui défilent en sens contraire (chaque rangée deux fois, pour boucler sans couture) ;
-              elles s'arrêtent sous la souris et accélèrent avec le défilement de la page (Animations.js) */}
-          <div className="acc-defile" data-defile>
-            {rangees.map((rang, r) => (
-              <div key={r} className={'acc-defile__rang' + (r ? ' acc-defile__rang--inverse' : '')}>
-                <ul className="acc-defile__piste">
-                  {[...rang, ...rang].map((p, k) => {
-                    const copie = k >= rang.length;
-                    return (
-                      <li key={k} className={'acc-produit acc-produit--t' + ((k % rang.length) % 4)} aria-hidden={copie || undefined}>
-                        <a href={p.url} target="_blank" rel="noopener" className="acc-produit__lien" tabIndex={copie ? -1 : undefined}>
-                          <span className="acc-produit__image"><img src={taille(p.vign, 480)} srcSet={`${taille(p.vign, 360)} 360w, ${taille(p.vign, 720)} 720w`} sizes="(min-width: 960px) 17vw, 56vw" alt={copie ? '' : p.titre || p.nom} width="480" height="600" loading="lazy" decoding="async" draggable="false" /></span>
-                          <span className="acc-produit__ligne"><span className="acc-produit__nom">{p.nom}</span><span className="acc-produit__prix">{prix(Math.round(p.prix * 100), lang)}</span></span>
-                          <span className="acc-mono acc-produit__meta">{LIBELLES[p.fam] || p.cat} · {cm(p)}</span>
-                        </a>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            ))}
+            {BOUTIQUE && <a className="acc-lien acc-catalogue__tout" href={BOUTIQUE} target="_blank" rel="noopener">{a.catalogueTout}<i className="acc-fleche acc-fleche--haut" aria-hidden="true" /></a>}
           </div>
         </section>
 

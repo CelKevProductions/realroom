@@ -1,5 +1,5 @@
 'use client';
-// Le nom couché du pied de page : « RealRoom » en 3D, des animaux qui sautent et jouent dessus
+// Le nom couché du pied de page : « RealRoom » en 3D, de petits bonhommes qui sautent et jouent dessus
 // (piece3d/pied.js, chargé seulement quand le pied approche). Le nom en HTML reste dessous : il
 // s'efface quand le mot 3D arrive (data-etat="prete" sur .acc-pied__scene), et reste seul sans WebGL.
 import { useEffect, useRef } from 'react';

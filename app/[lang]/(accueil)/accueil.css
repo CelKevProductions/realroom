@@ -432,7 +432,7 @@ html[data-acc~="anime"] .acc-scene[data-conclusion] .acc-conclusion em { backgro
 /* ---------- sections ---------- */
 .acc-section { position: relative; padding-block: clamp(88px, 11vw, 168px); }
 .acc-nuit {
-  --c-fond: #E4DEFA; --c-ton: var(--encre); --c-doux: #5F5870; --c-gris: #857E95;
+  --c-fond: #ECE4D9; --c-ton: var(--encre); --c-doux: #615A63; --c-gris: #8A8289;
   --c-filet: rgba(38, 35, 43, .1); --c-filet-fort: rgba(38, 35, 43, .2);
   background: var(--c-fond); color: var(--c-ton);
 }
@@ -457,8 +457,7 @@ html[data-acc~="anime"] .acc-scene[data-conclusion] .acc-conclusion em { backgro
 .acc-cellule .acc-cellule__texte { margin-top: 14px; max-width: 30ch; font-size: .875rem; line-height: 1.45; color: color-mix(in srgb, var(--encre) 78%, transparent); }
 @media (min-width: 760px) { .acc-cellule { padding: 20px 20px 24px; } .acc-cellule .acc-cellule__texte { font-size: .95rem; } }
 
-/* catalogue : deux rangées de meubles qui défilent en continu, en sens contraire, bords fondus ; une rangée
-   s'arrête sous la souris (ou au clavier) ; sans animation, elle se fait défiler à la main */
+/* catalogue : un titre, un texte et le lien vers la boutique */
 .acc-catalogue__titre { max-width: 14ch; }
 .acc-catalogue__texte { margin-top: 20px; max-width: 48ch; color: var(--c-doux); }
 .acc-catalogue__tout { margin-top: 24px; justify-self: start; align-items: center; gap: .5em; }
@@ -466,33 +465,6 @@ html[data-acc~="anime"] .acc-scene[data-conclusion] .acc-conclusion em { backgro
   .acc-catalogue__titre { grid-column: 1 / span 8; }
   .acc-catalogue__texte { grid-column: 1 / span 6; grid-row: 3; }
   .acc-catalogue__tout { grid-column: 9 / -1; grid-row: 3; justify-self: end; align-self: end; margin-top: 0; }
-}
-.acc-defile { display: grid; gap: 16px; margin-top: clamp(32px, 5vw, 60px); padding-block: 8px 12px; }
-.acc-defile__rang { overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
-.acc-defile__piste { display: flex; width: max-content; margin: 0; padding: 6px 0 10px; list-style: none; animation: acc-defile 80s linear infinite; }
-.acc-defile__rang--inverse .acc-defile__piste { animation-direction: reverse; animation-duration: 95s; }
-.acc-defile__rang:hover .acc-defile__piste, .acc-defile__rang:focus-within .acc-defile__piste { animation-play-state: paused; }
-@keyframes acc-defile { to { transform: translateX(-50%); } }
-/* chaque carte porte sa marge (pas de gap) : la moitié de la piste tombe pile sur le début de la copie */
-.acc-produit { flex: none; width: clamp(200px, 16vw, 268px); margin-right: 16px; border-radius: 26px; background: var(--blanc); box-shadow: var(--ombre-legere); transition: box-shadow .4s, translate .6s var(--sortie); }
-.acc-produit:hover { translate: 0 -6px; box-shadow: var(--ombre); }
-.acc-produit__lien { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 6px; height: 100%; padding: 8px 8px 14px; border-radius: inherit; -webkit-user-drag: none; }
-.acc-produit__lien:focus-visible { outline-offset: -3px; }
-.acc-produit__image { display: block; aspect-ratio: 4 / 5; overflow: hidden; margin-bottom: 6px; border-radius: 19px; background: var(--peche); }
-/* la couleur suit la place du meuble dans sa rangée (pas nth-child : la copie doit être identique) */
-.acc-produit--t1 .acc-produit__image { background: var(--menthe); }
-.acc-produit--t2 .acc-produit__image { background: var(--lilas); }
-.acc-produit--t3 .acc-produit__image { background: var(--beurre); }
-.acc-produit__image img { width: 100%; height: 100%; object-fit: cover; color: transparent; pointer-events: none; transition: scale .9s var(--sortie); }
-.acc-produit__lien:hover img { scale: 1.06; }
-.acc-produit__ligne { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding-inline: 6px; }
-.acc-produit__nom { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 1.05rem/1.25 var(--display); letter-spacing: -.02em; }
-.acc-produit__prix { flex: none; font: 600 .9rem/1 var(--m); font-variant-numeric: tabular-nums; }
-.acc-produit__meta { padding-inline: 6px; color: var(--c-doux); font-size: .78rem; }
-@media (prefers-reduced-motion: reduce) {
-  .acc-defile__rang { overflow-x: auto; scrollbar-width: none; -webkit-mask: none; mask: none; }
-  .acc-defile__piste { animation: none; padding-inline: var(--marge); }
-  .acc-produit[aria-hidden] { display: none; }
 }
 
 /* tarifs : trois cellules, prix en chasse fixe */

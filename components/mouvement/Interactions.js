@@ -4,7 +4,7 @@
 //  - les cartes s'inclinent vers le curseur et se soulèvent, puis reviennent en ressort ;
 //  - les grands boutons sont « aimantés » : ils suivent un peu le curseur ;
 //  - un bouton s'enfonce sous le clic et rebondit au relâcher ;
-//  - une action principale lâche un petit éclat de formes pastel au clic.
+//  - une action principale lâche un anneau discret au clic.
 // Transform seulement, jamais au doigt (inclinaison et aimant) ni en mouvement réduit : le CSS garde
 // alors ses propres survols. Pour l'ajouter ailleurs : data-incline, data-aimant, data-presse, data-eclat.
 // Maison Corleone (.mc) garde son allure : rien ne s'y applique.
@@ -15,7 +15,6 @@ const INCLINE = '[data-incline], .acc-pack, .carte-projet__image, .carte-vide';
 const AIMANT = '[data-aimant], .acc-bouton, .btn--large, .parcours__boutons .btn--plein';
 const PRESSE = '[data-presse], .btn, .acc-bouton, .puce-bouton, .carte-piece, .carte-vide';
 const ECLAT = '[data-eclat], .acc-bouton, .btn--plein, .btn--accent';
-const COULEURS = ['var(--rouille)', 'var(--peche)', 'var(--lilas)', 'var(--menthe)', 'var(--beurre)'];
 // ressort : raideur, amortissement (sous-amorti : un léger dépassement au retour)
 const RAIDEUR = 210, AMORTI = 17, AMORTI_AIMANT = 11;
 const borne = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -76,7 +75,7 @@ export default function Interactions() {
         const b = carte.getBoundingClientRect();
         const nx = borne((e.clientX - b.left) / b.width * 2 - 1, -1, 1), ny = borne((e.clientY - b.top) / b.height * 2 - 1, -1, 1);
         // les cartes de l'accueil penchent franchement, celles de l'application à peine
-        const a = carte.classList.contains('acc-pack') || carte.classList.contains('acc-produit') || carte.hasAttribute('data-incline') ? 1 : .5;
+        const a = carte.classList.contains('acc-pack') || carte.hasAttribute('data-incline') ? 1 : .5;
         viser(ressort(carte, 'incline'), { cry: nx * 7 * a, crx: -ny * 6 * a, cy: -6 * a });
         actifs.add(carte);
       }
@@ -94,7 +93,7 @@ export default function Interactions() {
     };
     const toutRelacher = () => { survoles = new Set(); relacher(); };
 
-    // ---------- clic : le bouton s'enfonce puis rebondit ; éclat pastel sur une action principale
+    // ---------- clic : le bouton s'enfonce puis rebondit ; un anneau s'élargit sur une action principale
     let presse = null;
     const enfoncer = e => {
       if (e.button !== 0 || !mouvementPermis()) return;
@@ -129,18 +128,6 @@ export default function Interactions() {
       anneau.className = 'rr-eclats__anneau';
       couche.appendChild(anneau);
       gsap.fromTo(anneau, { x, y, scale: .2, opacity: .9 }, { scale: 2.6, opacity: 0, duration: .55, ease: 'power2.out', onComplete: () => anneau.remove() });
-      const n = 9, depart = Math.random() * Math.PI * 2;
-      for (let i = 0; i < n; i++) {
-        const s = document.createElement('span');
-        s.className = 'rr-eclats__forme' + (i % 3 === 0 ? ' is-etoile' : '');
-        s.style.background = COULEURS[i % COULEURS.length];
-        couche.appendChild(s);
-        const angle = depart + i / n * Math.PI * 2 + (Math.random() - .5) * .5, d = 36 + Math.random() * 34;
-        gsap.timeline({ onComplete: () => s.remove() })
-          .fromTo(s, { x, y, scale: .4 + Math.random() * .6, rotation: Math.random() * 90 },
-            { x: x + Math.cos(angle) * d, y: y + Math.sin(angle) * d, rotation: '+=120', duration: .55 + Math.random() * .2, ease: 'power3.out' })
-          .to(s, { y: '+=12', scale: 0, duration: .35, ease: 'power2.in' }, '-=.25');
-      }
     }
 
     document.addEventListener('pointermove', surMouvement, { passive: true });

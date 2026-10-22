@@ -180,8 +180,6 @@ function demarrer() {
   nettoyages.push(() => page.removeEventListener('click', surEtape));
 
   // ---------- 5. catalogue : les rangées de meubles accélèrent avec le défilement de la page
-  const defile = page.querySelector('[data-defile]');
-  if (defile && mouvement) nettoyages.push(elan(defile));
 
   // défilement doux, une fois le préchargement passé
   const lancerLenis = () => {
@@ -428,16 +426,6 @@ function revelations(page) {
     reveler(el, st => (st ? ScrollTrigger.create({ ...st, onEnter: () => decoder(el) }) : decoder(el)));
   });
 
-  // catalogue : les deux rangées entrent chacune de leur côté (seulement si elles sont encore plus bas)
-  const defile = page.querySelector('[data-defile]');
-  const rangs = gsap.utils.toArray('.acc-defile__rang', page);
-  if (defile && rangs.length && position(defile) === 'plus-bas') {
-    gsap.fromTo(rangs, { xPercent: i => (i ? -14 : 14), opacity: 0 }, {
-      xPercent: 0, opacity: 1, duration: 1.6, ease: 'acc-sortie', stagger: 0.12, onComplete: () => gsap.set(rangs, { clearProps: 'opacity,transform' }),
-      scrollTrigger: { trigger: defile, start: `top ${ETAPE * 100}%`, once: true }
-    });
-  }
-
   // le nom géant du pied de page monte lettre par lettre
   const nom = page.querySelector('[data-lettres]');
   if (nom) {
@@ -446,39 +434,15 @@ function revelations(page) {
   }
 }
 
-// élan du catalogue : les rangées (animation CSS) vont plus vite quand la page défile, puis reprennent leur pas ;
-// seulement quand elles sont à l'écran. Rend la fonction qui retire tout.
-function elan(defile) {
-  const animations = () => [...defile.querySelectorAll('.acc-defile__piste')].flatMap(p => p.getAnimations?.() || []);
-  let dernier = window.scrollY, vitesse = 1, actif = false;
-  function pas(_t, dms) {
-    const dt = Math.max(1, dms) / 1000, y = window.scrollY;
-    const voulue = 1 + Math.min(5, Math.abs(y - dernier) / dt / 450);
-    dernier = y;
-    vitesse += (voulue - vitesse) * (1 - Math.exp(-dt * (voulue > vitesse ? 10 : 2.5)));
-    animations().forEach(a => { a.playbackRate = vitesse; });
-  }
-  const io = new IntersectionObserver(([e]) => {
-    if (e.isIntersecting === actif) return;
-    actif = e.isIntersecting;
-    if (actif) { dernier = window.scrollY; gsap.ticker.add(pas); } else gsap.ticker.remove(pas);
-  });
-  io.observe(defile);
-  return () => { io.disconnect(); gsap.ticker.remove(pas); animations().forEach(a => { a.playbackRate = 1; }); };
-}
-
 // sections sous la 3D : chaque arrêt du défilement guidé y change de « diapositive » : le contenu de la
 // section qui arrive monte à sa place, celui de la section qui part pâlit et recule un peu
 function diapositives(page) {
   gsap.utils.toArray('.acc-section', page).forEach(section => {
-    const blocs = gsap.utils.toArray(section.querySelectorAll(':scope > :not(.acc-defile, .acc-reperes, [data-anim], [data-trait])'));
+    const blocs = gsap.utils.toArray(section.querySelectorAll(':scope > :not(.acc-reperes, [data-anim], [data-trait])'));
     if (!blocs.length) return;
     gsap.fromTo(blocs, { y: 70 }, { y: 0, ease: 'none', scrollTrigger: { trigger: section, start: 'top bottom', end: 'top 35%', scrub: 0.6 } });
     const part = { trigger: section, start: 'bottom 75%', end: 'bottom 10%', scrub: 0.6 };
     gsap.to(blocs, { opacity: 0.22, scale: 0.97, transformOrigin: '50% 0%', ease: 'none', scrollTrigger: part });
-    // les rangées du catalogue (elles défilent déjà) pâlissent seulement
-    const defile = section.querySelector(':scope > .acc-defile');
-    if (defile) gsap.to(defile, { opacity: 0.22, ease: 'none', scrollTrigger: { ...part } });
   });
 }
 
