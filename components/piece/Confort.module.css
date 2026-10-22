@@ -1,4 +1,5 @@
 .carte{margin:22px 0;padding:18px 0;border-top:1px solid var(--encre);color:inherit;font-family:inherit}
+.carte:first-child{margin-top:0;padding-top:0;border-top:0}
 .titre{margin:0 0 15px;font:.75rem/1.45 var(--m);letter-spacing:.06em;text-transform:uppercase;color:var(--graphite)}
 .releve{margin:0 0 16px;padding:10px 12px;border-left:2px solid var(--rouille);background:var(--rouille-clair);color:var(--rouille-fonce);font-size:12px;line-height:1.6;max-width:55ch}
 .reperes{display:flex;flex-wrap:wrap;gap:14px 20px;margin:0;padding:0;list-style:none}
