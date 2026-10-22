@@ -7,12 +7,16 @@ import { DesignJobs } from './jobs.mjs';
 import { renderPlan } from './render-plan.mjs';
 import {SingleGpuRuntime} from './runtime.mjs';
 import {checkLayoutRoom} from '../../lib/design-layout.mjs';
+import modelDefaults from './model.json' with {type:'json'};
 
 export function serviceConfig(env = process.env) {
+  const model=env.REALROOM_MODEL || modelDefaults.model;
   return {
     serviceKey:env.REALROOM_SERVICE_KEY || '',
-    model:env.REALROOM_MODEL || 'RedHatAI/Qwen3.5-9B-FP8-dynamic',
+    model,
     modelRevision:env.REALROOM_MODEL_REVISION || null,
+    tokenizer:env.REALROOM_TOKENIZER || (model===modelDefaults.model?modelDefaults.tokenizer:model),
+    tokenizerRevision:env.REALROOM_TOKENIZER_REVISION || null,
     baseURL:env.REALROOM_LLM_URL || 'http://127.0.0.1:8000/v1', key:env.VLLM_API_KEY,
     directory:env.REALROOM_JOBS_DIR || '/tmp/realroom-jobs',
     port:Number(env.PORT || 7860), host:env.REALROOM_HOST || '0.0.0.0',
@@ -72,7 +76,8 @@ export async function createFurnishingServer(config, { runner=runDesign, ready, 
       if (path==='/health' && req.method==='GET') {
         const available=await checkReady();
         return reply({status:available?'ready':'unprepared',runtime:engines?'sequential-single-gpu':'language-only',spatialEngine:engines?'semlayoutdiff':null,
-          modelResident:!!engines?.language,provider:'huggingface-vllm',model:config.model,revision:config.modelRevision,queue:jobs.queue.length,running:!!jobs.active,
+          modelResident:!!engines?.language,provider:'huggingface-vllm',model:config.model,revision:config.modelRevision,
+          tokenizer:config.tokenizer,tokenizerRevision:config.tokenizerRevision,queue:jobs.queue.length,running:!!jobs.active,
           capabilities:{structuredOutput:true,images:true,planReview:config.planReview,learnedPlacements:!!engines,roomTypes:engines?['salon','chambre','salle_a_manger']:null}},available?200:503);
       }
       if (!sameSecret(req.headers['x-realroom-service-key'],config.serviceKey)) return reply({error:'Connexion au service refusée.'},401);

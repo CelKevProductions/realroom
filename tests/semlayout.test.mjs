@@ -4,6 +4,7 @@ import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawn} from 'node:child_process';
+import {EventEmitter} from 'node:events';
 import {checkLayoutRoom,retrieveLayouts,preserveLayout} from '../lib/design-layout.mjs';
 import {runDesign} from '../lib/model.mjs';
 import {CATALOG} from '../lib/catalog.mjs';
@@ -110,6 +111,36 @@ test('the language process exits before the spatial process is allowed to start'
   runtime.language=old;
   assert.equal((await runtime.layouts(input(),{})).engine,'semlayoutdiff');
   assert.equal(spatialCalls,1);assert.equal(runtime.language,null);
+});
+test('Qwen startup uses its official tokenizer with a separate revision and the vLLM 0.18.1 logging flag',async()=>{
+  const config=serviceConfig({REALROOM_MODEL_REVISION:'fp8-weights-revision',REALROOM_TOKENIZER_REVISION:'base-tokenizer-revision'});
+  assert.equal(config.tokenizer,'Qwen/Qwen3.5-9B');
+  let command,launches=0;
+  const runtime=new SingleGpuRuntime(config,{
+    spawnProcess:(_python,args)=>{
+      launches++;command=args;
+      return Object.assign(new EventEmitter(),{pid:123,exitCode:null,signalCode:null,stderr:new EventEmitter()});
+    },
+    fetcher:async()=>Response.json({data:[{id:config.model}]}),
+  });
+  await runtime.prepareLanguage();
+  await runtime.prepareLanguage();
+  const option=name=>command[command.indexOf(name)+1];
+  assert.equal(option('--model'),'RedHatAI/Qwen3.5-9B-FP8-dynamic');
+  assert.equal(option('--revision'),'fp8-weights-revision');
+  assert.equal(option('--tokenizer'),'Qwen/Qwen3.5-9B');
+  assert.equal(option('--tokenizer-revision'),'base-tokenizer-revision');
+  assert.ok(command.includes('--no-enable-log-requests'));
+  assert.ok(!command.includes('--disable-log-requests'));
+  assert.equal(launches,1);
+});
+test('a different language model never inherits Qwen tokenizer defaults',()=>{
+  const custom=serviceConfig({REALROOM_MODEL:'fixture/another-model'});
+  assert.equal(custom.tokenizer,'fixture/another-model');
+  assert.equal(custom.tokenizerRevision,null);
+  const override=serviceConfig({REALROOM_TOKENIZER:'fixture/tokenizer',REALROOM_TOKENIZER_REVISION:'fixture-revision'});
+  assert.equal(override.tokenizer,'fixture/tokenizer');
+  assert.equal(override.tokenizerRevision,'fixture-revision');
 });
 test('service defaults to the specialized engine and reports missing assets without starting hardware',async t=>{
   const directory=await mkdtemp(join(tmpdir(),'rr-spatial-'));t.after(()=>rm(directory,{recursive:true,force:true}));

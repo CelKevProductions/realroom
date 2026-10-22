@@ -40,6 +40,7 @@ async function compute(payload) {
 const started=Date.now(), result=await compute(input);
 const checked=result.candidates.map(c=>({scene:normalizeScene(c.scene,input.room),report:assess(input.room,c.scene,input.brief,evaluate)}));
 const summary={testedAt:new Date().toISOString(),model:health.model,revision:health.revision,elapsedSeconds:Math.round((Date.now()-started)/1000),
+  tokenizer:health.tokenizer,tokenizerRevision:health.tokenizerRevision,
   room:process.argv.includes('--room-l')?'L':'rectangle',calls:result.calls,planReview:result.planReview,
   spatialEngine:result.spatialEngine,spatialProvenance:result.candidates.map(c=>({engine:c.scene.provenance?.spatialEngine,
     revision:c.scene.provenance?.checkpointRevision,source:c.scene.provenance?.upstreamCommit,seed:c.scene.provenance?.seed})),

@@ -14,16 +14,24 @@ def main():
         raise SystemExit('This runtime requires a CUDA GPU. It never requests hardware automatically.')
     config = json.loads((ROOT / 'services/furnishing/model.json').read_text())
     model = os.environ.get('REALROOM_MODEL', config['model'])
-    revision = os.environ.get('REALROOM_MODEL_REVISION') or config.get('revision')
+    revision = os.environ.get('REALROOM_MODEL_REVISION') or (config.get('revision') if model == config['model'] else None)
+    api = HfApi()
     if not revision:
-        revision = HfApi().model_info(model).sha
+        revision = api.model_info(model).sha
+    tokenizer = os.environ.get('REALROOM_TOKENIZER') or (config.get('tokenizer', model) if model == config['model'] else model)
+    tokenizer_revision = os.environ.get('REALROOM_TOKENIZER_REVISION') or (config.get('tokenizerRevision') if tokenizer == config.get('tokenizer') else None)
+    if not tokenizer_revision:
+        tokenizer_revision = revision if tokenizer == model else api.model_info(tokenizer).sha
     os.environ['REALROOM_MODEL'] = model
     os.environ['REALROOM_MODEL_REVISION'] = revision
+    os.environ['REALROOM_TOKENIZER'] = tokenizer
+    os.environ['REALROOM_TOKENIZER_REVISION'] = tokenizer_revision
     os.environ['VLLM_API_KEY'] = secrets.token_urlsafe(48)
     os.environ['REALROOM_LLM_URL'] = 'http://127.0.0.1:8000/v1'
     os.environ['REALROOM_LANGUAGE_PYTHON'] = sys.executable
     print(json.dumps({'service': 'realroom', 'spatial': 'semlayoutdiff', 'language': model,
-                      'revision': revision, 'runtime': 'sequential-single-gpu'}), flush=True)
+                      'revision': revision, 'tokenizer': tokenizer, 'tokenizerRevision': tokenizer_revision,
+                      'runtime': 'sequential-single-gpu'}), flush=True)
     os.execvp('node', ['node', str(ROOT / 'services/furnishing/server.mjs')])
 
 if __name__ == '__main__':

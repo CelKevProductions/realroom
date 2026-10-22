@@ -1,8 +1,12 @@
 # Backend GPU — préparation expérimentale
 
-État au 22 octobre 2026 : infrastructure et protocole testés localement avec des réponses simulées. Aucune inférence réelle ni qualité esthétique validée. Le premier essai Hugging Face a échoué au démarrage du conteneur (`python` absent ; la commande utilise maintenant `python3`). Le second a été annulé pendant l’attente du matériel. Aucun job ne reste actif.
+État au 23 octobre 2026 : job de validation L4 arrêté lors de la reprise de conversation, corrections de démarrage conservées et vérifiées sur CPU. **Le parcours complet et le chat restent non validés avec les vrais modèles.**
 
-**Consigne de cette session : ne lancer aucun GPU ni aucun appel d’inférence payant avant le « lets go » explicite de Kevin.** Les scripts de préparation et les tests locaux ne lancent pas de GPU. Les commandes de déploiement avec `--start-l4` et de test avec `--generate` sont des actions distinctes à exécuter seulement après cet accord.
+L’extrait transmis par Kevin rapporte une génération SemLayoutDiff réussie, puis le chargement des poids Qwen (~12,7 Gio) après correction du démarrage et du tokenizer. Ces observations ne sont pas accompagnées d’un résultat exporté accessible dans cette reprise : elles ne constituent ni une mesure de qualité ni une validation de bout en bout.
+
+Le job Hugging Face `CelKev/6ada9990c191903149a7750a`, nommé `realroom-l4-validation`, a été retrouvé actif sur une seule L4, puis annulé le 23 octobre. Son statut `CANCELED` et l’absence de jobs actifs ont été vérifiés. L’accès aux processus et fichiers du sandbox retournait `403 invalid or missing X-Sandbox-Token` dans la nouvelle session ; ses résultats internes et les modifications non sauvegardées n’ont pas pu être récupérés. Aucun GPU ni appel d’inférence payant supplémentaire n’a été lancé.
+
+**Consigne conservée : limiter le travail à l’essai indispensable, sauvegarder les corrections et arrêter la L4.** Le « lets go » avait autorisé l’essai précédent ; il ne faut plus présenter celui-ci comme jamais lancé. Les commandes `--start-l4` et `--generate` ci-dessous sont des actions payantes distinctes, pas des étapes automatiques de vérification locale.
 
 ## Ce qui est prêt et ce qui ne l’est pas
 
@@ -10,11 +14,21 @@ Le code conserve l’interface, les meubles et le moteur de rendu de RealRoom. L
 
 Le service utilise désormais **SemLayoutDiff pour les implantations initiales**. Le code des réseaux SLDN et APM est inclus sans modification, à la révision officielle `6b12bc4c42aa8377445af108093539073f0495c1`, avec licence MIT et empreintes des sources. Le worker charge les vrais checkpoints publiés, exécute les étapes de diffusion conditionnées par l’architecture et le prédicteur d’attributs. Il n’a pas besoin de charger 3D-FRONT ni les meshes 3D-FUTURE.
 
-Le code est intégré et les tests locaux passent, **mais les poids n’ont pas été téléchargés ou exécutés dans cette session, et le Dockerfile complet n’a pas été construit**. Le chargement strict des checkpoints, la compatibilité CUDA/L4, le temps, la mémoire et la qualité restent à vérifier sur le runtime cible. Un nom de modèle dans un rapport de test simulé ne constitue pas une inférence réelle.
+Le code est intégré et les tests locaux passent. L’essai précédent rapporte une inférence spatiale et le chargement des poids Qwen ; **aucune sortie complète récupérable ne valide encore l’enchaînement, le chat, les performances ou la qualité**. Le Dockerfile complet n’a pas été reconstruit pendant la reprise. Un nom de modèle dans un rapport de test simulé ne constitue pas une inférence réelle.
 
 Qwen `RedHatAI/Qwen3.5-9B-FP8-dynamic` via `vllm/vllm-openai:v0.18.1` interprète le brief, choisit une palette et un inventaire, complète les usages/décors, critique les plans et traite les retouches. **Il ne crée plus seul l’implantation initiale du service Hugging Face.** Le chemin Responses et la fonction sans moteur spatial restent disponibles pour comparaison, mais l’API web exige par défaut le backend spatial : aucune clé de session résiduelle ne peut le contourner. Sans service raccordé, la génération reste indisponible. Le mode de comparaison historique exige explicitement `REALROOM_DESIGN_ENGINE=language-comparison` côté serveur, sans service spatial configuré.
 
 MiDiffusion, LayoutVLM et Function2Scene ne sont ni intégrés ni exécutés. Voir `docs/choix-moteur-ameublement.md`. Le code MIT de SemLayoutDiff ne prouve pas les droits sur tous ses poids ou données : aucune licence de checkpoint n’est explicitée dans la fiche Hugging Face consultée. Clarifier ce point avant une exploitation commerciale.
+
+## Corrections de démarrage conservées
+
+- vLLM 0.18.1 expose `--no-enable-log-requests` ; l’ancienne option `--disable-log-requests` est retirée de la commande. Les contenus des demandes restent exclus des journaux du modèle.
+- Les poids restent `RedHatAI/Qwen3.5-9B-FP8-dynamic`. Leur configuration de tokenizer déclare `TokenizersBackend`, exporté avec Transformers 5, alors que vLLM 0.18.1 dépend de Transformers `<5`. Le runtime utilise explicitement `Qwen/Qwen3.5-9B` comme tokenizer.
+- `REALROOM_TOKENIZER` et `REALROOM_TOKENIZER_REVISION` permettent une configuration explicite. Le bootstrap résout séparément les révisions du modèle et du tokenizer, les transmet à vLLM et les expose dans `/health` et le rapport d’essai. Changer de modèle n’hérite pas implicitement du tokenizer Qwen.
+- Contrôle réel du tokenizer sur CPU avec Transformers 4.57.6 : l’erreur `Tokenizer class TokenizersBackend does not exist or is not currently imported` est reproduite sur le dépôt FP8. Le tokenizer officiel se charge en `Qwen2TokenizerFast` ; les 248 077 entrées de vocabulaire (tokens ajoutés inclus) correspondent exactement à celles du fichier FP8. Le modèle de message avec une image et `enable_thinking=false` est rendu et encodé correctement. Aucun poids de réseau n’a été téléchargé pour ce contrôle. Révisions : FP8 `790f0576d2d77dd5322aa0603a470bd9e3a3d1f6`, tokenizer `c202236235762e1c871ad0ccb60c8ee5ba337b9a`.
+- Vérification locale de reprise : 49 tests Node de transport/placement/runtime et 9 tests Python CPU passent ; compilation de `start.py` et contrôle du diff réussis. Les modèles des tests d’orchestration restent simulés. Aucun nouveau build web n’est revendiqué.
+
+Sources de compatibilité : [arguments officiels vLLM 0.18.1](https://docs.vllm.ai/en/v0.18.1/cli/serve/), [dépendances Transformers de cette version](https://github.com/vllm-project/vllm/blob/v0.18.1/requirements/common.txt), [tokenizer FP8](https://huggingface.co/RedHatAI/Qwen3.5-9B-FP8-dynamic/blob/790f0576d2d77dd5322aa0603a470bd9e3a3d1f6/tokenizer_config.json), [tokenizer officiel](https://huggingface.co/Qwen/Qwen3.5-9B/blob/c202236235762e1c871ad0ccb60c8ee5ba337b9a/tokenizer_config.json).
 
 ## Enchaînement de l’ameublement
 
@@ -80,7 +94,7 @@ Les routes `/v1/*` exigent `x-realroom-service-key`. Un Space privé exige en pl
 
 L’application expose `POST /api/design` pour créer, `GET /api/design?job=ID` pour suivre, `DELETE /api/design?job=ID` pour annuler. Ces routes utilisent le code d’accès. `/api/connection` vérifie l’état du service. Les URLs des fournisseurs viennent exclusivement de la configuration serveur.
 
-## Vérification réelle, à lancer après accord
+## Vérification réelle restant à terminer
 
 Les secrets sont lus dans l’environnement ; ne pas les placer dans les arguments de commande ni dans les logs.
 

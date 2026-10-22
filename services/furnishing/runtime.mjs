@@ -88,8 +88,12 @@ export class SingleGpuRuntime {
         '--host','127.0.0.1','--port','8000','--max-model-len','32768','--max-num-seqs','1',
         '--max-num-batched-tokens','4096','--gpu-memory-utilization','0.90','--enforce-eager',
         '--reasoning-parser','qwen3','--limit-mm-per-prompt','{"image":10,"video":0}',
-        '--mm-processor-kwargs','{"max_pixels":262144}','--disable-log-requests'];
+        '--mm-processor-kwargs','{"max_pixels":262144}','--no-enable-log-requests'];
       if(c.modelRevision)args.push('--revision',c.modelRevision);
+      // The FP8 repo exports a Transformers 5 TokenizersBackend config, while
+      // vLLM 0.18.1 requires Transformers <5. Use the base model's tokenizer.
+      if(c.tokenizer)args.push('--tokenizer',c.tokenizer);
+      if(c.tokenizerRevision)args.push('--tokenizer-revision',c.tokenizerRevision);
       this.language=this.spawnProcess(c.languagePython,args,{cwd:ROOT,detached:true,stdio:['ignore','ignore','pipe'],
         env:{...process.env,VLLM_API_KEY:c.key,CUDA_VISIBLE_DEVICES:'0'}});
       this.language.once('error',()=>{});
