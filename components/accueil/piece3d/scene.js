@@ -2,23 +2,26 @@
 // paquet initial). Un immeuble jouet de quatre appartements : des chiens, des chats, des tortues et des
 // lapins y vivent comme des humains. L'histoire suit les chapitres de la page (défilement guidé) :
 //   0 (héros) : l'immeuble s'assemble étage par étage, façade fermée ;
-//   1 (Relever) : la façade s'ouvre comme une maison de poupée, le plan de chaque pièce se trace ;
-//     chacun vit sa vie (un chien dort, l'autre joue à la balle, un chat dort sur son griffoir, l'autre
-//     joue avec une pelote, une tortue arrose, l'autre se promène, un lapin grignote, l'autre gambade) ;
-//   2 (Aménager) : les meubles changent de place sous leurs pattes : surprises, un lapin tombe, les
-//     tortues rentrent dans leur carapace, le fauteuil boude ;
+//   1 (Relever) : la façade s'ouvre comme une maison de poupée, le plan de chaque pièce se trace ; les
+//     pièces sont vides et chacun y vit sa vie (balle, sieste, pelote, lecture, promenade, carotte, gambade) ;
+//   2 (Aménager), deux arrêts : les meubles arrivent (première proposition), puis Shuffle les change de
+//     place sous leurs pattes : surprises, un lapin tombe, les tortues rentrent dans leur carapace, le
+//     fauteuil boude ; et tout le monde est content ;
 //   3 (Visiter), une visite par arrêt du défilement : on s'approche de chaque appartement (console, échecs,
 //     lecture, série sous le plaid dans le noir), puis tout le monde salue et dit merci.
-// Chaque animal se clique (il réagit et parle dans la bulle). En avançant d'un chapitre au suivant,
-// l'histoire se joue ; en remontant ou en sautant, la scène rejoint l'état du chapitre. Rendu seulement
-// à l'écran et onglet actif ; mouvement réduit : l'état de chaque chapitre, immobile.
+// En avançant d'un arrêt au suivant, l'histoire se joue ; en remontant ou en sautant, la scène rejoint
+// l'état voulu. On peut jouer avec les animaux : un clic (ou un doigt posé) et ils répondent ; on les
+// attrape (glisser à la souris, appui long au doigt), on les promène, on les secoue (les meubles sautent,
+// les voisins sursautent, l'animal finit étourdi), on les lance (ils rebondissent, puis rentrent à leur
+// place) ; on les caresse en frottant la souris dessus. Rendu seulement à l'écran et onglet actif ;
+// mouvement réduit : l'état de chaque chapitre, immobile, et seulement le clic.
 import * as THREE from 'three';
 import { initialiser, COURBES } from '@/components/mouvement/regles.js';
 import { matieresMeubles, atelierOmbres, construireMeuble, preparer, fusion, bloc, cyl, facettes, assembler } from './maquette.js';
 import { construireImmeuble, APPARTEMENTS, CENTRES, SOLS, AH } from './immeuble.js';
 import {
   matieresAnimaux, creerAnimal, couronneEtoiles, nuageOrage, reserveCoeurs, ESPECES,
-  bond, marcher, surprise, chute, relever, tournoyer, seCacher, coucou, proche
+  bond, marcher, surprise, chute, relever, cacherEtoiles, tournoyer, seCacher, coucou, proche
 } from './animaux.js';
 
 const RAD = Math.PI / 180, R = Math.PI / 2;
@@ -39,44 +42,47 @@ const CAM = {
 };
 const VISITES = APPARTEMENTS.map((a, i) => ({ az: [4, 8, 10, 2][i], el: 11, rx: 2.3, ry: 1.6, cx: CENTRES[a.cote], cy: SOLS[a.etage] + 1, cz: .5, fov: 30 }));
 const cadrage = (n, k) => (n === 0 ? CAM.immeuble : n === 1 ? CAM.ouvert : n === 2 ? CAM.amenager : k >= 4 ? CAM.fin : VISITES[k]);
+// la pièce (repère d'un appartement) : un animal tenu ou lancé y reste
+const MURS = { x: 1.85, zMin: -1.45, zMax: 1.3, plafond: 1.1 };
 
-// meubles de chaque appartement (repère de l'appartement, m) : [x, z, orientation] avant (A) et après (B)
+// meubles de chaque appartement (repère de l'appartement, m) : [x, z, orientation] de la première
+// proposition (A) et de celle de Shuffle (B) ; avant, les pièces sont vides
 const PIECES = [
-  { // 0 chiens : avant, le canapé tourne le dos ; après, deux poufs devant la console
-    tapis: { A: [.5, .25, .3], B: [-.5, .05, 0] },
-    canape: { A: [-.85, .75, Math.PI], B: [.55, -1.3, 0] },
-    meubleTV: { A: [1.35, -1.52, 0], B: [-1.6, -.1, R - .4] },
-    pouf: { A: [1.85, 1.25, 0], B: [-.8, -.65, 0] },
-    pouf2: { id: 'pouf', A: [-.6, -1.5, 0], B: [-.2, .1, 0] },
-    panier: { A: [-1.65, -.7, 0], B: [1.6, 1, 0] },
-    plante: { A: [1.95, .35, 0], B: [1.9, -1.45, 0] },
-    lampadaire: { A: [-.05, -1.55, 0], B: [-1.9, -1.45, 0] }
+  { // 0 chiens : A, le canapé contre le mur de gauche face à la console ; B, deux poufs devant la console
+    tapis: { A: [.1, -.1, 0], B: [-.5, .05, 0] },
+    canape: { A: [-1.7, 0, R], B: [.55, -1.3, 0] },
+    meubleTV: { A: [1.95, -.1, -R], B: [-1.6, -.1, R - .4] },
+    pouf: { A: [-.85, -1.4, 0], B: [-.8, -.65, 0] },
+    pouf2: { id: 'pouf', A: [-.85, 1.35, 0], B: [-.2, .1, 0] },
+    panier: { A: [1.5, 1.2, 0], B: [1.6, 1, 0] },
+    plante: { A: [-1.85, -1.45, 0], B: [1.9, -1.45, 0] },
+    lampadaire: { A: [-1.85, 1.4, 0], B: [-1.9, -1.45, 0] }
   },
-  { // 1 chats : après, un guéridon et son échiquier entre le fauteuil et le pouf
-    tapisRond: { A: [.9, .5, 0], B: [0, .25, 0] },
-    gueridon: { A: [1.6, 1.15, 0], B: [0, .2, 0] },
-    fauteuil: { A: [-1.65, 1, .9], B: [-.85, .2, R - .35] },
-    pouf: { A: [-.3, -1.45, 0], B: [.78, .2, 0] },
-    etagere: { A: [-1.2, -1.58, 0], B: [1.35, -1.58, 0] },
-    griffoir: { A: [1.75, -1.35, 0], B: [-1.8, -1.3, 0] },
-    plante: { A: [-1.9, -.3, 0], B: [1.9, 1.2, 0] },
-    lampadaire: { A: [.75, -1.55, 0], B: [-1.9, 1.2, 0] }
+  { // 1 chats : A, un coin lecture (fauteuil, lampe, guéridon) ; B, le guéridon et son échiquier entre le fauteuil et le pouf
+    tapisRond: { A: [.9, -.4, 0], B: [0, .25, 0] },
+    gueridon: { A: [.55, -.95, 0], B: [0, .2, 0] },
+    fauteuil: { A: [1.45, -1, -.6], B: [-.85, .2, R - .35] },
+    pouf: { A: [-1, .5, 0], B: [.78, .2, 0] },
+    etagere: { A: [-1.05, -1.58, 0], B: [1.35, -1.58, 0] },
+    griffoir: { A: [-1.85, .9, 0], B: [-1.8, -1.3, 0] },
+    plante: { A: [-1.9, -1.45, 0], B: [1.9, 1.2, 0] },
+    lampadaire: { A: [1.95, -1.5, 0], B: [-1.9, 1.2, 0] }
   },
-  { // 2 tortues : après, le canapé face à nous, la table basse et le thé, la bibliothèque
-    tapis: { A: [.4, .4, -.25], B: [-.2, -.45, 0] },
-    canape: { A: [1.72, .3, -R], B: [-.2, -1.3, 0] },
-    table: { A: [.6, 1.1, .4], B: [-.2, -.25, 0] },
-    etagere: { A: [-1.25, -1.58, 0], B: [1.98, -.65, -R] },
-    lampadaire: { A: [-1.9, 1.3, 0], B: [-1.75, -1.42, 0] },
-    plante: { A: [1.55, -1.14, 0], B: [1.85, 1.25, 0] }
+  { // 2 tortues : A, le canapé contre le mur de gauche, la table devant ; B, le canapé face à nous, la table basse et le thé
+    tapis: { A: [-.6, -.2, R], B: [-.2, -.45, 0] },
+    canape: { A: [-1.7, -.2, R], B: [-.2, -1.3, 0] },
+    table: { A: [-.85, -.2, R], B: [-.2, -.25, 0] },
+    etagere: { A: [.6, -1.58, 0], B: [1.98, -.65, -R] },
+    lampadaire: { A: [-1.85, -1.5, 0], B: [-1.75, -1.42, 0] },
+    plante: { A: [1.85, -1.4, 0], B: [1.85, 1.25, 0] }
   },
-  { // 3 lapins : avant, le canapé face au mur ; après, face à la télé
-    tapis: { A: [-.3, .5, .2], B: [-.45, .2, 0] },
-    canape: { A: [.3, -1.25, Math.PI], B: [.95, .1, -R + .45] },
-    meubleTV: { A: [1.95, .6, -R], B: [-1.6, .05, R - .4] },
-    etagere: { A: [-1.98, -.4, R], B: [-1.25, -1.58, 0] },
-    lampadaire: { A: [-1, 1.35, 0], B: [1.9, -1.45, 0] },
-    plante: { A: [1.9, -1.45, 0], B: [1.9, 1.3, 0] }
+  { // 3 lapins : A, la télé à gauche, le canapé à droite ; B, le canapé en biais face à la télé
+    tapis: { A: [0, -.1, 0], B: [-.45, .2, 0] },
+    canape: { A: [1.7, -.1, -R], B: [.95, .1, -R + .45] },
+    meubleTV: { A: [-1.95, -.1, R], B: [-1.6, .05, R - .4] },
+    etagere: { A: [.2, -1.58, 0], B: [-1.25, -1.58, 0] },
+    lampadaire: { A: [1.9, 1.35, 0], B: [1.9, -1.45, 0] },
+    plante: { A: [-1.9, -1.45, 0], B: [1.9, 1.3, 0] }
   }
 ];
 // habitants (deux par appartement)
@@ -90,13 +96,20 @@ const HABITANTS = [
   [{ espece: 'lapin', accessoire: 'echarpe', couleurAcc: 'menthe', graine: 6 },
     { espece: 'lapin', accessoire: 'noeud', couleurAcc: 'corail', graine: 7 }]
 ];
-// où ils sont et ce qu'ils font : leur vie d'avant (chapitres 0 et 1), debout dans les pièces
-// réaménagées (2), à leur activité (3). via : le chemin jusqu'au siège.
+// où ils sont et ce qu'ils font : leur vie dans les pièces vides (chapitres 0 et 1), debout parmi les
+// meubles de la première proposition (2, premier arrêt) puis de Shuffle (2, second arrêt), à leur
+// activité (3). via : le chemin jusqu'au siège.
 const VIE = [
-  [{ x: -1.65, z: -.7, y: .1, r: .6, dort: 1, assis: 1 }, { x: .6, z: 1, r: 2.5, routine: 'balle' }],
-  [{ x: 1.75, z: -1.35, y: 1.15, r: .3, dort: 1, assis: .5 }, { x: -.2, z: .25, r: .5, assis: .4, routine: 'pelote' }],
-  [{ x: 1, z: -.9, r: 1.2, arrose: 1 }, { x: -.2, z: .7, r: -1.5, routine: 'promenade' }],
+  [{ x: -1, z: -.45, r: .9, assis: 1 }, { x: .6, z: 1, r: 2.5, routine: 'balle' }],
+  [{ x: 1, z: .6, r: -.6, dort: 1, assis: .5 }, { x: -.2, z: .25, r: .5, assis: .4, routine: 'pelote' }],
+  [{ x: 1, z: -.7, r: -.5, lit: 1, assis: 1 }, { x: -.2, z: .7, r: -1.5, routine: 'promenade' }],
   [{ x: -.5, z: .45, r: .5, mange: 1, assis: 1 }, { x: .2, z: .9, r: 1, routine: 'gambade' }]
+];
+const DEBOUT_A = [
+  [{ x: .35, z: .45, r: -.5 }, { x: -.45, z: -.35, r: .6 }],
+  [{ x: .3, z: .95, r: .3 }, { x: -.4, z: 1, r: -.2 }],
+  [{ x: .55, z: .45, r: -.6 }, { x: -.15, z: .85, r: .3 }],
+  [{ x: -.35, z: .3, r: .4 }, { x: .55, z: .75, r: -.3 }]
 ];
 const DEBOUT = [
   [{ x: .25, z: -.45, r: .3 }, { x: -.05, z: .85, r: .2 }],
@@ -113,7 +126,9 @@ const ACTIVITE = [
 const BASE = { souffle: 1, salut: 0, arrose: 0, lit: 0, joue: 0, dort: 0, mange: 0, grignote: 0, pense: 0, pousse: 0, acclame: 0, assis: 0, cache: 0, remue: 0, teteX: 0, teteY: 0 };
 const DRAPEAUX = ['arrose', 'lit', 'joue', 'dort', 'mange', 'grignote', 'assis'];
 const drapeaux = p => Object.fromEntries(DRAPEAUX.map(k => [k, p[k] || 0]));
-const poseDe = (h, n) => (n <= 1 ? VIE : n === 2 ? DEBOUT : ACTIVITE)[h.i][h.j];
+const poseDe = (h, n, k) => (n <= 1 ? VIE : n === 2 ? (k ? DEBOUT : DEBOUT_A) : ACTIVITE)[h.i][h.j];
+// disposition des meubles à chaque arrêt : aucune (pièces vides), la première proposition, Shuffle
+const dispoDe = (n, k) => (n <= 1 ? null : n === 2 && !k ? 'A' : 'B');
 // état de la scène attendu à chaque chapitre
 const cible = (n, k) => ({
   ouvre: n ? 1 : 0, trace: n ? 2 : 0, rotW: n === 0 ? 1 : n === 3 && k >= 4 ? .35 : 0,
@@ -255,7 +270,8 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     a.objet.add(o);
     a.ombre = o;
     apparts[i].groupe.add(a.objet);
-    return { a, i, j, emu: false, occupe: 0, n: j };
+    // tenu, vol, retour : on joue avec lui (attrapé, lancé, il rentre à sa place) ; parleFin : sa bouche bouge
+    return { a, i, j, emu: false, occupe: 0, n: j, tenu: null, vol: null, retour: null, parleFin: 0, sursaut: 0, caresse: 0 };
   }));
   const tous = habitants.flat();
   const coeurs = reserveCoeurs(18);
@@ -278,15 +294,55 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   let courant = -1, visiteCourante = 0, voulu = chapitre, voulueVisite = visite;
   let introFaite = false, introTl = null, histoire = null, histoireNom = '', routines = [];
   let raf = 0, avant = 0, t = 0, detruit = false, premiere = false, visible = true, nuitVue = -1;
-  let largeur = 1, hauteur = 1, px = 0, py = 0, vx = 0, vy = 0;
+  let largeur = 1, hauteur = 1, px = 0, py = 0, vx = 0, vy = 0, tremble = 0, fete = 0;
+  const enJeu = h => !!(h.tenu || h.vol || h.retour);
 
   // ---------- meubles
+  const tuerMeuble = o => gsap.killTweensOf([o.position, o.rotation, o.scale]);
+  // disposition voulue (null : pièce vide), d'un coup ou animée
+  function placerMeubles(ap, nom, instant, delai = 0) {
+    if (!nom) { if (ap.dispo || instant) retirerMeubles(ap, instant, delai); return; }
+    if (!ap.dispo) livrerMeubles(ap, nom, instant, delai);
+    else if (ap.dispo !== nom || instant) disposer(ap, nom, instant);
+  }
+  // pièce vidée : les meubles rapetissent et disparaissent
+  function retirerMeubles(ap, instant, delai = 0) {
+    ap.dispo = null;
+    ap.ordre.forEach((id, k) => {
+      const o = ap.meubles[id].objet;
+      tuerMeuble(o);
+      if (instant) { o.visible = false; o.scale.setScalar(.001); o.position.y = 0; o.rotation.x = o.rotation.z = 0; return; }
+      gsap.timeline({ delay: delai + k * .04 })
+        .to(o.scale, { x: .001, y: .001, z: .001, duration: .3, ease: 'back.in(2)' })
+        .set(o, { visible: false });
+    });
+  }
+  // les meubles arrivent : chacun apparaît sous le plafond, tombe à sa place et s'écrase un peu
+  function livrerMeubles(ap, nom, instant, delai = 0) {
+    ap.dispo = nom;
+    ap.ordre.forEach((id, k) => {
+      const o = ap.meubles[id].objet, [x, z, r] = PIECES[ap.i][id][nom];
+      tuerMeuble(o);
+      o.rotation.set(0, r, 0);
+      if (instant) { o.visible = true; o.position.set(x, 0, z); o.scale.set(1, 1, 1); return; }
+      const haut = id.startsWith('tapis') ? 1.1 : 1.5, d = delai + k * .13;
+      o.position.set(x, haut, z);
+      o.scale.setScalar(.001);
+      gsap.timeline({ delay: d })
+        .set(o, { visible: true })
+        .to(o.scale, { x: 1, y: 1, z: 1, duration: .3, ease: 'back.out(2.2)' })
+        .to(o.position, { y: 0, duration: .42, ease: 'power3.in' }, .18)
+        .fromTo(o.scale, { ...ECRASE, y: .85 }, { x: 1, y: 1, z: 1, duration: .45, ease: 'elastic.out(1, .45)', immediateRender: false }, .6);
+    });
+  }
   // passage d'un agencement à l'autre : chaque meuble se soulève, glisse et retombe (en cascade)
   function disposer(ap, nom, instant) {
     ap.dispo = nom;
     ap.ordre.forEach((id, k) => {
       const o = ap.meubles[id].objet, [x, z, r] = PIECES[ap.i][id][nom];
-      gsap.killTweensOf([o.position, o.rotation, o.scale]);
+      tuerMeuble(o);
+      o.visible = true;
+      o.rotation.x = o.rotation.z = 0;
       if (instant) { o.position.set(x, 0, z); o.rotation.set(0, r, 0); o.scale.set(1, 1, 1); return; }
       const haut = id.startsWith('tapis') ? .2 : id === 'etagere' ? .35 : .45 + (k % 3) * .08;
       gsap.timeline({ delay: k * .06 })
@@ -344,8 +400,9 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   }
   // pose de fin de chapitre, d'un coup (la taille, saut.scale, est laissée à l'appelant)
   function poserAnimal(h, n, k) {
-    const a = h.a, p = poseDe(h, n);
+    const a = h.a, p = poseDe(h, n, k);
     tuerAnimal(a);
+    oublierJeu(h);
     a.objet.visible = true;
     a.objet.position.set(p.x, p.y || 0, p.z);
     a.objet.rotation.y = p.r;
@@ -353,21 +410,29 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     h.emu = false;
     remettre(a, p, n, k);
   }
-  // fige un animal là où il est (sa vie d'avant interrompue) : il garde sa place
-  function stabiliser(h) {
-    const a = h.a, p = VIE[h.i][h.j];
+  // fige un animal là où il est (ce qu'il faisait est interrompu) : il garde sa place, avec les
+  // drapeaux de la pose p (sa vie dans la pièce vide, ou debout)
+  function stabiliser(h, p) {
+    const a = h.a;
     tuerAnimal(a);
+    oublierJeu(h);
     a.saut.scale.set(1, 1, 1);
     a.objet.position.y = p.y || 0;
     h.emu = false;
     remettre(a, p, 1, 0);
   }
-  // vie d'avant : le chien joue à la balle, la tortue se promène, le lapin gambade (en boucle)
-  function arreterRoutines() { routines.forEach(r => r.kill()); routines = []; }
+  // la vie dans les pièces vides : le chien joue à la balle, la tortue se promène, le lapin gambade (en boucle)
+  function arreterRoutines() { routines.forEach(r => r.tl.kill()); routines = []; }
+  function arreterRoutine(h) { routines = routines.filter(r => (r.h === h ? (r.tl.kill(), false) : true)); }
   function lancerRoutines() {
     arreterRoutines();
     if (reduit) return;
-    for (const h of tous) {
+    tous.forEach(lancerRoutine);
+  }
+  function lancerRoutine(h) {
+    arreterRoutine(h);
+    if (reduit || enJeu(h)) return;
+    {
       const p = VIE[h.i][h.j], a = h.a;
       let tl = null;
       if (p.routine === 'balle') {
@@ -381,9 +446,9 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
           .to(a.etat, { remue: 0, duration: .3 }, '+=.8');
       } else if (p.routine === 'promenade') {
         tl = gsap.timeline({ repeat: -1, delay: .5 })
-          .add(marcher(gsap, a, [[-1.3, .95]], { depuis: [p.x, p.z] }))
+          .add(marcher(gsap, a, [[-1.1, 1.15]], { depuis: [p.x, p.z] }))
           .to(a.etat, { teteY: .5, duration: .6, yoyo: true, repeat: 1, ease: 'sine.inOut' }, '+=.3')
-          .add(marcher(gsap, a, [[p.x, p.z]], { depuis: [-1.3, .95] }), '+=.4')
+          .add(marcher(gsap, a, [[p.x, p.z]], { depuis: [-1.1, 1.15] }), '+=.4')
           .to({}, { duration: 1 });
       } else if (p.routine === 'gambade') {
         tl = gsap.timeline({ repeat: -1, delay: .2 })
@@ -391,7 +456,7 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
           .to(a.tete.rotation, { z: .22, duration: .3, yoyo: true, repeat: 1, ease: 'sine.inOut' }, '+=.2')
           .to({}, { duration: .9 });
       }
-      if (tl) routines.push(tl);
+      if (tl) routines.push({ h, tl });
     }
   }
 
@@ -405,13 +470,18 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   };
   const ancreAnimal = a => v => haut(a.tete.getWorldPosition(v), .62);
   const ancreFin = v => v.set(0, SOLS[1] + AH + .45, 1.4);
+  const ancreHaut = v => v.set(0, SOLS[1] + AH + .2, 1.6);
   function definirBase(n, k) {
     const texte = n === 3 ? (k < 4 ? textes.visites?.[k] : textes.merci) : '';
     bulleBase = texte ? { texte, ancre: k < 4 ? ancreAppart(k) : ancreFin } : null;
+    // qui parle : le premier habitant de l'appartement visité, ou tout le monde à la fin
+    if (texte) (k < 4 ? [habitants[k][0]] : tous).forEach(h => { h.parleFin = t + 1.3; });
     afficherBulle();
   }
-  function dire(texte, ancre, duree) {
+  // h : l'animal qui parle (sa bouche bouge)
+  function dire(texte, ancre, duree, h) {
     if (!texte) return;
+    if (h) h.parleFin = t + Math.min(1.5, duree * .6);
     bulleTemp = { texte, ancre };
     clearTimeout(minuterieBulle);
     minuterieBulle = setTimeout(() => { bulleTemp = null; afficherBulle(); }, duree * 1000);
@@ -443,8 +513,7 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   function figer(n, k) {
     arreterRoutines();
     calmer();
-    const dispo = n < 2 ? 'A' : 'B';
-    apparts.forEach(ap => disposer(ap, dispo, true));
+    apparts.forEach(ap => placerMeubles(ap, dispoDe(n, k), true));
     tous.forEach(h => { poserAnimal(h, n, k); h.a.saut.scale.set(1, 1, 1); });
     gsap.killTweensOf([etat, ...act]);
     Object.assign(etat, cible(n, k));
@@ -468,11 +537,11 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     return fin + .3;
   }
 
-  // 0 → 1 : la façade s'ouvre, le plan se trace ; ceux qui ne dorment pas sursautent
+  // 0 → 1 : la façade s'ouvre sur des pièces vides, le plan se trace ; ceux qui ne dorment pas sursautent
   function ouvrir(propre) {
     if (!propre) figer(0, 0);
     gsap.killTweensOf([cam, etat]);
-    apparts.forEach(ap => { if (ap.dispo !== 'A') disposer(ap, 'A', true); });
+    apparts.forEach(ap => { if (ap.dispo) retirerMeubles(ap, true); });
     if (!routines.length) lancerRoutines();
     const tl = gsap.timeline();
     tl.to(etat, { rotW: 0, duration: .8, ease: 'power1.inOut' }, 0)
@@ -483,71 +552,93 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     return tl;
   }
 
-  // 1 → 2 : les meubles changent de place sous leurs pattes ; chacun réagit à sa façon
-  function demenager(propre) {
+  // 1 → 2, premier arrêt : les meubles arrivent dans les pièces vides (première proposition) ; chacun
+  // interrompt ce qu'il faisait, s'écarte, puis vient voir, content
+  function livrer(propre) {
     arreterRoutines();
     gsap.killTweensOf([cam, etat, ...act]);
     calmer();
     if (!propre) figer(1, 0);
     else {
-      apparts.forEach(ap => { if (ap.dispo !== 'A') disposer(ap, 'A', true); });
-      tous.forEach(stabiliser);
+      apparts.forEach(ap => { if (ap.dispo) retirerMeubles(ap, true); });
+      tous.forEach(h => stabiliser(h, VIE[h.i][h.j]));
     }
-    const [d1, d2] = habitants[0].map(h => h.a), [c1, c2] = habitants[1].map(h => h.a);
-    const [t1, t2] = habitants[2].map(h => h.a), [l1, l2] = habitants[3].map(h => h.a);
-    const T = [.5, .95, 1.4, 1.85];
+    const T = [.45, .85, 1.25, 1.65];
     const tl = gsap.timeline();
-    tl.to(cam, { ...CAM.amenager, duration: 1.5, ease: COURBES.pivot }, 0)
+    tl.to(cam, { ...CAM.amenager, duration: 1.6, ease: COURBES.pivot }, 0)
       .to(etat, { ouvre: 1, trace: 2, rotW: 0, duration: .5 }, 0)
       .to(etat, { balle: 0, pelote: 0, duration: .35, ease: 'power2.in' }, .3);
+    T.forEach((x, i) => {
+      tl.call(() => livrerMeubles(apparts[i], 'A', false), null, x);
+      habitants[i].forEach((h, j) => {
+        const a = h.a, d = x + .3 + j * .12, q = DEBOUT_A[i][j];
+        tl.to(a.etat, { dort: 0, mange: 0, lit: 0, assis: 0, duration: .2 }, d - .1);
+        if (a.espece === 'tortue') tl.add(seCacher(gsap, a, .7), d);
+        else tl.add(surprise(gsap, a, { haut: a.etat.dort > .5 ? .3 : .18 }), d);
+        const fin = allerVers(tl, a, [[q.x, q.z]], d + (a.espece === 'tortue' ? 1.3 : .9), q.r);
+        tl.call(() => { a.regard('content'); coeursSur(a, 2); }, null, fin)
+          .to(a.etat, { acclame: 1, duration: .25, yoyo: true, repeat: 1 }, fin);
+      });
+    });
+    return tl;
+  }
+
+  // 2, premier arrêt → second : Shuffle ! les meubles changent de place sous leurs pattes ; chacun
+  // réagit à sa façon, puis tout le monde est content
+  function melanger(propre) {
+    arreterRoutines();
+    gsap.killTweensOf([cam, etat, ...act]);
+    calmer();
+    if (!propre) figer(2, 0);
+    else tous.forEach(h => stabiliser(h, DEBOUT_A[h.i][h.j]));
+    const [d1, d2] = habitants[0].map(h => h.a), [c1, c2] = habitants[1].map(h => h.a);
+    const [t1, t2] = habitants[2].map(h => h.a), [l1, l2] = habitants[3].map(h => h.a);
+    const T = [.5, .85, 1.2, 1.55];
+    const tl = gsap.timeline();
+    tl.call(() => dire(textes.shuffle, ancreHaut, 1.8), null, .05)
+      .to(cam, { ...CAM.amenager, rx: CAM.amenager.rx * .95, ry: CAM.amenager.ry * .95, duration: .4, ease: 'power2.out' }, .1)
+      .to(cam, { ...CAM.amenager, duration: .7, ease: 'power2.inOut' }, .5)
+      .to(etat, { ouvre: 1, trace: 2, rotW: 0, balle: 0, pelote: 0, duration: .4 }, 0);
     T.forEach((x, i) => tl.call(() => disposer(apparts[i], 'B', false), null, x));
-    // chiens : celui qui dormait sort du panier d'un bond, l'autre sursaute puis tourne sur lui-même
+    // chiens : l'un sursaute et s'écarte d'un bond, l'autre tourne sur lui-même, ravi
     let x = T[0], D = DEBOUT[0];
-    tl.to(d1.etat, { dort: 0, assis: 0, duration: .2 }, x - .3)
-      .add(surprise(gsap, d1), x - .25)
-      .add(bond(gsap, d1, -1.05, -.2, { hauteur: .28, duree: .42 }), x + .05)
-      .call(() => { d1.objet.userData.sol = 0; }, null, x + .47)
-      .add(surprise(gsap, d2, { haut: .12 }), x + .1)
-      .add(tournoyer(gsap, d2), x + 1);
-    allerVers(tl, d1, [[D[0].x, D[0].z]], x + 1.7, D[0].r, { depuis: [-1.05, -.2] });
-    allerVers(tl, d2, [[D[1].x, D[1].z]], x + 1.8, D[1].r);
-    // chats : le dormeur saute du griffoir, l'autre bondit ; le fauteuil boude
+    tl.add(surprise(gsap, d1), x - .1)
+      .add(bond(gsap, d1, .8, .35, { hauteur: .26, duree: .4 }), x + .25)
+      .add(tournoyer(gsap, d2), x + .1);
+    allerVers(tl, d1, [[D[0].x, D[0].z]], x + 1.4, D[0].r, { depuis: [.8, .35] });
+    allerVers(tl, d2, [[D[1].x, D[1].z]], x + 1.6, D[1].r);
+    // chats : le fauteuil leur fonce dessus, ils bondissent ; le fauteuil boude
     x = T[1]; D = DEBOUT[1];
-    tl.to(c1.etat, { dort: 0, assis: 0, duration: .2 }, x - .45)
-      .add(surprise(gsap, c1, { haut: .3 }), x - .4)
-      .add(bond(gsap, c1, 1.2, -.7, { hauteur: .3, duree: .45 }), x + .05)
-      .call(() => { c1.objet.userData.sol = 0; }, null, x + .5)
-      .to(c2.etat, { assis: 0, duration: .2 }, x)
-      .add(surprise(gsap, c2, { haut: .34 }), x + .1)
+    tl.add(surprise(gsap, c1, { haut: .3 }), x)
+      .add(surprise(gsap, c2, { haut: .36 }), x + .25)
       .call(bouder, null, x + 1);
-    allerVers(tl, c1, [[D[0].x, D[0].z]], x + 1.7, D[0].r, { depuis: [1.2, -.7] });
-    allerVers(tl, c2, [[D[1].x, D[1].z]], x + 1.8, D[1].r);
+    allerVers(tl, c1, [[D[0].x, D[0].z]], x + 1.5, D[0].r);
+    allerVers(tl, c2, [[D[1].x, D[1].z]], x + 1.7, D[1].r);
     // tortues : elles rentrent dans leur carapace, puis ressortent, tout doucement
     x = T[2]; D = DEBOUT[2];
-    tl.to(t1.etat, { arrose: 0, duration: .25 }, x - .3)
-      .add(seCacher(gsap, t1, 1.4), x - .05)
-      .add(seCacher(gsap, t2, 1.3), x + .05);
+    tl.add(seCacher(gsap, t1, 1.3), x - .05)
+      .add(seCacher(gsap, t2, 1.2), x + .05);
     allerVers(tl, t1, [[D[0].x, D[0].z]], x + 2, D[0].r);
     allerVers(tl, t2, [[D[1].x, D[1].z]], x + 2.1, D[1].r);
-    // lapins : le tapis part sous celui qui grignotait (il tombe), l'autre file ; le lampadaire est sonné
+    // lapins : le tapis part sous l'un (il tombe), l'autre sursaute ; le lampadaire est sonné
     x = T[3]; D = DEBOUT[3];
-    const [fx, fz] = [l1.objet.position.x - .15, l1.objet.position.z - .25];
-    tl.to(l1.etat, { mange: 0, assis: 0, duration: .2 }, x - .3)
-      .add(surprise(gsap, l1, { revenir: false }), x - .25)
+    const [fx, fz] = [DEBOUT_A[3][0].x - .15, DEBOUT_A[3][0].z - .25];
+    tl.add(surprise(gsap, l1, { revenir: false }), x - .25)
       .add(surprise(gsap, l2), x + .05)
       .add(chute(gsap, l1, -.15, -.25), x + .5)
       .call(sonner, null, x + .9)
       .add(relever(gsap, l1), x + 2);
     allerVers(tl, l2, [[D[1].x, D[1].z]], x + 1.2, D[1].r);
     allerVers(tl, l1, [[D[0].x, D[0].z]], x + 3.3, D[0].r, { depuis: [fx, fz] });
-    // une fois installés : contents
-    T.forEach((x, i) => tl.call(() => habitants[i].forEach(h => { h.a.regard('content'); coeursSur(h.a, 2); }), null, x + (i === 2 ? 5.6 : 4)));
+    // une fois installés : contents, ils applaudissent
+    T.forEach((x, i) => tl.call(() => habitants[i].forEach(h => { h.a.regard('content'); coeursSur(h.a, 2); }), null, x + (i === 2 ? 4.2 : i === 3 ? 5 : 3.2))
+      .to(habitants[i].map(h => h.a.etat), { acclame: 1, duration: .25, yoyo: true, repeat: 1 }, x + (i === 2 ? 4.2 : i === 3 ? 5 : 3.2)));
     return tl;
   }
 
   // 2 → 3 : chacun s'installe à son activité ; chez les lapins, plaid et lumière éteinte
   function emmenager(k) {
-    figer(2, k);
+    figer(2, 1);
     const tl = gsap.timeline(), fins = [0, 0, 0, 0];
     tl.to(cam, { ...cadrage(3, k), duration: 1.7, ease: COURBES.pivot }, 0);
     habitants.forEach((liste, i) => liste.forEach((h, j) => {
@@ -597,8 +688,8 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     tl.to(cam, { ...cadrage(n, k), duration: 1.5, ease: COURBES.pivot }, 0)
       .to(etat, { ...cible(n, k), duration: 1.1, ease: 'power2.inOut' }, 0)
       .to(act, { v: n === 3 ? 1 : 0, duration: .8 }, .3);
-    const dispo = n < 2 ? 'A' : 'B';
-    apparts.forEach((ap, i) => { if (ap.dispo !== dispo) tl.call(() => disposer(ap, dispo, false), null, .25 + i * .15); });
+    const dispo = dispoDe(n, k);
+    apparts.forEach((ap, i) => { if (ap.dispo !== dispo) tl.call(() => placerMeubles(ap, dispo, false), null, .25 + i * .15); });
     tous.forEach((h, j) => {
       const d = .05 + j * .03;
       tl.to(h.a.saut.scale, { x: .001, y: .001, z: .001, duration: .22, ease: 'power2.in' }, d)
@@ -611,14 +702,16 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   }
 
   function aller(n, k, instant) {
-    const de = courant, propre = !histoire || !histoire.isActive(), nom = histoireNom;
-    courant = n; visiteCourante = k;
+    const de = courant, kDe = visiteCourante, propre = !histoire || !histoire.isActive(), nom = histoireNom;
     survoler(null);   // la caméra bouge : l'animal sous la souris n'est plus le même
+    finirJeux();      // l'histoire reprend la main sur les animaux avec qui on jouait
+    courant = n; visiteCourante = k;
     if (histoire) { histoire.kill(); histoire = null; }
     if (instant) { poser(n, k); return; }
     if (de === 0 && n === 1) { histoire = ouvrir(propre); histoireNom = 'ouvrir'; }
-    else if (de === 1 && n === 2) { histoire = demenager(propre || nom === 'ouvrir'); histoireNom = 'demenager'; }
-    else if (de === 2 && n === 3) { histoire = emmenager(k); histoireNom = 'emmenager'; }
+    else if (de === 1 && n === 2 && k === 0) { histoire = livrer(propre || nom === 'ouvrir'); histoireNom = 'livrer'; }
+    else if (de === 2 && kDe === 0 && n === 2 && k === 1) { histoire = melanger(propre); histoireNom = 'melanger'; }
+    else if (de === 2 && kDe === 1 && n === 3) { histoire = emmenager(k); histoireNom = 'emmenager'; }
     else if (de === 3 && n === 3) {
       // une installation interrompue : chacun file à sa place avant la visite suivante
       if (!propre && nom !== 'visiter') figer(3, k);
@@ -665,7 +758,7 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
       if (n !== 0) { intro(); introTl?.timeScale(3); }
       return;
     }
-    if (n !== courant || (n === 3 && k !== visiteCourante)) aller(n, k, reduit);
+    if (n !== courant || (n >= 2 && k !== visiteCourante)) aller(n, k, reduit);
   }
 
   // ---------- la vie de chaque appartement, à chaque image (tt : temps de la scène)
@@ -681,9 +774,16 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
       bandeBalle.rotation.x += d / .07;
       balle.scale.setScalar(Math.max(.001, etat.balle));
     }
+    // le chien assis suit la balle des yeux
+    const assis = habitants[0][0];
+    if (balle.visible && !enJeu(assis)) {
+      const o = assis.a.objet, dx = balle.position.x - o.position.x, dz = balle.position.z - o.position.z;
+      assis.a.etat.teteY = borne(Math.atan2(Math.sin(Math.atan2(dx, dz) - o.rotation.y), Math.cos(Math.atan2(dx, dz) - o.rotation.y)), -1, 1) * etat.balle;
+    }
     habitants[0].forEach((h, j) => {
+      if (enJeu(h)) return;
       const v = act[0].v * bosse(tt, 5.5, 1.3, j * 2.75);
-      h.a.etat.acclame = v;
+      if (act[0].v > .001) h.a.etat.acclame = v;
       basculer(h, v > .35, 'content');
     });
     // chats : la pelote (avant) ; les échecs, chacun son tour : il réfléchit, puis avance une pièce (après)
@@ -708,8 +808,8 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
         pc.position.set(de[0] + (vers[0] - de[0]) * k, .012 + Math.sin(q * Math.PI) * .05, de[1] + (vers[1] - de[1]) * k);
       });
     }
-    c1.etat.pense = pense[0]; c1.etat.pousse = pousse[0]; c1.etat.teteX = .2 * a1;
-    c2.etat.pense = pense[1]; c2.etat.pousse = Math.max(pousse[1], batte); c2.etat.teteX = .2 * a1 + .3 * etat.pelote;
+    if (!enJeu(habitants[1][0])) { c1.etat.pense = pense[0]; c1.etat.pousse = pousse[0]; c1.etat.teteX = .2 * a1; }
+    if (!enJeu(habitants[1][1])) { c2.etat.pense = pense[1]; c2.etat.pousse = Math.max(pousse[1], batte); c2.etat.teteX = .2 * a1 + .3 * etat.pelote; }
     // tortues : le thé fume
     const a2 = act[2].v;
     the.vapeurs.forEach((v, i) => {
@@ -722,7 +822,13 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     // lapins : sous le plaid, un sursaut devant la série de temps en temps
     plaid.groupe.visible = etat.plaid > .01;
     plaid.groupe.scale.setScalar(Math.max(.001, etat.plaid));
-    habitants[3].forEach((h, j) => basculer(h, act[3].v > .5 && bosse(tt, 9, .9, 4 + j * .12) > .15, 'surpris'));
+    habitants[3].forEach((h, j) => { if (!enJeu(h)) basculer(h, act[3].v > .5 && bosse(tt, 9, .9, 4 + j * .12) > .15, 'surpris'); });
+    // à la fin, tout le monde est heureux : des cœurs jaillissent ici et là
+    if (courant === 3 && visiteCourante >= 4 && !reduit && tt > fete) {
+      fete = tt + 1.1;
+      const h = tous[Math.floor(Math.random() * tous.length)];
+      if (!enJeu(h)) coeursSur(h.a, 2);
+    }
   }
   // une émotion passagère (sauf pendant le salut final)
   function basculer(h, oui, nom) {
@@ -755,8 +861,10 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   // ---------- rendu
   function placer() {
     const asp = largeur / hauteur;
-    const az = (cam.az + etat.rotW * 8 * Math.sin(2 * Math.PI * (t - tps.rot) / 26) + px * 3) * RAD;
-    const el = borne(cam.el - py * 3, -5, 89) * RAD;
+    // tremble : on secoue un animal, la caméra tressaute
+    const tr = tremble > .01 ? tremble : 0;
+    const az = (cam.az + etat.rotW * 8 * Math.sin(2 * Math.PI * (t - tps.rot) / 26) + px * 3 + (Math.random() - .5) * tr) * RAD;
+    const el = borne(cam.el - py * 3 + (Math.random() - .5) * tr * .7, -5, 89) * RAD;
     const tv = Math.tan(cam.fov * RAD / 2);
     const dist = Math.max(cam.ry / tv, cam.rx / (tv * asp));
     camera.fov = cam.fov;
@@ -764,10 +872,12 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     camera.updateProjectionMatrix();
     camera.position.set(cam.cx + dist * Math.sin(az) * Math.cos(el), cam.cy + dist * Math.sin(el), cam.cz + dist * Math.cos(az) * Math.cos(el));
     camera.lookAt(cam.cx, cam.cy, cam.cz);
+    camera.updateMatrixWorld();
   }
-  function rendre() {
+  function rendre(dt = 0) {
     const tt = reduit ? T_FIXE : t;
     placer();
+    jouer(dt);
     im.ouvrir(etat.ouvre);
     im.tracer(etat.trace);
     im.vivre(tt);
@@ -785,6 +895,7 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     }
     for (const h of tous) {
       const a = h.a, sol = a.objet.userData.sol || 0, haut = Math.max(0, a.objet.position.y - sol + a.saut.position.y);
+      a.etat.parle = tt < h.parleFin ? 1 : 0;
       a.vivre(tt);
       a.ombre.position.y = sol - a.objet.position.y + .012;
       a.ombre.scale.setScalar(1 + haut * .8);
@@ -815,27 +926,35 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     py += (vy - py) * k;
     // la scène vit en continu (animaux, nuages, télés) : on rend chaque image tant qu'elle est à l'écran
     sale = false;
-    rendre();
+    rendre(dt);
   }
 
-  // ---------- les animaux se cliquent (et se survolent à la souris)
-  const _p = new THREE.Vector3();
+  // ---------- jouer avec les animaux : survol (il salue, ses yeux suivent la souris), clic (il répond),
+  // caresse (frotter la souris dessus), attraper (glisser ; au doigt, appui long), secouer, lancer
+  const _p = new THREE.Vector3(), _t = new THREE.Vector3(), _w = new THREE.Vector3(), _ndc = new THREE.Vector2();
+  const rayon = new THREE.Raycaster(), planTenu = new THREE.Plane(), AXE_Z = new THREE.Vector3(0, 0, 1);
+  // position d'un animal à l'écran (px dans la toile), sa tête un peu plus bas que le sommet
+  function aLEcran(h, b, out) {
+    h.a.tete.getWorldPosition(_p);
+    _p.y -= .12;
+    const dist = camera.position.distanceTo(_p);
+    _p.project(camera);
+    if (_p.z > 1) return null;
+    out.x = (_p.x + 1) / 2 * b.width; out.y = (1 - _p.y) / 2 * b.height; out.dist = dist;
+    return out;
+  }
+  const _e = { x: 0, y: 0, dist: 0 };
   function viser(e) {
     if (etat.ouvre < .6) return null;
     const b = toile.getBoundingClientRect(), mx = e.clientX - b.left, my = e.clientY - b.top;
     const tv = Math.tan(camera.fov * RAD / 2);
     let choix = null, dmin = Infinity;
     for (const h of tous) {
-      if (h.a.saut.scale.x < .5) continue;
-      h.a.tete.getWorldPosition(_p);
-      _p.y -= .12;
-      const dist = camera.position.distanceTo(_p);
-      _p.project(camera);
-      if (_p.z > 1) continue;
-      const sx = (_p.x + 1) / 2 * b.width, sy = (1 - _p.y) / 2 * b.height;
-      const rayon = Math.max(18, .42 / (2 * dist * tv) * b.height);
-      const d = Math.hypot(mx - sx, my - sy);
-      if (d < rayon && d < dmin) { dmin = d; choix = h; }
+      if (h.a.saut.scale.x < .5 || h.vol) continue;
+      if (!aLEcran(h, b, _e)) continue;
+      const r = Math.max(18, .42 / (2 * _e.dist * tv) * b.height);
+      const d = Math.hypot(mx - _e.x, my - _e.y);
+      if (d < r && d < dmin) { dmin = d; choix = h; }
     }
     return choix;
   }
@@ -843,28 +962,309 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   function survoler(h) {
     if (h === survole) return;
     survole = h;
-    if (h) { toile.dataset.curseur = textes.coucou || '👋'; toile.style.cursor = 'pointer'; saluer(h); }
-    else { delete toile.dataset.curseur; toile.style.cursor = ''; }
+    frotte.chemin = 0; frotte.debut = t;
+    if (h && !prise) { toile.dataset.curseur = textes.coucou || '👋'; toile.style.cursor = reduit ? 'pointer' : 'grab'; saluer(h); }
+    else if (!prise) { delete toile.dataset.curseur; toile.style.cursor = ''; }
   }
   function saluer(h) {
     const a = h.a;
-    if (reduit || a.etat.salut > .5 || gsap.isTweening(a.etat)) return;
+    if (reduit || enJeu(h) || a.etat.salut > .5 || gsap.isTweening(a.etat)) return;
     gsap.timeline().to(a.etat, { salut: .9, duration: .25 }).to(a.etat, { salut: 0, duration: .3 }, 1.2);
   }
   function reagir(h) {
     const a = h.a, maintenant = performance.now();
-    if (maintenant < h.occupe) return;
+    if (maintenant < h.occupe || enJeu(h)) return;
     h.occupe = maintenant + 1500;
     if (!reduit) { coucou(gsap, a, a.etat.salut > .5); coeursSur(a, 3); }
     const phrases = textes.clic?.[a.espece] || [];
-    if (phrases.length) dire(phrases[h.n++ % phrases.length], ancreAnimal(a), 2.6);
+    if (phrases.length) dire(phrases[h.n++ % phrases.length], ancreAnimal(a), 2.6, h);
   }
-  const surSurvol = e => { if (e.pointerType === 'mouse') survoler(viser(e)); };
-  const surQuitte = () => survoler(null);
-  const surClic = e => { const h = viser(e); if (h) reagir(h); };
-  toile.addEventListener('pointermove', surSurvol, { passive: true });
+  const phrase = (cle, a) => textes[cle]?.[a.espece] || '';
+  // caresse : la souris frotte l'animal (quelques allers-retours) ; yeux en cœur, il ronronne ou remue la queue
+  const frotte = { chemin: 0, debut: 0, x: 0, y: 0 };
+  function caresser(h) {
+    const a = h.a, maintenant = performance.now();
+    if (enJeu(h) || maintenant < h.caresse || a.etat.dort > .5) return;
+    h.caresse = maintenant + 2600;
+    const avant = a.regardCourant;
+    gsap.timeline()
+      .call(() => a.regard('amoureux'))
+      .to(a.etat, { remue: 1, duration: .2 }, 0)
+      .to(a.corps.scale, { y: .92, x: 1.05, z: 1.05, duration: .18, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 0)
+      .to(a.etat, { remue: 0, duration: .4 }, 1.6)
+      .call(() => { if (a.regardCourant === 'amoureux') a.regard(avant === 'amoureux' ? 'normal' : avant); }, null, 1.8);
+    coeursSur(a, 4);
+    dire(phrase('caresse', a), ancreAnimal(a), 2, h);
+  }
+
+  // l'animal tenu suit le pointeur dans le plan vertical de sa position (repère de son appartement)
+  function pointDansAppart(i, z, cx, cy, out) {
+    const b = toile.getBoundingClientRect(), g = apparts[i].groupe;
+    _ndc.set((cx - b.left) / b.width * 2 - 1, -((cy - b.top) / b.height) * 2 + 1);
+    rayon.setFromCamera(_ndc, camera);
+    g.updateWorldMatrix(true, false);
+    planTenu.setFromNormalAndCoplanarPoint(AXE_Z, g.localToWorld(_w.set(0, 0, z)));
+    if (!rayon.ray.intersectPlane(planTenu, _t)) return null;
+    return g.worldToLocal(out.copy(_t));
+  }
+  // on cesse de jouer avec lui (l'histoire va le replacer)
+  function oublierJeu(h) {
+    if (h.retour) { h.retour.kill(); h.retour = null; }
+    if (h.tenu && prise?.h === h) prise = null;
+    h.tenu = null; h.vol = null;
+    h.a.etat.tenu = 0;
+    h.a.objet.rotation.z = 0;
+    if (!tous.some(x => x.tenu)) { window.__rrSaisie = false; toile.style.cursor = ''; delete toile.dataset.curseurCache; }
+  }
+  // avant un changement de chapitre : ceux avec qui on jouait reprennent leur place d'un coup
+  function finirJeux() {
+    prise = null;
+    for (const h of tous) {
+      if (!enJeu(h)) continue;
+      poserAnimal(h, courant < 0 ? 0 : courant, visiteCourante);
+      h.a.saut.scale.set(1, 1, 1);
+      if (courant <= 1) lancerRoutine(h);
+    }
+    window.__rrSaisie = false;
+  }
+  function saisir(h, cx, cy) {
+    const a = h.a, o = a.objet;
+    arreterRoutine(h);
+    tuerAnimal(a);
+    if (h.retour) { h.retour.kill(); h.retour = null; }
+    h.vol = null;
+    a.saut.position.set(0, 0, 0); a.saut.rotation.set(0, 0, 0);
+    a.corps.scale.set(1, 1, 1); a.corps.rotation.set(0, 0, 0); a.tete.rotation.set(0, 0, 0);
+    o.rotation.x = 0;
+    Object.assign(a.etat, drapeaux({}), { salut: 0, pense: 0, pousse: 0, acclame: 0, teteX: 0, teteY: 0, cache: 0 });
+    gsap.to(a.etat, { tenu: 1, duration: .2 });
+    a.objet.userData.sol = 0;
+    a.regard('surpris');
+    a.alerte.visible = false;
+    h.tenu = { z: borne(o.position.z, MURS.zMin + .1, MURS.zMax - .1), cx, cy, tx: o.position.x, ty: o.position.y, vx: 0, vy: 0, energie: 0, etourdi: false, dernier: 0, duree: 0 };
+    window.__rrSaisie = true;
+    toile.style.cursor = 'grabbing';
+    toile.dataset.curseurCache = '';   // la pastille du curseur compagnon cacherait l'animal tenu
+    dire(phrase('saisie', a), ancreAnimal(a), 1.8, h);
+  }
+  function tenir(h, dt) {
+    const a = h.a, s = h.tenu, o = a.objet.position;
+    if (pointDansAppart(h.i, s.z, s.cx, s.cy, _t)) { s.tx = borne(_t.x, -MURS.x, MURS.x); s.ty = borne(_t.y - .55, .04, MURS.plafond); }
+    const k = 1 - Math.exp(-dt * 16), nx = o.x + (s.tx - o.x) * k, ny = o.y + (s.ty - o.y) * k;
+    const vx = (nx - o.x) / dt, vy = (ny - o.y) / dt;
+    const acc = Math.hypot(vx - s.vx, vy - s.vy) / dt;
+    s.vx += (vx - s.vx) * .5; s.vy += (vy - s.vy) * .5;
+    o.set(nx, ny, s.z);
+    // il se balance, face à nous
+    a.objet.rotation.z += (borne(-s.vx * .2, -.85, .85) - a.objet.rotation.z) * (1 - Math.exp(-dt * 10));
+    a.objet.rotation.y += (proche(a.objet.rotation.y, 0) - a.objet.rotation.y) * (1 - Math.exp(-dt * 6));
+    // secousse : des changements de vitesse brusques et répétés
+    s.energie = s.energie * Math.exp(-dt * 1.6) + Math.min(70, acc) * dt * .055;
+    s.duree += dt;
+    if (s.duree > .7 && !s.etourdi && a.regardCourant === 'surpris') a.regard('content');
+    if (s.energie > 1 && t - s.dernier > .22) { s.dernier = t; secouer(h, s.energie); }
+  }
+  // secouer : la pièce tremble, les meubles sautent, les voisins sursautent ; l'animal finit étourdi
+  function secouer(h, energie) {
+    const f = Math.min(3, energie), a = h.a, s = h.tenu;
+    tremble = Math.max(tremble, f * .9);
+    apparts.forEach((ap, i) => {
+      const force = i === h.i ? f : f * .3;
+      if (force < .45 || !ap.dispo) return;
+      ap.ordre.forEach(id => cahoter(ap.meubles[id].objet, force, id));
+    });
+    const maintenant = performance.now();
+    for (const o of tous) {
+      if (o === h || enJeu(o) || maintenant < o.sursaut || (o.i !== h.i && f < 2.2)) continue;
+      o.sursaut = maintenant + 1600;
+      if (o.a.espece === 'tortue') seCacher(gsap, o.a, .9);
+      else surprise(gsap, o.a, { haut: .1 + f * .04 });
+    }
+    if (energie > 2 && !s.etourdi) {
+      s.etourdi = true;
+      a.regard('etourdi');
+      gsap.set(a.etoiles, { visible: true });
+      gsap.to(a.etoiles.scale, { x: 1, y: 1, z: 1, duration: .3, ease: 'back.out(3)' });
+      dire(phrase('secoue', a), ancreAnimal(a), 1.8, h);
+    }
+  }
+  // un meuble saute et vacille (le lampadaire se balance plus fort, le tapis frémit à peine)
+  function cahoter(o, force, id) {
+    if (gsap.isTweening(o.position)) return;
+    const tapis = id.startsWith('tapis'), lampe = id === 'lampadaire';
+    gsap.timeline()
+      .to(o.position, { y: (tapis ? .012 : .045) * force * (.6 + Math.random() * .7), duration: .09, ease: 'power2.out' })
+      .to(o.position, { y: 0, duration: .15, ease: 'power2.in' });
+    if (tapis) return;
+    const amp = (lampe ? .14 : .05) * force;
+    gsap.timeline()
+      .to(o.rotation, { z: (Math.random() < .5 ? -1 : 1) * amp, x: (Math.random() - .5) * amp, duration: .08, ease: 'sine.out' })
+      .to(o.rotation, { z: 0, x: 0, duration: lampe ? 1.4 : .6, ease: 'elastic.out(1.2, .3)' });
+  }
+  // lâché : il garde son élan ; lancé fort, il fait des saltos
+  function lacherAnimal(h) {
+    const s = h.tenu, v = Math.hypot(s.vx, s.vy);
+    h.tenu = null;
+    if (!tous.some(x => x.tenu)) window.__rrSaisie = false;
+    toile.style.cursor = survole ? 'grab' : '';
+    delete toile.dataset.curseurCache;
+    h.vol = { vx: borne(s.vx, -7, 7), vy: borne(s.vy, -6, 8), salto: v > 3.4 ? Math.sign(s.vx || 1) * (7 + v) : 0, etourdi: s.etourdi, rebonds: 0 };
+  }
+  function voler(h, dt) {
+    const v = h.vol, a = h.a, o = a.objet.position;
+    v.vy -= 9.8 * dt;
+    o.x += v.vx * dt; o.y += v.vy * dt;
+    if (Math.abs(o.x) > MURS.x) {
+      o.x = Math.sign(o.x) * MURS.x;
+      if (Math.abs(v.vx) > 2.5) tremble = Math.max(tremble, Math.abs(v.vx) * .25);
+      v.vx *= -.45;
+    }
+    if (o.y > MURS.plafond) { o.y = MURS.plafond; v.vy = -Math.abs(v.vy) * .3; }
+    if (v.salto) a.objet.rotation.x += v.salto * dt;
+    a.objet.rotation.z *= Math.exp(-dt * 4);
+    if (o.y > 0) return;
+    o.y = 0;
+    if (v.vy < -2.4 && v.rebonds < 2) {
+      v.vy = -v.vy * .38; v.vx *= .6; v.rebonds++;
+      gsap.fromTo(a.corps.scale, { y: .72, x: 1.18, z: 1.18 }, { y: 1, x: 1, z: 1, duration: .35, ease: 'back.out(3)' });
+      return;
+    }
+    h.vol = null;
+    atterrir(h, v);
+  }
+  // à terre : sur le dos s'il a fait des saltos, étourdi s'il a été secoué, content sinon ; puis il rentre
+  function atterrir(h, v) {
+    const a = h.a, o = a.objet, tl = gsap.timeline();
+    const salto = !!v.salto, etourdi = salto || v.etourdi;
+    o.rotation.x = Math.atan2(Math.sin(o.rotation.x), Math.cos(o.rotation.x));   // après les saltos : le tour le plus court
+    tl.fromTo(a.corps.scale, { y: .7, x: 1.2, z: 1.2 }, { y: 1, x: 1, z: 1, duration: .45, ease: 'elastic.out(1, .4)' }, 0)
+      .to(a.etat, { tenu: 0, duration: .25 }, 0)
+      .to(o.rotation, { z: 0, duration: .25 }, 0);
+    if (salto) {
+      tl.to(o.rotation, { x: -1.35, duration: .2, ease: 'power2.out' }, 0)
+        .call(() => { a.regard('etourdi'); a.etoiles.visible = true; }, null, .1)
+        .to(a.etoiles.scale, { x: 1, y: 1, z: 1, duration: .3, ease: 'back.out(3)' }, .1)
+        .add(relever(gsap, a), 1.5);
+    } else {
+      tl.to(o.rotation, { x: 0, duration: .2 }, 0);
+      if (etourdi) {
+        tl.call(() => a.regard('etourdi'), null, 0)
+          .to(a.tete.rotation, { z: .28, duration: .1, yoyo: true, repeat: 7, ease: 'sine.inOut' }, .3)
+          .set(a.tete.rotation, { z: 0 }, 1.1)
+          .add(cacherEtoiles(gsap, a), 1.3)
+          .call(() => a.regard('normal'), null, 1.4);
+      } else {
+        tl.call(() => { a.regard('content'); coeursSur(a, 2); dire(phrase('atterrit', a), ancreAnimal(a), 1.6, h); }, null, 0);
+      }
+    }
+    tl.add(revenir(h, salto ? [o.position.x, o.position.z] : null), etourdi ? (salto ? 2.8 : 1.6) : .7);
+    h.retour = tl;
+    tl.eventCallback('onComplete', () => { h.retour = null; });
+  }
+  // il rentre à sa place (la pose de l'arrêt en cours), reprend ce qu'il faisait
+  function revenir(h, depuis) {
+    const a = h.a, p = poseDe(h, courant < 0 ? 0 : courant, visiteCourante), tl = gsap.timeline();
+    const assise = (p.y || 0) > 0, chemin = assise && p.via ? p.via : [[p.x, p.z]];
+    const de = depuis || [a.objet.position.x, a.objet.position.z];
+    tl.add(marcher(gsap, a, chemin, { depuis: de }));
+    if (assise) tl.add(bond(gsap, a, p.x, p.z, { y: p.y, hauteur: .3, duree: .45, roulis: 0 })).call(() => { a.objet.userData.sol = p.y; });
+    tl.to(a.objet.rotation, { y: () => proche(a.objet.rotation.y, p.r), duration: .35 })
+      .to(a.etat, { ...drapeaux(p), salut: courant === 3 && visiteCourante >= 4 ? 1 : 0, duration: .4 })
+      .call(() => {
+        if (a.regardCourant !== 'normal' && a.regardCourant !== 'content') a.regard('normal');
+        if (courant === 3 && visiteCourante >= 4) a.regard('content');
+        h.retour = null;
+        if (courant <= 1 && p.routine) lancerRoutine(h);
+      });
+    return tl;
+  }
+
+  // à chaque image : l'animal tenu suit, celui qu'on a lancé vole ; les yeux suivent la souris
+  const curseurToile = { x: 0, y: 0, dedans: false };
+  function jouer(dt) {
+    tremble *= Math.exp(-dt * 7);
+    for (const h of tous) {
+      if (h.tenu && dt > 0) tenir(h, dt);
+      else if (h.vol && dt > 0) voler(h, dt);
+    }
+    if (reduit || !fin) return;
+    if (!curseurToile.dedans) { tous.forEach(h => h.a.viser(0, 0)); return; }
+    const b = toile.getBoundingClientRect();
+    for (const h of tous) {
+      const a = h.a;
+      if (h.tenu || h.vol || a.etat.dort > .5 || !aLEcran(h, b, _e)) { a.viser(0, 0); continue; }
+      const dx = curseurToile.x - _e.x, dy = curseurToile.y - _e.y, d = Math.hypot(dx, dy);
+      if (d > 360) a.viser(0, 0);
+      else a.viser(dx / 240, dy / 240);
+    }
+  }
+
+  // pointeur sur la toile : appui (sur un animal), déplacement, relâche
+  let prise = null;
+  function annulerPrise() {
+    if (!prise) return;
+    clearTimeout(prise.minuterie);
+    try { toile.releasePointerCapture(prise.id); } catch (_) { /* déjà relâché */ }
+    prise = null;
+  }
+  function commencer() {
+    if (!prise || prise.actif) return;
+    prise.actif = true;
+    saisir(prise.h, prise.cx, prise.cy);
+  }
+  const surAppui = e => {
+    if (reduit || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    const h = viser(e);
+    if (!h || prise) return;
+    if (e.pointerType === 'mouse') e.preventDefault();   // pas de sélection de texte en glissant
+    prise = { h, id: e.pointerId, x0: e.clientX, y0: e.clientY, cx: e.clientX, cy: e.clientY, actif: false, type: e.pointerType, minuterie: 0 };
+    try { toile.setPointerCapture(e.pointerId); } catch (_) { /* pointeur déjà parti */ }
+    // au doigt : un appui long attrape ; un glissé reste au défilement guidé
+    if (e.pointerType !== 'mouse') prise.minuterie = setTimeout(commencer, 230);
+  };
+  const surDeplacement = e => {
+    const b = toile.getBoundingClientRect();
+    if (e.pointerType === 'mouse') { curseurToile.x = e.clientX - b.left; curseurToile.y = e.clientY - b.top; curseurToile.dedans = true; }
+    if (prise && e.pointerId === prise.id) {
+      prise.cx = e.clientX; prise.cy = e.clientY;
+      const d = Math.hypot(e.clientX - prise.x0, e.clientY - prise.y0);
+      if (!prise.actif) {
+        if (prise.type === 'mouse' && d > 6) commencer();
+        else if (prise.type !== 'mouse' && d > 12) annulerPrise();
+      }
+      if (prise?.actif && prise.h.tenu) { prise.h.tenu.cx = e.clientX; prise.h.tenu.cy = e.clientY; }
+      return;
+    }
+    if (e.pointerType !== 'mouse') return;
+    const h = viser(e);
+    survoler(h);
+    // caresse : du chemin parcouru sur le même animal, vite
+    if (h && !reduit) {
+      if (t - frotte.debut > 1.4) { frotte.chemin = 0; frotte.debut = t; }
+      frotte.chemin += Math.hypot(e.clientX - frotte.x, e.clientY - frotte.y);
+      if (frotte.chemin > 420) { frotte.chemin = 0; frotte.debut = t; caresser(h); }
+    }
+    frotte.x = e.clientX; frotte.y = e.clientY;
+  };
+  const surRelache = e => {
+    if (!prise || e.pointerId !== prise.id) return;
+    const p = prise, bouge = Math.hypot(e.clientX - p.x0, e.clientY - p.y0);
+    annulerPrise();
+    if (p.actif) { if (p.h.tenu) lacherAnimal(p.h); }
+    else if (bouge < 12 && e.type === 'pointerup') reagir(p.h);   // un clic, un doigt posé
+  };
+  const surQuitte = e => { if (e.pointerType === 'mouse') curseurToile.dedans = false; if (!prise) survoler(null); };
+  // mouvement réduit : le clic seul
+  const surClic = e => { if (!reduit) return; const h = viser(e); if (h) reagir(h); };
+  toile.addEventListener('pointerdown', surAppui);
+  toile.addEventListener('pointermove', surDeplacement, { passive: true });
+  toile.addEventListener('pointerup', surRelache);
+  toile.addEventListener('pointercancel', surRelache);
   toile.addEventListener('pointerleave', surQuitte);
   toile.addEventListener('click', surClic);
+  // on attrape au doigt sans faire défiler la page (le défilement guidé gère déjà les glissés)
+  const toucher = () => { toile.style.touchAction = reduit ? '' : 'none'; };
+  toucher();
 
   // ---------- taille, visibilité, pointeur, préférence, perte du contexte
   function mesurer() {
@@ -896,7 +1296,8 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   }
   const surPreference = () => {
     reduit = mq.matches;
-    if (reduit) { vx = vy = px = py = 0; toutDeSuite(voulu, voulueVisite); }
+    toucher();
+    if (reduit) { annulerPrise(); vx = vy = px = py = 0; tremble = 0; toutDeSuite(voulu, voulueVisite); }
     else { if (courant <= 1) lancerRoutines(); relancer(); }
   };
   mq.addEventListener?.('change', surPreference);
@@ -929,11 +1330,18 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     document.documentElement.removeEventListener('pointerleave', surSortie);
     mq.removeEventListener?.('change', surPreference);
     toile.removeEventListener('webglcontextlost', surPerte);
-    toile.removeEventListener('pointermove', surSurvol);
+    annulerPrise();
+    toile.removeEventListener('pointerdown', surAppui);
+    toile.removeEventListener('pointermove', surDeplacement);
+    toile.removeEventListener('pointerup', surRelache);
+    toile.removeEventListener('pointercancel', surRelache);
     toile.removeEventListener('pointerleave', surQuitte);
     toile.removeEventListener('click', surClic);
     delete toile.dataset.curseur;
+    delete toile.dataset.curseurCache;
     toile.style.cursor = '';
+    toile.style.touchAction = '';
+    window.__rrSaisie = false;
     if (introTl) introTl.kill();
     introTl = null;
     if (histoire) histoire.kill();
@@ -941,7 +1349,7 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     arreterRoutines();
     calmer();
     gsap.killTweensOf([cam, etat, ...act]);
-    tous.forEach(h => { tuerAnimal(h.a); gsap.killTweensOf(h.a.saut.scale); h.a.liberer(); });
+    tous.forEach(h => { h.retour?.kill(); tuerAnimal(h.a); gsap.killTweensOf(h.a.saut.scale); h.a.liberer(); });
     apparts.forEach(ap => ap.ordre.forEach(id => { const o = ap.meubles[id].objet; gsap.killTweensOf([o.position, o.rotation, o.scale]); }));
     coeurs.cacher(gsap);
     im.liberer();

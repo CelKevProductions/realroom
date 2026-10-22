@@ -95,7 +95,7 @@ function demarrer() {
   const entete = page.querySelector('[data-entete]');
   const scene = page.querySelector('[data-scene]');
 
-  // ---------- 1. la pièce 3D : chapitre actif (et visite du dernier chapitre), intro
+  // ---------- 1. la pièce 3D : chapitre actif (et son étape : proposition, puis Shuffle ; visite), intro
   let chapitre = -1;
   let visite = 0;
   let introduite = false;
@@ -106,7 +106,9 @@ function demarrer() {
     window.__rrPieceChapitre = n;
     window.__rrPieceVisite = k;
     if (scene) scene.setAttribute('data-actif', String(n));
-    page.querySelectorAll('[data-visite-libelle]').forEach(li => li.classList.toggle('is-actif', n === 3 && Number(li.dataset.visiteLibelle) === k));
+    page.querySelectorAll('[data-etape]').forEach(li => li.classList.toggle('is-actif', Number(li.closest('[data-chapitre]')?.dataset.chapitre) === n && Number(li.dataset.etape) === k));
+    // tout le monde est heureux : la conclusion prend la place du dernier chapitre
+    if (scene) scene.toggleAttribute('data-conclusion', n === 3 && k === 4);
     emettre('rr:piece-chapitre', { chapitre: n, visite: k });
   };
   // la 3D s'est montée ou rechargée après coup : elle reçoit l'état courant
@@ -197,6 +199,7 @@ function demarrer() {
   } else {
     // ---------- 6. préchargement, entrée du héros, révélations au défilement, petites réactions
     ctx.add(() => revelations(page));
+    ctx.add(() => diapositives(page));
     nettoyages.push(reactions(page, ctx));
     (async () => {
       if (ouverture) {
@@ -225,7 +228,7 @@ function demarrer() {
     ctx.revert();
     nettoyages.forEach(f => f());
     entete.classList.remove('is-defile', 'is-nuit');
-    if (scene) scene.removeAttribute('data-actif');
+    if (scene) { scene.removeAttribute('data-actif'); scene.removeAttribute('data-conclusion'); }
     delete window.__rrPieceIntro;
     delete window.__rrPieceChapitre;
   };
@@ -234,16 +237,16 @@ function demarrer() {
 // chapitres au défilement (0 = héros, 1 à 3 = méthode) : la 3D suit, le cadre change d'état,
 // la jauge de la méthode se remplit
 function suivreChapitres(page, annoncer, mouvement) {
-  // dernier chapitre : une visite par arrêt du défilement guidé (guide.js), d'après la position
+  // chapitres à étapes (Aménager, Visiter) : une étape par arrêt du défilement guidé (guide.js), d'après la position
   const visiteIci = el => {
-    const n = Number(el.dataset.visites || 0);
+    const n = Number(el.dataset.etapes || 0);
     if (!n) return 0;
     return Math.min(n - 1, Math.max(0, Math.round((window.scrollY - arretChapitre(el, page)) / (innerHeight * VISITE))));
   };
   const declencheurs = gsap.utils.toArray('[data-chapitre]', page).map(el => ScrollTrigger.create({
     trigger: el, start: 'top 70%', end: 'bottom 70%',
     onToggle: s => { if (s.isActive) annoncer(Number(el.dataset.chapitre), false, visiteIci(el)); },
-    onUpdate: s => { if (s.isActive && el.dataset.visites) annoncer(Number(el.dataset.chapitre), false, visiteIci(el)); }
+    onUpdate: s => { if (s.isActive && el.dataset.etapes) annoncer(Number(el.dataset.chapitre), false, visiteIci(el)); }
   }));
   // état de départ (page rechargée en milieu de défilement) : le dernier chapitre déjà atteint
   const atteints = declencheurs.filter(s => s.scroll() >= s.start);
@@ -434,6 +437,21 @@ function revelations(page) {
     const anime = reveler(nom, st => gsap.fromTo(nom.children, { yPercent: 105, y: 0 }, { yPercent: 0, y: 0, duration: 1.3, ease: 'acc-sortie', stagger: 0.045, onComplete: () => vu(nom, nom.children), scrollTrigger: st }));
     if (!anime) nom.classList.add('is-vu');
   }
+}
+
+// sections sous la 3D : chaque arrêt du défilement guidé y change de « diapositive » : le contenu de la
+// section qui arrive monte à sa place, celui de la section qui part pâlit et recule un peu
+function diapositives(page) {
+  gsap.utils.toArray('.acc-section', page).forEach(section => {
+    const blocs = gsap.utils.toArray(section.querySelectorAll(':scope > :not(.acc-vitrine, .acc-reperes, [data-anim], [data-trait])'));
+    if (!blocs.length) return;
+    gsap.fromTo(blocs, { y: 70 }, { y: 0, ease: 'none', scrollTrigger: { trigger: section, start: 'top bottom', end: 'top 35%', scrub: 0.6 } });
+    const part = { trigger: section, start: 'bottom 75%', end: 'bottom 10%', scrub: 0.6 };
+    gsap.to(blocs, { opacity: 0.22, scale: 0.97, transformOrigin: '50% 0%', ease: 'none', scrollTrigger: part });
+    // la vitrine se fait glisser (Draggable tient sa position) : elle pâlit seulement
+    const vitrine = section.querySelector(':scope > .acc-vitrine');
+    if (vitrine) gsap.to(vitrine, { opacity: 0.22, ease: 'none', scrollTrigger: { ...part } });
+  });
 }
 
 // petites réactions (souris et clavier) : pilule du menu, curseur compagnon, réponses qui arrivent,

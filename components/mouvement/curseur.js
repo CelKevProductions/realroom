@@ -1,5 +1,6 @@
 // Curseur compagnon (accueil) : une pastille corail suit la souris avec un léger retard, grossit en
-// anneau sur ce qui se clique et affiche un mot sur les zones marquées data-curseur (« Glisse »…).
+// anneau sur ce qui se clique et affiche un mot sur les zones marquées data-curseur (« Glisse »…) ;
+// il s'efface sur une zone marquée data-curseur-cache (on y tient quelque chose qu'il cacherait).
 // Décoratif : le vrai curseur reste visible. Souris seulement, jamais en mouvement réduit.
 // Renvoie la fonction qui le retire.
 import { gsap } from 'gsap';
@@ -32,7 +33,7 @@ export function suivreCurseur() {
     allerY(e.clientY);
     const cible = e.target instanceof Element ? e.target : null;
     const zone = cible?.closest('[data-curseur]');
-    if (!cible || cible.closest(SAISIE)) poser('cache');
+    if (!cible || cible.closest(SAISIE) || cible.closest('[data-curseur-cache]')) poser('cache');
     else if (zone) poser('mot', zone.getAttribute('data-curseur'));
     else if (cible.closest(CLIQUABLE)) poser('lien');
     else poser('point');

@@ -6,8 +6,12 @@
 //    selon l'état (etat.lit, joue, dort, salut…, de 0 à 1, que la scène fait varier avec GSAP).
 // Ils vivent comme des humains : ils lisent (livre, lunettes), jouent à la console (manette), dorment
 // (Zzz), arrosent, grignotent (carotte, pop-corn), réfléchissent (échecs), applaudissent, saluent.
-// Expressions : normal, content, surpris, étourdi, endormi. Émotes partagées : « ! », étoiles, cœurs,
-// nuage d'orage.
+// Expressions : normal, content (sourire ouvert), surpris (bouche ronde), étourdi, amoureux (yeux en
+// cœur), endormi ; la bouche bouge quand ils parlent. Émotes partagées : « ! », étoiles, cœurs, nuage d'orage.
+// Pour qu'ils aient l'air vivants : les yeux suivent ce qu'on leur montre (viser), oreilles et queue ont
+// de l'inertie (ressorts), les pieds marchent pour de vrai, et, quand ils n'ont rien à faire, ils bâillent,
+// font leur toilette (chat), penchent la tête (chien), remuent le nez (lapin), tendent le cou (tortue).
+// Tenus en l'air (etat.tenu), ils agitent bras et jambes.
 import * as THREE from 'three';
 
 const COULEURS = {
@@ -275,9 +279,10 @@ export function creerAnimal(mat, look = {}) {
   visage.scale.setScalar(tortue ? .86 : 1);
   tete.add(visage);
   visage.add(boule(.165, P, 0, .15, tortue ? .01 : 0, chat ? [1.15, .92, 1] : tortue ? [1, .92, 1.1] : [1.08, .94, 1], 18));
-  let langue = null;
+  let langue = null, sourire = null, nez = null;
   if (lapin) {
-    visage.add(boule(.06, P, 0, .09, .125, [1.2, .8, .7], 12), boule(.014, mat.rose, 0, .115, .17, [1.2, 1, 1], 8));
+    nez = boule(.014, mat.rose, 0, .115, .17, [1.2, 1, 1], 8);
+    visage.add(boule(.06, P, 0, .09, .125, [1.2, .8, .7], 12), nez);
   } else if (chien) {
     visage.add(boule(.075, Cl, 0, .085, .13, [1.25, .85, .95], 12), boule(.025, mat.oeil, 0, .118, .2, [1.3, 1, 1], 10));
     langue = gelule(.018, .025, mat.rose, 0, .03, .175);
@@ -291,7 +296,7 @@ export function creerAnimal(mat, look = {}) {
     g.setAttribute('position', new THREE.Float32BufferAttribute(m, 3));
     visage.add(new THREE.LineSegments(g, mat.trait));
   } else {
-    const sourire = new THREE.Mesh(new THREE.TorusGeometry(.03, .006, 6, 14, Math.PI), mat.oeil);
+    sourire = new THREE.Mesh(new THREE.TorusGeometry(.03, .006, 6, 14, Math.PI), mat.oeil);
     sourire.position.set(0, .1, .175); sourire.rotation.z = Math.PI;
     visage.add(sourire);
   }
@@ -307,11 +312,26 @@ export function creerAnimal(mat, look = {}) {
     const a = new THREE.Mesh(arc, mat.oeil); a.position.set(s * .066, .162, .147); arcs.add(a);
     const sp = new THREE.Mesh(spi, mat.oeil); sp.position.set(s * .066, .17, .15); sp.rotation.z = s * 1.3; spirales.add(sp);
   });
-  arcs.visible = spirales.visible = false;
-  const bouche = new THREE.Mesh(new THREE.TorusGeometry(.016, .006, 6, 14), mat.oeil);
-  bouche.position.set(0, chien ? .045 : .068, chien ? .17 : .162);
+  // yeux en cœur (amoureux)
+  const coeursYeux = new THREE.Group(), gc = geoCoeur(.03);
+  [-1, 1].forEach(s => { const c = new THREE.Mesh(gc, mat.corail); c.position.set(s * .066, .17, .15); coeursYeux.add(c); });
+  arcs.visible = spirales.visible = coeursYeux.visible = false;
+  // bouches : ronde (surpris, parle, bâille), sourire ouvert avec sa langue (content) ; sous le museau
+  const B = lapin ? [0, .07, .168] : chien ? [0, .052, .19] : chat ? [0, .06, .158] : [0, .094, .178];
+  const bouche = new THREE.Mesh(new THREE.CircleGeometry(.017, 16), mat.oeil);
+  bouche.position.set(...B);
+  bouche.rotation.x = chien || chat ? -.3 : -.1;
   bouche.visible = false;
-  visage.add(yeux, arcs, spirales, bouche);
+  const sourireOuvert = new THREE.Group();
+  sourireOuvert.add(new THREE.Mesh(new THREE.CircleGeometry(.03, 18, Math.PI, Math.PI), mat.oeil));
+  const languette = new THREE.Mesh(new THREE.CircleGeometry(.016, 14, Math.PI, Math.PI), mat.rose);
+  languette.position.set(0, -.013, .002);
+  sourireOuvert.add(languette);
+  sourireOuvert.position.set(B[0], B[1] + .012, B[2] + .002);
+  sourireOuvert.rotation.x = bouche.rotation.x;
+  sourireOuvert.visible = false;
+  visage.add(yeux, arcs, spirales, coeursYeux, bouche, sourireOuvert);
+  const baseYeux = yeux.children.map(o => o.position.clone());
   // oreilles : pivot à la base
   const oreilles = [];
   for (const s of [-1, 1]) {
@@ -387,9 +407,10 @@ export function creerAnimal(mat, look = {}) {
   tete.add(etoiles, alerte, zzz);
 
   // état animé par la scène (GSAP), de 0 à 1 sauf teteX, teteY (radians)
+  // parle : la bouche bouge (bulle) ; tenu : on le tient en l'air (bras et jambes s'agitent)
   const etat = {
     souffle: 1, salut: 0, arrose: 0, lit: 0, joue: 0, dort: 0, mange: 0, grignote: 0, pense: 0, pousse: 0,
-    acclame: 0, assis: 0, cache: 0, remue: 0, teteX: 0, teteY: 0
+    acclame: 0, assis: 0, cache: 0, remue: 0, teteX: 0, teteY: 0, parle: 0, tenu: 0
   };
   let regardCourant = 'normal', vue = '', prochainClin = 1.5 + graine * 1.3, clinDebut = -1;
   const regard = nom => { regardCourant = nom; };
@@ -399,14 +420,23 @@ export function creerAnimal(mat, look = {}) {
     arcs.visible = nom === 'content' || nom === 'dort';
     arcs.children.forEach(a => { a.rotation.z = nom === 'dort' ? Math.PI : 0; a.position.y = nom === 'dort' ? .178 : .162; });
     spirales.visible = nom === 'etourdi';
-    bouche.visible = nom === 'surpris';
+    coeursYeux.visible = nom === 'amoureux';
+    sourireOuvert.visible = nom === 'content' || nom === 'amoureux';
+    if (sourire) sourire.visible = !sourireOuvert.visible;
   }
   montrer('normal');
+  // regard : où il regarde (−1 à 1, écran : x vers la droite, y vers le bas), suivi en douceur
+  const vise = { x: 0, y: 0 }, regardVu = { x: 0, y: 0 };
+  const viser = (x, y) => { vise.x = borne(x, -1, 1); vise.y = borne(y, -1, 1); };
+  // inertie : ressorts des oreilles et de la queue, mouvement mesuré d'une image à l'autre
+  const ressort = { y: 0, vy: 0, x: 0, vx: 0 };
+  const suivi = { t: -1, x: 0, y: 0, z: 0, marche: 0, phase: 0 };
 
   // bras : [rotation.x, rotation.z] d'un bras (s : -1 gauche, 1 droit) selon l'état
+  let gBaille = 0, gGeste = 0, marche = 0, phase = 0;
   function poseBras(s, t) {
     const e = etat;
-    let x = 0, z = s * .45;
+    let x = Math.sin(phase + (s > 0 ? 0 : Math.PI)) * .55 * marche, z = s * .45;
     const tient = Math.max(e.lit, e.joue);
     if (tient > 0) {
       x = melange(x, -1.15 + Math.sin(t * 19 + s) * .07 * e.joue, tient);
@@ -422,6 +452,11 @@ export function creerAnimal(mat, look = {}) {
     }
     if (e.acclame > 0) { x = melange(x, -.3, e.acclame); z = melange(z, s * (2.6 + Math.sin(t * 16 + s) * .25), e.acclame); }
     if (s < 0 && e.salut > 0) { x = melange(x, 0, e.salut); z = melange(z, -(.45 + 2.1) + Math.sin(t * 9) * .35, e.salut); }
+    // petits gestes du repos : on s'étire en bâillant, le chat se lèche la patte
+    if (gBaille > 0) { x = melange(x, -2.75, gBaille); z = melange(z, s * .3, gBaille); }
+    if (chat && s > 0 && gGeste > 0) { x = melange(x, -2.2 + Math.sin(t * 14) * .12, gGeste); z = melange(z, -.4, gGeste); }
+    // tenu en l'air : les bras s'agitent
+    if (e.tenu > 0) { x = melange(x, -.3 + Math.sin(t * 13 + s) * .3, e.tenu); z = melange(z, s * (2.2 + Math.sin(t * 10 + s * 2) * .35), e.tenu); }
     return [x, z];
   }
 
@@ -430,52 +465,103 @@ export function creerAnimal(mat, look = {}) {
     const e = etat;
     const nom = e.dort > .5 ? 'dort' : regardCourant;
     if (nom !== vue) montrer(nom);
+    // mouvement depuis l'image précédente (repère de l'appartement) : vitesse, marche, ressorts
+    const dt = suivi.t < 0 ? 0 : borne(t - suivi.t, 0, .05);
+    const X = objet.position.x, Y = objet.position.y + saut.position.y, Z = objet.position.z;
+    if (dt > 0) {
+      const vx = (X - suivi.x) / dt, vy = (Y - suivi.y) / dt, vz = (Z - suivi.z) / dt;
+      const cy = Math.cos(objet.rotation.y), sy = Math.sin(objet.rotation.y);
+      const lateral = vx * cy - vz * sy, sol = Math.hypot(vx, vz);
+      const g = ESPECES[espece], allure = g.pas / g.duree;
+      suivi.marche += (borne(sol / (allure * .5)) * (1 - e.tenu) - suivi.marche) * (1 - Math.exp(-dt * 10));
+      suivi.phase += sol * dt / g.pas * Math.PI;
+      for (const [k, cible] of [['y', borne(vy * .3, -.9, .9)], ['x', borne(-lateral * .35, -.7, .7)]]) {
+        const v = 'v' + k;
+        ressort[v] += ((cible - ressort[k]) * 150 - ressort[v] * 9) * dt;
+        ressort[k] += ressort[v] * dt;
+      }
+    }
+    suivi.t = t; suivi.x = X; suivi.y = Y; suivi.z = Z;
+    marche = suivi.marche; phase = suivi.phase;
+    // repos : rien à faire et immobile ; alors il bâille de temps en temps, et a son petit geste
+    const occupe = Math.max(e.lit, e.joue, e.dort, e.mange, e.grignote, e.pense, e.acclame, e.salut, e.arrose, e.cache, e.parle, e.tenu, e.pousse);
+    const libre = (1 - occupe) * (1 - marche) * (nom === 'normal' || nom === 'content' ? 1 : 0);
+    gBaille = libre * lisse(borne(bosse(t, 13 + graine % 4, 1.9, graine * 1.7) * 1.6));
+    gGeste = gBaille > .01 ? 0 : libre * lisse(borne(bosse(t, 7 + graine % 3, 1.4, graine * 3.1) * 1.5));
+    regardVu.x += (vise.x - regardVu.x) * (1 - Math.exp(-dt * 6));
+    regardVu.y += (vise.y - regardVu.y) * (1 - Math.exp(-dt * 6));
+    // yeux : ils suivent (sauf fermés)
+    yeux.children.forEach((o, i) => o.position.set(baseYeux[i].x + regardVu.x * .013, baseYeux[i].y - regardVu.y * .011, baseYeux[i].z));
     const ph = t * (e.dort > .5 ? 1.2 : 2.2) + graine * 2.1;
     const respire = Math.sin(ph) * .018 * e.souffle * (1 + e.dort * .8);
     ventre.scale.set(1 - respire * .5, 1.04 * (1 + respire), .94 * (1 - respire * .5));
     // tête : respire, se rentre (tortue cachée), se penche (lecture, sommeil, réflexion)
     const c = e.cache;
-    tete.position.set(0, .33 + respire * .2 - c * .14, .01 - c * .08);
+    const cou = tortue ? gGeste : 0;   // la tortue tend le cou
+    tete.position.set(0, .33 + respire * .2 - c * .14 + cou * .03, .01 - c * .08 + cou * .07);
     tete.scale.setScalar(1 - c * .6);
-    tete.rotation.x = e.teteX + .25 * e.lit + .35 * e.dort + .12 * e.pense + .1 * e.joue + Math.sin(t * .9 + graine) * .03;
-    tete.rotation.y = e.teteY + Math.sin(t * .6 + graine * 3) * .07 * (1 - e.dort);
+    const suit = (1 - e.dort) * (1 - e.lit * .6);
+    tete.rotation.x = e.teteX + .25 * e.lit + .35 * e.dort + .12 * e.pense + .1 * e.joue + Math.sin(t * .9 + graine) * .03
+      + regardVu.y * .22 * suit - gBaille * .3 + (chat ? gGeste * .25 : 0) - e.tenu * .15;
+    tete.rotation.y = e.teteY + Math.sin(t * .6 + graine * 3) * .07 * (1 - e.dort) + regardVu.x * .45 * suit - (chat ? gGeste * .35 : 0);
+    // le chien penche la tête, curieux
+    visage.rotation.z = chien ? gGeste * .38 : 0;
     bras.forEach(b => b.scale.setScalar(1 - c * .7));
     pieds.forEach(p => p.scale.set(1 - c * .5, .55 * (1 - c * .5), (lapin ? 1.45 : 1.25) * (1 - c * .5)));
     // penché : on joue (on se balance avec la manette), on réfléchit
     echelle.rotation.z = Math.sin(t * 2.3 + graine) * .07 * e.joue + Math.sin(t * .8 + graine) * .05 * e.pense;
     echelle.rotation.x = -.06 * e.joue;
-    // assis : les pieds passent devant
-    pieds.forEach((p, i) => p.position.set((i ? 1 : -1) * .08, .028 + .05 * e.assis, .06 + .1 * e.assis));
+    // assis : les pieds passent devant ; en marchant, un pied après l'autre (le lapin : les deux) ;
+    // tenu : ils pendent et pédalent
+    pieds.forEach((p, i) => {
+      const ph = phase + (lapin ? 0 : i * Math.PI), pas = Math.sin(ph) * marche, pedale = Math.sin(t * 15 + i * Math.PI) * e.tenu;
+      p.position.set((i ? 1 : -1) * .08, .028 + .05 * e.assis + Math.max(0, pas) * .035 - e.tenu * .03 + pedale * .02, .06 + .1 * e.assis + (lapin ? -Math.abs(pas) * .05 : pas * .05) + pedale * .03);
+    });
     // oreilles
     const surpris = nom === 'surpris' ? 1 : 0, etourdi = nom === 'etourdi' ? 1 : 0;
     oreilles.forEach((o, i) => {
       const s = i ? 1 : -1;
       if (lapin) {
         const tombe = etourdi * .55 + e.dort * .35, dresse = surpris * -.1;
-        o.rotation.z = -s * (.14 + tombe + dresse) + Math.sin(t * 1.7 + i + graine) * .05 * e.souffle;
-        o.rotation.x = -.08 + Math.sin(t * 1.3 + i * 1.7 + graine) * .04 + tombe * .4;
+        const flic = i ? gGeste * Math.sin(t * 30) * .25 : 0;   // une oreille frémit avec le nez
+        o.rotation.z = -s * (.14 + tombe + dresse) + Math.sin(t * 1.7 + i + graine) * .05 * e.souffle + ressort.x * .7 + flic;
+        o.rotation.x = -.08 + Math.sin(t * 1.3 + i * 1.7 + graine) * .04 + tombe * .4 + ressort.y * 1.1;
       } else if (chien) {
-        o.rotation.z = s * (.25 + surpris * .9 + e.acclame * .5 - e.dort * .12) + Math.sin(t * 1.9 + i + graine) * .05;
+        o.rotation.z = s * (.25 + surpris * .9 + e.acclame * .5 - e.dort * .12 - ressort.y * 1.3 + (i ? gGeste * .5 : 0)) + Math.sin(t * 1.9 + i + graine) * .05 + ressort.x * .6;
       } else {
         const frisson = bosse(t, 3.7, .25, i * .8 + graine) * .25;
-        o.rotation.z = -s * (.22 + etourdi * .7 - surpris * .15 + frisson);
+        o.rotation.z = -s * (.22 + etourdi * .7 - surpris * .15 + frisson) + ressort.x * .3;
+        o.rotation.x = ressort.y * .4;
       }
     });
     // queue
     if (chien) {
-      const remue = Math.max(e.remue, nom === 'content' ? 1 : 0, e.joue * .6);
-      queue.rotation.y = Math.sin(t * 15 + graine) * .55 * (.3 + .7 * remue) * (1 - e.dort);
+      const remue = Math.max(e.remue, nom === 'content' || nom === 'amoureux' ? 1 : 0, e.joue * .6, gGeste);
+      queue.rotation.y = Math.sin(t * 15 + graine) * .55 * (.3 + .7 * remue) * (1 - e.dort) + ressort.x * .8;
+      queue.rotation.x = -.75 - ressort.y * .6;
     } else if (chat) {
-      queue.rotation.z = Math.sin(t * 1.3 + graine) * .28;
-      queue.rotation.x = Math.sin(t * .9 + graine) * .1;
+      queue.rotation.z = Math.sin(t * 1.3 + graine) * .28 + ressort.x * 1.1;
+      queue.rotation.x = Math.sin(t * .9 + graine) * .1 - ressort.y * .5;
+    } else if (lapin) {
+      queue.scale.setScalar(1 + Math.max(0, ressort.y) * .3 + marche * Math.abs(Math.sin(phase)) * .15);
     }
+    if (nez) nez.scale.set(1.2, 1 + Math.sin(t * 26) * .22 * (gGeste + .25 * (1 - e.dort)), 1);
     if (langue) langue.visible = nom === 'content' || e.joue > .5;
     // clin d'œil de temps en temps
     if (t > prochainClin && clinDebut < 0) { clinDebut = t; prochainClin = t + 2.6 + ((graine * 7.3 + t * 3.1) % 2.4); }
     let ouvert = 1;
     if (clinDebut >= 0) { const p = (t - clinDebut) / .16; ouvert = p >= 1 ? 1 : Math.abs(1 - 2 * p) * .9 + .1; if (p >= 1) clinDebut = -1; }
+    // en bâillant, les yeux se ferment ; la tortue cligne lentement en tendant le cou
+    ouvert *= 1 - gBaille * .9 - cou * .6 * bosse(t, 1.4, .7, graine);
     const k = nom === 'surpris' ? 1.4 : 1;
-    yeux.children.forEach(o => o.scale.set(k, k * ouvert, k));
+    yeux.children.forEach(o => o.scale.set(k, k * Math.max(.08, ouvert), k));
+    if (coeursYeux.visible) coeursYeux.children.forEach((c, i) => c.scale.setScalar(1 + Math.sin(t * 9 + i) * .15));
+    // bouche : ronde quand il est surpris, qu'il parle (elle s'ouvre et se ferme) ou qu'il bâille
+    const parle = e.parle > .5 ? .35 + .65 * Math.abs(Math.sin(t * 11 + graine)) : 0;
+    const ouverture = Math.max(nom === 'surpris' ? 1 : 0, parle, gBaille * 2.2);
+    bouche.visible = ouverture > .05 && !sourireOuvert.visible || gBaille > .05;
+    bouche.scale.set(1 + gBaille * .5, Math.max(.15, ouverture), 1);
+    if (sourireOuvert.visible) sourireOuvert.scale.set(1, .8 + parle * .5, 1);
     // bras
     bras.forEach((b, i) => { const [x, z] = poseBras(i ? 1 : -1, t); b.rotation.x = x; b.rotation.z = z; });
     // accessoires tenus
@@ -510,9 +596,9 @@ export function creerAnimal(mat, look = {}) {
   }
 
   return {
-    espece, objet, saut, echelle, corps, tete, oreilles, bras, pieds, queue, etoiles, alerte, outil, etat, mats, regard, vivre,
+    espece, objet, saut, echelle, corps, tete, oreilles, bras, pieds, queue, etoiles, alerte, outil, etat, mats, regard, vivre, viser,
     get regardCourant() { return regardCourant; },
-    liberer() { new Set(Object.values(mats)).forEach(x => x.dispose()); }
+    liberer() { new Set(Object.values(mats)).forEach(x => x.dispose()); gc.dispose(); }
   };
 }
 

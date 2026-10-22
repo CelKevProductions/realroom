@@ -34,6 +34,18 @@ const NB_FAMILLES = new Set(REELS.map(p => p.fam)).size;
 
 // « *mot* » : le mot est surligné de pêche
 const accent = s => s.split(/(\*[^*]+\*)/).filter(Boolean).map((m, i) => (m.startsWith('*') ? <em key={i}>{m.slice(1, -1)}</em> : m));
+// même chose, mot par mot (chaque mot porte son rang, --i, pour une apparition en cascade)
+const mots = s => {
+  let i = 0;
+  return s.split(/(\*[^*]+\*)/).filter(Boolean).flatMap((m, j) => {
+    const em = m.startsWith('*');
+    const liste = (em ? m.slice(1, -1) : m).split(/(\s+)/).filter(Boolean)
+      .map((w, k) => (/^\s+$/.test(w) ? w : <span key={`${j}-${k}`} className="acc-conclusion__mot" style={{ '--i': i++ }}>{w}</span>));
+    return em ? [<em key={j}>{liste}</em>] : liste;
+  });
+};
+// chapitres (data-chapitre) qui ont plusieurs arrêts du défilement guidé : Aménager, Visiter (quatre appartements et la fin)
+const ETAPES = { 2: 2, 3: 5 };
 // étiquette : une pastille blanche avec un point corail (dessiné en CSS)
 const Etiquette = ({ children, className = '', ...p }) => <p className={'acc-etiquette ' + className} {...p}>{children}</p>;
 // libellé de lien qui « roule » au survol : le texte monte, sa copie arrive par dessous (CSS seul)
@@ -148,19 +160,28 @@ export default async function Accueil({ params }) {
               <span className="acc-chapitres__jauge" aria-hidden="true" />
               <ol className="acc-chapitres__liste">
                 {a.chapitres.map((c, i) => {
-                  // le dernier chapitre se visite appartement par appartement (un arrêt du défilement chacun)
-                  const visites = i === a.chapitres.length - 1 ? a.visites : null;
+                  // chapitres à plusieurs arrêts du défilement guidé : Aménager (une proposition, puis Shuffle),
+                  // Visiter (un appartement par arrêt, puis tout le monde, et la conclusion)
+                  const etapes = ETAPES[i + 1];
+                  const fin = i === a.chapitres.length - 1;
+                  const contenu = (
+                    <>
+                      <p className="acc-mono acc-chapitre__tete"><span className="acc-crochets acc-chapitre__num">{deux(i + 1)}</span><span className="acc-chapitre__etiquettes">{c.etiquettes.join(' · ')}</span></p>
+                      <h3 className="acc-chapitre__titre">{c.titre}</h3>
+                      <p className="acc-chapitre__texte" data-mots>{c.texte}</p>
+                      {i === 1 && (
+                        <ol className="acc-etapes">
+                          {a.propositions.map((p, k) => <li key={p} data-etape={k}><span className="acc-etapes__point" aria-hidden="true" />{p}</li>)}
+                        </ol>
+                      )}
+                      {fin && <p className="acc-visiter"><span className="acc-point" aria-hidden="true" />{a.visiter}</p>}
+                    </>
+                  );
                   return (
-                    <li key={c.titre} className={'acc-chapitre' + (visites ? ' acc-chapitre--visites' : '')} data-chapitre={i + 1} data-visites={visites ? visites.length : undefined} style={visites ? { '--visites': visites.length } : undefined}>
+                    <li key={c.titre} className={'acc-chapitre' + (etapes ? ' acc-chapitre--etapes' : '') + (fin ? ' acc-chapitre--fin' : '')} data-chapitre={i + 1} data-etapes={etapes} style={etapes ? { '--etapes': etapes } : undefined}>
                       <div className="acc-chapitre__corps">
-                        <p className="acc-mono acc-chapitre__tete"><span className="acc-crochets acc-chapitre__num">{deux(i + 1)}</span><span className="acc-chapitre__etiquettes">{c.etiquettes.join(' · ')}</span></p>
-                        <h3 className="acc-chapitre__titre">{c.titre}</h3>
-                        <p className="acc-chapitre__texte" data-mots>{c.texte}</p>
-                        {visites && (
-                          <ol className="acc-visites">
-                            {visites.map((v, k) => <li key={v} data-visite-libelle={k}><span className="acc-visites__point" aria-hidden="true" />{v}</li>)}
-                          </ol>
-                        )}
+                        {fin ? <div className="acc-chapitre__contenu">{contenu}</div> : contenu}
+                        {fin && <p className="acc-conclusion">{mots(a.conclusion)}</p>}
                       </div>
                     </li>
                   );
