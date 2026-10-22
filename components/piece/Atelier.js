@@ -580,7 +580,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       {/* colonne de gauche : fiche de la pièce (comme l'étiquette d'un plan), caméra photo, chapitre ouvert */}
       <div className="plateau__gauche">
         <div className="plateau__fiche flottant">
-          <p className="plateau__etiquette">[ {t.fonctions[piece.fonction] || piece.fonction} ]</p>
+          <p className="plateau__etiquette">{t.fonctions[piece.fonction] || piece.fonction}</p>
           <p className="plateau__nom">{piece.nom}</p>
           <p className="plateau__cotes chiffre">{m2(piece.modele.dims.largeur, lang)} × {m2(piece.modele.dims.profondeur, lang)} m · {m2(surface, lang)} m²</p>
           <div className="plateau__vues">
@@ -615,7 +615,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
 
       {/* total du mobilier, toujours visible (comme le prix d'un configurateur) */}
       <div className="plateau__total flottant">
-        <p className="plateau__etiquette">[ {fr ? 'Mobilier proposé' : 'Proposed furniture'} ]</p>
+        <p className="plateau__etiquette">{fr ? 'Mobilier proposé' : 'Proposed furniture'}</p>
         <p className="plateau__prix">{nouveaux.length ? prix(total * 100, lang) : '—'}{nouveaux.some(it => produitDe(it)?.generique) ? <small> ≈</small> : null}</p>
         <p className="plateau__compte">{nouveaux.length} {fr ? 'proposés' : 'proposed'} · {existants.filter(it => it.garde !== false).length} {fr ? 'conservés' : 'kept'}</p>
         <button type="button" className="btn btn--plein btn--petit" onClick={() => ouvrirBrief()} disabled={!!attente || inspirationOccupe || !assistantDisponible}>

@@ -1,6 +1,6 @@
 'use client';
 // Journal du moteur : pendant que l'assistant compose la pièce, ses étapes défilent comme un
-// journal de travail (« [ OK ] ») avec une barre qui avance. Les étapes sont celles que fait le
+// journal de travail (« ✓ ») avec une barre qui avance. Les étapes sont celles que fait le
 // moteur ; leur rythme est indicatif (la réponse arrive d'un bloc), la dernière attend la réponse.
 import { useEffect, useState } from 'react';
 
@@ -31,7 +31,7 @@ export default function Journal({ lang, ia = false }) {
       <ol className="journal__lignes">
         {etapes.slice(0, n + 1).map((e, i) => (
           <li key={e} className={i < n ? 'is-fait' : 'is-encours'}>
-            <span className="journal__etat">{i < n ? '[ OK ]' : '[ … ]'}</span>
+            <span className="journal__etat">{i < n ? '✓' : '…'}</span>
             <span>{e}</span>
           </li>
         ))}

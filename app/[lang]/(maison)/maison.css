@@ -666,6 +666,14 @@ html:has(.mc-intro) { overscroll-behavior: none; }
 
 /* RealRoom a changé de style (« Plan vivant ») : Maison Corleone garde l'ancien sur les éléments partagés */
 .mc { --scene: #EFEBE3; --titre-poids: 800; --titre-chasse: 78%; --titre-approche: -.02em; --sous-poids: 700; --sous-chasse: 88%; --sous-approche: -.01em; }
+/* puis « Maison douce » : ombres, pastels, police d'affichage et étiquettes reviennent à l'habillage de l'édition */
+.mc {
+  --display: var(--d); --sauge: #3E5E4E; --sauge-clair: #DDE5DE;
+  --peche: var(--rouille-clair); --menthe: var(--sauge-clair); --lilas: var(--papier-2); --beurre: var(--creme);
+  --ombre: none; --ombre-legere: none; --bord: var(--trait);
+  --casse-etiquette: uppercase; --approche-etiquette: .08em;
+  font-variant-numeric: normal;
+}
 .mc .avis { border-width: 0 0 0 2px; border-radius: 0; border-left-color: var(--trait-fort); }
 .mc .avis--alerte { border-left-color: var(--rouille); }
 .mc .avis--ok { border-left-color: var(--sauge); }

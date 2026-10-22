@@ -1,6 +1,6 @@
-// Maquette de la pièce d'accueil (« Plan vivant ») : socle papier, deux murs blancs coupés comme une
+// Maquette de la pièce d'accueil (« Maison douce ») : socle pêche, deux murs lilas coupés comme une
 // maquette (porte et fenêtre en découpe), tracé du plan au sol avec ses cotes, meubles en volumes simples
-// aux arrondis doux. Tout est construit en code (aucune texture externe) ; les pièces d'un même meuble
+// aux arrondis doux, couleurs pastel façon pâte à modeler. Tout est construit en code (aucune texture externe) ; les pièces d'un même meuble
 // sont fusionnées : une géométrie par matière et une pour les arêtes.
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
@@ -19,8 +19,9 @@ const PAS = .05;     // longueur d'un brin : le tracé avance brin par brin
 const Y = { grille: .0015, plan: .002, ao: .0035, etiquette: .003, ombre: .015, balayage: .017 };
 
 const C = {
-  encre: '#111110', signal: '#FF4F1A', sol: '#E8E6E0', socle: '#DEDBD4', mur: '#F6F5F2',
-  clair: '#F1EFEA', gris: '#D9D5CD', fonce: '#4A4844', ecran: '#1E1E1C', tapis: '#CBC7BE'
+  encre: '#26232B', signal: '#F2613F', sol: '#FFE6D2', socle: '#F6D9C4', mur: '#E2DBF8',
+  clair: '#FFFBF6', gris: '#BFDCC5', fonce: '#5E5864', ecran: '#2E2A33', tapis: '#FFCFB6',
+  beurre: '#FFE49A', menthe: '#9ECDA9'
 };
 
 // deux agencements : A (héros, relevé), B (aménagé, visite) ; [x, z, rotation y]
@@ -36,11 +37,11 @@ export const DISPOSITIONS = {
     plante: [2.1, 1.55, 0], fauteuil: [-1.35, -1.52, .2]
   }
 };
-// ordre d'arrivée (le fauteuil orange, seul objet coloré, en dernier)
+// ordre d'arrivée (le fauteuil corail en dernier)
 export const ORDRE = ['tapis', 'meubleTV', 'etagere', 'canape', 'table', 'lampadaire', 'plante', 'fauteuil'];
 
 const COTES = { fr: ['5,00 m', '4,00 m'], en: ['5.00 m', '4.00 m'] };
-const POLICE = '500 88px "Geist Mono Variable", "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
+const POLICE = '600 88px "DM Sans Variable", "DM Sans", system-ui, sans-serif';
 
 // ---------- matières
 function matieres() {
@@ -52,8 +53,8 @@ function matieres() {
     socle: plein(C.socle, { transparent: true, opacity: 0 }),
     mur: plein(C.mur, { transparent: true }),
     clair: plein(C.clair), gris: plein(C.gris), fonce: plein(C.fonce), ecran: plein(C.ecran),
-    signal: plein(C.signal), tapis: plein(C.tapis),
-    arete: trait(.55), areteMur: trait(.6), areteSocle: trait(0),
+    signal: plein(C.signal), tapis: plein(C.tapis), beurre: plein(C.beurre), menthe: plein(C.menthe),
+    arete: trait(.16), areteMur: trait(.14), areteSocle: trait(0),
     contour: trait(.7), ouverture: trait(.6), cote: trait(0), grille: trait(0)
   };
 }
@@ -136,7 +137,7 @@ const MEUBLES = {
   table: {
     pied: [1, .55], ombre: .35,
     parties: () => [
-      ['clair', bloc(1, .045, .55, .018, 0, .315, 0)],
+      ['beurre', bloc(1, .045, .55, .018, 0, .315, 0)],
       ...[-1, 1].flatMap(sx => [-1, 1].map(sz => ['fonce', cyl(.016, .016, .315, sx * .44, 0, sz * .22, 10, 50)])),
       ['gris', bloc(.26, .035, .19, .008, .18, .36, .04, .2)],
       ['gris', bloc(.2, .03, .15, .008, .19, .395, .03, -.15)]
@@ -158,7 +159,7 @@ const MEUBLES = {
     parties: () => [
       ['fonce', cyl(.15, .15, .025, 0, 0, 0, 24)],
       ['fonce', cyl(.011, .011, 1.4, 0, .025, 0, 8, 50)],
-      ['clair', cyl(.13, .19, .3, 0, 1.38, 0, 24)]
+      ['beurre', cyl(.13, .19, .3, 0, 1.38, 0, 24)]
     ]
   },
   etagere: {
@@ -179,11 +180,11 @@ const MEUBLES = {
   plante: {
     pied: [.4, .4], ombre: .45,
     parties: () => [
-      ['gris', cyl(.19, .15, .36, 0, 0, 0, 20)],
+      ['signal', cyl(.19, .15, .36, 0, 0, 0, 20)],
       ['fonce', cyl(.012, .012, .5, 0, .36, 0, 6, 50)],
-      ['clair', facettes(.27, .02, .98, .02)],
-      ['clair', facettes(.21, -.14, 1.24, -.05)],
-      ['clair', facettes(.17, .13, 1.2, .1)]
+      ['menthe', facettes(.27, .02, .98, .02)],
+      ['menthe', facettes(.21, -.14, 1.24, -.05)],
+      ['menthe', facettes(.17, .13, 1.2, .1)]
     ]
   },
   meubleTV: {
@@ -220,7 +221,7 @@ function texOmbre(lx, lz, marge) {
   const ech = 64, w = Math.ceil((lx + 2 * marge) * ech), h = Math.ceil((lz + 2 * marge) * ech);
   const c = canevas(w, h), x = c.getContext('2d');
   const hors = w + 40, retrait = .03 * ech;
-  x.shadowColor = 'rgba(17,17,16,1)';
+  x.shadowColor = 'rgba(80,50,40,1)';
   x.shadowBlur = .16 * ech;
   x.shadowOffsetX = hors;
   x.fillStyle = '#000';
@@ -232,9 +233,9 @@ function texOmbre(lx, lz, marge) {
 function texPiedDeMur() {
   const c = canevas(4, 64), x = c.getContext('2d');
   const g = x.createLinearGradient(0, 0, 0, 64);
-  g.addColorStop(0, 'rgba(17,17,16,.16)');
-  g.addColorStop(.35, 'rgba(17,17,16,.06)');
-  g.addColorStop(1, 'rgba(17,17,16,0)');
+  g.addColorStop(0, 'rgba(110,60,40,.16)');
+  g.addColorStop(.35, 'rgba(110,60,40,.06)');
+  g.addColorStop(1, 'rgba(110,60,40,0)');
   x.fillStyle = g;
   x.fillRect(0, 0, 4, 64);
   return texture(c);
@@ -243,9 +244,9 @@ function texPiedDeMur() {
 function texBalayage() {
   const c = canevas(4, 128), x = c.getContext('2d');
   const g = x.createLinearGradient(0, 0, 0, 128);
-  g.addColorStop(0, 'rgba(255,79,26,0)');
-  g.addColorStop(.7, 'rgba(255,79,26,.08)');
-  g.addColorStop(1, 'rgba(255,79,26,.3)');
+  g.addColorStop(0, 'rgba(242,97,63,0)');
+  g.addColorStop(.7, 'rgba(242,97,63,.08)');
+  g.addColorStop(1, 'rgba(242,97,63,.3)');
   x.fillStyle = g;
   x.fillRect(0, 0, 4, 128);
   return texture(c);

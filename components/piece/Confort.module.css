@@ -1,6 +1,7 @@
 .carte{margin:22px 0;padding:18px 0;border-top:1px solid var(--encre);color:inherit;font-family:inherit}
-.titre{margin:0 0 15px;font:.75rem/1.45 var(--m);letter-spacing:.06em;text-transform:uppercase;color:var(--graphite)}
-.releve{margin:0 0 16px;padding:10px 12px;border-left:2px solid var(--rouille);background:var(--rouille-clair);color:var(--rouille-fonce);font-size:12px;line-height:1.6;max-width:55ch}
+.carte:first-child{margin-top:0;padding-top:0;border-top:0}
+.titre{margin:0 0 15px;font:600 .8rem/1.45 var(--m);letter-spacing: var(--approche-etiquette); text-transform: var(--casse-etiquette);color:var(--graphite)}
+.releve{margin:0 0 16px;padding:10px 12px;border-left:2px solid var(--rouille);border-radius:min(var(--rayon),12px);background:var(--rouille-clair);color:var(--rouille-fonce);font-size:12px;line-height:1.6;max-width:55ch}
 .reperes{display:flex;flex-wrap:wrap;gap:14px 20px;margin:0;padding:0;list-style:none}
 .reperes li{display:flex;align-items:flex-start;gap:7px;font-size:12px;line-height:1.45}
 .reperes li>span:first-child{display:grid;place-items:center;border:1px solid currentColor;border-radius:50%;width:16px;height:16px;flex:none;color:var(--sauge);font-size:10px}

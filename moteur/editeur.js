@@ -186,7 +186,7 @@ export function creerEditeur(canvas, opts = {}) {
   renderer.shadowMap.autoUpdate = false;
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(opts.fond || '#EFEBE3');
+  scene.background = new THREE.Color(opts.fond || '#FBEDE2');
   let pmrem = new THREE.PMREMGenerator(renderer), cibleEnv = null;
   function environnement() {
     const salle = new RoomEnvironment();
@@ -755,7 +755,7 @@ export function creerEditeur(canvas, opts = {}) {
   function interrompre() { E.tween = null; E.auto = null; }
 
   /* ---------- ambiance : jour ou soir (luminaires allumés, lumière du jour qui baisse) ---------- */
-  const FONDS = { jour: new THREE.Color(opts.fond || '#EFEBE3'), soir: new THREE.Color(opts.fondSoir || '#251C14') };
+  const FONDS = { jour: new THREE.Color(opts.fond || '#FBEDE2'), soir: new THREE.Color(opts.fondSoir || '#251C14') };
   const LUMINAIRES = new Set(['suspension', 'lustre', 'plafonnier', 'lampadaire', 'lampe', 'applique']);
   // six lumières créées d'avance, cachées le jour : leur nombre ne change jamais, et leurs shaders
   // sont compilés en tâche de fond après le chargement (passer au soir ne fige pas l'écran)

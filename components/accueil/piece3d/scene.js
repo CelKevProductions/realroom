@@ -55,7 +55,7 @@ export function creerPiece({ toile, boite, lang = 'fr', chapitre = 0, surPrete, 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, .1, 80);
   // lumière douce : ciel blanc, rebond papier, un soleil d'avant droit (pas de carte d'ombres)
-  scene.add(new THREE.HemisphereLight('#ffffff', '#cdc9bf', .78 * Math.PI));
+  scene.add(new THREE.HemisphereLight('#fffaf4', '#e9cdbd', .8 * Math.PI));
   const soleil = new THREE.DirectionalLight('#ffffff', .62 * Math.PI);
   soleil.position.set(3.5, 6, 4.5);
   scene.add(soleil, piece.groupe);
@@ -299,7 +299,7 @@ export function creerPiece({ toile, boite, lang = 'fr', chapitre = 0, surPrete, 
   const surPerte = e => { e.preventDefault(); surPanne?.(); };
   toile.addEventListener('webglcontextlost', surPerte);
   // la police des cotes peut arriver après coup
-  document.fonts?.load?.('500 88px "Geist Mono Variable"').then(() => {
+  document.fonts?.load?.('600 88px "DM Sans Variable"').then(() => {
     if (detruit) return;
     piece.redessiner();
     marquer();

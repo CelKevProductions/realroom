@@ -1,6 +1,6 @@
 .carte{margin:20px 0;padding:16px 0;border-top:1px solid var(--encre);font:inherit;color:inherit}
 .carte p{font-size:12px;line-height:1.6;max-width:60ch;margin:8px 0}
-.carte .titre{font:.75rem/1.45 var(--m);letter-spacing:.06em;text-transform:uppercase;color:var(--graphite);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.carte .titre{font:.75rem/1.45 var(--m);letter-spacing: var(--approche-etiquette); text-transform: var(--casse-etiquette);color:var(--graphite);display:flex;align-items:center;justify-content:space-between;gap:12px}
 .titre small,.note{opacity:.7;font-size:10px}
 .images{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .image{position:relative;width:80px;height:90px}

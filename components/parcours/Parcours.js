@@ -160,7 +160,7 @@ export default function Parcours({ lang, t, projetId, projetNom, initial, produi
     <div className="conteneur app-page parcours parcours--plateau">
       <div className="app-page__tete">
         <div>
-          <p className="parcours__projet">[ {projetNom} ]</p>
+          <p className="parcours__projet">{projetNom}</p>
           <h1>{x.titre}</h1>
         </div>
       </div>
@@ -239,7 +239,7 @@ function VuePiece({ x, t, lang, racine, etat, p, produits, ecran, poserSelection
   if (!p) return <div className="plan-vide"><p>{fr ? 'Choisissez ou ajoutez une pièce : son plan s’affichera ici.' : 'Pick or add a room: its plan will show here.'}</p></div>;
   if (!p.modele) return (
     <div className="plan-vide">
-      <p className="parcours__projet">[ {t.fonctions[p.fonction]} ]</p>
+      <p className="parcours__projet">{t.fonctions[p.fonction]}</p>
       <p><b>{p.nom}</b></p>
       <p className="discret">{fr ? 'Pas encore de plan pour cette pièce. Scan, plan DXF ou photos : quelques minutes suffisent.' : 'No plan yet for this room. Scan, DXF plan or photos: it only takes a few minutes.'}</p>
       <Link className="btn btn--plein btn--petit" href={`${racine}/pieces/${p.id}`}>{x.capture.relever}</Link>

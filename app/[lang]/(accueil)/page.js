@@ -1,4 +1,4 @@
-// Page d'accueil de RealRoom, style « Plan vivant » : statique (rapide, indexable), animée ensuite par
+// Page d'accueil de RealRoom, style « Maison douce » : statique (rapide, indexable), animée ensuite par
 // components/accueil/Animations.js. Tout le contenu est dans le HTML ; les animations ne font que le révéler.
 // La pièce 3D (components/accueil/PieceAccueil.js) remplit le cadre épinglé à côté du héros et de la méthode.
 import Link from 'next/link';
@@ -32,13 +32,13 @@ const REELS = Object.values(PRODUITS).filter(p => !p.generique);
 const NB_MEUBLES = REELS.length;
 const NB_FAMILLES = new Set(REELS.map(p => p.fam)).size;
 
-// « *mot* » : le mot passe en Instrument Serif italique
+// « *mot* » : le mot est surligné de pêche
 const accent = s => s.split(/(\*[^*]+\*)/).filter(Boolean).map((m, i) => (m.startsWith('*') ? <em key={i}>{m.slice(1, -1)}</em> : m));
-// étiquette en chasse fixe entre crochets (les crochets sont dessinés en CSS, pas lus)
+// étiquette : une pastille blanche avec un point corail (dessiné en CSS)
 const Etiquette = ({ children, className = '', ...p }) => <p className={'acc-etiquette ' + className} {...p}>{children}</p>;
 // libellé de lien qui « roule » au survol : le texte monte, sa copie arrive par dessous (CSS seul)
 const Roule = ({ children }) => <span className="acc-roule"><span>{children}</span></span>;
-// bouton pilule : l'orange monte depuis le bas au survol, le libellé roule, la flèche avance
+// bouton pilule encre : le corail monte depuis le bas au survol, le libellé roule, la pastille flèche tourne
 const Bouton = ({ href, children, court, className = '', ...p }) => (
   <Link className={'acc-bouton ' + className} href={href} {...p}>
     <span className="acc-bouton__libelle"><span className={court ? 'acc-long' : undefined}>{children}</span>{court && <span className="acc-court">{court}</span>}</span>

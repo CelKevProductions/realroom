@@ -1,7 +1,4 @@
 // Page d'accueil : son propre habillage (polices, styles, animations), sans l'en-tête des autres pages
-import '@fontsource-variable/geist';
-import '@fontsource-variable/geist-mono';
-import '@fontsource/instrument-serif/latin-400-italic.css';
 import './accueil.css';
 
 // avant le premier affichage : animations possibles (JavaScript actif), préchargement une fois par session.

@@ -7,8 +7,8 @@
 .acquisition .modes button { text-align: left; display: grid; align-content: start; gap: .55rem; min-height: 6.5rem; border: 0; border-top: 1px solid var(--encre); border-radius: 0; padding: 1rem .9rem; transition: background-color .3s, color .3s; }
 .modes button b, .modes button strong { font: var(--sous-poids) 1.15rem/1.1 var(--d); font-stretch: var(--sous-chasse); }
 .acquisition .modes button:not(:disabled):hover { background: var(--calque); }
-.modes small { font: .72rem/1.45 var(--m); letter-spacing: .04em; text-transform: uppercase; color: var(--graphite); }
-.etape { font: .72rem/1.45 var(--m); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite); }
+.modes small { font: .72rem/1.45 var(--m); letter-spacing: var(--approche-etiquette); text-transform: var(--casse-etiquette); color: var(--graphite); }
+.etape { font: .72rem/1.45 var(--m); letter-spacing: var(--approche-etiquette); text-transform: var(--casse-etiquette); color: var(--graphite); }
 .acquisition .lien { border: 0; padding: .55rem 0; text-decoration: underline; display: block; }
 .acquisition details { margin: .8rem 0; }
 .acquisition summary { cursor: pointer; font-size: .85rem; padding: .5rem 0; }
