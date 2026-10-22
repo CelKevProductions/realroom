@@ -175,8 +175,8 @@ a:hover > .acc-roule > span, a:focus-visible > .acc-roule > span { transform: tr
 .acc-fleche--haut { rotate: -45deg; }
 
 /* ---------- préchargement (une fois par session) ---------- */
-/* fond papier quadrillé ; le plan se trace au trait et le compteur avance en CSS dès le premier affichage,
-   le script décide de la fin (3D prête, ou au plus tard 2,5 s) puis replie le panneau vers le haut */
+/* le plan se trace au trait et le compteur avance en CSS dès le premier affichage (environ 3,8 s) ;
+   le script décide de la fin (plan fini et 3D prête, ou au plus tard 6,5 s) puis replie le panneau vers le haut */
 .acc-ouverture { display: none; }
 html[data-acc~="ouverture"] .acc-ouverture {
   position: fixed; inset: 0; z-index: 150; display: block; overflow: hidden;
@@ -197,26 +197,45 @@ html[data-acc~="ouverture"] .acc-ouverture {
 .acc-ouverture__passer { padding-bottom: .3em; color: var(--graphite); text-align: right; }
 .acc-ouverture__barre { height: 8px; margin-top: 8px; border-radius: 8px; overflow: hidden; background: var(--blanc); }
 .acc-ouverture__barre span { display: block; height: 100%; border-radius: 8px; background: var(--rouille); transform-origin: 0 50%; transform: scaleX(0); }
-html[data-acc~="ouverture"] .acc-ouverture__compte { animation: acc-compte 1.4s cubic-bezier(.25, .7, .25, 1) .1s both; }
-html[data-acc~="ouverture"] .acc-ouverture__barre span { animation: acc-barre 1.4s cubic-bezier(.25, .7, .25, 1) .1s both; }
-@keyframes acc-compte { from { --compte: 0; } to { --compte: 90; } }
-@keyframes acc-barre { from { transform: scaleX(0); } to { transform: scaleX(.9); } }
+html[data-acc~="ouverture"] .acc-ouverture__compte { animation: acc-compte 3.7s cubic-bezier(.45, .05, .35, 1) .1s both; }
+html[data-acc~="ouverture"] .acc-ouverture__barre span { animation: acc-barre 3.7s cubic-bezier(.45, .05, .35, 1) .1s both; }
+@keyframes acc-compte { from { --compte: 0; } to { --compte: 96; } }
+@keyframes acc-barre { from { transform: scaleX(0); } to { transform: scaleX(.96); } }
 
-/* le plan au trait (components/accueil/PlanOuverture.js) */
-.acc-plan { align-self: center; justify-self: center; width: min(560px, 100%); height: auto; max-height: 100%; overflow: visible; }
-.acc-plan path { fill: none; stroke: var(--encre); stroke-width: 1.4; stroke-linecap: square; }
-.acc-plan__mur { stroke-width: 1.7; }
+/* le plan au trait (components/accueil/PlanOuverture.js) : chaque trait a sa longueur (--long), son
+   départ (--d) et sa durée (--t) ; les meubles se remplissent de pastel une fois tracés */
+.acc-plan { align-self: center; justify-self: center; width: min(640px, 100%); height: auto; max-height: 100%; overflow: visible; }
+.acc-plan path { fill: none; stroke: var(--encre); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.acc-plan__mur { stroke-width: 2.2; }
 .acc-plan__vitre, .acc-plan__arc, .acc-plan__cote { stroke-width: .9; }
 .acc-plan__arc, .acc-plan__cote { stroke: var(--graphite); }
-.acc-plan .acc-plan__meuble { stroke: var(--sauge); stroke-width: 1.4; }
-.acc-plan .acc-plan__repere { stroke: var(--rouille); }
-.acc-plan__texte { font: 500 11px var(--m); fill: var(--graphite); }
+.acc-plan .acc-plan__meuble, .acc-plan .acc-plan__repere { stroke-width: 1.3; fill-opacity: .9; }
+.acc-plan .acc-plan__meuble { transform-box: fill-box; transform-origin: center; }
+.acc-plan .acc-plan--peche { fill: var(--peche); }
+.acc-plan .acc-plan--lilas { fill: var(--lilas); }
+.acc-plan .acc-plan--beurre { fill: var(--beurre); }
+.acc-plan .acc-plan--menthe { fill: var(--menthe); }
+.acc-plan .acc-plan--corail { fill: var(--rouille-clair); stroke: var(--rouille); }
+.acc-plan__trame { fill: none; }
+#acc-plan-points circle { fill: var(--gris); }
+.acc-plan__texte { font: 600 11px var(--m); fill: var(--graphite); }
 html[data-acc~="ouverture"] .acc-plan path {
-  stroke-dasharray: 1; stroke-dashoffset: 1;
-  animation: acc-trace .7s cubic-bezier(.65, 0, .35, 1) calc(.08s + var(--i, 0) * .045s) both;
+  stroke-dasharray: var(--long) calc(var(--long) + 2); stroke-dashoffset: var(--long);
+  animation: acc-trace var(--t) cubic-bezier(.65, 0, .35, 1) var(--d) both;
 }
-html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-out calc(.4s + var(--i, 0) * .045s) both; }
-@keyframes acc-trace { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+/* le meuble tracé se remplit et se pose avec un petit rebond ; le fauteuil (déjà tourné) se remplit seulement */
+html[data-acc~="ouverture"] .acc-plan .acc-plan__meuble {
+  animation: acc-trace var(--t) cubic-bezier(.65, 0, .35, 1) var(--d) both, acc-remplit .5s ease-out calc(var(--d) + var(--t) * .7) both,
+    acc-pose .6s cubic-bezier(.34, 1.56, .64, 1) calc(var(--d) + var(--t) * .6) both;
+}
+html[data-acc~="ouverture"] .acc-plan .acc-plan__repere {
+  animation: acc-trace var(--t) cubic-bezier(.65, 0, .35, 1) var(--d) both, acc-remplit .5s ease-out calc(var(--d) + var(--t) * .7) both;
+}
+html[data-acc~="ouverture"] .acc-plan__trame { animation: acc-apparait 1.2s ease-out .1s both; }
+html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-out var(--d) both; }
+@keyframes acc-trace { to { stroke-dashoffset: 0; } }
+@keyframes acc-remplit { from { fill-opacity: 0; } }
+@keyframes acc-pose { from { scale: .86; } }
 @keyframes acc-apparait { from { opacity: 0; } }
 
 /* ---------- barre pilule flottante ---------- */
@@ -235,8 +254,18 @@ html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-
 .acc-marque span { display: none; }
 .acc-marque svg { transition: rotate .8s var(--sortie); }
 .acc-marque:hover svg { rotate: 90deg; }
+/* les quatre quartiers s'écartent un peu, comme un plan éclaté */
+.acc-marque svg path { transition: translate .6s cubic-bezier(.34, 1.56, .64, 1); }
+.acc-marque:hover svg path:nth-child(1) { translate: 3px -3px; }
+.acc-marque:hover svg path:nth-child(2) { translate: 3px 3px; }
+.acc-marque:hover svg path:nth-child(3) { translate: -3px 3px; }
+.acc-marque:hover svg path:nth-child(4) { translate: -3px -3px; }
+.acc-marque svg { overflow: visible; }
 .acc-menu { display: none; }
-.acc-menu a { font-size: .92rem; font-weight: 500; color: var(--c-doux); transition: color .3s; }
+.acc-menu a { position: relative; z-index: 1; font-size: .92rem; font-weight: 500; color: var(--c-doux); transition: color .3s; }
+/* pilule qui glisse sous le lien survolé (posée par le script) */
+.acc-menu__pilule { position: absolute; left: 0; top: 50%; z-index: 0; height: 36px; margin-top: -18px; border-radius: 999px; background: var(--peche); visibility: hidden; opacity: 0; pointer-events: none; }
+.acc-entete.is-nuit .acc-menu__pilule { background: rgba(255, 255, 255, .14); }
 .acc-menu a:hover, .acc-menu a:focus-visible { color: var(--c-ton); }
 .acc-langues { display: inline-flex; align-items: center; flex: none; padding: 3px; border-radius: 999px; background: var(--platre); font: 600 .72rem/1 var(--m); letter-spacing: .02em; }
 .acc-langues > * { display: inline-grid; place-items: center; min-width: 30px; height: 26px; padding: 0 6px; border-radius: 999px; }
@@ -252,7 +281,7 @@ html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-
   .acc-pilule { width: auto; gap: 28px; padding-left: 20px; }
   .acc-entete.is-defile .acc-pilule { gap: 22px; }
   .acc-marque { margin-right: 0; }
-  .acc-menu { display: flex; gap: 24px; }
+  .acc-menu { position: relative; display: flex; gap: 24px; }
 }
 
 /* ---------- héros et méthode, avec la pièce 3D épinglée ---------- */
@@ -270,13 +299,17 @@ html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-
 /* le cadre de la pièce 3D : la 3D remplit .acc-piece__toile (position absolute, inset 0) */
 .acc-piece { position: relative; height: 100%; margin: 0; container-type: size; border-radius: clamp(26px, 3vw, 40px); background: linear-gradient(180deg, #FFF7F0, #FDEADC); box-shadow: var(--ombre); overflow: hidden; }
 .acc-piece__toile { position: absolute; inset: 44px 0 12px; z-index: 1; }
-.acc-piece__filigrane { position: absolute; inset: 44px 0 12px; display: grid; place-items: center; overflow: hidden; pointer-events: none; user-select: none; }
-.acc-piece__filigrane span {
-  grid-area: 1 / 1; white-space: nowrap;
-  font: 800 min(25cqw, 42cqh)/1 var(--display); letter-spacing: -.06em;
-  color: rgba(255, 255, 255, .7);
-}
 .acc-piece__cadran { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+/* bulle « Merci » des lapins : la scène place le point d'ancrage (transform) au-dessus de leurs têtes */
+.acc-bulle { position: absolute; left: 0; top: 0; z-index: 3; margin: 0; pointer-events: none; }
+.acc-bulle > span {
+  position: relative; display: block; transform: translate(-50%, calc(-100% - 10px)) scale(.4); transform-origin: 50% 100%;
+  padding: 10px 16px; border-radius: 22px; background: var(--blanc); box-shadow: var(--ombre); color: var(--c-ton);
+  font: 700 clamp(.95rem, 1.3vw, 1.1rem)/1.15 var(--display); letter-spacing: -.02em; white-space: nowrap;
+  opacity: 0; transition: opacity .25s var(--sortie), transform .5s cubic-bezier(.34, 1.8, .5, 1);
+}
+.acc-bulle > span::after { content: ''; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; margin-left: -7px; border-radius: 3px; background: inherit; transform: rotate(45deg); }
+.acc-bulle.is-visible > span { opacity: 1; transform: translate(-50%, calc(-100% - 10px)) scale(1); }
 .acc-piece__coin { display: none; }
 .acc-piece__coin:nth-child(1) { left: 0; top: 0; border-width: 1px 0 0 1px; }
 .acc-piece__coin:nth-child(2) { right: 0; top: 0; border-width: 1px 1px 0 0; }
@@ -412,6 +445,9 @@ html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-
 .acc-pack__tete { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 26px; }
 .acc-pack__nom { font: 700 1.35rem/1.1 var(--display); letter-spacing: -.025em; }
 .acc-pack__puce { padding: 6px 11px; border-radius: 999px; background: var(--encre); color: var(--blanc); font-size: .75rem; }
+/* la pastille « conseillé » fait coucou de temps en temps */
+@keyframes acc-coucou { 0%, 82%, 100% { rotate: 0deg; scale: 1; } 86% { rotate: -7deg; scale: 1.08; } 90% { rotate: 6deg; } 94% { rotate: -3deg; } }
+html[data-acc~="mouvement"] .acc-pack.is-conseille .acc-pack__puce { animation: acc-coucou 4.5s 2s ease-in-out infinite; }
 .acc-pack__prix { margin-top: 36px; font: 700 clamp(2.6rem, 4.6vw, 3.8rem)/1 var(--display); letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
 .acc-pack__details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 16px; margin: 28px 0 0; padding-top: 16px; border-top: 1px solid var(--c-filet); }
 .acc-pack__details div { display: grid; gap: 4px; }
@@ -477,6 +513,8 @@ html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-
 }
 .acc-pied__geant span { display: inline-block; transition: translate .6s var(--sortie), color .4s; }
 .acc-pied__geant span:hover { translate: 0 -6%; color: var(--rouille); }
+/* avec le script, la lettre saute en vague (Animations.js) : seule la couleur reste au CSS */
+html[data-acc~="anime"] .acc-pied__geant span:hover { translate: none; }
 .acc-pied__bas { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 16px; margin-top: 16px; padding-block: 20px 24px; border-top: 1px solid var(--c-filet); color: var(--c-doux); }
 
 /* ---------- défilement doux (Lenis) ---------- */
@@ -498,8 +536,9 @@ html[data-acc~="ouverture"] .acc [data-entree="trait"]:not(.is-vu) { opacity: 1;
 @keyframes acc-secours { to { opacity: 1; transform: none; } }
 @keyframes acc-secours-sortie { to { opacity: 0; visibility: hidden; } }
 html[data-acc~="mouvement"]:not([data-acc~="anime"]) .acc :is([data-anim], [data-trait], .acc-chapitres__jauge, [data-lettres] > span) { animation: acc-secours .01s 3s both; }
-html[data-acc~="ouverture"]:not([data-acc~="anime"]) .acc :is([data-entree], .acc-entete) { animation: acc-secours .4s 2.3s both; }
-html[data-acc~="ouverture"]:not([data-acc~="anime"]) .acc-ouverture { animation: acc-secours-sortie .3s 2.2s both; }
+html[data-acc~="ouverture"]:not([data-acc~="anime"]) .acc :is([data-anim], [data-trait], .acc-chapitres__jauge, [data-lettres] > span) { animation-delay: 6.6s; }
+html[data-acc~="ouverture"]:not([data-acc~="anime"]) .acc :is([data-entree], .acc-entete) { animation: acc-secours .4s 6.6s both; }
+html[data-acc~="ouverture"]:not([data-acc~="anime"]) .acc-ouverture { animation: acc-secours-sortie .3s 6.5s both; }
 
 @media (prefers-reduced-motion: reduce) {
   .acc *, .acc *::before, .acc *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }

@@ -127,10 +127,7 @@ export default async function Accueil({ params }) {
           </section>
 
           <div className="acc-scene__piece">
-            <figure className="acc-piece" data-piece>
-              <div className="acc-piece__filigrane" aria-hidden="true">
-                {a.filigranes.map((m, i) => <span key={m} data-n={i}>{m}</span>)}
-              </div>
+            <figure className="acc-piece" data-piece data-curseur={a.curseur.piece}>
               <div className="acc-piece__toile"><PieceAccueil lang={lang} /></div>
               <div className="acc-piece__cadran" aria-hidden="true" data-entree="fondu">
                 <i className="acc-piece__coin" /><i className="acc-piece__coin" /><i className="acc-piece__coin" /><i className="acc-piece__coin" />
@@ -190,7 +187,7 @@ export default async function Accueil({ params }) {
             <p className="acc-catalogue__texte" data-anim="fondu">{remplir(a.catalogueTexte, { n: NB_MEUBLES })}</p>
             <p className="acc-mono acc-catalogue__aide" aria-hidden="true"><i className="acc-fleche acc-fleche--gauche" />{a.glisser}<i className="acc-fleche" /></p>
           </div>
-          <div className="acc-vitrine" data-vitrine>
+          <div className="acc-vitrine" data-vitrine data-curseur={a.curseur.glisser}>
             <ul className="acc-vitrine__piste">
               {vitrine.map(p => (
                 <li key={p.id} className="acc-produit">

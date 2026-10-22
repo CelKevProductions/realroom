@@ -926,3 +926,28 @@ html:has(.plateau), body:has(.plateau) { overflow: hidden; width: 100%; }
   .plateau__guide::before { content: '?'; font: 500 1rem var(--d); }
   .camera-photo small { display: none; }
 }
+
+/* ---------- petites réactions communes (components/mouvement/Interactions.js) ---------- */
+/* éclat pastel au clic sur une action principale */
+.rr-eclats { position: fixed; inset: 0; z-index: 9999; pointer-events: none; overflow: hidden; }
+.rr-eclats > span { position: absolute; left: 0; top: 0; }
+.rr-eclats__forme { width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; }
+.rr-eclats__forme.is-etoile { width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px; border-radius: 0; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); }
+.rr-eclats__anneau { width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%; border: 2px solid var(--rouille); }
+
+/* curseur compagnon (accueil, souris) : point corail, anneau sur ce qui se clique, mot sur les zones marquées */
+.rr-curseur { position: fixed; left: 0; top: 0; z-index: 9998; pointer-events: none; }
+.rr-curseur__point {
+  position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: var(--rouille);
+  transition: scale .45s cubic-bezier(.34, 1.56, .64, 1), opacity .3s, background-color .3s, border-color .3s;
+}
+.rr-curseur__mot {
+  position: absolute; left: 0; top: 0; translate: -50% -50%; padding: 9px 14px; border-radius: 999px; background: var(--rouille); color: var(--blanc);
+  font: 700 .82rem/1 var(--d); letter-spacing: -.01em; white-space: nowrap; scale: .3; opacity: 0;
+  transition: scale .45s cubic-bezier(.34, 1.56, .64, 1), opacity .25s;
+}
+.rr-curseur[data-etat='lien'] .rr-curseur__point { scale: 4.2; background: color-mix(in srgb, var(--rouille) 14%, transparent); border: .4px solid var(--rouille); }
+.rr-curseur[data-etat='mot'] .rr-curseur__point, .rr-curseur[data-etat='cache'] .rr-curseur__point { scale: 0; opacity: 0; }
+.rr-curseur[data-etat='mot'] .rr-curseur__mot { scale: 1; opacity: 1; }
+.rr-curseur.is-presse .rr-curseur__point { scale: 3.2; }
+.rr-curseur.is-presse[data-etat='point'] .rr-curseur__point { scale: .7; }

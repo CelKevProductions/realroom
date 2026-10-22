@@ -20,15 +20,16 @@ import { InertiaPlugin } from 'gsap/InertiaPlugin';
 import { CustomEase } from 'gsap/CustomEase';
 import Lenis from 'lenis';
 import { BEZIER } from '@/components/mouvement/regles.js';
+import { suivreCurseur } from '@/components/mouvement/curseur.js';
 
 const avantAffichage = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 const REDUIT = '(prefers-reduced-motion: reduce)';
 // propriétés rendues au CSS une fois l'élément révélé (ses survols et ses mises en page reprennent la main)
 const A_EFFACER = 'opacity,transform,translate,rotate,scale';
-const DUREE_MAX = 2500;   // préchargement, rideau compris, compté depuis le premier affichage (ms)
-const RIDEAU = 0.7;       // le panneau se replie vers le haut (s)
-const FIN_COMPTE = 0.32;  // le compteur va jusqu'à 100 (s)
-const LECTURE = 1150;     // le plan a le temps de se tracer avant de laisser place à la 3D (ms)
+const DUREE_MAX = 6500;   // préchargement, rideau compris, compté depuis le premier affichage (ms)
+const RIDEAU = 0.9;       // le panneau se replie vers le haut (s)
+const FIN_COMPTE = 0.4;   // le compteur va jusqu'à 100 (s)
+const LECTURE = 4000;     // le plan a le temps de se tracer entièrement (3,8 s en CSS) avant de laisser place à la 3D (ms)
 const DEFILEMENT = [' ', 'ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End'];
 
 // jetons posés sur <html data-acc="…"> : js, mouvement, ouverture (préchargement), anime (le script a la main)
@@ -58,10 +59,10 @@ export default function Animations() {
       window.__rrAccT = performance.now();
       poser(matchMedia(REDUIT).matches ? ['js'] : ['js', 'mouvement']);
     } else if (!a('anime')) {
-      // script arrivé tard : le secours CSS efface déjà le préchargement (2,2 s) ou montre déjà tout (3 s)
-      const ecoule = performance.now() - debut();
-      if (ecoule > 2000) retirer('ouverture');
-      if (ecoule > 2600) retirer('mouvement');
+      // script arrivé tard : le secours CSS efface déjà le préchargement (6,5 s) ou montre déjà tout (3 s, sans préchargement)
+      const ecoule = performance.now() - debut(), avecOuverture = a('ouverture');
+      if (ecoule > 6300) retirer('ouverture');
+      if (ecoule > (avecOuverture ? 6400 : 2600)) retirer('mouvement');
     }
     // effacés avant la page suivante (qui reposera les siens)
     return () => { retrait = setTimeout(() => document.documentElement.removeAttribute('data-acc'), 0); };
@@ -185,8 +186,9 @@ function demarrer() {
     // mouvement réduit : tout est déjà visible ; la 3D reçoit quand même son intro et ses chapitres (état final chez elle)
     image = requestAnimationFrame(introduire);
   } else {
-    // ---------- 6. préchargement, entrée du héros, révélations au défilement
+    // ---------- 6. préchargement, entrée du héros, révélations au défilement, petites réactions
     ctx.add(() => revelations(page));
+    nettoyages.push(reactions(page, ctx));
     (async () => {
       if (ouverture) {
         await new Promise(fin => ctx.add(() => {
@@ -320,7 +322,7 @@ function entree(page) {
   if (titre) {
     let premier = true;
     decouper(titre, lignes => {
-      const tw = gsap.fromTo(lignes, { yPercent: 110 }, { yPercent: 0, duration: 1.15, stagger: 0.09, ease: 'acc-sortie', onComplete: () => titre.classList.add('is-vu') });
+      const tw = gsap.fromTo(lignes, { yPercent: 110, filter: 'blur(10px)' }, { yPercent: 0, filter: 'blur(0px)', duration: 1.15, stagger: 0.09, ease: 'acc-sortie', clearProps: 'filter', onComplete: () => titre.classList.add('is-vu') });
       if (premier) { premier = false; tl.add(tw, 0); }
       return tw;
     });
@@ -369,7 +371,7 @@ function revelations(page) {
   // titres : ligne à ligne
   page.querySelectorAll('[data-anim="lignes"]').forEach(el => {
     const anime = reveler(el, st => decouper(el, lignes =>
-      gsap.fromTo(lignes, { yPercent: 110 }, { yPercent: 0, duration: 1.15, ease: 'acc-sortie', stagger: 0.08, onComplete: () => el.classList.add('is-vu'), scrollTrigger: st })
+      gsap.fromTo(lignes, { yPercent: 110, filter: 'blur(10px)' }, { yPercent: 0, filter: 'blur(0px)', duration: 1.15, ease: 'acc-sortie', stagger: 0.08, clearProps: 'filter', onComplete: () => el.classList.add('is-vu'), scrollTrigger: st })
     ));
     if (!anime) el.classList.add('is-vu');
   });
@@ -415,4 +417,65 @@ function revelations(page) {
     const anime = reveler(nom, st => gsap.fromTo(nom.children, { yPercent: 105, y: 0 }, { yPercent: 0, y: 0, duration: 1.3, ease: 'acc-sortie', stagger: 0.045, onComplete: () => vu(nom, nom.children), scrollTrigger: st }));
     if (!anime) nom.classList.add('is-vu');
   }
+}
+
+// petites réactions (souris et clavier) : pilule du menu, curseur compagnon, réponses qui arrivent,
+// lettres du pied de page qui sautent en vague. Les cartes, boutons et éclats sont communs à tout le site
+// (components/mouvement/Interactions.js). Rend la fonction qui retire tout.
+function reactions(page, ctx) {
+  const fins = [suivreCurseur()];
+  const ecouter = (cible, type, f, o) => { cible.addEventListener(type, f, o); fins.push(() => cible.removeEventListener(type, f, o)); };
+
+  // menu : une pilule glisse d'un lien à l'autre (survol ou focus clavier)
+  const menu = page.querySelector('.acc-menu');
+  if (menu) {
+    const pilule = document.createElement('span');
+    pilule.className = 'acc-menu__pilule';
+    pilule.setAttribute('aria-hidden', 'true');
+    menu.prepend(pilule);
+    fins.push(() => { gsap.killTweensOf(pilule); pilule.remove(); });
+    let montree = false;
+    const vers = e => {
+      const lien = e.target.closest && e.target.closest('a');
+      if (!lien || !menu.contains(lien)) return;
+      const geo = { x: lien.offsetLeft - 12, width: lien.offsetWidth + 24 };
+      if (montree) { gsap.to(pilule, { ...geo, duration: 0.5, ease: 'acc-sortie', overwrite: 'auto' }); return; }
+      montree = true;
+      gsap.set(pilule, geo);
+      gsap.fromTo(pilule, { scale: 0.6, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.4, ease: 'back.out(2.2)', overwrite: 'auto' });
+    };
+    const cacher = () => { montree = false; gsap.to(pilule, { scale: 0.6, autoAlpha: 0, duration: 0.25, ease: 'power2.in', overwrite: 'auto' }); };
+    ecouter(menu, 'pointerover', vers);
+    ecouter(menu, 'focusin', vers);
+    ecouter(menu, 'pointerleave', cacher);
+    ecouter(menu, 'focusout', e => { if (!menu.contains(e.relatedTarget)) cacher(); });
+  }
+
+  // questions : la réponse sort du flou en glissant, l'icône fait un tour (toggle ne remonte pas : capture)
+  ecouter(page, 'toggle', e => {
+    const q = e.target;
+    if (!q.matches || !q.matches('.acc-question') || !q.open) return;
+    ctx.add(() => {
+      gsap.fromTo(q.querySelectorAll(':scope > :not(summary)'), { y: 14, opacity: 0, filter: 'blur(6px)' }, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.6, delay: 0.08, ease: 'acc-sortie', clearProps: 'transform,opacity,filter' });
+      gsap.fromTo(q.querySelector('summary i'), { rotation: -180 }, { rotation: 0, duration: 0.7, ease: 'back.out(1.8)', clearProps: 'transform' });
+    });
+  }, true);
+
+  // nom géant du pied de page : la lettre survolée saute, ses voisines suivent en vague
+  const nom = page.querySelector('[data-lettres]');
+  if (nom) {
+    const lettres = [...nom.children];
+    ecouter(nom, 'pointerover', e => {
+      const i = lettres.indexOf(e.target);
+      if (i < 0 || !nom.classList.contains('is-vu')) return;
+      lettres.forEach((l, j) => {
+        const d = Math.abs(i - j);
+        if (d > 2 || gsap.isTweening(l)) return;
+        gsap.timeline({ delay: d * 0.06 })
+          .to(l, { yPercent: -12 / (d + 1), rotation: (j - i) * 2, duration: 0.22, ease: 'power2.out' })
+          .to(l, { yPercent: 0, rotation: 0, duration: 0.9, ease: 'elastic.out(1, 0.35)', clearProps: 'transform' });
+      });
+    });
+  }
+  return () => fins.forEach(f => f());
 }

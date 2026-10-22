@@ -9,7 +9,8 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 // pièce (m) : x ∈ [-L/2, L/2], z ∈ [-P/2, P/2] ; murs hauts au fond (z−) et à gauche (x−),
 // les deux autres coupés au ras du sol (la caméra regarde depuis l'angle avant droit)
 export const L = 5, P = 4;
-const H = 2.5, EP = .12, BAS = .07;
+export const H = 2.5, EP = .12;
+const BAS = .07;
 const PORTE = { z0: .8, z1: 1.7, h: 2.1 };                 // mur de gauche
 const FENETRE = { x0: -1.8, x1: -.4, y0: .9, y1: 2.15 };   // mur du fond
 const ECART = .42;   // lignes de cote : écart au nu extérieur des murs
@@ -18,7 +19,7 @@ const PAS = .05;     // longueur d'un brin : le tracé avance brin par brin
 // hauteurs des calques posés au sol (au-dessus du tapis pour les ombres et le balayage)
 const Y = { grille: .0015, plan: .002, ao: .0035, etiquette: .003, ombre: .015, balayage: .017 };
 
-const C = {
+export const C = {
   encre: '#26232B', signal: '#F2613F', sol: '#FFE6D2', socle: '#F6D9C4', mur: '#E2DBF8',
   clair: '#FFFBF6', gris: '#BFDCC5', fonce: '#5E5864', ecran: '#2E2A33', tapis: '#FFCFB6',
   beurre: '#FFE49A', menthe: '#9ECDA9'
@@ -62,7 +63,7 @@ function matieres() {
 // ---------- géométries
 const _m = new THREE.Matrix4();
 // sans index ni UV (rien n'est texturé), sans groupes : prête à fusionner
-function preparer(g) {
+export function preparer(g) {
   const n = g.index ? g.toNonIndexed() : g;
   if (n !== g) g.dispose();
   if (n.attributes.uv) n.deleteAttribute('uv');
@@ -78,7 +79,7 @@ function placer(g, a, x, y, z, ry) {
 }
 // pavé arrondi posé à y0 ; ses arêtes sont celles d'un pavé rentré jusqu'au milieu de l'arrondi
 // (une seule ligne par arête, qui court sur la surface)
-function bloc(w, h, d, r, x, y0, z, ry = 0) {
+export function bloc(w, h, d, r, x, y0, z, ry = 0) {
   r = Math.min(r, w / 2, h / 2, d / 2);
   const g = r > 0 ? new RoundedBoxGeometry(w, h, d, 2, r) : new THREE.BoxGeometry(w, h, d);
   const k = r * (2 - Math.SQRT2);
@@ -87,12 +88,12 @@ function bloc(w, h, d, r, x, y0, z, ry = 0) {
   b.dispose();
   return placer(g, a, x, y0 + h / 2, z, ry);
 }
-function cyl(rh, rb, h, x, y0, z, n = 18, seuil = 30) {
+export function cyl(rh, rb, h, x, y0, z, n = 18, seuil = 30) {
   const g = new THREE.CylinderGeometry(rh, rb, h, n);
   return placer(g, new THREE.EdgesGeometry(g, seuil), x, y0 + h / 2, z, 0);
 }
 // volume à facettes (feuillage stylisé) : toutes ses arêtes dessinées
-function facettes(r, x, y, z) {
+export function facettes(r, x, y, z) {
   const g = new THREE.IcosahedronGeometry(r, 0);
   return placer(g, new THREE.EdgesGeometry(g, 1), x, y, z, 0);
 }
@@ -105,7 +106,7 @@ const rectangle = (w, d, y) => traits([
   [-w / 2, y, -d / 2, w / 2, y, -d / 2], [w / 2, y, -d / 2, w / 2, y, d / 2],
   [w / 2, y, d / 2, -w / 2, y, d / 2], [-w / 2, y, d / 2, -w / 2, y, -d / 2]
 ]);
-function fusion(liste) {
+export function fusion(liste) {
   if (liste.length === 1) return liste[0];
   const f = mergeGeometries(liste, false);
   liste.forEach(g => g.dispose());
