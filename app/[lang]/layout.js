@@ -28,7 +28,7 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export const viewport = { themeColor: '#EDEAE4', width: 'device-width', initialScale: 1, viewportFit: 'cover' };
+export const viewport = { themeColor: '#F3F2EE', width: 'device-width', initialScale: 1, viewportFit: 'cover' };
 
 // avant le premier affichage : les animations d'entrée joueront (JavaScript actif, mouvement non réduit).
 // Sans ce marqueur, rien n'est masqué en attendant GSAP.

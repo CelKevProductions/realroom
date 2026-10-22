@@ -78,7 +78,9 @@ export default function Tuto({ id, etapes, libelles, auto = true, className = 'b
     const traits = [...svg.querySelectorAll('path, rect, circle')].filter(e => e.getTotalLength);
     const tl = gsap.timeline();
     traits.forEach((e, k) => {
-      const l = e.getTotalLength();
+      // dialogue fermé : le SVG n'est pas rendu et getTotalLength lève une erreur
+      let l = 0;
+      try { l = e.getTotalLength(); } catch (_) { return; }
       tl.fromTo(e, { strokeDasharray: l, strokeDashoffset: l }, { strokeDashoffset: 0, duration: .7, ease: 'power2.inOut', clearProps: 'strokeDasharray,strokeDashoffset' }, (e.classList.contains('tuto__accent') ? .5 : 0) + k * .06);
     });
     return () => tl.progress(1).kill();

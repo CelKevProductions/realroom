@@ -663,3 +663,10 @@ html:has(.mc-intro) { overscroll-behavior: none; }
 .mc-budget__saisie { display: grid; gap: 8px; margin: 1rem 0 1.5rem; }
 .mc-budget__saisie input { padding: .7rem 1rem; border: 1px solid var(--trait); border-radius: 4px; max-width: 15rem; background: var(--papier); color: var(--encre); font: inherit; font-size: 1.2rem; }
 .mc-budget__saisie small { color: var(--gris); font-size: .8rem; }
+
+/* RealRoom a changé de style (« Plan vivant ») : Maison Corleone garde l'ancien sur les éléments partagés */
+.mc { --scene: #EFEBE3; --titre-poids: 800; --titre-chasse: 78%; --titre-approche: -.02em; --sous-poids: 700; --sous-chasse: 88%; --sous-approche: -.01em; }
+.mc .avis { border-width: 0 0 0 2px; border-radius: 0; border-left-color: var(--trait-fort); }
+.mc .avis--alerte { border-left-color: var(--rouille); }
+.mc .avis--ok { border-left-color: var(--sauge); }
+.mc dialog.dialogue { border-color: var(--encre); background: var(--platre); box-shadow: none; }

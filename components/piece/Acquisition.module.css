@@ -1,11 +1,11 @@
 .acquisition { color: inherit; padding: 1.6rem 0 0; border-top: 1px solid var(--encre); margin: 1rem 0 2.4rem; }
-.acquisition h2 { font: 800 clamp(1.7rem, 3.2vw, 2.5rem)/.95 var(--d); font-stretch: 78%; letter-spacing: -.02em; margin: 0 0 .9rem; }
-.acquisition h3 { font: 700 1.25rem/1.1 var(--d); font-stretch: 88%; letter-spacing: -.01em; margin: 0 0 .5rem; }
+.acquisition h2 { font: var(--titre-poids) clamp(1.7rem, 3.2vw, 2.5rem)/.95 var(--d); font-stretch: var(--titre-chasse); letter-spacing: var(--titre-approche); margin: 0 0 .9rem; }
+.acquisition h3 { font: var(--sous-poids) 1.25rem/1.1 var(--d); font-stretch: var(--sous-chasse); letter-spacing: var(--sous-approche); margin: 0 0 .5rem; }
 .acquisition p { margin: .65rem 0; line-height: 1.55; }
 .modes, .actions { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1rem 0; }
 .modes { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); }
 .acquisition .modes button { text-align: left; display: grid; align-content: start; gap: .55rem; min-height: 6.5rem; border: 0; border-top: 1px solid var(--encre); border-radius: 0; padding: 1rem .9rem; transition: background-color .3s, color .3s; }
-.modes button b, .modes button strong { font: 700 1.15rem/1.1 var(--d); font-stretch: 88%; }
+.modes button b, .modes button strong { font: var(--sous-poids) 1.15rem/1.1 var(--d); font-stretch: var(--sous-chasse); }
 .acquisition .modes button:not(:disabled):hover { background: var(--calque); }
 .modes small { font: .72rem/1.45 var(--m); letter-spacing: .04em; text-transform: uppercase; color: var(--graphite); }
 .etape { font: .72rem/1.45 var(--m); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite); }

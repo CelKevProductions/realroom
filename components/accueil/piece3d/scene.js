@@ -18,8 +18,8 @@ const ECRASE = { x: 1.03, y: .93, z: 1.03 };   // amorti à la pose d'un meuble
 // l'horizon, en degrés), cadre à faire tenir (rx × ry, m) ou distance fixe (d, m), champ vertical (fov)
 const CAM = {
   plan: { az: 0, el: 89.3, rx: 3.15, ry: 2.65, d: 0, cx: .29, cy: 0, cz: .31, fov: 30 },
-  heros: { az: 38, el: 30, rx: 3.2, ry: 2.7, d: 0, cx: .05, cy: .8, cz: .05, fov: 30 },
-  amenager: { az: 26, el: 42, rx: 3.15, ry: 2.75, d: 0, cx: 0, cy: .55, cz: 0, fov: 30 },
+  heros: { az: 38, el: 30, rx: 3.75, ry: 2.95, d: 0, cx: .05, cy: .8, cz: .05, fov: 30 },
+  amenager: { az: 26, el: 42, rx: 3.55, ry: 2.9, d: 0, cx: 0, cy: .55, cz: 0, fov: 30 },
   // à hauteur d'œil : 1,15 + 3,4 × sin 7° ≈ 1,6 m
   visite: { az: 48, el: 7, rx: 0, ry: 0, d: 3.4, cx: -1.2, cy: 1.15, cz: -1, fov: 52 }
 };

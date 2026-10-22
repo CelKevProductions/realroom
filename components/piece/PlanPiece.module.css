@@ -2,12 +2,12 @@
 .dialogue::backdrop{background:rgb(18 18 17 / 55%)}
 .dialogue *{box-sizing:border-box}
 .entete{display:flex;align-items:start;justify-content:space-between;gap:16px}
-.entete h2{font:800 28px/.95 var(--d);font-stretch:78%;letter-spacing:-.02em;margin:0}
+.entete h2{font:var(--titre-poids) 28px/.95 var(--d); font-stretch:var(--titre-chasse); letter-spacing: var(--titre-approche);margin:0}
 .dialogue .entete button{border:0;background:transparent;font-size:26px;line-height:1;padding:0 6px;min-width:38px;min-height:38px}
 .intro{font-size:13px;color:var(--graphite);max-width:75ch}
 .dimensions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
 .champ{display:grid;gap:5px;font-size:12px;margin:10px 0}
-.champ input,.dialogue select{color:inherit;font:inherit;font-size:14px;font-family:var(--m);background:var(--blanc);border:1px solid var(--trait-fort);border-radius:2px;padding:9px 10px;width:100%;min-width:0}
+.champ input,.dialogue select{color:inherit;font:inherit;font-size:14px;font-family:var(--m);background:var(--blanc);border:1px solid var(--trait-fort);border-radius:var(--rayon);padding:9px 10px;width:100%;min-width:0}
 .confirmer{display:flex;align-items:center;gap:5px;font-size:11px}
 .confirmer input{accent-color:var(--rouille)}
 .corps{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;align-items:start}
