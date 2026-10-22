@@ -16,6 +16,7 @@ import Variantes from '@/components/piece/Variantes.js';
 import Inspirations from '@/components/piece/Inspirations.js';
 import Resultat from '@/components/piece/Resultat.js';
 import Journal from '@/components/piece/Journal.js';
+import { useDesignerIA } from './DesignerIA.js';
 import BarreCommande from '@/components/piece/BarreCommande.js';
 import AccesRespace, { messageRespace, erreurRespace, useCodeRespace } from '@/components/piece/AccesRespace.js';
 import { bilanRespace } from '@/lib/moteurs/bilan-respace.js';
@@ -101,6 +102,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   useEffect(() => { chargerCatalogue().then(c => { setProduits(c.produits); setLibelles(c.libelles || {}); }); }, []);
   useEffect(() => { setItems(piece.agencement || []); }, [piece.agencement]);
   const dire = (texte, erreur) => { setToast({ texte, erreur, n: Date.now() }); };
+  const designer = useDesignerIA({ piece, items, setPiece, onBusy: b => { reamenagement.current=b; setAttente(b ? 'design' : false); }, onMessage: dire, onImport: ouvrirPhotos });
   const respace = !!useCodeRespace();
   // une erreur (ReSpace surtout) reste plus longtemps à l'écran
   useEffect(() => { if (!toast) return; const h = setTimeout(() => setToast(null), toast.erreur ? 10000 : 3800); return () => clearTimeout(h); }, [toast]);
@@ -270,6 +272,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   // barre de commande : « ajoute un fauteuil », « retire le tapis », « remplace la table basse par
   // une ronde », « déplace le fauteuil près de la fenêtre » (lib/commande.js, sans IA)
   function commander(texte) {
+    if (designer.active) { vider().then(() => designer.generate({},texte)).catch(e => dire(e.message,true)); return true; }
     if (!produits || attente || reamenagement.current) return false;
     const commandes = lireCommande(texte);
     if (!commandes.length) {
@@ -342,7 +345,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     return faits.length > 0;
   }
   function ouvrirBrief(methode = 'assistant') {
-    setBrief({ mode, envies, budget: +budget || 0, garder: [...garder], aRemplacer: [...aRemplacer], espaces, placesRepas, langue: lang, methode });
+    setBrief({ mode, envies, budget: +budget || 0, garder: [...garder], aRemplacer: [...aRemplacer], espaces, placesRepas, langue: lang, methode, design: designer.active, ...(designer.active ? {espaces:espaces ?? piece.proposition?.espaces ?? []} : {}) });
   }
   function erreurAssistant(e) {
     const fr = lang !== 'en';
@@ -357,6 +360,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     return erreurRespace(e, lang) || messages[e?.erreur] || t.demo.erreurs[e?.erreur] || (e?.erreur === 'limite' ? t.connexion.erreurs.limite : t.erreurs.generique);
   }
   async function proposer(demande) {
+    if(designer.active){if(reamenagement.current)return;setBrief(null);setEnvies(demande.envies);setBudget(demande.budget);setEspaces(demande.espaces);setPlacesRepas(demande.placesRepas);try{await vider();await designer.generate(demande);}catch(e){dire(e.message,true);}return;}
     const assistant = demande.methode !== 'ia';
     if (inspirationOccupe || reamenagement.current || !assistant && !services.analyse) return;
     reamenagement.current = true;
@@ -442,6 +446,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
             {catalogue && p.titre && <p>{p.titre}</p>}
             <p className="ligne-meuble__cotes">{remplir(tp.catalogue.dims, { l: cm(p.dim[0]), p: cm(p.dim[1]), h: cm(p.dim[2]) })}</p>
             <div className="ligne-meuble__actions">
+              {designer.active && <button className="btn btn--clair btn--petit" disabled={!!attente} onClick={() => modifier(l => l.map(x => x.id===it.id ? {...x,fixe:!x.fixe} : x))}>{it.fixe ? 'Déverrouiller ce meuble' : 'Verrouiller ce meuble'}</button>}
               <button className="btn btn--clair btn--petit" onClick={() => echanger(it)} disabled={!produits}>{tp.echanger}</button>
               <button className="btn btn--clair btn--petit" onClick={() => retirer(it.id)}>{it.garde === false ? tp.garder : tp.supprimerMeuble}</button>
               {catalogue && p.url && <a className="btn btn--plein btn--petit" href={p.url} target="_blank" rel="noopener">{tp.acheter}</a>}
@@ -457,9 +462,10 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     <>
       <div className="panneau__corps" role="tabpanel" inert={!!attente || undefined}>
         <Confort modele={piece.modele} items={items} produits={produits} lang={lang} onCorriger={corrigerPlan}
-          programme={piece.proposition?.programme} planZones={piece.proposition?.planZones} staging={piece.proposition?.staging}
+          programme={piece.proposition?.programme} planZones={piece.proposition?.planZones} staging={piece.proposition?.staging} designReport={designer.currentReport}
           mode={mode} envies={envies} garder={[...garder]} preferences={piece.proposition?.preferences}
           onAppliquer={piece.proposition?.encyclopedie ? liste=>modifier(()=>liste) : undefined} />
+        {designer.active && designer.panel}
         <fieldset className="champ champ--groupe">
           <legend>{tp.modeTitre}</legend>
           <div className="choix-fonction choix-fonction--liste">
@@ -493,7 +499,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         <label className="champ"><span>{tp.budget}</span>
           <span className="unite" data-unite="€"><input className="saisie" inputMode="numeric" value={budget} onChange={e => setBudget(e.target.value.replace(/\D/g, ''))} /></span>
         </label>
-        <Inspirations piece={piece} setPiece={setPiece} lang={lang} demo={services.simulation} onOccupe={setInspirationOccupe} />
+        <Inspirations piece={piece} setPiece={setPiece} lang={lang} demo={designer.active ? false : services.simulation} onOccupe={setInspirationOccupe} />
         <details className="corriger">
           <summary>{tp.corriger}</summary>
           <div className="corriger__corps">
@@ -512,8 +518,8 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         </details>
       </div>
       <div className="panneau__pied">
-        <AccesRespace lang={lang} />
-        <button type="button" className="btn btn--plein btn--bloc" onClick={() => ouvrirBrief()} disabled={!!attente || inspirationOccupe || !assistantDisponible}>
+        {!designer.active && <AccesRespace lang={lang} />}
+        <button type="button" className="btn btn--plein btn--bloc" onClick={() => ouvrirBrief()} disabled={!!attente || inspirationOccupe || (!designer.active && !assistantDisponible)}>
           {fr ? 'Composer avec l’assistant' : 'Arrange with the assistant'}
         </button>
         <button type="button" className="btn btn--lien btn--petit" onClick={() => ouvrirBrief('ia')} disabled={!!attente || inspirationOccupe || !services.analyse}>{fr ? 'Réaménager avec l’IA et mes inspirations' : 'Redesign with AI and my inspirations'}</button>
@@ -624,7 +630,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         <p className="plateau__etiquette">{fr ? 'Mobilier proposé' : 'Proposed furniture'}</p>
         <p className="plateau__prix">{nouveaux.length ? prix(total * 100, lang) : '—'}{nouveaux.some(it => produitDe(it)?.generique) ? <small> ≈</small> : null}</p>
         <p className="plateau__compte">{nouveaux.length} {fr ? 'proposés' : 'proposed'} · {existants.filter(it => it.garde !== false).length} {fr ? 'conservés' : 'kept'}</p>
-        <button type="button" className="btn btn--plein btn--petit" onClick={() => ouvrirBrief()} disabled={!!attente || inspirationOccupe || !assistantDisponible}>
+        <button type="button" className="btn btn--plein btn--petit" onClick={() => ouvrirBrief()} disabled={!!attente || inspirationOccupe || (!designer.active && !assistantDisponible)}>
           {attente === 'assistant' && <Rouage />}{attente === 'assistant' ? (fr ? 'Composition…' : 'Arranging…') : (fr ? 'Composer avec l’assistant' : 'Arrange with the assistant')}
         </button>
       </div>
@@ -643,6 +649,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
 
       {attente === 'assistant' || attente === 'ia' ? <Journal key={attente} lang={lang} ia={attente === 'ia'} respace={respace} /> : null}
 
+      {designer.dialog}
       {/* barre de commande : écrire ce qu'on veut changer */}
       {vue === 'dessus' && <BarreCommande lang={lang} exemples={(EXEMPLES[fr ? 'fr' : 'en'][piece.fonction] || EXEMPLES[fr ? 'fr' : 'en'].autre)} desactive={!produits || !!attente} surCommande={commander} />}
 
@@ -668,3 +675,4 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     </div>
   );
 }
+

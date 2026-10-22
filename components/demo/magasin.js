@@ -3,13 +3,15 @@
 // restent locaux ; l'option IA envoie le plan, le brief et les inspirations choisies au serveur.
 import { pieceDepuisAnalyse } from '@/lib/amenagement.js';
 import { simulerAnalyse } from '@/lib/simulation.js';
+import { EXAMPLE_ROOM } from '@/lib/examples.mjs';
+import { modelFromRoom } from '@/lib/design-adapter.mjs';
 import { CREDITS } from '@/lib/config.js';
 
 // deux démos : RealRoom (/fr/demo, avec un appartement témoin) et l'édition Maison Corleone
 // (/fr/maison-corleone/demo : 2 rendus offerts, le parcours guidé crée sa propre pièce)
 const edition = () => (typeof location !== 'undefined' && location.pathname.includes('/maison-corleone') ? 'mc' : 'rr');
 const RENDUS_OFFERTS_MC = 2;
-const cle = () => (edition() === 'mc' ? 'mc-demo-1' : 'realroom-demo-1');
+const cle = () => (edition() === 'mc' ? 'mc-demo-1' : 'realroom-design-demo-1');
 const PHOTO_EXEMPLE = { url: '/images/demo-salon.jpg', role: 'entree', largeur: 1200, hauteur: 800 };
 let etat = null;
 const abonnes = new Set();
@@ -19,12 +21,12 @@ export const id = prefixe => prefixe + Math.random().toString(36).slice(2, 10) +
 
 // pièce d'exemple déjà analysée (le salon de la photo d'exemple)
 function pieceExemple(langue, projetId) {
-  const dims = { largeur: 4.2, profondeur: 5.2, hauteur: 2.6 };
+  const dims = { largeur: 7.2, profondeur: 5.6, hauteur: 2.7 };
   const { analyse } = simulerAnalyse({ dims, fonction: 'salon', langue, demo: true });
-  const { modele, agencement } = pieceDepuisAnalyse(analyse, dims, {});
+  const modele = modelFromRoom(EXAMPLE_ROOM), agencement = [];
   return {
     id: 'r_demo_salon', projet_id: projetId, nom: langue === 'en' ? 'Living room' : 'Salon', fonction: 'salon', etat: 'prete',
-    dims, photos: [PHOTO_EXEMPLE], notes: '', modele, agencement, proposition: null, erreur: null, cree_le: maintenant(), maj_le: maintenant()
+    dims, photos: [], notes: '', modele, agencement, proposition: null, erreur: null, cree_le: maintenant(), maj_le: maintenant()
   };
 }
 
@@ -122,3 +124,4 @@ export function projetComplet(idProjet) {
     })
   };
 }
+

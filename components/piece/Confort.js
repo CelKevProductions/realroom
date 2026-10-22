@@ -51,7 +51,7 @@ const textes = {
   }
 };
 
-export default function Confort({ modele, items, produits, lang = 'fr', garder = [], avis = [], onAppliquer, onCorriger, mode, envies, preferences, programme, planZones, staging }) {
+export default function Confort({ modele, items, produits, lang = 'fr', garder = [], avis = [], onAppliquer, onCorriger, mode, envies, preferences, programme, planZones, staging, designReport }) {
   const t = textes[lang] || textes.fr;
   const bilan = useMemo(() => produits ? bilanConfort(modele, items, produits, lang, { envies, preferences }) : null, [modele, items, produits, lang, envies, preferences]);
   const [attente, setAttente] = useState(false), [message, setMessage] = useState(''), [retour, setRetour] = useState(null);
@@ -89,14 +89,15 @@ export default function Confort({ modele, items, produits, lang = 'fr', garder =
         <span>{nom}<small>{valeur === null ? t.inconnu : valeur ? t.bon : t.attention}</small></span>
       </li>)}
     </ul>
-    <details className={s.score}>
+    {!designReport && <details className={s.score}>
       <summary>{t.score} <strong>{bilan.score.total === null ? t.inconnu : `${bilan.score.total}/100`}</strong>{bilan.score.incomplet && <small> · {t.partiel}</small>}</summary>
       <p>{t.scoreNote}</p>
       <dl>{bilan.score.criteres.map(c => <div key={c.id}><dt>{t.criteres[c.id]}</dt><dd>{c.note === null ? c.id === 'circulation' ? t.inconnu : t.sans : `${c.note}/100`}</dd></div>)}</dl>
       <p>{t.profil} : {bilan.score.preferences.styles.map(id => t.styles[id]).join(' / ')} · {t.compositions[bilan.score.preferences.composition]}</p>
       {bilan.score.preferences.resume && <p>{bilan.score.preferences.resume}</p>}
       {bilan.score.preferences.palette.length > 0 && <p>{bilan.score.preferences.palette.join(' · ')}{bilan.score.preferences.matieres.length > 0 ? ' / ' + bilan.score.preferences.matieres.join(' · ') : ''}</p>}
-    </details>
+    </details>}
+    {designReport && <p className={s.note}>Contrôles de la scène actuelle : {designReport.errors} conflit(s), {designReport.warnings} point(s) à vérifier. {designReport.reason} Ces contrôles ne notent pas la qualité esthétique.</p>}
     <details className={s.details}><summary>{lang==='fr'?'Inspirations des styles':'Style inspirations'}</summary><p>{lang==='fr'?'Exemples de palettes, matières et compositions. Votre sélection de styles guide les produits et les dispositions ; les passages restent prioritaires.':'Examples of palettes, materials and compositions. Your styles guide products and layouts; clear passages remain the priority.'}</p><ul>{referencesStylesDe(bilan.score.preferences.styles).map(ref=><li key={ref.id}><a href={ref.url} target="_blank" rel="noopener noreferrer">{ref.titre}</a></li>)}</ul></details>
     <details className={s.details}>
       <summary>{t.details}{bilan.alertes.length > 0 && <span> · {bilan.alertes.length}</span>}</summary>
@@ -129,3 +130,4 @@ export default function Confort({ modele, items, produits, lang = 'fr', garder =
     {plan && <PlanPiece modele={modele} items={items} produits={produits} lang={lang} onSauver={onCorriger} onFermer={() => setPlan(false)} />}
   </section>;
 }
+

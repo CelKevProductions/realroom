@@ -1,6 +1,6 @@
 'use client';
 // Étape 1 : photos guidées (depuis l'entrée d'abord), mesures approximatives, précisions
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { api } from '@/components/api.js';
 import { reduireImage } from '@/components/piece/image.js';
 import Acquisition from '@/components/piece/Acquisition.js';
@@ -10,6 +10,8 @@ const ROLES = ['entree', 'fond', 'gauche', 'droite'];
 
 export default function Photos({ lang = 'fr', t, piece, setPiece, analyser, attente, onImport, onOuvrir }) {
   const tp = t.piece;
+  const [modeInitial,setModeInitial]=useState('photos');
+  useEffect(()=>{if(/^\/[a-z]{2}\/demo(\/|$)/.test(location.pathname))setModeInitial('plan');},[]);
   const [envoi, setEnvoi] = useState({});
   const [erreur, setErreur] = useState('');
   const [mode, setMode] = useState('photos'), [captureOccupe, setCaptureOccupe] = useState(false);
@@ -72,7 +74,7 @@ export default function Photos({ lang = 'fr', t, piece, setPiece, analyser, atte
 
   return (
     <div className="etape-photos">
-      <Acquisition piece={piece} setPiece={setPiece} lang={lang} onImport={onImport} onOccupe={setCaptureOccupe} onMode={setMode} />
+      <Acquisition key={modeInitial} modeInitial={modeInitial} piece={piece} setPiece={setPiece} lang={lang} onImport={onImport} onOccupe={setCaptureOccupe} onMode={setMode} />
       <section className="bloc" data-entree="" hidden={mode !== 'photos'}>
         <div className="bloc__tete"><h2>{tp.photosTitre}</h2><p>{tp.photosIntro}</p></div>
         <div className="photos-grille">
@@ -107,3 +109,4 @@ export default function Photos({ lang = 'fr', t, piece, setPiece, analyser, atte
     </div>
   );
 }
+

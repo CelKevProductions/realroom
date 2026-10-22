@@ -14,6 +14,7 @@ import {
   definirProduits, construireProduit, construireCatalogue, CAT_GENERIQUE, canvasTex, LUMINEUX
 } from './meubles.js';
 import './modeles/index.js';
+import { construireObjetDesign } from './modeles/design.js';
 import { contourDe, segmentsDe, aireSignee, contientPoint, contientBoite } from '../lib/contour.js';   // modèles fidèles d'après les photos des produits
 import {vuePourAngle,validerVue,vuePourPosition} from '../lib/cadrages.js';
 import { deplacerVuePhoto,creerNavigationPhoto } from '../lib/navigation-photo.js';
@@ -471,7 +472,12 @@ export function creerEditeur(canvas, opts = {}) {
     graine(hash(item.sku || item.id));
     let g = null;
     try {
-      if (item.sku && catalogue[item.sku]) g = construireProduit(item.sku, optionsDe(p, item));
+      if (p.atelier) {
+        g = construireObjetDesign(p);
+        if (estMural(p.fam)) { g.position.y = -p.dim[2]/2; g.position.z = p.dim[1]/2; }
+        if (estSuspendu(p.fam)) g.position.y = -p.dim[2];
+      }
+      else if (item.sku && catalogue[item.sku]) g = construireProduit(item.sku, optionsDe(p, item));
       else if (PLUS[p.fam] && !(CAT_GENERIQUE[p.fam] && p.fam !== 'tapis')) g = PLUS[p.fam](p);
       else g = construireCatalogue(p, optionsDe(p, item));
     } catch (err) { console.warn('maquette', p.fam, err); }
@@ -515,6 +521,7 @@ export function creerEditeur(canvas, opts = {}) {
   // petits objets posés sur un meuble bas (télévision sur son meuble, lampe sur une table) : même règle que le solveur
   const posable = e => !!e.p && estPosable(e.p.fam, e.p.dim);
   function hauteurPose(e) {
+    if (e.item.design && Number.isFinite(e.item.baseY)) return e.item.baseY;
     if (!posable(e)) return 0;
     const autres = [];
     for (const o of E.items.values()) if (o !== e && !o.fantome && o.p) autres.push({ it: o.item, p: o.p });
@@ -1185,3 +1192,4 @@ export function creerEditeur(canvas, opts = {}) {
     adossable: fam => estAdosse(fam)
   };
 }
+

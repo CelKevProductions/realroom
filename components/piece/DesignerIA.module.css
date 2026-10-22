@@ -1,0 +1,219 @@
+.panel {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  background: var(--calque);
+  border-radius: 18px;
+  font-size: 0.84rem;
+}
+.check {
+  display: flex !important;
+  gap: 9px !important;
+  align-items: flex-start !important;
+  line-height: 1.4;
+}
+.check input {
+  width: 17px !important;
+  flex: 0 0 17px;
+  margin-top: 2px;
+}
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tools button,
+.dialog button:not(:global(.btn)) {
+  border: 1px solid var(--trait-fort);
+  background: var(--blanc);
+  border-radius: 10px;
+  padding: 7px 11px;
+  cursor: pointer;
+}
+.note {
+  color: var(--graphite);
+  font-size: 0.8rem;
+}
+.dialog {
+  width: min(1180px, 96vw);
+  max-height: 92dvh;
+  border: 0;
+  border-radius: 26px;
+  background: var(--platre);
+  color: var(--encre);
+  padding: 24px;
+  box-shadow: var(--ombre);
+}
+.dialog::backdrop {
+  background: rgba(38, 35, 43, 0.46);
+  backdrop-filter: blur(4px);
+}
+.dialog header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+.dialog header h2 {
+  font-size: 1.7rem;
+}
+.dialog header button {
+  font-size: 1.5rem;
+}
+.dialog footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px solid var(--trait-fort);
+}
+.dialog button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.status {
+  padding: 12px 16px;
+  background: var(--menthe);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+.error {
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--rouille-clair);
+  color: var(--rouille-fonce);
+  margin-top: 15px;
+}
+.settings {
+  max-width: 680px;
+  display: grid;
+  gap: 18px;
+  margin: auto;
+}
+.settings label {
+  display: grid;
+  gap: 7px;
+}
+.settings input,
+.settings select,
+.chatForm input {
+  border: 1px solid var(--trait-fort);
+  padding: 11px 12px;
+  border-radius: 10px;
+  background: var(--blanc);
+  width: 100%;
+}
+.candidates {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+.candidates button {
+  overflow: hidden;
+  text-align: left;
+  padding: 0 !important;
+  border: 2px solid transparent !important;
+  border-radius: 16px !important;
+  background: var(--blanc) !important;
+}
+.candidates button.selected {
+  border-color: var(--rouille) !important;
+}
+.candidates svg {
+  width: 100%;
+  height: 185px;
+}
+.candidates b,
+.candidates small {
+  display: block;
+  padding: 7px 13px;
+}
+.candidates small {
+  color: var(--graphite);
+  font-size: 0.75rem;
+  padding-top: 0;
+  padding-bottom: 13px;
+}
+.detail {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 24px;
+}
+.preview {
+  height: 390px;
+  min-width: 0;
+  background: var(--peche);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.preview canvas {
+  width: 100%;
+  height: 100%;
+}
+.detail h3 {
+  margin: 4px 0 12px;
+}
+.detail details {
+  padding: 13px 0;
+  border-top: 1px solid var(--trait);
+}
+.detail summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.detail p {
+  margin-bottom: 10px;
+}
+.detail ul,
+.detail ol {
+  padding-left: 20px;
+  font-size: 0.85rem;
+}
+.detail li {
+  margin: 5px 0;
+}
+.chat {
+  margin-top: 20px;
+}
+.chat p {
+  padding: 12px;
+  margin-top: 8px;
+  background: var(--blanc);
+  border-radius: 12px;
+  white-space: pre-wrap;
+}
+.chatForm {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.chatForm input {
+  min-width: 0;
+}
+.chatForm button {
+  flex-shrink: 0;
+}
+@media (max-width: 720px) {
+  .dialog {
+    padding: 16px;
+  }
+  .detail {
+    grid-template-columns: 1fr;
+  }
+  .preview {
+    height: 260px;
+  }
+  .candidates {
+    grid-template-columns: 1fr 1fr;
+  }
+  .candidates svg {
+    height: 140px;
+  }
+  .chatForm {
+    flex-direction: column;
+  }
+}

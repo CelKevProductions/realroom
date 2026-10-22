@@ -209,6 +209,7 @@ export default function PlanPiece({ modele, items, produits, lang = 'fr', onSauv
             {champ(t.position, rond(o.position + long / 2), v => modifierOuverture(mur, i, { position: valeur(v) - long / 2 }), o.largeur / 2, long - o.largeur / 2)}
             <div className={s.paire}>{champ(t.largeur, o.largeur, v => modifierOuverture(mur, i, { largeur: valeur(v) }), .3, long - .1)}{champ(t.hauteur, o.hauteur, v => modifierOuverture(mur, i, { hauteur: valeur(v) }), .4, modelePlan.dims.hauteur)}</div>
             {!['porte', 'passage'].includes(o.type) && champ(t.allege, o.allege, v => modifierOuverture(mur, i, { allege: valeur(v) }), 0, modelePlan.dims.hauteur - .45)}
+            {o.type === 'porte' && <label className={s.champ}><span>{lang === 'en' ? 'Door opening' : 'Ouverture de la porte'}</span><select value={o.swing || 'inward'} onChange={e => modifierOuverture(mur,i,{swing:e.target.value})}><option value="inward">{lang === 'en' ? 'Into the room' : 'Vers l’intérieur'}</option><option value="outward">{lang === 'en' ? 'Out of the room' : 'Vers l’extérieur'}</option><option value="sliding">{lang === 'en' ? 'Sliding' : 'Coulissante'}</option></select></label>}
             <button type="button" onClick={() => changerMur(mur, (murs[mur]?.ouvertures || []).filter((_, j) => i !== j))}>{t.retirer}</button>
           </fieldset>)}
           <div className={s.actions}><button type="button" disabled={(murs[mur]?.ouvertures || []).length >= 6} onClick={() => changerMur(mur, [...murs[mur]?.ouvertures || [], { type: 'porte', position: 0, largeur: .9, hauteur: 2.04, allege: 0 }])}>{t.ajouter}</button><button type="button" onClick={() => changerMur(mur, [])}>{t.aucune}</button></div>
@@ -237,3 +238,4 @@ export default function PlanPiece({ modele, items, produits, lang = 'fr', onSauv
     </form>
   </dialog>;
 }
+
