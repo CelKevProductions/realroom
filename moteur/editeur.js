@@ -26,6 +26,9 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, t) => a + (b - a) * t;
 const hash = s => { let h = 2166136261; for (const c of String(s)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
 const EPAISSEUR = .12;
+// collection procédurale (revêtements, meubles, cuisine, bain) : chargée seulement quand une pièce en utilise
+let COLLECTION = null, CHARGEMENT_COLLECTION = null;
+const chargerCollection = () => CHARGEMENT_COLLECTION ||= import('./collection/index.js').then(m => (COLLECTION = m));
 const ACCENT = '#B8411D';
 // courbes des mouvements de caméra
 const COURBES = {
@@ -328,12 +331,15 @@ export function creerEditeur(canvas, opts = {}) {
     t.needsUpdate = true;
     const pas = matiere === 'parquet' ? 1.6 : matiere === 'uni' ? 2.5 : 2.4;
     t.repeat.set(L / pas, P / pas);
-    const mSol = std('#FFFFFF', sol.matiere === 'moquette' ? 1 : matiere === 'marbre' ? .3 : matiere === 'carrelage' ? .45 : .72, 0, { map: t });
+    // revêtement de la collection : ses textures se répètent au mètre (coordonnées du sol en mètres)
+    const revetement = r => (r?.id ? (COLLECTION ? COLLECTION.materiauChoisi(r) : (attendreCollection(), null)) : null);
+    const rSol = revetement(sol.revetement);
+    const mSol = rSol || std('#FFFFFF', sol.matiere === 'moquette' ? 1 : matiere === 'marbre' ? .3 : matiere === 'carrelage' ? .45 : .72, 0, { map: t });
     const contour = contourDe(modele);
     const formeSol = new THREE.Shape(contour.map(([x,z])=>new THREE.Vector2(x,-z)));
     const geometrieSol = new THREE.ShapeGeometry(formeSol);
     const uv = geometrieSol.attributes.uv, positions = geometrieSol.attributes.position;
-    for(let i=0;i<uv.count;i++) uv.setXY(i,(positions.getX(i)+L/2)/L,(positions.getY(i)+P/2)/P);
+    if (!rSol) for(let i=0;i<uv.count;i++) uv.setXY(i,(positions.getX(i)+L/2)/L,(positions.getY(i)+P/2)/P);
     const plan = mesh3(geometrieSol, mSol);
     plan.rotation.x = -Math.PI / 2; plan.castShadow = false;
     racine.add(plan);
@@ -378,7 +384,8 @@ export function creerEditeur(canvas, opts = {}) {
         o.u0 = u0; o.u1 = u1; o.y0 = y0; o.y1 = y1;
       });
       const geo = new THREE.ExtrudeGeometry(sh, { depth: EPAISSEUR, bevelEnabled: false });
-      const mat = std(couleurMur(nom), .93);
+      // face intérieure du mur : coordonnées de texture en mètres (u le long du mur, v depuis le sol)
+      const mat = revetement(modele.murs?.[nom]?.revetement) || std(couleurMur(nom), .93);
       const me = mesh3(geo, mat);
       // repère du mur : x le long de d, y vers le haut, z vers l'extérieur (n)
       const bx = new THREE.Vector3(c.d[0], 0, c.d[1]), bz = new THREE.Vector3(c.n[0], 0, c.n[1]);
@@ -400,7 +407,8 @@ export function creerEditeur(canvas, opts = {}) {
       E.murs.push({ nom, me, menuiseries, plinthe, n: bz, centre: new THREE.Vector3(c.a[0] + bx.x * c.long / 2, H / 2, c.a[1] + bx.z * c.long / 2), op: 1 });
     }
     // plafond (vu seulement de l'intérieur)
-    const pl = mesh3(new THREE.ShapeGeometry(formeSol), std((modele.plafond && modele.plafond.couleur) || '#F7F5F0', .95));
+    const rPlafond = revetement(modele.plafond?.revetement);
+    const pl = mesh3(new THREE.ShapeGeometry(formeSol), rPlafond ? Object.assign(rPlafond.clone(), { userData: {} }) : std((modele.plafond && modele.plafond.couleur) || '#F7F5F0', .95));
     pl.rotation.x = -Math.PI / 2; pl.material.side = THREE.BackSide; pl.position.y = H; pl.castShadow = false;
     racine.add(pl);
     E.plafond = pl;
@@ -471,7 +479,8 @@ export function creerEditeur(canvas, opts = {}) {
     graine(hash(item.sku || item.id));
     let g = null;
     try {
-      if (item.sku && catalogue[item.sku]) g = construireProduit(item.sku, optionsDe(p, item));
+      if (p.collection) { if (COLLECTION) g = COLLECTION.construireCollection(p, item, E.modele.dims.hauteur); else attendreCollection(); }
+      else if (item.sku && catalogue[item.sku]) g = construireProduit(item.sku, optionsDe(p, item));
       else if (PLUS[p.fam] && !(CAT_GENERIQUE[p.fam] && p.fam !== 'tapis')) g = PLUS[p.fam](p);
       else g = construireCatalogue(p, optionsDe(p, item));
     } catch (err) { console.warn('maquette', p.fam, err); }
@@ -511,6 +520,24 @@ export function creerEditeur(canvas, opts = {}) {
       placerPorteur(e); majContour(); libererRessources();
       E.ombres = true; demander();
     }).catch(err => console.warn('glb', e.p.sku || e.p.fam, err?.message));
+  }
+  // à l'arrivée de la collection : la pièce reprend ses revêtements, les meubles leur vrai modèle
+  function attendreCollection() {
+    // après la compilation en cours : elle suit les matériaux de la pièce, qu'on ne libère pas sous elle
+    chargerCollection().then(() => E.compilation).then(() => {
+      if (E.detruit || !E.modele || E.collectionPrete) return;
+      E.collectionPrete = true;
+      construirePiece(E.modele);
+      for (const e of E.items.values()) {
+        if (!e.p?.collection) continue;
+        e.porteur.remove(e.modele); relacher(e.modele);
+        e.modele = modeleDe(e.item, e.p);
+        e.modele.traverse(o => { o.userData.itemId = e.item.id; });
+        e.porteur.add(e.modele); placerPorteur(e);
+      }
+      majContour(); libererRessources();
+      E.ombres = true; demander();
+    }).catch(err => console.warn('collection', err?.message));
   }
   // petits objets posés sur un meuble bas (télévision sur son meuble, lampe sur une table) : même règle que le solveur
   const posable = e => !!e.p && estPosable(e.p.fam, e.p.dim);
@@ -1095,7 +1122,7 @@ export function creerEditeur(canvas, opts = {}) {
       };
       requestAnimationFrame(attendre);
     };
-    renderer.compileAsync(scene, camera).then(fini, fini);
+    E.compilation = renderer.compileAsync(scene, camera).then(fini, fini);
   }
   function charger(modele, items = [], staging = null) {
     E.modele = JSON.parse(JSON.stringify(modele));
