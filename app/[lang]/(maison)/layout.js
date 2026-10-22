@@ -1,4 +1,8 @@
 import localFont from 'next/font/local';
+// polices de l'ancien habillage RealRoom, toujours utilisées par les composants partagés (atelier, relevé)
+import '@fontsource-variable/archivo/wdth.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
 import './maison.css';
 
 // Édition Maison Corleone (« Chez vous ») : polices de la visite privée, couleurs de la boutique.

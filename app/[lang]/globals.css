@@ -8,29 +8,32 @@
 @property --trace { syntax: '<number>'; inherits: true; initial-value: 3; }
 :root {
   color-scheme: light;
-  --platre: #EDEAE4;
-  --calque: #F5F3EF;
-  --blanc: #FBFAF8;
-  --encre: #121211;
-  --graphite: #5C5953;
-  --gris: #8C8880;
-  --trait: rgba(18, 18, 17, .14);
-  --trait-fort: rgba(18, 18, 17, .28);
-  --guide: rgba(18, 18, 17, .05);
-  --rouille: #B8411D;
-  --rouille-fonce: #8E3216;
-  --rouille-clair: #F1DED6;
+  /* « Plan vivant » : papier blanc, encre, une seule couleur signal (voir /mnt/project-files/refonte/direction-artistique.md) */
+  --platre: #F3F2EE;
+  --calque: #FAF9F7;
+  --blanc: #FFFFFF;
+  --encre: #111110;
+  --graphite: #56544F;
+  --gris: #8E8B85;
+  --trait: rgba(17, 17, 16, .10);
+  --trait-fort: rgba(17, 17, 16, .22);
+  --guide: rgba(17, 17, 16, .045);
+  --rouille: #FF4F1A;
+  --rouille-fonce: #D63B0C;
+  --rouille-clair: #FFE6DC;
   --sauge: #3E5E4E;
   --sauge-clair: #DDE5DE;
-  --nuit: #131312;
-  --d: 'Archivo Variable', 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --m: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --nuit: #0E0E0D;
+  --d: 'Geist Variable', 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --m: 'Geist Mono Variable', 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --serif: 'Instrument Serif', 'Times New Roman', serif;
   /* compatibilité : anciens noms de variables */
   --titre: var(--d); --texte: var(--d); --accent: var(--rouille); --encre-2: var(--graphite); --encre-3: var(--gris);
   --marge: clamp(16px, 3vw, 40px);
-  --entete: 56px;
+  --entete: 60px;
   --sortie: cubic-bezier(.22, 1, .36, 1);
-  --rayon: 2px;
+  --rayon: 12px;
+  --rayon-carte: 16px;
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }

@@ -7,6 +7,12 @@
    Tout est rangé sous .mc : rien ne déborde sur RealRoom.
    ================================================================= */
 .mc {
+  /* composants partagés avec RealRoom (atelier, relevé…) : l'édition garde l'ancien habillage, quelle que soit la refonte du site */
+  --platre: #EDEAE4; --calque: #F5F3EF; --blanc: #FBFAF8; --graphite: #5C5953; --guide: rgba(18, 18, 17, .05);
+  --rouille: #B8411D; --rouille-fonce: #8E3216; --rouille-clair: #F1DED6; --accent: var(--rouille);
+  --d: 'Archivo Variable', 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --m: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --titre: var(--d); --texte: var(--d); --rayon: 2px; --rayon-carte: 2px; --entete: 56px;
   --expresso: #332817;
   --nuit: #1E160E;
   --creme: #EEE4D3;
