@@ -11,11 +11,12 @@ import { useEntree, ouvrirDialogue, fermerDialogue } from '@/components/Mouvemen
 import Croquis from '@/components/Croquis.js';
 import { remplir } from '@/lib/i18n.js';
 import { FONCTIONS } from '@/lib/config.js';
+import { Rouage } from '@/components/mouvement/Attente.js';
 
 function Etat({ etat, t }) {
   return (
     <span className={'etat etat--' + etat}>
-      {etat === 'analyse' ? <span className="rouage rouage--petit" /> : <span className="point" />}
+      {etat === 'analyse' ? <Rouage /> : <span className="point" />}
       {t.projet.etats[etat] || etat}
     </span>
   );
@@ -72,8 +73,10 @@ export default function Projet({ lang, t, initial }) {
         <input className="titre-modifiable" data-entree="" value={nom} maxLength={80} aria-label={t.projets.renommer}
           onChange={e => setNom(e.target.value)} onBlur={renommer} onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
         <div className="app-page__actions" data-entree="">
+          {/* un seul chemin mis en avant : le parcours guidé ; l'ajout simple d'une pièce reste discret */}
+          <button className="btn btn--lien" onClick={ouvrir}>{t.projet.ajouter}</button>
           {pretes.length > 1 && <button className="btn btn--clair" onClick={analyserTout}>{t.projet.analyserTout}</button>}
-          <button className="btn btn--plein" onClick={ouvrir}>{t.projet.ajouter}</button>
+          <Link className="btn btn--plein" href={`${racine}/projets/${p.id}/parcours`}>{lang === 'en' ? 'Furnish my rooms' : 'Aménager mes pièces'}</Link>
         </div>
       </div>
       {message && <p className="avis avis--ok app-page__avis">{message}</p>}

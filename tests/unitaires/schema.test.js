@@ -24,7 +24,10 @@ test('une base de la version 1 est migrée : codes par empreinte, profils Maison
   const { sql, une } = await import('../../lib/db.js');
   await sql("INSERT INTO codes (cle, empreinte, expire_le) VALUES ('code:abc', 'y', now())");
   assert.equal((await une("SELECT credits FROM utilisateurs WHERE id = 'u_ancien'")).credits, 7);
-  assert.equal((await une("SELECT valeur FROM meta WHERE cle = 'schema'")).valeur, '4');
+  assert.equal((await une("SELECT valeur FROM meta WHERE cle = 'schema'")).valeur, '5');
+  // version 5 : versions de scène (colonne ajoutée, table scenes)
+  assert.ok((await une("SELECT to_regclass('public.scenes') AS t")).t);
+  assert.ok(await une("SELECT 1 FROM information_schema.columns WHERE table_name = 'pieces' AND column_name = 'version_scene'"));
   assert.ok((await une("SELECT to_regclass('public.bienvenues') AS t")).t);
   // version 3 : profils des clients Maison Corleone (édition gratuite)
   assert.ok((await une("SELECT to_regclass('public.profils_mc') AS t")).t);

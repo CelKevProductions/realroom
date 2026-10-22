@@ -89,9 +89,13 @@ export function publique(p) {
   return {
     id: p.id, nom: p.nom, fonction: p.fonction, etat: p.etat, projet_id: p.projet_id, projet_nom: pr ? pr.nom : '',
     dims: p.dims, photos: p.photos.map(f => ({ url: f.url, role: f.role, largeur: f.largeur, hauteur: f.hauteur })), notes: p.notes,
-    modele: p.modele, agencement: p.agencement || [], proposition: p.proposition, erreur: p.erreur, maj_le: p.maj_le
+    modele: p.modele, agencement: p.agencement || [], proposition: p.proposition, erreur: p.erreur, maj_le: p.maj_le,
+    version_scene: p.version_scene || 0, ...(p.photos.some(f => f.meuble) ? { photos: p.photos.map(f => ({ url: f.url, role: f.role, largeur: f.largeur, hauteur: f.hauteur, ...(f.meuble ? { meuble: f.meuble } : {}) })) } : {})
   };
 }
+// pièces du parcours guidé (mêmes formes que lib/parcours-serveur.js)
+export const piecesDuParcours = idProjet => lire().pieces.filter(x => x.projet_id === idProjet).sort((a, b) => (a.cree_le > b.cree_le ? 1 : -1))
+  .map(x => ({ ...publique(x), approfondie: x.approfondie === (x.version_scene || 0) && x.approfondie !== undefined }));
 export const renduPublic = r => ({ id: r.id, type: r.type, angle: r.angle || 'entree', vue:r.vue||null,ambiance:r.ambiance||'jour',reference:r.reference||null,referenceLargeur:r.referenceLargeur,referenceHauteur:r.referenceHauteur,etat: r.etat, credits: r.credits, resultat: r.resultat, erreur: r.erreur, cree_le: r.cree_le, fini_le: r.fini_le, source: r.source || null });
 export const rendusDe = idPiece => lire().rendus.filter(r => r.piece_id === idPiece).sort((a, b) => (a.cree_le < b.cree_le ? 1 : -1)).map(renduPublic);
 

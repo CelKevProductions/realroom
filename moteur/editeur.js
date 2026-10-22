@@ -19,6 +19,7 @@ import {vuePourAngle,validerVue,vuePourPosition} from '../lib/cadrages.js';
 import { deplacerVuePhoto,creerNavigationPhoto } from '../lib/navigation-photo.js';
 import { produitDe, estMural, estSuspendu, estPlat, estAdosse, estPosable, porteurDe, demiEmpreinte, placerAuMur, normaliserAngle } from '../lib/agencement.js';
 import { construireProp } from './staging.js';
+import { modeleGLB } from './glb.js';
 import { posesStaging } from '../lib/staging.js';
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -86,6 +87,7 @@ function textureSol(matiere, couleur) {
   }
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
   t.colorSpace = THREE.SRGBColorSpace;
+  t.userData.partage = true;   // l'éditeur en utilise des copies
   TEX_SOL.set(cle, t);
   return t;
 }
@@ -177,8 +179,6 @@ export function creerEditeur(canvas, opts = {}) {
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: false });
   if (!renderer.capabilities.isWebGL2) throw new Error('WebGL 2 indisponible');
-  const dprMax = Math.min(window.devicePixelRatio || 1, opts.dprMax || 2);
-  renderer.setPixelRatio(dprMax);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.shadowMap.enabled = true;
@@ -186,9 +186,16 @@ export function creerEditeur(canvas, opts = {}) {
   renderer.shadowMap.autoUpdate = false;
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(opts.fond || '#EFEBE3');
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture;
+  scene.background = new THREE.Color(opts.fond || '#FBEDE2');
+  let pmrem = new THREE.PMREMGenerator(renderer), cibleEnv = null;
+  function environnement() {
+    const salle = new RoomEnvironment();
+    cibleEnv?.dispose();
+    cibleEnv = pmrem.fromScene(salle, .04);
+    scene.environment = cibleEnv.texture;
+    salle.dispose();
+  }
+  environnement();
   scene.environmentIntensity = .55;
   const hemi = new THREE.HemisphereLight('#FFF7EC', '#BDAF9C', 1.05);
   const soleil = new THREE.DirectionalLight('#FFF1DE', 2.1);
@@ -198,8 +205,13 @@ export function creerEditeur(canvas, opts = {}) {
   soleil.shadow.normalBias = .02;
   soleil.shadow.radius = 4;
   scene.add(hemi, soleil, soleil.target);
+  // calque des murs effacés : invisibles pour la caméra, toujours pris par la carte d'ombres
+  const CALQUE_CACHE = 1;
+  soleil.shadow.camera.layers.enable(CALQUE_CACHE);
 
-  const camera = new THREE.PerspectiveCamera(45, 1, .05, 200);
+  // plan proche à 10 cm en maquette (5 cm dans la pièce), plan lointain ajusté à la pièce :
+  // la précision de profondeur reste fine jusqu'au recul maximal de l'orbite
+  const camera = new THREE.PerspectiveCamera(45, 1, .1, 200);
   const racine = groupe('piece');       // murs, sol, plafond
   const meublesG = groupe('meubles');   // un porteur par meuble
   const stagingG = groupe('mise-en-scene'), props3D=new Map();
@@ -211,6 +223,7 @@ export function creerEditeur(canvas, opts = {}) {
     orbite: { theta: .55, phi: .92, r: 9, cible: new THREE.Vector3() },
     regard: { yaw: 0, pitch: 0 },
     anim: null, sale: true, ombres: true, raf: 0, detruit: false,
+    pret: false, introEnAttente: false,   // pret : programmes de rendu compilés (premier affichage)
     tween: null,     // glissé de l'orbite (angle, hauteur, distance, point visé)
     auto: null,      // tour lent autour du meuble cadré
     cadre: null,     // meuble cadré
@@ -223,12 +236,87 @@ export function creerEditeur(canvas, opts = {}) {
     estActive:()=>E.navigation&&E.mode==='photo'&&!E.detruit&&!opts.lectureSeule&&!canvas.closest('[inert]')&&!document.querySelector('dialog[open],[aria-modal="true"]'),
     demander,onDebut:()=>{interrompre();E.anim=null;opts.surNavigation?.();}});
 
+  /* ---------- qualité : densité de pixels et ombres, baisse automatique si les images traînent ---------- */
+  const NIVEAUX = { haute: { dpr: 2, ombre: 2048, ombres: true }, moyenne: { dpr: 1.5, ombre: 1024, ombres: true }, basse: { dpr: 1, ombre: 512, ombres: false } };
+  const ORDRE = ['haute', 'moyenne', 'basse'];
+  const Q = { niveau: null, auto: !NIVEAUX[opts.qualite], intervalles: [], rendus: [], images: 0, ombres: 0, baisses: 0, derniereBaisse: 0, continu: false, precedent: 0 };
+  const tactile = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches;
+  function appliquerQualite(n) {
+    const c = NIVEAUX[n];
+    Q.niveau = n;
+    Q.intervalles.length = 0;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, opts.dprMax || 2, c.dpr));
+    if (soleil.shadow.mapSize.x !== c.ombre) { soleil.shadow.mapSize.set(c.ombre, c.ombre); soleil.shadow.map?.dispose(); soleil.shadow.map = null; }
+    soleil.castShadow = c.ombres;
+    E.ombres = true;
+  }
+  // Mesure entre deux images consécutives d'une animation continue (pas les images isolées).
+  function mesurer(maintenant, coutRendu) {
+    Q.images++;
+    Q.rendus.push(coutRendu); if (Q.rendus.length > 120) Q.rendus.shift();
+    if (Q.continu && Q.precedent) {
+      const dt = maintenant - Q.precedent;
+      if (dt < 250) { Q.intervalles.push(dt); if (Q.intervalles.length > 120) Q.intervalles.shift(); }
+    }
+    Q.precedent = maintenant;
+    if (!Q.auto || Q.niveau === 'basse' || Q.intervalles.length < 40 || maintenant - Q.derniereBaisse < 4000) return;
+    // moins de 33 images par seconde sur les 40 dernières : un cran plus bas
+    if (mediane(Q.intervalles.slice(-40)) > 30) {
+      Q.derniereBaisse = maintenant; Q.baisses++;
+      appliquerQualite(ORDRE[ORDRE.indexOf(Q.niveau) + 1]);
+      opts.surQualite?.(Q.niveau);
+    }
+  }
+  const mediane = v => { const s = [...v].sort((a, b) => a - b); return s.length ? s[s.length >> 1] : 0; };
+  const centile = (v, k) => { const s = [...v].sort((a, b) => a - b); return s.length ? s[Math.min(s.length - 1, Math.floor(s.length * k))] : 0; };
+  appliquerQualite(NIVEAUX[opts.qualite] ? opts.qualite : tactile || (navigator.deviceMemory && navigator.deviceMemory <= 4) ? 'moyenne' : 'haute');
+
+  /* ---------- ressources : libérées quand plus aucun objet de la scène ne s'en sert ---------- */
+  // Les matériaux et textures en cache commun (meubles.js : M(), tex()) sont marqués « partage » et
+  // restent ; les autres caches de modules peuvent être libérés : three les recharge s'ils resservent.
+  const aLiberer = { geos: new Set(), mats: new Set() };
+  function relacher(o) {
+    o.traverse(x => {
+      if (x.geometry) aLiberer.geos.add(x.geometry);
+      for (const m of [].concat(x.material || [])) aLiberer.mats.add(m);
+    });
+  }
+  function libererRessources() {
+    if (!aLiberer.geos.size && !aLiberer.mats.size) return;
+    const geos = new Set(), mats = new Set();
+    scene.traverse(x => { if (x.geometry) geos.add(x.geometry); for (const m of [].concat(x.material || [])) mats.add(m); });
+    for (const g of aLiberer.geos) if (!geos.has(g)) g.dispose();
+    for (const m of aLiberer.mats) {
+      if (mats.has(m) || m.userData.partage) continue;
+      for (const v of Object.values(m)) if (v && v.isTexture && !v.userData.partage) v.dispose();
+      m.dispose();
+    }
+    aLiberer.geos.clear(); aLiberer.mats.clear();
+  }
+
+  /* ---------- perte du contexte WebGL (pilote, onglet en arrière-plan, mémoire) ---------- */
+  function contextePerdu(ev) {
+    ev.preventDefault();   // autorise le navigateur à rendre le contexte
+    E.perdu = true;
+    if (E.raf) { cancelAnimationFrame(E.raf); E.raf = 0; }
+    opts.surContexte?.('perdu');
+  }
+  function contexteRetabli() {
+    // three recharge géométries, textures et programmes au prochain rendu ; l'environnement
+    // (rendu dans une cible) et la carte d'ombres sont à refaire
+    E.perdu = false;
+    pmrem.dispose(); pmrem = new THREE.PMREMGenerator(renderer);
+    environnement();
+    E.ombres = true; Q.continu = false;
+    demander();
+    opts.surContexte?.('retabli');
+  }
+  canvas.addEventListener('webglcontextlost', contextePerdu);
+  canvas.addEventListener('webglcontextrestored', contexteRetabli);
+
   /* ---------- la pièce ---------- */
   function viderGroupe(g) {
-    while (g.children.length) {
-      const o = g.children.pop();
-      o.traverse(x => { if (x.geometry) x.geometry.dispose(); });
-    }
+    while (g.children.length) relacher(g.children.pop());
   }
   function construirePiece(modele) {
     viderGroupe(racine);
@@ -251,7 +339,7 @@ export function creerEditeur(canvas, opts = {}) {
     racine.add(plan);
     // socle discret sous la pièce (maquette posée)
     const socle = mesh3(new THREE.BoxGeometry(L + 2 * EPAISSEUR + .3, .2, P + 2 * EPAISSEUR + .3), std('#E4DED2', .95));
-    socle.position.y = -.1 - .002; socle.castShadow = false;
+    socle.position.y = -.1 - .004; socle.castShadow = false;
     racine.add(socle);
 
     const couleurMur = m => (modele.murs && modele.murs[m] && modele.murs[m].couleur) || modele.couleurMurs || '#F1EDE6';
@@ -264,14 +352,27 @@ export function creerEditeur(canvas, opts = {}) {
       droite: { a: [L / 2, P / 2], d: [0, -1], n: [1, 0], long: P, u: pos => P / 2 - pos }
     };
     if (modele.contour) {const sens=Math.sign(aireSignee(contour));defs=Object.fromEntries(segmentsDe(modele).map(p=>[p.id,{a:sens>0?p.b:p.a,d:p.d.map(v=>-sens*v),n:p.n.map(v=>-v),long:p.long,u:pos=>p.long/2-sens*pos}]));}
+    // Angles : chaque coin n'est rempli que par un seul mur. Avant, les deux murs dépassaient de
+    // l'épaisseur aux deux bouts et leurs dessus (et faces extérieures) se superposaient au même
+    // plan, d'où le scintillement vu de dessus. Un mur ne dépasse plus qu'à son début, et seulement
+    // à un angle saillant ; à un angle rentrant (pièce en L), il commence après l'épaisseur du mur
+    // précédent, dont le bout ferme déjà le coin.
+    const liste = Object.values(defs);
+    const finDe = c => [c.a[0] + c.d[0] * c.long, c.a[1] + c.d[1] * c.long];
+    const angle = c => {
+      const q = liste.find(q => q !== c && Math.hypot(finDe(q)[0] - c.a[0], finDe(q)[1] - c.a[1]) < .02);
+      const k = q ? q.d[0] * c.n[0] + q.d[1] * c.n[1] : 0;
+      return k > .1 ? 'saillant' : k < -.1 ? 'rentrant' : 'plat';
+    };
     for (const [nom, c] of Object.entries(defs)) {
       const ouv = ((modele.murs && modele.murs[nom] && modele.murs[nom].ouvertures) || []).map(o => ({ ...o, u: c.u(o.position) }))
         .filter(o => o.largeur > .1 && o.u - o.largeur / 2 > -.01 && o.u + o.largeur / 2 < c.long + .01);
+      const coin = angle(c), debut = coin === 'saillant' ? -EPAISSEUR : coin === 'rentrant' ? Math.min(EPAISSEUR, c.long / 2) : 0;
       const sh = new THREE.Shape();
-      sh.moveTo(-EPAISSEUR, 0); sh.lineTo(c.long + EPAISSEUR, 0); sh.lineTo(c.long + EPAISSEUR, H); sh.lineTo(-EPAISSEUR, H); sh.closePath();
+      sh.moveTo(debut, 0); sh.lineTo(c.long, 0); sh.lineTo(c.long, H); sh.lineTo(debut, H); sh.closePath();
       ouv.forEach(o => {
         const y0 = clamp(o.allege || 0, 0, H - .3), y1 = clamp(y0 + (o.hauteur || 1.2), y0 + .2, H - .05);
-        const u0 = clamp(o.u - o.largeur / 2, .02, c.long - .1), u1 = clamp(o.u + o.largeur / 2, u0 + .1, c.long - .02);
+        const u0 = clamp(o.u - o.largeur / 2, Math.max(.02, debut + .02), c.long - .1), u1 = clamp(o.u + o.largeur / 2, u0 + .1, c.long - .02);
         const tr = new THREE.Path(); tr.moveTo(u0, y0); tr.lineTo(u1, y0); tr.lineTo(u1, y1); tr.lineTo(u0, y1); tr.closePath();
         sh.holes.push(tr);
         o.u0 = u0; o.u1 = u1; o.y0 = y0; o.y1 = y1;
@@ -284,10 +385,11 @@ export function creerEditeur(canvas, opts = {}) {
       me.matrixAutoUpdate = false;
       me.matrix.makeBasis(bx, new THREE.Vector3(0, 1, 0), bz).setPosition(c.a[0], 0, c.a[1]);
       racine.add(me);
-      // plinthe côté pièce
-      const plinthe = mesh3(new THREE.BoxGeometry(c.long, .07, .012), std('#F6F3EE', .6));
+      // plinthe côté pièce ; à un angle saillant, elle s'arrête contre celle du mur précédent
+      const retrait = coin === 'saillant' ? .012 : 0, longPlinthe = c.long - retrait, milieu = retrait + longPlinthe / 2;
+      const plinthe = mesh3(new THREE.BoxGeometry(longPlinthe, .07, .012), std('#F6F3EE', .6));
       plinthe.castShadow = false;
-      const centre = new THREE.Vector3(c.a[0] + bx.x * c.long / 2 - bz.x * .006, .035, c.a[1] + bx.z * c.long / 2 - bz.z * .006);
+      const centre = new THREE.Vector3(c.a[0] + bx.x * milieu - bz.x * .006, .035, c.a[1] + bx.z * milieu - bz.z * .006);
       plinthe.position.copy(centre); plinthe.rotation.y = Math.atan2(bx.z, bx.x) * -1;
       racine.add(plinthe);
       const menuiseries = groupe('ouvertures-' + nom);
@@ -315,6 +417,9 @@ export function creerEditeur(canvas, opts = {}) {
     const sc = soleil.shadow.camera;
     sc.left = -r; sc.right = r; sc.top = r; sc.bottom = -r; sc.near = .5; sc.far = r * 6;
     sc.updateProjectionMatrix();
+    // plan lointain : recul maximal de l'orbite (30 m) plus la diagonale de la pièce
+    camera.far = 32 + 2 * Math.hypot(L, P, H);
+    camera.updateProjectionMatrix();
     E.ombres = true;
   }
   function ouverture(parent, o) {
@@ -391,7 +496,21 @@ export function creerEditeur(canvas, opts = {}) {
     const e = { item: { ...item }, p, porteur, modele, fantome: false };
     placerPorteur(e);
     appliquerFantome(e);
+    if (p.glb) remplacerParGLB(e);
     return e;
+  }
+  // modèle GLB du produit : la maquette procédurale reste affichée jusqu'à son arrivée, ou si
+  // le fichier ne correspond pas aux dimensions du produit
+  function remplacerParGLB(e) {
+    modeleGLB(e.p).then(r => {
+      if (E.detruit || E.items.get(e.item.id) !== e) return;
+      if (!r.ok) { console.warn('glb', e.p.sku || e.p.fam, r.motif, r.ecart ?? ''); return; }
+      r.objet.traverse(o => { o.userData.itemId = e.item.id; });
+      e.porteur.remove(e.modele); relacher(e.modele);
+      e.porteur.add(r.objet); e.modele = r.objet;
+      placerPorteur(e); majContour(); libererRessources();
+      E.ombres = true; demander();
+    }).catch(err => console.warn('glb', e.p.sku || e.p.fam, err?.message));
   }
   // petits objets posés sur un meuble bas (télévision sur son meuble, lampe sur une table) : même règle que le solveur
   const posable = e => !!e.p && estPosable(e.p.fam, e.p.dim);
@@ -421,7 +540,7 @@ export function creerEditeur(canvas, opts = {}) {
     const e = E.items.get(id);
     if (!e) return;
     meublesG.remove(e.porteur);
-    e.porteur.traverse(o => { if (o.geometry && o.geometry !== undefined) o.geometry.dispose(); });
+    relacher(e.porteur);
     E.items.delete(id);
   }
   function majItems(items) {
@@ -465,13 +584,16 @@ export function creerEditeur(canvas, opts = {}) {
       // Les accessoires ne sont ni sélectionnables ni des références achetables.
     }
     for(const [id,e]of props3D)if(!vus.has(id)){stagingG.remove(e.g);viderGroupe(e.g);props3D.delete(id);}
+    libererRessources();
     E.ombres=true;demander();
   }
 
   /* ---------- sélection ---------- */
   const matContour = new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: .95, depthTest: false });
+  matContour.userData.partage = true;
   function majContour() {
-    viderGroupe(aides);
+    // les aides n'ont que leurs propres géométries : libérées tout de suite (appelé à chaque glissé)
+    while (aides.children.length) aides.children.pop().traverse(x => x.geometry?.dispose());
     const e = E.selection && E.items.get(E.selection);
     if (!e) { demander(); return; }
     const { p, item } = e;
@@ -580,6 +702,9 @@ export function creerEditeur(canvas, opts = {}) {
     if (!E.modele || reduit || E.mode !== 'dessus') return;
     const d = orbiteDefaut();
     poserOrbite({ ...d, theta: d.theta - 1.15, phi: .3, r: d.r * 1.75, cy: d.cy + .5 });
+    // la caméra ne part qu'une fois les programmes de rendu prêts (sinon la première image fige
+    // l'animation déjà commencée)
+    if (!E.pret) { E.introEnAttente = true; return; }
     glisser(d, 3400, 'douce');
     E.tween.vers.theta = d.theta;   // l'arc complet, pas le plus court chemin
   }
@@ -630,17 +755,19 @@ export function creerEditeur(canvas, opts = {}) {
   function interrompre() { E.tween = null; E.auto = null; }
 
   /* ---------- ambiance : jour ou soir (luminaires allumés, lumière du jour qui baisse) ---------- */
-  const FONDS = { jour: new THREE.Color(opts.fond || '#EFEBE3'), soir: new THREE.Color(opts.fondSoir || '#251C14') };
+  const FONDS = { jour: new THREE.Color(opts.fond || '#FBEDE2'), soir: new THREE.Color(opts.fondSoir || '#251C14') };
   const LUMINAIRES = new Set(['suspension', 'lustre', 'plafonnier', 'lampadaire', 'lampe', 'applique']);
   // six lumières créées d'avance, cachées le jour : leur nombre ne change jamais, et leurs shaders
   // sont compilés en tâche de fond après le chargement (passer au soir ne fige pas l'écran)
   const feux = Array.from({ length: 6 }, () => { const l = new THREE.PointLight('#FFB46E', 0, 6.5, 2); l.visible = false; scene.add(l); return { l, i: 0 }; });
   const allumer = oui => { for (const f of feux) f.l.visible = oui; };
   let prechauffe = 0;
+  // jamais pendant un mouvement de caméra : la compilation figeait l'arrivée de la caméra
   function prechauffer() {
     clearTimeout(prechauffe);
     prechauffe = setTimeout(() => {
       if (E.detruit || !E.modele) return;
+      if (!E.pret || E.tween || E.anim || E.auto || E.introEnAttente) { prechauffer(); return; }
       const allumees = feux[0].l.visible;
       allumer(true);
       renderer.compileAsync(scene, camera).catch(() => {});
@@ -713,11 +840,10 @@ export function creerEditeur(canvas, opts = {}) {
       const cible = force ? 1 : (!dedans && d > 0 ? 0 : 1);
       if (w.op !== cible) {
         w.op = cible;
-        w.me.material.opacity = cible ? 1 : 0;
-        w.me.visible = cible > 0;
-        w.menuiseries.visible = cible > 0;
-        w.plinthe.visible = cible > 0;
-        w.me.material.depthWrite = true;
+        // un mur effacé quitte seulement la vue (calque 1) : il porte toujours son ombre, donc la
+        // carte d'ombres ne change pas quand la caméra tourne (elle était recalculée à chaque
+        // mur franchi, d'où les à-coups pendant l'arrivée de la caméra et le tour automatique)
+        for (const o of [w.me, w.menuiseries, w.plinthe]) o.traverse(x => x.layers.set(cible > 0 ? 0 : CALQUE_CACHE));
         change = true;
       }
     }
@@ -725,15 +851,14 @@ export function creerEditeur(canvas, opts = {}) {
       const pan=segmentsDe(E.modele).find(p=>p.id===e.item.mur);
       e.g.visible=!pan||force||dedans||(cam.position.x-pan.centre[0])*pan.n[0]+(cam.position.z-pan.centre[1])*pan.n[1]>=0;
     }
-    if (change) E.ombres = true;
     return change;
   }
 
   /* ---------- rendu à la demande ---------- */
-  function demander() { if (!E.raf && !E.detruit) E.raf = requestAnimationFrame(rendre); }
+  function demander() { if (!E.raf && !E.detruit && !E.perdu) E.raf = requestAnimationFrame(rendre); }
   function rendre(t) {
     E.raf = 0;
-    if (!E.modele) return;
+    if (!E.modele || !E.pret) return;
     const maintenant = performance.now();
     const dt = E.dernier ? Math.min(.05, (maintenant - E.dernier) / 1000) : 0;
     E.dernier = maintenant;
@@ -767,6 +892,8 @@ export function creerEditeur(canvas, opts = {}) {
       encore = true;
     }
     if (encore) demander(); else E.dernier = 0;
+    const proche = E.mode === 'photo' ? .05 : .1;
+    if (camera.near !== proche) { camera.near = proche; camera.updateProjectionMatrix(); }
     if (E.anim) {
       const k = clamp((performance.now() - E.anim.t0) / E.anim.duree, 0, 1), s = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
       const a = E.anim.depart, b = poseCourante();
@@ -774,8 +901,11 @@ export function creerEditeur(canvas, opts = {}) {
       if (k >= 1) E.anim = null; else demander();
     } else appliquerPose(poseCourante());
     majMurs(camera);
-    if (E.ombres) { renderer.shadowMap.needsUpdate = true; E.ombres = false; }
+    if (E.ombres) { renderer.shadowMap.needsUpdate = true; E.ombres = false; Q.ombres++; }
+    const t0 = performance.now();
     renderer.render(scene, camera);
+    mesurer(maintenant, performance.now() - t0);
+    Q.continu = !!E.raf;
   }
 
   /* ---------- pointeur : sélection, déplacement, orbite, zoom ---------- */
@@ -908,7 +1038,7 @@ export function creerEditeur(canvas, opts = {}) {
     const v=o.angle&&o.angle!=='entree'?vuePourAngle(E.modele,o.angle):null;
     const pv=o.vue?validerVue(E.modele,o.vue):null;
     const p = pv?{px:pv.x,py:pv.y,pz:pv.z,tx:pv.cx,ty:pv.cy,tz:pv.cz,fov:pv.fov}:v?{px:v.x,py:v.y,pz:v.z,tx:v.cx,ty:v.cy,tz:v.cz,fov:v.fov}:E.mode==='photo'?poseCourante():vuePhoto();
-    const cam = new THREE.PerspectiveCamera(o.fov || p.fov, w / h, .05, 200);
+    const cam = new THREE.PerspectiveCamera(o.fov || p.fov, w / h, .05, camera.far);
     cam.position.set(p.px, p.py, p.pz); cam.lookAt(p.tx, p.ty, p.tz); cam.updateMatrixWorld();
     const avant = { taille: renderer.getSize(new THREE.Vector2()), dpr: renderer.getPixelRatio() };
     // La capture suit le choix jour/nuit, sans modifier l'ambiance de l'atelier.
@@ -924,6 +1054,7 @@ export function creerEditeur(canvas, opts = {}) {
     const url = canvas.toDataURL('image/jpeg', o.qualite || .9);
     renderer.setPixelRatio(avant.dpr);
     renderer.setSize(avant.taille.x, avant.taille.y, false);
+    Q.continu = false;   // la capture n'est pas une image de l'animation
     appliquerAmbiance(kAmb);
     aides.visible = true;
     E.murs.forEach(w2 => { w2.op = -1; });
@@ -933,6 +1064,39 @@ export function creerEditeur(canvas, opts = {}) {
   }
 
   /* ---------- API ---------- */
+  // Premier affichage : les programmes de rendu sont compilés hors de la boucle d'images (en
+  // parallèle quand le navigateur le permet), la maquette apparaît ensuite en fondu et la caméra part.
+  let preparation = 0;
+  function preparer() {
+    const n = ++preparation;
+    E.pret = false;
+    canvas.style.opacity = '0';
+    appliquerPose(poseCourante());
+    const montrer = () => {
+      if (E.detruit || n !== preparation) return;
+      canvas.style.transition = reduit ? '' : 'opacity .45s ease';
+      canvas.style.opacity = '';
+      if (E.introEnAttente) { E.introEnAttente = false; const d = orbiteDefaut(); glisser(d, 3400, 'douce'); if (E.tween) E.tween.vers.theta = d.theta; }
+      demander();
+    };
+    const fini = () => {
+      if (E.detruit || n !== preparation) return;
+      // première image encore cachée (envoi des textures, carte d'ombres), puis on attend que les
+      // images reviennent à un rythme régulier : le mouvement ne commence qu'après
+      E.pret = true;
+      rendre();
+      let avant = performance.now(), calmes = 0;
+      const depart = avant;
+      const attendre = maintenant => {
+        if (E.detruit || n !== preparation) return;
+        calmes = maintenant - avant < 50 ? calmes + 1 : 0;
+        avant = maintenant;
+        if (calmes >= 2 || maintenant - depart > 2500) montrer(); else requestAnimationFrame(attendre);
+      };
+      requestAnimationFrame(attendre);
+    };
+    renderer.compileAsync(scene, camera).then(fini, fini);
+  }
   function charger(modele, items = [], staging = null) {
     E.modele = JSON.parse(JSON.stringify(modele));
     for (const id of [...E.items.keys()]) retirer(id);
@@ -943,6 +1107,7 @@ export function creerEditeur(canvas, opts = {}) {
     majItems(items);
     redimensionner();
     vue(E.mode, false);
+    preparer();
   }
   return {
     charger,
@@ -984,6 +1149,21 @@ export function creerEditeur(canvas, opts = {}) {
     },
     redimensionner,
     rendre: () => rendre(),
+    // niveau de qualité : 'haute' | 'moyenne' | 'basse' ; 'auto' rend la main à la baisse automatique
+    qualite(n) {
+      if (n === 'auto') Q.auto = true;
+      else if (NIVEAUX[n]) { Q.auto = false; appliquerQualite(n); demander(); }
+      return Q.niveau;
+    },
+    // mesures réelles de ce navigateur (intervalle entre images d'une animation continue, coût
+    // processeur de l'appel de rendu ; le temps GPU n'est pas mesurable ici)
+    mesures() {
+      const i = renderer.info;
+      return { qualite: Q.niveau, auto: Q.auto, baisses: Q.baisses, dpr: renderer.getPixelRatio(), images: Q.images, cartesOmbres: Q.ombres,
+        intervalleMedianMs: +mediane(Q.intervalles).toFixed(1), intervalleP95Ms: +centile(Q.intervalles, .95).toFixed(1),
+        renduMedianMs: +mediane(Q.rendus).toFixed(2), appels: i.render.calls, triangles: i.render.triangles,
+        geometries: i.memory.geometries, textures: i.memory.textures, programmes: i.programs?.length || 0, contextePerdu: !!E.perdu };
+    },
     detruire() {
       E.detruit = true;
       navigation.detruire();
@@ -991,7 +1171,15 @@ export function creerEditeur(canvas, opts = {}) {
       if (E.amb.k > 0) appliquerAmbiance(0);
       if (E.raf) cancelAnimationFrame(E.raf);
       if (obs) obs.disconnect();
-      viderGroupe(racine); viderGroupe(meublesG); viderGroupe(stagingG); viderGroupe(aides);
+      canvas.removeEventListener('webglcontextlost', contextePerdu);
+      canvas.removeEventListener('webglcontextrestored', contexteRetabli);
+      for (const id of [...E.items.keys()]) retirer(id);
+      viderGroupe(racine); viderGroupe(meublesG); viderGroupe(stagingG);
+      while (aides.children.length) aides.children.pop().traverse(x => x.geometry?.dispose());
+      libererRessources();
+      matContour.dispose();
+      cibleEnv?.dispose(); pmrem.dispose();
+      soleil.shadow.map?.dispose();
       renderer.dispose();
     },
     adossable: fam => estAdosse(fam)

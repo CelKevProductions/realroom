@@ -3,6 +3,8 @@ import { piece, majPiece, supprimerPiece, publique, rendusDe, renduPublic } from
 import { dimsValides } from '@/lib/piece.js';
 import { FONCTIONS } from '@/lib/config.js';
 import { verifier } from '@/lib/agencement.js';
+import { nettoyerContraintes, verrouillerDimensions } from '@/lib/scene.js';
+import { validerScene } from '@/lib/versions-scene.js';
 import { corrigerPiece, mesuresConfirmees } from '@/lib/geometrie.js';
 import { PRODUITS } from '@/lib/catalogue.js';
 import { attacheMur } from '@/lib/hauteurs.js';
@@ -32,13 +34,13 @@ export const PATCH = route(async (request, { params }) => {
   // Le plan corrigé remplace la géométrie ; le relevé reste visible, même s'il faut l'ajuster.
   if ((b.dims || b.geometrie) && p.modele) {
     const correction = b.geometrie && typeof b.geometrie === 'object' ? b.geometrie : { dims: b.dims };
-    try { Object.assign(champs, corrigerPiece(p.modele, Array.isArray(b.agencement) ? nettoyer(b.agencement, p.modele) : p.agencement || [], correction, PRODUITS)); } catch(e) { if(['scan-forme','scan-coins','scan-dimensions','scan-repere'].includes(e.message)) throw new ErreurHTTP(400,e.message);throw e; }
+    try { Object.assign(champs, corrigerPiece(p.modele, Array.isArray(b.agencement) ? verrouillerDimensions(p.agencement, nettoyer(b.agencement, p.modele)) : p.agencement || [], correction, PRODUITS)); } catch(e) { if(['scan-forme','scan-coins','scan-dimensions','scan-repere'].includes(e.message)) throw new ErreurHTTP(400,e.message);throw e; }
     champs.dims = mesuresConfirmees(champs.modele);
     champs.proposition = p.proposition ? { ...p.proposition, confort: null, densite: null, staging: (b.dims || b.geometrie) ? null : p.proposition.staging } : null;
   }
   if (Array.isArray(b.agencement)) {
     if (!p.modele) throw new ErreurHTTP(409, 'pas-de-modele');
-    if (!b.dims && !b.geometrie) champs.agencement = nettoyer(b.agencement, p.modele);
+    if (!b.dims && !b.geometrie) champs.agencement = verrouillerDimensions(p.agencement, nettoyer(b.agencement, p.modele));
     if (p.proposition) champs.proposition = { ...p.proposition, confort: null, densite: null, staging: (b.dims || b.geometrie) ? null : p.proposition.staging };
   }
   if (b.vue && p.modele) champs.modele = { ...(champs.modele || p.modele), vue: { ...p.modele.vue, ...pick(b.vue, ['x', 'y', 'z', 'cx', 'cy', 'cz', 'fov']) } };
@@ -47,7 +49,9 @@ export const PATCH = route(async (request, { params }) => {
     const audit=verifierReglesDures(modele,[...liste,...posesStaging(liste,stage,PRODUITS)],PRODUITS,p.proposition.encyclopedie.profil);
     if(!audit.valide)throw new ErreurHTTP(422,'regles-bloquantes',audit.erreurs.join(', '));
   }
-  const n = await majPiece(u.id, id, champs);
+  let n = await majPiece(u.id, id, champs);
+  // plan corrigé : nouvelle version validée (les propositions calculées avant ne s'appliquent plus)
+  if ((b.dims || b.geometrie) && champs.modele) { await validerScene(u.id, n, PRODUITS); n = await piece(u.id, id); }
   return json({ piece: publique(n), alertes: n.modele ? verifier(n.modele, n.agencement || [], PRODUITS) : [] });
 });
 
@@ -67,6 +71,8 @@ function nettoyer(liste, modele) {
     if (typeof base.x !== 'number' || typeof base.z !== 'number') return null;
     if (['fond', 'gauche', 'droite', 'entree'].includes(it.mur) || /^pan_([1-9]|[12][0-9]|3[0-2])$/.test(it.mur)) base.mur = it.mur;
     if (it.garde === false) base.garde = false;
+    const contraintes = nettoyerContraintes(it.contraintes);
+    if (contraintes) base.contraintes = contraintes;
     if (typeof it.raison === 'string') base.raison = it.raison.slice(0, 240);
     if (['wall_item', 'ceiling_item', 'surface_item'].includes(it.kind)) base.kind = it.kind;
     if (Number.isFinite(it.y)) base.height = it.y;

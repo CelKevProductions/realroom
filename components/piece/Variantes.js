@@ -4,21 +4,23 @@ import { estMural, estSuspendu } from '@/lib/agencement.js';
 import { etatVariantes, signatureBrief } from '@/lib/variation-disposition.js';
 import s from './Variantes.module.css';
 
-function MiniPlan({ modele, items, produits }) {
+// plan miniature « Plan vivant » : sol papier, murs à l'encre, meubles principaux en orange signal,
+// fenêtres en gris bleu, portes en creux dans le mur
+export function MiniPlan({ modele, items, produits }) {
   const contour = contourDe(modele), L = modele.dims.largeur, P = modele.dims.profondeur;
   return <svg viewBox={`${-L / 2 - .12} ${-P / 2 - .12} ${L + .24} ${P + .24}`} aria-hidden="true" focusable="false">
-    <polygon points={contour.map(p => p.join(',')).join(' ')} fill="#eee5d7" stroke="#85745f" strokeWidth=".035" />
+    <polygon points={contour.map(p => p.join(',')).join(' ')} fill="#FFFFFF" stroke="#26232B" strokeWidth=".04" />
     {items.filter(it => it.garde !== false).map(it => {
       const p = it.sku ? produits?.[it.sku] : it.p;
       if (!p || estMural(p.fam) || estSuspendu(p.fam)) return null;
       const [w, d] = p.dim, principal = ['lit', 'canape', 'table-repas', 'bureau'].includes(it.usageProgramme);
       return <rect key={it.id} x={-w / 2} y={-d / 2} width={w} height={d} rx=".025"
         transform={`translate(${it.x} ${it.z}) rotate(${-(it.rot || 0) * 180 / Math.PI})`}
-        fill={principal ? '#7d8f89' : '#bfae97'} opacity={p.fam === 'tapis' ? .2 : 1} stroke="#786b58" strokeWidth=".018" />;
+        fill={principal ? '#FFD3BD' : '#C5DDC9'} opacity={p.fam === 'tapis' ? .35 : 1} stroke={principal ? '#F2613F' : '#6E6873'} strokeWidth=".02" />;
     })}
     {segmentsDe(modele).flatMap(pan => (modele.murs[pan.id]?.ouvertures || []).map((o, i) => {
       const a = pointOuverture(pan, o.position - o.largeur / 2), b = pointOuverture(pan, o.position + o.largeur / 2);
-      return <line key={`${pan.id}-${i}`} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={o.type === 'fenetre' ? '#598994' : '#bd8756'} strokeWidth=".09" />;
+      return <line key={`${pan.id}-${i}`} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={o.type === 'fenetre' ? '#9CC7E0' : '#FFFFFF'} strokeWidth=".09" />;
     }))}
   </svg>;
 }

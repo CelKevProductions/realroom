@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { api } from '@/components/api.js';
 import { reduireImage } from '@/components/piece/image.js';
 import Acquisition from '@/components/piece/Acquisition.js';
+import { Rouage } from '@/components/mouvement/Attente.js';
 
 const ROLES = ['entree', 'fond', 'gauche', 'droite'];
 
@@ -65,7 +66,7 @@ export default function Photos({ lang = 'fr', t, piece, setPiece, analyser, atte
           </span>
         </div>
       )}
-      {envoi[cle] && <span className="rouage case-photo__rouage" />}
+      {envoi[cle] && <Rouage petit={false} className="case-photo__rouage" />}
     </div>
   );
 

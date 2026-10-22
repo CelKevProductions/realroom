@@ -8,6 +8,7 @@ import { versClaude } from '@/lib/piece.js';
 import { preparerAmenagement, appliquerProposition } from '@/lib/amenagement.js';
 import { PRODUITS, candidats } from '@/lib/catalogue.js';
 import { enDataUri } from '@/lib/stockage.js';
+import { passerParRespace } from '@/lib/moteurs/respace-amenager.js';
 
 export const maxDuration = 300;
 
@@ -38,7 +39,10 @@ export const POST = route(async (request, { params }) => {
     garder: prep.garder, aRemplacer: prep.aRemplacer, candidats: cands, inspirations, langue: b.langue === 'en' ? 'en' : 'fr'
   });
   let resultat;try{resultat = appliquerProposition({ modele: p.modele, fonction: p.fonction, prep, proposition, produits: PRODUITS, candidats: cands });}catch(e){if(e.code==='REGLES_BLOQUANTES')throw new ErreurHTTP(422,'regles-bloquantes',e.message);throw e;}
+  // démo privée : ReSpace pose les meubles choisis dans la pièce vidée
+  let respace;
+  ({ resultat, respace } = await passerParRespace({ piece: p, resultat, produits: PRODUITS, code: b.respace, cle: u.id, signal: request.signal }));
   const {agencement,proposition:prop}=resultat;
   const n = await majPiece(u.id, id, { agencement, proposition: prop });
-  return json({ piece: publique(n) });
+  return json({ piece: publique(n), respace });
 });

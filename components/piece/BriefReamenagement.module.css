@@ -1,28 +1,28 @@
-.dialogue{color:#392D23;background:#F2EDE3;border:1px solid #B8A58D;border-radius:3px;padding:28px;width:min(640px,calc(100vw - 24px));max-width:none;max-height:calc(100dvh - 32px);overflow:auto;font:14px/1.5 system-ui,sans-serif}
-.dialogue::backdrop{background:rgb(28 21 14 / 55%)}
+.dialogue{color:var(--encre);background:var(--platre);border:1px solid var(--encre);border-radius:var(--rayon);padding:28px;width:min(640px,calc(100vw - 24px));max-width:none;max-height:calc(100dvh - 32px);overflow:auto;font:400 15px/1.5 var(--d)}
+.dialogue::backdrop{background:rgb(18 18 17 / 55%)}
 .dialogue *{box-sizing:border-box}
 .entete{display:flex;justify-content:space-between;align-items:start;gap:20px}
-.entete h2{font-family:inherit;font-weight:500;font-size:24px;line-height:1.2;margin:0;letter-spacing:-.02em}
+.entete h2{font:var(--titre-poids) 30px/.95 var(--d); font-stretch:var(--titre-chasse);margin:0;letter-spacing:-.02em}
 .dialogue button{color:inherit;font:inherit;cursor:pointer}
 .entete button{border:0;background:transparent;font-size:26px;line-height:1;min-width:38px;min-height:38px;padding:0}
 .intro{margin:12px 0 20px;max-width:60ch;opacity:.8}
 .espaces{border:0;padding:0;margin:0 0 16px}
 .espaces legend{padding:0;margin-bottom:9px;font-weight:600}
 .choix{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.option{display:flex;align-items:start;gap:9px;border:1px solid #C8BAA5;padding:12px;cursor:pointer}
-.option:has(input:checked){background:#E5DCCB;border-color:#806746}
-.option input{margin-top:4px;accent-color:#806746}
+.option{display:flex;align-items:start;gap:9px;border:1px solid var(--trait);padding:12px;cursor:pointer}
+.option:has(input:checked){background:var(--calque);border-color:var(--encre)}
+.option input{margin-top:4px;accent-color:var(--rouille)}
 .option b,.option small{display:block}
-.option small{font-size:12px;opacity:.8;margin-top:3px}
+.option small{font-size:12px;color:var(--graphite);margin-top:3px}
 .reglages{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
 .champ{display:grid;gap:6px;margin:12px 0;font-size:13px;font-weight:500}
-.champ input,.champ select,.champ textarea{color:inherit;font:400 14px/1.5 system-ui,sans-serif;background:#FFFDF6;border:1px solid #B8A58D;border-radius:2px;padding:10px;width:100%;min-width:0}
+.champ input,.champ select,.champ textarea{color:inherit;font:400 15px/1.5 var(--d);background:var(--blanc);border:1px solid var(--trait-fort);border-radius:var(--rayon);padding:10px;width:100%;min-width:0}
 .champ textarea{resize:vertical}
-.champ small{font-size:11px;font-weight:400;opacity:.8}
+.champ small{font-size:12px;font-weight:400;opacity:.8}
 .montant{display:flex;align-items:center;gap:8px}
 .aide{font-size:12px;opacity:.8;margin:14px 0 20px}
-.actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px;border-top:1px solid #C8BAA5;padding-top:18px}
-.actions button{background:transparent;border:1px solid #806746;padding:11px 16px;min-height:44px}
-.actions button:last-child{background:#392D23;color:#FFFDF6}
-.dialogue :focus-visible{outline:2px solid #806746;outline-offset:3px}
+.actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px;border-top:1px solid var(--trait);padding-top:18px}
+.actions button{background:transparent;border:1px solid var(--trait-fort);border-radius:999px;padding:11px 18px;min-height:44px;font-weight:600}
+.actions button:last-child{background:var(--encre);border-color:var(--encre);color:var(--platre)}
+.dialogue :focus-visible{outline:2px solid var(--rouille);outline-offset:3px}
 @media(max-width:520px){.dialogue{padding:20px}.choix{grid-template-columns:1fr}.actions button{flex:1}.entete h2{font-size:21px}}

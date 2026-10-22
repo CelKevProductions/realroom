@@ -158,7 +158,6 @@ export default function Acquisition({ piece, setPiece, assurerPiece, lang = 'fr'
   }
   const surTelephone=appareil!=='ordinateur';
   return <section className={`${s.acquisition}${mobileSeul?' '+s.mobile:''}`} aria-label={t.titre}>
-    <p className={s.etape}>{lang==='fr'?'1 · Relever la pièce → 2 · Vérifier le plan → 3 · Aménager':'1 · Capture room → 2 · Check plan → 3 · Furnish'}</p>
     <h2>{t.titre}</h2>
     {piece?.modele?.capture && <p className={s.succes} role="status">{t.courant}</p>}
     {(!mobileSeul||autresModes)&&<div className={s.modes} role="group" aria-label={t.titre}>

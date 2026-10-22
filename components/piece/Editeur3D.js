@@ -33,8 +33,13 @@ export default function Editeur3D({ ref, modele, items, staging, selection, vue,
           ...(fondSoir ? { fondSoir } : {}),
           surSelection: id => rappels.current.surSelection && rappels.current.surSelection(id),
           surDeplacement: d => rappels.current.surDeplacement && rappels.current.surDeplacement(d),
-          surCadre: id => rappels.current.surCadre && rappels.current.surCadre(id)
+          surCadre: id => rappels.current.surCadre && rappels.current.surCadre(id),
+          surQualite: n => { if (canvas.current) canvas.current.dataset.qualite = n; },
+          surContexte: etat => { if (canvas.current) canvas.current.dataset.contexte = etat; }
         });
+        canvas.current.dataset.qualite = ed.current.qualite();
+        // mesures de rendu sur l'appareil (console : realroomMesures()) ; rien n'est envoyé
+        window.realroomMesures = () => ed.current?.mesures() || null;
         ed.current.charger(modele, items, staging);
         ed.current.vue(vue, false);
         if (vue === 'dessus') ed.current.intro();
@@ -69,6 +74,8 @@ export default function Editeur3D({ ref, modele, items, staging, selection, vue,
     balayer: () => { if (ed.current) ed.current.balayer(); },
     ambiance: (k, duree) => { if (ed.current) ed.current.ambiance(k, duree); },
     decalage: (x, y, instant) => { if (ed.current) ed.current.decalage(x, y, instant); },
+    qualite: n => ed.current?.qualite(n) || null,
+    mesures: () => ed.current?.mesures() || null,
     pret: () => !!ed.current
   }), []);
 

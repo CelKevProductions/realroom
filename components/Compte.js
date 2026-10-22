@@ -7,6 +7,7 @@ import { useRacine } from '@/components/chemins.js';
 import { useFil } from '@/components/fil.js';
 import { Titre, Compteur, useEntree } from '@/components/Mouvement.js';
 import { prix, remplir } from '@/lib/i18n.js';
+import { Rouage } from '@/components/mouvement/Attente.js';
 
 export default function Compte({ lang, t, email, credits, historique: historiqueInitial, packs, couts, paiement }) {
   const tc = t.compte;
@@ -68,7 +69,7 @@ export default function Compte({ lang, t, email, credits, historique: historique
                 <span className="pack__prix">{prix(p.prix, lang)}</span>
                 <span className="pack__detail">{remplir(t.tarifs.credits, { n: p.credits })}, {remplir(t.tarifs.rendus, { n: Math.floor(p.credits / couts.rendu) })}</span>
                 <button className={'btn btn--bloc ' + (p.conseille ? 'btn--plein' : 'btn--clair')} disabled={!paiement || !!attente} onClick={() => acheter(p.id)} data-pack={p.id}>
-                  {attente === p.id ? <span className="rouage rouage--petit" /> : t.tarifs.acheter}
+                  {attente === p.id ? <Rouage /> : t.tarifs.acheter}
                 </button>
               </div>
             ))}

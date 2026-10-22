@@ -1,10 +1,11 @@
-import '@fontsource-variable/archivo/wdth.css';
-import '@fontsource/ibm-plex-mono/400.css';
-import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource-variable/bricolage-grotesque';
+import '@fontsource-variable/dm-sans';
 import './globals.css';
 import { notFound } from 'next/navigation';
 import { LANGUES, MARQUE, estLangue } from '@/lib/config.js';
 import { texte } from '@/lib/i18n.js';
+import PreferenceMouvement from '@/components/mouvement/Preference.js';
+import Interactions from '@/components/mouvement/Interactions.js';
 
 export function generateStaticParams() {
   return LANGUES.map(lang => ({ lang }));
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export const viewport = { themeColor: '#EDEAE4', width: 'device-width', initialScale: 1, viewportFit: 'cover' };
+export const viewport = { themeColor: '#F6F0E8', width: 'device-width', initialScale: 1, viewportFit: 'cover' };
 
 // avant le premier affichage : les animations d'entrée joueront (JavaScript actif, mouvement non réduit).
 // Sans ce marqueur, rien n'est masqué en attendant GSAP.
@@ -42,7 +43,7 @@ export default async function Racine({ children, params }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: AMORCE }} />
       </head>
-      <body>{children}</body>
+      <body>{children}<PreferenceMouvement /><Interactions /></body>
     </html>
   );
 }

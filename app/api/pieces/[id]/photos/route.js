@@ -22,6 +22,9 @@ export const POST = route(async (request, { params }) => {
   if (!type) throw new ErreurHTTP(415, 'format');
   const ref = await enregistrer(u.id, 'photos', octets, type);
   const photo = { ...ref, role, largeur: Math.round(+f.get('largeur')) || null, hauteur: Math.round(+f.get('hauteur')) || null };
+  // photo d'un meuble relevé que l'on garde (parcours guidé) : rattachée à ce meuble
+  const meuble = f.get('meuble');
+  if (role === 'detail' && typeof meuble === 'string' && (p.agencement || []).some(it => it.id === meuble && it.origine === 'existant')) photo.meuble = meuble;
   const n = await majPhotos(u.id, id, liste => {
     const photos = [...liste], { remplace: i, possible } = placePhoto(photos, role, LIMITES);
     if (!possible) throw new ErreurHTTP(409, 'limite-photos');

@@ -280,6 +280,7 @@ function tex(nom) {
     }, { clamp: true })
   };
   TEX[nom] = f[nom]();
+  TEX[nom].userData.partage = true;   // cache commun : jamais libéré avec un meuble
   return TEX[nom];
 }
 
@@ -360,6 +361,7 @@ function M(cle) {
     default: m = std(arg || '#cccccc');
   }
   m.name = cle;
+  m.userData.partage = true;
   MATS[cle] = m;
   return m;
 }
