@@ -353,6 +353,16 @@ html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-
 .acc-chapitre__num { display: inline-grid; place-items: center; min-width: 34px; height: 26px; padding: 0 8px; border-radius: 999px; background: var(--blanc); box-shadow: var(--ombre-legere); color: var(--c-ton); font-weight: 700; }
 .acc-chapitre__titre { margin-top: 16px; font: 700 clamp(2.5rem, 5.2vw, 4.6rem)/.96 var(--display); letter-spacing: -.05em; }
 .acc-chapitre__texte { margin-top: 20px; max-width: 36ch; font-size: clamp(1.12rem, 1.5vw, 1.4rem); line-height: 1.42; letter-spacing: -.012em; text-wrap: pretty; }
+/* dernier chapitre : le texte reste en place pendant qu'on visite les appartements, un arrêt chacun */
+.acc-chapitre--visites { padding-bottom: calc((var(--visites) - 1) * 55svh + 40svh); }
+.acc-chapitre--visites .acc-chapitre__corps { position: sticky; top: calc(var(--entete) + 20px + min(50svh, 112vw)); }
+.acc-visites { display: grid; gap: 8px; margin: 22px 0 0; padding: 0; list-style: none; }
+.acc-visites li { display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--c-doux); opacity: .5; transition: opacity .4s, translate .6s var(--sortie), color .4s; }
+.acc-visites li.is-actif { opacity: 1; translate: 6px 0; color: var(--c-ton); }
+.acc-visites__point { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--peche); transition: background-color .4s, scale .6s cubic-bezier(.34, 1.56, .64, 1); }
+.acc-visites li.is-actif .acc-visites__point { background: var(--rouille); scale: 1.35; }
+/* téléphone : sous la pièce, seule la visite en cours */
+@media (max-width: 959.98px) { .acc-visites li:not(.is-actif) { display: none; } .acc-visites { margin-top: 14px; } }
 .acc-scene[data-actif="1"] [data-chapitre="1"] .acc-chapitre__tete::before,
 .acc-scene[data-actif="2"] [data-chapitre="2"] .acc-chapitre__tete::before,
 .acc-scene[data-actif="3"] [data-chapitre="3"] .acc-chapitre__tete::before { background: var(--rouille); border-color: var(--rouille); }
@@ -364,6 +374,8 @@ html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-
   .acc-piece { position: sticky; top: var(--haut-piece); height: calc(100svh - var(--haut-piece) - 24px); }
   .acc-methode { grid-column: 1 / span 5; grid-row: 2; padding: clamp(64px, 8vw, 120px) 0 0; }
   .acc-chapitre { min-height: 88svh; display: flex; flex-direction: column; justify-content: center; padding-block: 48px; }
+  .acc-chapitre--visites { display: block; min-height: 0; padding-bottom: calc((var(--visites) - 1) * 55svh + 40svh); }
+  .acc-chapitre--visites .acc-chapitre__corps { top: 18svh; }
 }
 
 /* ---------- sections ---------- */

@@ -147,20 +147,31 @@ export default async function Accueil({ params }) {
             <div className="acc-chapitres">
               <span className="acc-chapitres__jauge" aria-hidden="true" />
               <ol className="acc-chapitres__liste">
-                {a.chapitres.map((c, i) => (
-                  <li key={c.titre} className="acc-chapitre" data-chapitre={i + 1}>
-                    <p className="acc-mono acc-chapitre__tete"><span className="acc-crochets acc-chapitre__num">{deux(i + 1)}</span><span className="acc-chapitre__etiquettes">{c.etiquettes.join(' · ')}</span></p>
-                    <h3 className="acc-chapitre__titre">{c.titre}</h3>
-                    <p className="acc-chapitre__texte" data-mots>{c.texte}</p>
-                  </li>
-                ))}
+                {a.chapitres.map((c, i) => {
+                  // le dernier chapitre se visite appartement par appartement (un arrêt du défilement chacun)
+                  const visites = i === a.chapitres.length - 1 ? a.visites : null;
+                  return (
+                    <li key={c.titre} className={'acc-chapitre' + (visites ? ' acc-chapitre--visites' : '')} data-chapitre={i + 1} data-visites={visites ? visites.length : undefined} style={visites ? { '--visites': visites.length } : undefined}>
+                      <div className="acc-chapitre__corps">
+                        <p className="acc-mono acc-chapitre__tete"><span className="acc-crochets acc-chapitre__num">{deux(i + 1)}</span><span className="acc-chapitre__etiquettes">{c.etiquettes.join(' · ')}</span></p>
+                        <h3 className="acc-chapitre__titre">{c.titre}</h3>
+                        <p className="acc-chapitre__texte" data-mots>{c.texte}</p>
+                        {visites && (
+                          <ol className="acc-visites">
+                            {visites.map((v, k) => <li key={v} data-visite-libelle={k}><span className="acc-visites__point" aria-hidden="true" />{v}</li>)}
+                          </ol>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
               </ol>
             </div>
           </section>
         </div>
 
         {/* ---------- chiffres clés ---------- */}
-        <section className="acc-section acc-chiffres" aria-labelledby="chiffres-titre">
+        <section className="acc-section acc-chiffres" aria-labelledby="chiffres-titre" data-arret>
           <Reperes />
           <div className="acc-grille">
             <Etiquette data-anim="fondu">{a.chiffresSurtitre}</Etiquette>
@@ -179,7 +190,7 @@ export default async function Accueil({ params }) {
         </section>
 
         {/* ---------- catalogue ---------- */}
-        <section className="acc-section acc-catalogue" id="catalogue" aria-labelledby="catalogue-titre">
+        <section className="acc-section acc-catalogue" id="catalogue" aria-labelledby="catalogue-titre" data-arret>
           <Reperes />
           <div className="acc-grille">
             <Etiquette data-anim="fondu">{a.catalogueSurtitre}</Etiquette>
@@ -204,7 +215,7 @@ export default async function Accueil({ params }) {
         </section>
 
         {/* ---------- tarifs ---------- */}
-        <section className="acc-section acc-tarifs" id="tarifs" aria-labelledby="tarifs-titre">
+        <section className="acc-section acc-tarifs" id="tarifs" aria-labelledby="tarifs-titre" data-arret>
           <Reperes />
           <div className="acc-grille">
             <Etiquette data-anim="fondu">{a.tarifsSurtitre}</Etiquette>
@@ -241,7 +252,7 @@ export default async function Accueil({ params }) {
         </section>
 
         {/* ---------- questions ---------- */}
-        <section className="acc-section" id="faq" aria-labelledby="faq-titre">
+        <section className="acc-section" id="faq" aria-labelledby="faq-titre" data-arret>
           <Reperes />
           <div className="acc-grille acc-faq">
             <div className="acc-faq__tete">
@@ -260,7 +271,7 @@ export default async function Accueil({ params }) {
         </section>
 
         {/* ---------- fin, sur fond nuit ---------- */}
-        <section className="acc-section acc-nuit acc-fin" data-fond="nuit" aria-labelledby="fin-titre">
+        <section className="acc-section acc-nuit acc-fin" data-fond="nuit" aria-labelledby="fin-titre" data-arret>
           <div className="acc-grille">
             <Etiquette data-anim="fondu">RealRoom</Etiquette>
             <p className="acc-manifeste" data-mots>{accent(a.manifeste)}</p>
@@ -278,7 +289,7 @@ export default async function Accueil({ params }) {
         </section>
       </main>
 
-      <footer className="acc-pied acc-nuit" data-fond="nuit">
+      <footer className="acc-pied acc-nuit" data-fond="nuit" data-arret>
         <div className="acc-grille acc-pied__haut">
           <div className="acc-pied__marque">
             <p>{t.pied.editeur} · {t.pied.meubles}</p>

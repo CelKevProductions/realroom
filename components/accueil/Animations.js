@@ -8,7 +8,8 @@
 // Dialogue avec la pièce 3D (components/accueil/PieceAccueil.js), par événements sur document :
 //  - « rr:piece-prete » (reçu) : la 3D est prête, le compteur du préchargement peut finir ;
 //  - « rr:piece-intro » (émis) : fin du préchargement, ou tout de suite s'il n'y en a pas ;
-//  - « rr:piece-chapitre » (émis, detail.chapitre de 0 à 3) : chapitre actif au défilement (0 = héros).
+//  - « rr:piece-chapitre » (émis, detail.chapitre de 0 à 3, detail.visite) : chapitre actif au défilement
+//    (0 = héros) ; dans le dernier, la visite en cours (un appartement après l'autre, puis tous).
 // Ils restent lisibles après coup (window.__rrPieceIntro, window.__rrPieceChapitre) pour une 3D montée plus tard ;
 // le chapitre courant est renvoyé chaque fois que la 3D se dit prête.
 import { useEffect, useLayoutEffect } from 'react';
@@ -21,6 +22,7 @@ import { CustomEase } from 'gsap/CustomEase';
 import Lenis from 'lenis';
 import { BEZIER } from '@/components/mouvement/regles.js';
 import { suivreCurseur } from '@/components/mouvement/curseur.js';
+import { guider, arretChapitre, VISITE } from './guide.js';
 
 const avantAffichage = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 const REDUIT = '(prefers-reduced-motion: reduce)';
@@ -93,15 +95,19 @@ function demarrer() {
   const entete = page.querySelector('[data-entete]');
   const scene = page.querySelector('[data-scene]');
 
-  // ---------- 1. la pièce 3D : chapitre actif et intro
+  // ---------- 1. la pièce 3D : chapitre actif (et visite du dernier chapitre), intro
   let chapitre = -1;
+  let visite = 0;
   let introduite = false;
-  const annoncer = (n, encore = false) => {
-    if (n === chapitre && !encore) return;
+  const annoncer = (n, encore = false, k = visite) => {
+    if (n === chapitre && k === visite && !encore) return;
     chapitre = n;
+    visite = k;
     window.__rrPieceChapitre = n;
+    window.__rrPieceVisite = k;
     if (scene) scene.setAttribute('data-actif', String(n));
-    emettre('rr:piece-chapitre', { chapitre: n });
+    page.querySelectorAll('[data-visite-libelle]').forEach(li => li.classList.toggle('is-actif', n === 3 && Number(li.dataset.visiteLibelle) === k));
+    emettre('rr:piece-chapitre', { chapitre: n, visite: k });
   };
   // la 3D s'est montée ou rechargée après coup : elle reçoit l'état courant
   const surPrete = () => { if (introduite && chapitre >= 0) annoncer(chapitre, true); };
@@ -174,7 +180,10 @@ function demarrer() {
   // défilement doux, une fois le préchargement passé
   const lancerLenis = () => {
     if (annule || lenis) return;
-    lenis = new Lenis({ lerp: 0.1, smoothWheel: true, autoRaf: false });
+    // défilement guidé : un geste emmène à l'arrêt suivant (guide.js)
+    const guide = guider(() => lenis, page, entete);
+    nettoyages.push(guide.arreter);
+    lenis = new Lenis({ lerp: 0.1, smoothWheel: true, autoRaf: false, virtualScroll: guide.molette });
     lenis.on('scroll', ScrollTrigger.update);
     const tic = t => lenis.raf(t * 1000);
     gsap.ticker.add(tic);
@@ -225,13 +234,21 @@ function demarrer() {
 // chapitres au défilement (0 = héros, 1 à 3 = méthode) : la 3D suit, le cadre change d'état,
 // la jauge de la méthode se remplit
 function suivreChapitres(page, annoncer, mouvement) {
+  // dernier chapitre : une visite par arrêt du défilement guidé (guide.js), d'après la position
+  const visiteIci = el => {
+    const n = Number(el.dataset.visites || 0);
+    if (!n) return 0;
+    return Math.min(n - 1, Math.max(0, Math.round((window.scrollY - arretChapitre(el, page)) / (innerHeight * VISITE))));
+  };
   const declencheurs = gsap.utils.toArray('[data-chapitre]', page).map(el => ScrollTrigger.create({
-    trigger: el, start: 'top 62%', end: 'bottom 62%',
-    onToggle: s => { if (s.isActive) annoncer(Number(el.dataset.chapitre)); }
+    trigger: el, start: 'top 70%', end: 'bottom 70%',
+    onToggle: s => { if (s.isActive) annoncer(Number(el.dataset.chapitre), false, visiteIci(el)); },
+    onUpdate: s => { if (s.isActive && el.dataset.visites) annoncer(Number(el.dataset.chapitre), false, visiteIci(el)); }
   }));
   // état de départ (page rechargée en milieu de défilement) : le dernier chapitre déjà atteint
   const atteints = declencheurs.filter(s => s.scroll() >= s.start);
-  annoncer(atteints.length ? Number(atteints[atteints.length - 1].trigger.dataset.chapitre) : 0);
+  const atteint = atteints.length ? atteints[atteints.length - 1].trigger : null;
+  annoncer(atteint ? Number(atteint.dataset.chapitre) : 0, false, atteint ? visiteIci(atteint) : 0);
   const jauge = page.querySelector('.acc-chapitres__jauge');
   if (mouvement && jauge) {
     gsap.fromTo(jauge, { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.acc-chapitres', start: 'top 62%', end: 'bottom 62%', scrub: 0.4 } });
