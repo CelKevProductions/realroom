@@ -1,6 +1,7 @@
 'use client';
-// L'atelier : la maquette 3D de la pièce et son panneau en trois temps
-// (1 aménager, 2 meubles, 3 résultat). Ajout et réaménagement restent accessibles en haut du panneau.
+// L'atelier « plateau » : la pièce en 3D occupe tout l'écran, comme un configurateur. Le total du
+// mobilier reste en haut à droite ; un dock en bas ouvre quatre chapitres (aménager, propositions,
+// meubles, rendu) dans un panneau flottant posé sur la pièce. Repères numérotés sur les meubles.
 // Choisir un meuble dans la liste : la caméra glisse jusqu'à lui et en fait le tour.
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { api } from '@/components/api.js';
@@ -14,6 +15,7 @@ import BriefReamenagement from '@/components/piece/BriefReamenagement.js';
 import Variantes from '@/components/piece/Variantes.js';
 import Inspirations from '@/components/piece/Inspirations.js';
 import Resultat from '@/components/piece/Resultat.js';
+import Journal from '@/components/piece/Journal.js';
 import Tuto from '@/components/Tuto.js';
 import { apparaitre, deplier, animer } from '@/components/Mouvement.js';
 import { prix, remplir } from '@/lib/i18n.js';
@@ -21,6 +23,8 @@ import { estMural, estSuspendu, estAdosse, placerAuMur, demiEmpreinte, resoudre,
 import { deplacerAvecAttaches } from '@/lib/finition.js';
 import { referencesSpatialesActives } from '@/lib/ameublement-reference.js';
 import { TYPES_PROGRAMME } from '@/lib/programme.js';
+import { etatVariantes } from '@/lib/variation-disposition.js';
+import { contourDe } from '@/lib/contour.js';
 import { Rouage } from '@/components/mouvement/Attente.js';
 import Toast from '@/components/mouvement/Toast.js';
 
@@ -29,7 +33,9 @@ const I = {
   gauche: 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5', droite: 'M21 12a9 9 0 1 1-3-6.7M21 4v5h-5',
   echanger: 'M7 7h13l-3-3M17 17H4l3 3', retirer: 'M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3', garder: 'M5 13l4 4L19 7'
 };
-const ONGLETS = ['amenager', 'meubles', 'resultat'];
+// chapitres du dock ; « propositions » s'affiche en bande en bas, les autres en panneau flottant
+const ONGLETS = ['amenager', 'propositions', 'meubles', 'resultat'];
+const m2 = (v, lang) => v.toLocaleString(lang === 'en' ? 'en-GB' : 'fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 // zone dépliée sous la ligne choisie (s'ouvre une fois, à l'apparition)
 function Depliant({ children }) {
@@ -45,7 +51,9 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const [selection, setSelection] = useState(null);
   const [cadre, setCadre] = useState(null);
   const [vue, setVue] = useState('dessus');
-  const [onglet, setOnglet] = useState((piece.agencement || []).some(it => it.origine === 'catalogue') ? 'meubles' : 'amenager');
+  const [onglet, setOnglet] = useState(() => (etatVariantes(piece, piece.agencement || []) ? 'propositions' : (piece.agencement || []).some(it => it.origine === 'catalogue') ? 'meubles' : 'amenager'));
+  const [large, setLarge] = useState(false);
+  const reperes = useRef(null);
   const [produits, setProduits] = useState(null);
   const [libelles, setLibelles] = useState({});
   const [cat, setCat] = useState({ ouvert: false, famille: '', remplace: null });
@@ -79,14 +87,21 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const dire = (texte, erreur) => { setToast({ texte, erreur, n: Date.now() }); };
   useEffect(() => { if (!toast) return; const h = setTimeout(() => setToast(null), 3800); return () => clearTimeout(h); }, [toast]);
 
-  // changement d'onglet : le contenu glisse en place, depuis le haut du panneau
+  // changement de chapitre : le panneau glisse en place ; sur grand écran la pièce se range à côté
   useEffect(() => {
     if (premierOnglet.current) { premierOnglet.current = false; return; }
     const corps = panneau.current && panneau.current.querySelector('.panneau__corps');
-    if (!corps) return;
-    corps.scrollTop = 0;
-    apparaitre(corps, { y: 12 });
+    if (corps) corps.scrollTop = 0;
+    if (panneau.current) apparaitre(panneau.current, { enfants: false, x: -14, y: 0 });
   }, [onglet]);
+  useEffect(() => {
+    const mq = matchMedia('(min-width: 900px)');
+    const maj = () => setLarge(mq.matches);
+    maj(); mq.addEventListener('change', maj);
+    return () => mq.removeEventListener('change', maj);
+  }, []);
+  const avecPanneau = !!onglet && onglet !== 'propositions';
+  useEffect(() => { editeur.current?.decalage(large && avecPanneau && vue === 'dessus' ? .15 : 0, 0); }, [large, avecPanneau, vue]);
 
   // enregistrement différé des modifications faites à la main
   const ecrire = useCallback(liste => {
@@ -129,6 +144,24 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     suivre();
     return () => cancelAnimationFrame(raf);
   }, [selection]);
+  // repères numérotés : ils suivent les meubles à l'écran tant que le chapitre Meubles est ouvert
+  useEffect(() => {
+    if (onglet !== 'meubles' || vue !== 'dessus') return;
+    let raf, tour = 0;
+    const suivre = () => {
+      if (tour++ % 2 === 0 && reperes.current && editeur.current) {
+        for (const el of reperes.current.children) {
+          const p = editeur.current.projeter(el.dataset.id);
+          if (!p) { el.style.display = 'none'; continue; }
+          el.style.display = p.visible ? '' : 'none';
+          el.style.transform = `translate(${p.x}px, ${p.y}px) translate(-50%, -130%)`;
+        }
+      }
+      raf = requestAnimationFrame(suivre);
+    };
+    suivre();
+    return () => cancelAnimationFrame(raf);
+  }, [onglet, vue]);
   // la ligne du meuble choisi reste en vue dans le panneau
   useEffect(() => {
     if (!selection || onglet !== 'meubles' || !panneau.current) return;
@@ -231,8 +264,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     reamenagement.current = true;
     setBrief(null);
     setEnvies(demande.envies); setBudget(demande.budget); setEspaces(demande.espaces); setPlacesRepas(demande.placesRepas);
-    setAttente(true);
-    setOnglet('meubles');
+    setAttente(assistant ? 'assistant' : 'ia');
     try {
       await vider();
       const r = await api(`/api/pieces/${piece.id}/${assistant ? 'variantes' : 'amenager'}`, { method: 'POST', corps: {...demande, action:'generer', referencesSpatiales:referencesSpatialesActives(demande.referencesSpatiales)} });
@@ -241,6 +273,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       setGarder(new Set(r.piece.proposition?.garder || []));
       setSelection(null);
       aCadrer.current = null;
+      setOnglet(assistant ? 'propositions' : 'meubles');
       dire(tp.reamenage);
       // la nouvelle pièce se dévoile : la caméra fait un lent quart de tour
       if (vue === 'dessus') editeur.current?.balayer();
@@ -284,6 +317,11 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
   const photo = (piece.photos || []).find(p => p.role === 'entree');
   const cm = v => Math.round(v * 100);
   const suggestions = tp.suggestions[piece.fonction] || tp.suggestions.autre;
+  const numerotes = [...nouveaux, ...existants].filter(it => it.garde !== false && produitDe(it));
+  const numero = id => String(numerotes.findIndex(it => it.id === id) + 1).padStart(2, '0');
+  const variantes = etatVariantes(piece, items);
+  const fr = lang !== 'en';
+  const nomOnglet = o => (o === 'propositions' ? (fr ? 'Propositions' : 'Proposals') : o === 'resultat' ? (fr ? 'Rendu photo' : 'Photo render') : tp.panneau[o]);
 
   const ligne = it => {
     const p = produitDe(it);
@@ -295,7 +333,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
         <button className="ligne-meuble__bouton" aria-current={actif} aria-expanded={actif} onClick={() => choisirLigne(it.id)}>
           {catalogue && p.vign ? <img src={p.vign} alt="" loading="lazy" /> : <span className="pastille" style={{ background: (p.cols && p.cols[0]) || undefined }} />}
           <span className="ligne-meuble__texte">
-            <b>{p.nom}</b>
+            <b>{it.garde !== false && <span className="ligne-meuble__num">{numero(it.id)}</span>}{p.nom}</b>
             <small>{catalogue ? nomCategorie(p,lang) : it.garde === false ? tp.retire : tp.existant} <span className="chiffre">{cm(p.dim[0])}×{cm(p.dim[1])}</span></small>
           </span>
           <span className="prix">{catalogue ? prixMobilier(p,lang,tp.surDevis) : ''}</span>
@@ -316,10 +354,10 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
     );
   };
 
-  // ---------- les trois temps du panneau : contenu, puis action principale en pied ----------
+  // ---------- les chapitres du plateau : contenu, puis action principale en pied ----------
   const amenager = (
     <>
-      <div className="panneau__corps" role="tabpanel" inert={attente || undefined}>
+      <div className="panneau__corps" role="tabpanel" inert={!!attente || undefined}>
         <Confort modele={piece.modele} items={items} produits={produits} lang={lang} onCorriger={corrigerPlan}
           programme={piece.proposition?.programme} planZones={piece.proposition?.planZones} staging={piece.proposition?.staging}
           mode={mode} envies={envies} garder={[...garder]} preferences={piece.proposition?.preferences}
@@ -375,13 +413,20 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
           </div>
         </details>
       </div>
+      <div className="panneau__pied">
+        <button type="button" className="btn btn--plein btn--bloc" onClick={() => ouvrirBrief()} disabled={!!attente || inspirationOccupe || !assistantDisponible}>
+          {fr ? 'Composer avec l’assistant' : 'Arrange with the assistant'}
+        </button>
+        <button type="button" className="btn btn--lien btn--petit" onClick={() => ouvrirBrief('ia')} disabled={!!attente || inspirationOccupe || !services.analyse}>{fr ? 'Réaménager avec l’IA et mes inspirations' : 'Redesign with AI and my inspirations'}</button>
+        {!assistantDisponible && <p className="discret petit">{fr ? 'Pour une cuisine, une chambre d’enfant ou une pièce sans fonction précise, utilise le réaménagement avec l’IA.' : 'For a kitchen, children’s room or an unspecified room type, use AI redesign.'}</p>}
+      </div>
     </>
   );
 
   const prop = piece.proposition;
   const meubles = (
     <>
-      <div className="panneau__corps" role="tabpanel" inert={attente || undefined}>
+      <div className="panneau__corps" role="tabpanel" inert={!!attente || undefined}>
         {prop && prop.concept && (
           <div className="concept">
             <b>{tp.concept}{prop.moteur?.type === 'ia' ? ' · ' + t.demo.ia : ''}</b>
@@ -408,26 +453,27 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       </div>
       <div className="panneau__pied">
         {/* l'étape suivante, dite clairement : la photo réaliste par IA */}
-        <button className="btn btn--plein btn--bloc" onClick={() => setOnglet('resultat')} disabled={attente}>{tp.versRendu}</button>
+        <button className="btn btn--plein btn--bloc" onClick={() => setOnglet('resultat')} disabled={!!attente}>{tp.versRendu}</button>
       </div>
     </>
   );
 
+  const fermer = () => setOnglet(null);
+  // surface réelle du contour (pièces en L comprises), formule du lacet
+  const surface = Math.abs(contourDe(piece.modele).reduce((acc, q, i, ps) => { const r = ps[(i + 1) % ps.length]; return acc + q[0] * r[1] - r[0] * q[1]; }, 0)) / 2;
   return (
-    <div className="atelier">
-      <div className="atelier__scene" inert={attente || undefined} aria-busy={attente}>
+    <div className={'plateau' + (avecPanneau ? ' is-panneau' : '') + (onglet === 'propositions' ? ' is-film' : '')}>
+      <div className="plateau__scene" inert={!!attente || undefined} aria-busy={!!attente}>
         <Editeur3D ref={editeur} modele={piece.modele} items={items} staging={piece.proposition?.staging} selection={selection} vue={vue} navigationActive={!attente&&!cat.ouvert&&onglet!=='resultat'} surNavigation={()=>setOpacite(0)}
           surSelection={surSelection} surDeplacement={surDeplacement} surCadre={setCadre} erreurWebgl={t.erreurs.webgl} />
         {vue === 'photo' && photo && <div className="calque-photo" style={{ backgroundImage: `url(${photo.url})`, opacity: opacite }} />}
-        <div className="vues">
-          <div className="segment" role="group">
-            {['dessus', 'photo'].map(v => <button key={v} aria-pressed={vue === v} onClick={() => {setSelection(null);setVue(v);}}>{tp.vues[v]}</button>)}
+        {onglet === 'meubles' && vue === 'dessus' && (
+          <div className="reperes" ref={reperes}>
+            {numerotes.map(it => (
+              <button key={it.id} type="button" data-id={it.id} className={'repere' + (it.id === selection ? ' is-choisi' : '')} style={{ display: 'none' }}
+                aria-label={(produitDe(it)?.nom || '') + ' ' + numero(it.id)} onClick={() => choisirLigne(it.id)}>{numero(it.id)}</button>
+            ))}
           </div>
-          {cadre && vue === 'dessus' && <button className="btn btn--clair btn--petit" onClick={() => { setSelection(null); editeur.current && editeur.current.ensemble(); }}>{tp.ensemble}</button>}
-        </div>
-        {vue === 'photo' && <div className="camera-photo"><CameraPhoto modele={piece.modele} lang={lang} surChoisir={surVue} surMouvement={surMouvement} disabled={attente||cat.ouvert||onglet==='resultat'}/><small>{lang==='fr'?'Flèches : se déplacer · Glisser : regarder autour.':'Arrows: move · Drag: look around.'}</small></div>}
-        {vue === 'photo' && photo && (
-          <label className="opacite">{tp.comparer}<input type="range" min="0" max="1" step=".05" value={opacite} onChange={e => setOpacite(+e.target.value)} /></label>
         )}
         {choisi && pChoisi && (
           <div ref={outils} className="outils-meuble" role="toolbar" aria-label={pChoisi.nom}>
@@ -436,39 +482,82 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
             <button title={choisi.garde === false ? tp.garder : tp.supprimerMeuble} aria-label={choisi.garde === false ? tp.garder : tp.supprimerMeuble} onClick={() => retirer(choisi.id)}><Icone d={choisi.garde === false ? I.garder : I.retirer} /></button>
           </div>
         )}
-        <p className="aide-scene">{tp.aide}</p>
-        {/* guide de l'atelier : s'ouvre seul à la première visite ; le bouton le rouvre */}
-        <div className="guide-scene"><Tuto id="atelier" etapes={t.tuto.atelier} libelles={t.tuto} className="btn btn--clair btn--petit" /></div>
       </div>
 
-      <aside className="atelier__panneau" ref={panneau}>
-        <div className="atelier__actions" role="group" aria-label={tp.ameublement}>
-          <button type="button" className="btn btn--clair" onClick={() => ouvrirCatalogue('', null)} disabled={!produits || attente}>
-            <span className="plus" aria-hidden="true" />{tp.ajouterMeuble}
-          </button>
-          <button type="button" className="btn btn--plein" onClick={() => ouvrirBrief()} disabled={attente || inspirationOccupe || !assistantDisponible}>
-            {attente && <Rouage />}{attente ? (lang === 'fr' ? 'Composition en cours…' : 'Arranging…') : (lang === 'fr' ? 'Assistant d’aménagement' : 'Room assistant')}
-          </button>
-          <button type="button" className="atelier__ia btn btn--lien btn--petit" onClick={() => ouvrirBrief('ia')} disabled={attente || inspirationOccupe || !services.analyse}>{lang === 'fr' ? 'Réaménager avec l’IA et mes inspirations' : 'Redesign with AI and my inspirations'}</button>
-          {!assistantDisponible && <p>{lang === 'fr' ? 'Pour une cuisine, une chambre d’enfant ou une pièce sans fonction précise, utilise le réaménagement avec l’IA.' : 'For a kitchen, children’s room or an unspecified room type, use AI redesign.'}</p>}
-          {attente && <p role="status">{lang === 'fr' ? 'Recherche d’une composition compatible avec tes usages, tes meubles conservés et ton budget.' : 'Finding a layout that fits your activities, kept furniture and budget.'}</p>}
+      {/* colonne de gauche : fiche de la pièce (comme l'étiquette d'un plan), caméra photo, chapitre ouvert */}
+      <div className="plateau__gauche">
+        <div className="plateau__fiche flottant">
+          <p className="plateau__etiquette">[ {t.fonctions[piece.fonction] || piece.fonction} ]</p>
+          <p className="plateau__nom">{piece.nom}</p>
+          <p className="plateau__cotes chiffre">{m2(piece.modele.dims.largeur, lang)} × {m2(piece.modele.dims.profondeur, lang)} m · {m2(surface, lang)} m²</p>
+          <div className="plateau__vues">
+            <div className="segment" role="group">
+              {['dessus', 'photo'].map(v => <button key={v} aria-pressed={vue === v} onClick={() => {setSelection(null);setVue(v);}}>{tp.vues[v]}</button>)}
+            </div>
+            {cadre && vue === 'dessus' && <button className="btn btn--clair btn--petit" onClick={() => { setSelection(null); editeur.current && editeur.current.ensemble(); }}>{tp.ensemble}</button>}
+          </div>
         </div>
-        <Variantes piece={piece} items={items} produits={produits} demande={{mode,envies,budget,garder:[...garder],aRemplacer:[...aRemplacer],espaces,placesRepas}} lang={lang} attente={attente} onShuffle={() => changerVariante()} onChoisir={changerVariante} onRelancer={() => ouvrirBrief()} />
-        <div className="onglets" role="tablist">
+        {vue === 'photo' && <div className="camera-photo flottant"><CameraPhoto modele={piece.modele} lang={lang} surChoisir={surVue} surMouvement={surMouvement} disabled={!!attente||cat.ouvert||onglet==='resultat'}/><small>{fr?'Flèches : se déplacer · Glisser : regarder autour.':'Arrows: move · Drag: look around.'}</small></div>}
+        {vue === 'photo' && photo && (
+          <label className="opacite flottant">{tp.comparer}<input type="range" min="0" max="1" step=".05" value={opacite} onChange={e => setOpacite(+e.target.value)} /></label>
+        )}
+
+        {/* chapitre ouvert : panneau flottant */}
+        {avecPanneau && (
+          <aside className="plateau__panneau flottant" ref={panneau} aria-label={nomOnglet(onglet)}>
+            <header className="plateau__panneau-tete">
+              <span className="chiffre">{String(ONGLETS.indexOf(onglet) + 1).padStart(2, '0')}</span>
+              <b>{nomOnglet(onglet)}</b>
+              <button type="button" className="plateau__fermer" onClick={fermer} aria-label={fr ? 'Fermer le panneau' : 'Close panel'}><span aria-hidden="true">×</span></button>
+            </header>
+            {onglet === 'amenager' && amenager}
+            {onglet === 'meubles' && meubles}
+            {onglet === 'resultat' && (
+              <Resultat lang={lang} t={t} piece={{ ...piece, agencement: items }} rendus={rendus} setRendus={setRendus} solde={solde} setSolde={setSolde} couts={couts} services={services}
+                capturer={o => editeur.current && editeur.current.capture(o)} lireVue={lireVue} surVue={surVue} avant={vider} setPiece={setPiece} />
+            )}
+          </aside>
+        )}
+      </div>
+
+      {/* total du mobilier, toujours visible (comme le prix d'un configurateur) */}
+      <div className="plateau__total flottant">
+        <p className="plateau__etiquette">[ {fr ? 'Mobilier proposé' : 'Proposed furniture'} ]</p>
+        <p className="plateau__prix">{nouveaux.length ? prix(total * 100, lang) : '—'}{nouveaux.some(it => produitDe(it)?.generique) ? <small> ≈</small> : null}</p>
+        <p className="plateau__compte">{nouveaux.length} {fr ? 'proposés' : 'proposed'} · {existants.filter(it => it.garde !== false).length} {fr ? 'conservés' : 'kept'}</p>
+        <button type="button" className="btn btn--plein btn--petit" onClick={() => ouvrirBrief()} disabled={!!attente || inspirationOccupe || !assistantDisponible}>
+          {attente === 'assistant' && <Rouage />}{attente === 'assistant' ? (fr ? 'Composition…' : 'Arranging…') : (fr ? 'Composer avec l’assistant' : 'Arrange with the assistant')}
+        </button>
+      </div>
+
+
+      {/* propositions de l'assistant et Shuffle : en bande, comme les variantes d'un configurateur */}
+      {onglet === 'propositions' && !attente && (
+        <div className="plateau__film">
+          {variantes ? <Variantes piece={piece} items={items} produits={produits} demande={{mode,envies,budget,garder:[...garder],aRemplacer:[...aRemplacer],espaces,placesRepas}} lang={lang} attente={!!attente} onShuffle={() => changerVariante()} onChoisir={changerVariante} onRelancer={() => ouvrirBrief()} />
+            : <div className="plateau__vide">
+              <p><b>{fr ? 'Pas encore de proposition.' : 'No proposal yet.'}</b> {fr ? 'L’assistant compose la pièce avec de vrais meubles ; Shuffle en propose d’autres dispositions.' : 'The assistant arranges the room with real furniture; Shuffle suggests other layouts.'}</p>
+              <button type="button" className="btn btn--plein btn--petit" onClick={() => ouvrirBrief()} disabled={!assistantDisponible || inspirationOccupe}>{fr ? 'Composer avec l’assistant' : 'Arrange with the assistant'}</button>
+            </div>}
+        </div>
+      )}
+
+      {attente === 'assistant' || attente === 'ia' ? <Journal key={attente} lang={lang} ia={attente === 'ia'} /> : null}
+
+      {/* dock : ajouter un meuble, les quatre chapitres, le guide */}
+      <nav className="plateau__dock" aria-label={tp.ameublement}>
+        <button type="button" className="plateau__rond plateau__ajout" onClick={() => ouvrirCatalogue('', null)} disabled={!produits || !!attente} title={tp.ajouterMeuble} aria-label={tp.ajouterMeuble}><span className="plus" aria-hidden="true" /></button>
+        <div className="plateau__chapitres" role="group">
           {ONGLETS.map((o, i) => (
-            <button key={o} role="tab" aria-selected={onglet === o} onClick={() => setOnglet(o)} disabled={attente}>
-              <span className="onglets__num">{i + 1}</span>
-              <span className="onglets__nom">{tp.panneau[o]}</span>
+            <button key={o} type="button" aria-pressed={onglet === o} onClick={() => setOnglet(onglet === o ? null : o)} disabled={!!attente}>
+              <span className="plateau__num">{String(i + 1).padStart(2, '0')}</span>
+              <span className="plateau__libelle">{nomOnglet(o)}</span>
             </button>
           ))}
         </div>
-        {onglet === 'amenager' && amenager}
-        {onglet === 'meubles' && meubles}
-        {onglet === 'resultat' && (
-          <Resultat lang={lang} t={t} piece={{ ...piece, agencement: items }} rendus={rendus} setRendus={setRendus} solde={solde} setSolde={setSolde} couts={couts} services={services}
-            capturer={o => editeur.current && editeur.current.capture(o)} lireVue={lireVue} surVue={surVue} avant={vider} setPiece={setPiece} />
-        )}
-      </aside>
+        <Tuto id="atelier" etapes={t.tuto.atelier} libelles={t.tuto} className="plateau__rond plateau__guide" />
+      </nav>
+      {!avecPanneau && onglet !== 'propositions' && !attente && <p className="plateau__aide">{tp.aide}</p>}
 
       {produits && <Catalogue lang={lang} t={t} produits={produits} libelles={libelles} dims={piece.modele.dims} exterieur={piece.fonction === 'terrasse'} famille={cat.famille} ouvert={cat.ouvert}
         fermer={() => setCat({ ouvert: false, famille: '', remplace: null })} choisir={choisirProduit} action={cat.remplace ? tp.catalogue.choisir : tp.catalogue.ajouter} />}

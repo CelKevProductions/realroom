@@ -423,71 +423,23 @@ dialog.tuto { width: min(520px, 100% - 24px); }
   .parcours__meubles li > :last-child { grid-column: 1 / -1; }
 }
 
-/* ---------- atelier : maquette 3D et panneau ---------- */
-html:has(.atelier), body:has(.atelier) { overflow: hidden; width: 100%; }
-.atelier { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px); width: 100%; min-width: 0; min-height: 0; overflow: hidden; height: calc(100dvh - var(--haut-entete, var(--entete))); border-top: 1px solid var(--trait); }
-.atelier__scene { position: relative; min-height: 0; background: var(--scene); overflow: hidden; }
-.atelier__scene canvas { width: 100%; height: 100%; touch-action: none; }
-.atelier__scene canvas.is-deplace { cursor: grabbing !important; }
-.atelier__panneau { border-left: 1px solid var(--trait); background: var(--platre); display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; }
-.atelier__panneau > * { flex: none; }
-.atelier__actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 8px; padding: 12px; border-bottom: 1px solid var(--trait); }
-.atelier__actions .btn { min-width: 0; min-height: 48px; padding: 8px 10px; font-size: .8rem; white-space: normal; line-height: 1.35; }
-.atelier__actions .plus, .atelier__actions .rouage { flex-shrink: 0; }
-.atelier__actions .atelier__ia { grid-column: 1 / -1; min-height: 30px; font-size: .72rem; }
-.atelier__actions p { grid-column: 1 / -1; font-size: .75rem; color: var(--graphite); }
-.onglets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--trait); }
-.onglets button { position: relative; display: grid; gap: 2px; justify-items: start; border: 0; background: none; padding: 14px 16px 13px; text-align: left; cursor: pointer; color: var(--gris); transition: color .2s; }
-.onglets button + button { border-left: 1px solid var(--trait); }
-.onglets button::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--rouille); transform: scaleX(0); transform-origin: 0 50%; transition: transform .45s var(--sortie); }
-.onglets button:hover { color: var(--encre); }
-.onglets button[aria-selected='true'] { color: var(--encre); }
-.onglets button[aria-selected='true']::after { transform: none; }
-.onglets__num { font: .72rem var(--m); }
-.onglets button[aria-selected='true'] .onglets__num { color: var(--rouille); }
-.onglets__nom { font-weight: 600; font-size: .95rem; }
 .panneau__corps { flex: 1 1 0; min-width: 0; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; padding: 22px 20px 28px; display: grid; gap: 20px; align-content: start; }
 .panneau__corps > * { min-width: 0; }
 .panneau__pied { padding: 14px 20px 16px; border-top: 1px solid var(--trait); background: var(--platre); display: grid; gap: 8px; }
 .panneau__pied:empty { display: none; }
 .panneau__intro { color: var(--graphite); font-size: .92rem; }
 
-/* commandes posées sur la scène */
-.vues { position: absolute; top: 14px; left: 14px; z-index: 3; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.camera-photo { position: absolute; top: 72px; left: 14px; z-index: 3; width: min(310px, calc(100% - 28px)); padding: 10px; border: 1px solid var(--trait); border-radius: 8px; background: var(--platre); }
-.camera-photo small { display: block; margin-top: 5px; font-size: .75rem; color: var(--graphite); }
 .segment { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--platre); border: 1px solid var(--trait); }
-.vues .btn--clair { background: var(--platre); }
 .segment button[disabled] { opacity: .4; cursor: not-allowed; }
 .segment button { border: 0; background: none; padding: 7px 14px; border-radius: 999px; font-size: .85rem; font-weight: 600; color: var(--graphite); cursor: pointer; transition: color .2s, background-color .2s; }
 .segment button:hover { color: var(--encre); }
 .segment button[aria-pressed='true'] { background: var(--encre); color: var(--platre); }
 .calque-photo { position: absolute; inset: 0; background: center / cover no-repeat; pointer-events: none; z-index: 2; transition: opacity .2s; }
-.opacite { position: absolute; bottom: 16px; left: 16px; z-index: 3; display: flex; gap: 10px; align-items: center; background: var(--platre); border: 1px solid var(--trait); padding: 8px 12px; border-radius: 999px; font-size: .82rem; font-weight: 600; }
-.opacite input { accent-color: var(--rouille); width: 120px; }
 .outils-meuble { position: absolute; z-index: 4; transform: translate(-50%, calc(-100% - 14px)); display: flex; gap: 2px; padding: 4px; border-radius: 999px; background: var(--nuit); }
 .outils-meuble button { border: 0; background: none; color: var(--platre); width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; transition: background-color .2s; }
 .outils-meuble button:hover { background: color-mix(in srgb, var(--platre) 14%, transparent); }
 .outils-meuble svg { width: 18px; height: 18px; }
-.aide-scene { position: absolute; right: 14px; bottom: 16px; z-index: 3; max-width: 46ch; font-size: .78rem; color: var(--graphite); background: color-mix(in srgb, var(--platre) 90%, transparent); padding: 6px 10px; }
-.guide-scene { position: absolute; top: 14px; right: 14px; z-index: 3; }
-.guide-scene .btn--clair { background: var(--platre); }
 .app-page__actions { display: flex; align-items: center; gap: 14px; }
-@media (max-width: 900px) {
-  .atelier { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(140px, 40%) minmax(0, 1fr); }
-  .atelier__panneau { border-left: 0; border-top: 1px solid var(--trait); }
-  .aide-scene { display: none; }
-  .vues { top: 10px; left: 10px; }
-  .camera-photo { top: 62px; left: 10px; padding: 6px 9px; width: min(300px, calc(100% - 20px)); }
-  .camera-photo small { display: none; }
-  .guide-scene { top: 10px; right: 10px; }
-  .opacite { left: 10px; bottom: 10px; }
-  /* onglets sur une ligne, pied plus serré */
-  .onglets button { display: flex; gap: 7px; align-items: baseline; padding: 12px 12px 11px; }
-  .panneau__corps { padding: 16px 16px 22px; gap: 18px; }
-  .panneau__pied { padding: 10px 16px calc(12px + env(safe-area-inset-bottom)); }
-  .panneau__pied .btn--large { min-height: 48px; }
-}
 
 /* listes de meubles */
 .groupe { display: grid; gap: 10px; }
@@ -697,3 +649,119 @@ html[data-mvt] [data-entree]:not(.is-entre):not([data-entree='trait']), html[dat
 .parcours__meuble.is-garde { fill: var(--rouille-clair); stroke: var(--rouille); }
 .parcours__pastille { fill: var(--blanc); stroke: var(--encre); }
 .parcours__numero { fill: var(--encre); font-family: var(--m); }
+
+/* ---------- atelier « plateau » : la pièce plein écran, réglages flottants (esprit configurateur) ---------- */
+html:has(.plateau), body:has(.plateau) { overflow: hidden; width: 100%; }
+.plateau { position: relative; width: 100%; min-width: 0; overflow: hidden; height: calc(100dvh - var(--haut-entete, var(--entete))); background: var(--scene); border-top: 1px solid var(--trait); }
+.plateau__scene { position: absolute; inset: 0; transition: filter .6s var(--sortie); }
+.plateau__scene canvas { width: 100%; height: 100%; touch-action: none; }
+.plateau__scene canvas.is-deplace { cursor: grabbing !important; }
+.plateau:has(.journal) .plateau__scene { filter: saturate(.55) brightness(1.02); }
+.flottant {
+  background: color-mix(in srgb, var(--platre) 86%, transparent); -webkit-backdrop-filter: blur(16px) saturate(1.2); backdrop-filter: blur(16px) saturate(1.2);
+  border: 1px solid var(--trait); border-radius: var(--rayon-carte); box-shadow: 0 18px 50px -26px rgba(17, 17, 16, .35);
+}
+.plateau__etiquette { font: 500 .68rem/1.4 var(--m); letter-spacing: .1em; text-transform: uppercase; color: var(--graphite); }
+
+/* colonne de gauche : fiche, caméra photo, chapitre ouvert */
+.plateau__gauche { position: absolute; z-index: 5; top: 16px; left: 16px; bottom: 88px; width: min(400px, calc(100% - 32px)); display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+.plateau__gauche > * { pointer-events: auto; flex: none; }
+.plateau__fiche { align-self: start; display: grid; gap: 3px; padding: 14px 16px; max-width: 100%; }
+.plateau__nom { font: 600 1.35rem/1.1 var(--d); letter-spacing: -.035em; }
+.plateau__cotes { font-size: .78rem; color: var(--graphite); }
+.plateau__vues { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+.camera-photo { padding: 10px; }
+.camera-photo small { display: block; margin-top: 5px; font-size: .75rem; color: var(--graphite); }
+.opacite { align-self: start; display: flex; gap: 10px; align-items: center; padding: 8px 14px; border-radius: 999px; font-size: .82rem; }
+.opacite input { accent-color: var(--rouille); width: 120px; }
+.plateau__panneau { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; background: color-mix(in srgb, var(--platre) 92%, transparent); }
+.plateau__panneau > * { flex: none; }
+.plateau__panneau .panneau__corps { flex: 1 1 auto; padding: 18px 18px 22px; }
+.plateau__panneau .panneau__pied { background: transparent; padding: 12px 18px 16px; }
+.plateau__panneau-tete { display: flex; align-items: center; gap: 10px; padding: 12px 10px 12px 18px; border-bottom: 1px solid var(--trait); }
+.plateau__panneau-tete .chiffre { font-size: .72rem; color: var(--rouille); }
+.plateau__panneau-tete b { font-weight: 600; font-size: 1rem; letter-spacing: -.02em; }
+.plateau__fermer { margin-left: auto; width: 34px; height: 34px; border-radius: 50%; border: 0; background: transparent; font-size: 1.3rem; line-height: 1; color: var(--graphite); cursor: pointer; transition: background-color .2s, color .2s; }
+.plateau__fermer:hover { background: var(--calque); color: var(--encre); }
+
+/* total du mobilier : en haut à droite, comme le prix d'un configurateur */
+.plateau__total { position: absolute; z-index: 5; top: 16px; right: 16px; display: grid; justify-items: end; gap: 3px; padding: 14px 16px; text-align: right; min-width: 210px; }
+.plateau__prix { font: 500 clamp(1.7rem, 2.4vw, 2.3rem)/1 var(--d); letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
+.plateau__prix small { font-size: .5em; color: var(--graphite); }
+.plateau__compte { font: .74rem var(--m); color: var(--graphite); }
+.plateau__total .btn { margin-top: 8px; }
+
+/* propositions : bande en bas, au-dessus du dock */
+.plateau__film { position: absolute; z-index: 5; left: 50%; bottom: 88px; transform: translateX(-50%); width: min(940px, calc(100% - 32px)); }
+.plateau__vide { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; padding: 16px 18px; font-size: .9rem; color: var(--graphite); }
+.plateau__vide b { color: var(--encre); }
+.plateau__vide { background: color-mix(in srgb, var(--platre) 88%, transparent); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid var(--trait); border-radius: var(--rayon-carte); }
+
+/* dock : ajouter, quatre chapitres, guide */
+.plateau__dock { position: absolute; z-index: 6; left: 50%; bottom: 18px; transform: translateX(-50%); display: flex; gap: 8px; align-items: center; max-width: calc(100% - 24px); }
+.plateau__chapitres { display: flex; gap: 2px; padding: 5px; border-radius: 999px; background: color-mix(in srgb, var(--platre) 86%, transparent); -webkit-backdrop-filter: blur(16px) saturate(1.2); backdrop-filter: blur(16px) saturate(1.2); border: 1px solid var(--trait); box-shadow: 0 18px 50px -26px rgba(17, 17, 16, .35); }
+.plateau__chapitres button { display: flex; gap: 8px; align-items: baseline; padding: 10px 16px; border: 0; border-radius: 999px; background: transparent; color: var(--graphite); font: 500 .9rem/1 var(--d); letter-spacing: -.01em; white-space: nowrap; cursor: pointer; transition: background-color .3s var(--sortie), color .3s; }
+.plateau__chapitres button:hover:not([disabled]) { color: var(--encre); background: var(--calque); }
+.plateau__chapitres button[aria-pressed='true'], .plateau__chapitres button[aria-pressed='true']:hover:not([disabled]) { background: var(--encre); color: var(--platre); }
+.plateau__chapitres button[disabled] { opacity: .45; cursor: not-allowed; }
+.plateau__num { font: 500 .68rem var(--m); color: var(--gris); }
+.plateau__chapitres button[aria-pressed='true'] .plateau__num { color: var(--rouille); }
+.plateau__rond { flex: none; height: 50px; min-width: 50px; display: grid; place-items: center; border-radius: 999px; border: 1px solid var(--trait); cursor: pointer; box-shadow: 0 18px 50px -26px rgba(17, 17, 16, .35); transition: background-color .3s var(--sortie), color .3s, border-color .3s; }
+.plateau__ajout { background: var(--encre); color: var(--platre); border-color: var(--encre); }
+.plateau__ajout .plus { width: 14px; height: 14px; }
+.plateau__ajout:hover:not([disabled]) { background: var(--rouille); border-color: var(--rouille); }
+.plateau__ajout[disabled] { opacity: .45; cursor: not-allowed; }
+.plateau__guide { padding: 0 18px; font: 500 .85rem var(--d); color: var(--encre); background: color-mix(in srgb, var(--platre) 86%, transparent); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+.plateau__guide:hover { background: var(--calque); }
+.plateau__aide { position: absolute; z-index: 4; right: 16px; bottom: 26px; max-width: 34ch; font: .7rem/1.45 var(--m); color: var(--graphite); text-align: right; pointer-events: none; }
+
+/* repères numérotés posés sur les meubles */
+.reperes { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.repere { position: absolute; left: 0; top: 0; pointer-events: auto; min-width: 28px; height: 22px; padding: 0 7px; border: 0; border-radius: 999px; background: var(--encre); color: var(--platre); font: 500 .68rem/22px var(--m); cursor: pointer; box-shadow: 0 6px 16px -6px rgba(17, 17, 16, .5); transition: background-color .25s; }
+.repere:hover, .repere.is-choisi { background: var(--rouille); }
+.ligne-meuble__num { font: 500 .7rem var(--m); color: var(--gris); margin-right: 8px; }
+.ligne-meuble.is-choisi .ligne-meuble__num { color: var(--rouille); }
+
+/* journal du moteur pendant que l'assistant compose */
+.journal { position: absolute; z-index: 8; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(470px, calc(100% - 32px)); display: grid; gap: 14px; padding: 20px 22px;
+  background: color-mix(in srgb, var(--platre) 92%, transparent); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); border: 1px solid var(--trait); border-radius: 20px; box-shadow: 0 30px 80px -30px rgba(17, 17, 16, .4); }
+.journal__tete { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -.02em; }
+.journal__point { width: 8px; height: 8px; border-radius: 50%; background: var(--rouille); animation: journal-pouls 1.2s ease-in-out infinite; }
+@keyframes journal-pouls { 50% { opacity: .25; transform: scale(.7); } }
+.journal__lignes { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; font: .8rem/1.4 var(--m); color: var(--graphite); }
+.journal__lignes li { display: grid; grid-template-columns: 62px minmax(0, 1fr); gap: 6px; animation: journal-ligne .5s var(--sortie) both; }
+@keyframes journal-ligne { from { opacity: 0; transform: translateY(6px); } }
+.journal__lignes .is-fait .journal__etat { color: var(--sauge); }
+.journal__lignes .is-encours { color: var(--encre); }
+.journal__lignes .is-encours .journal__etat { color: var(--rouille); }
+.journal__barre { height: 3px; border-radius: 3px; background: var(--trait); overflow: hidden; }
+.journal__barre span { display: block; height: 100%; background: var(--encre); transform-origin: 0 50%; transition: transform .9s var(--sortie); }
+.journal__pied { display: flex; justify-content: space-between; gap: 12px; font: .72rem var(--m); color: var(--graphite); }
+@media (prefers-reduced-motion: reduce) { .journal__point, .journal__lignes li { animation: none; } }
+
+@media (max-width: 900px) {
+  .plateau__gauche { top: 10px; left: 10px; right: 10px; width: auto; bottom: 78px; }
+  .plateau__fiche { padding: 10px 12px; max-width: calc(100% - 150px); }
+  .plateau__nom { font-size: 1.05rem; }
+  .plateau__cotes { font-size: .7rem; }
+  .plateau__vues .segment button { padding: 6px 10px; font-size: .78rem; }
+  .plateau__panneau { margin-top: auto; max-height: 64%; }
+  .plateau__total { top: 10px; right: 10px; min-width: 0; padding: 10px 12px; }
+  .plateau__total .btn, .plateau__total .plateau__etiquette { display: none; }
+  .plateau__prix { font-size: 1.3rem; }
+  .plateau__compte { font-size: .66rem; }
+  .is-panneau .plateau__total { display: none; }
+  .is-panneau .plateau__fiche { max-width: 100%; }
+  .plateau__film { bottom: 78px; width: calc(100% - 20px); }
+  .plateau__dock { bottom: 12px; gap: 6px; }
+  .plateau__chapitres button { padding: 10px 12px; }
+  .plateau__rond { height: 46px; min-width: 46px; }
+  .plateau__guide { padding: 0 12px; }
+  .plateau__aide { display: none; }
+}
+@media (max-width: 640px) {
+  .plateau__chapitres button:not([aria-pressed='true']) .plateau__libelle { display: none; }
+  .plateau__guide { font-size: 0; width: 46px; padding: 0; }
+  .plateau__guide::before { content: '?'; font: 500 1rem var(--d); }
+  .camera-photo small { display: none; }
+}
