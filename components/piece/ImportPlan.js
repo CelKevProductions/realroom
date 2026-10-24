@@ -5,12 +5,13 @@ import {ApercuPlan} from './PlanPiece.js';
 import {lireDXF,creerLecteurDXF,messageErreurDXF} from '@/lib/plans.js';
 import s from './Acquisition.module.css';
 
-export default function ImportPlan({lang='fr',onScan,disabled=false}){
+export default function ImportPlan({lang='fr',onScan,onArchive,disabled=false}){
  const fr=lang==='fr',[brut,setBrut]=useState(null),[unite,setUnite]=useState(''),[pieces,setPieces]=useState([]),[choisi,setChoisi]=useState('0'),[erreur,setErreur]=useState(''),[attente,setAttente]=useState(false),[lecteur]=useState(creerLecteurDXF);
  useEffect(()=>()=>lecteur.annuler(),[lecteur]);
  function resultat(r){setPieces(r.pieces);setUnite(r.unites||'');setChoisi('0');setErreur('');}
  function lire(texte,u=null){try{resultat(lireDXF(texte,u));}catch(e){setPieces([]);setErreur(messageErreurDXF(e.code,lang));}}
- function ouvrir(f){if(!f)return;setErreur('');setPieces([]);setBrut(null);setUnite('');setAttente(true);lecteur.lire(f,({texte,resultat:r})=>{setBrut(texte);resultat(r);setAttente(false);},e=>{setErreur(messageErreurDXF(e.code,lang));setAttente(false);});}
+ // Le zip Lagarsoft déposé ici part vers l'import du relevé complet, meubles compris.
+ function ouvrir(f){if(!f)return;if(onArchive&&/\.zip$/i.test(f.name||'')){setErreur('');setPieces([]);setBrut(null);onArchive(f);return;}setErreur('');setPieces([]);setBrut(null);setUnite('');setAttente(true);lecteur.lire(f,({texte,resultat:r})=>{setBrut(texte);resultat(r);setAttente(false);},e=>{setErreur(messageErreurDXF(e.code,lang));setAttente(false);});}
  const p=pieces.find(p=>p.id===choisi);
  return <div className={s.options}>
   <label className={s.importer}><span>{fr?'Déposer un plan DXF':'Upload a DXF floor plan'}</span><input type="file" accept=".dxf,application/dxf,image/vnd.dxf" aria-label={fr?'Déposer un plan DXF':'Upload a DXF floor plan'} disabled={disabled} onChange={e=>{ouvrir(e.target.files[0]);e.target.value='';}}/></label>

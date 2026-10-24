@@ -68,7 +68,7 @@ export async function verifierCaptures({ browser, ctx, base, racine }) {
   assert.equal(await acquisition.getByRole('button', { name: /^Téléverser des photos/ }).getAttribute('aria-pressed'), 'true');
   await acquisition.getByRole('button', { name: /^Scan Apple/ }).click();
   const prudent = scanApple(); prudent.openings[1].confidence = 'medium';
-  await acquisition.getByLabel('Importer un relevé métrique').setInputFiles(fichier(prudent));
+  await acquisition.getByLabel('Déposer le zip Lagarsoft (meubles compris)').setInputFiles(fichier(prudent));
   await acquisition.getByText(/Certains éléments du scan ont une confiance/).waitFor();
   assert.equal(await pg.evaluate(() => document.activeElement?.textContent), 'Vérifier avant d’importer');
   await acquisition.getByRole('button', { name: 'Utiliser ce plan' }).click();
@@ -159,7 +159,7 @@ export async function verifierCaptures({ browser, ctx, base, racine }) {
     await page.locator('.mc-etape--photos').waitFor();
     await page.getByRole('button', { name: /^Scan Apple/ }).click();
     const prudent = scanApple(); prudent.objects[0].confidence = 'low';
-    await page.getByLabel('Importer un relevé métrique').setInputFiles(fichier(prudent));
+    await page.getByLabel('Déposer le zip Lagarsoft (meubles compris)').setInputFiles(fichier(prudent));
     await page.getByText(/Certains éléments du scan ont une confiance/).waitFor();
     assert.equal(await page.evaluate(() => document.activeElement?.textContent), 'Vérifier avant d’importer');
     await page.screenshot({ path: path.join(racine, `.essais/capture-apple-maison-${mobile ? 'mobile' : 'desktop'}.png`), fullPage: true });
