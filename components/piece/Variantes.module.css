@@ -4,6 +4,9 @@
 .shuffle:hover:not(:disabled){background:var(--rouille);border-color:var(--rouille)}
 .shuffle svg{width:19px;height:19px}
 .shuffle:disabled{opacity:.45;cursor:default}
+.entete .shuffle{margin-left:auto}
+.fermer{display:grid;place-items:center;width:38px;height:38px;margin-left:6px;border:0;border-radius:50%;background:var(--calque);color:var(--graphite);font-size:1.35rem;line-height:1;cursor:pointer;transition:background-color .2s,color .2s}
+.fermer:hover{background:var(--trait);color:var(--encre)}
 .aide{margin:7px 0 10px;font-size:.72rem;line-height:1.5;color:var(--graphite)}
 .aide button{display:block;margin-top:7px;color:inherit;background:transparent;border:0;border-bottom:1px solid currentColor;padding:2px 0;font:inherit;cursor:pointer}
 .liste{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scroll-snap-type:x proximity}

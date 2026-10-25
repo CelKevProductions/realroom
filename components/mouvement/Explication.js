@@ -1,12 +1,11 @@
 'use client';
 // Explications en mouvement : une courte scène au trait (2 à 4 s) qui montre ce que fait l'étape,
-// à côté du panda et de sa phrase. Elle se joue quand elle arrive à l'écran et se rejoue au
+// à côté d'une phrase courte. Elle se joue quand elle arrive à l'écran et se rejoue au
 // survol ou au toucher. Mouvement réduit : la scène est affichée à son état final, immobile.
 // Dessins : encre pour la pièce, rouille pour ce qui compte (comme les plans de l'accueil).
 import { useRef } from 'react';
 import { useAnimation } from './react.js';
 import { gsap, mouvementPermis } from './regles.js';
-import { Guide } from './Panda.js';
 
 // trait qui se trace (pathLength 1 : strokeDashoffset va de 1 à 0)
 const T = props => <path pathLength="1" className="expl__trace" {...props} />;
@@ -149,7 +148,7 @@ const SCENES = {
 
 export const SCENES_EXPLICATION = Object.keys(SCENES);
 
-export function Explication({ scene, texte, geste = 'salut', accessoire, className = '' }) {
+export function Explication({ scene, texte, className = '' }) {
   const ref = useRef(null);
   const s = SCENES[scene];
   useAnimation(ref, el => {
@@ -168,11 +167,11 @@ export function Explication({ scene, texte, geste = 'salut', accessoire, classNa
     svg.addEventListener('click', rejouer);
     return () => { io.disconnect(); svg.removeEventListener('pointerenter', rejouer); svg.removeEventListener('click', rejouer); tl.kill(); };
   }, [scene]);
-  if (!s) return texte ? <Guide texte={texte} geste={geste} accessoire={accessoire} /> : null;
+  if (!s) return texte ? <p className="expl__bulle">{texte}</p> : null;
   return (
     <figure ref={ref} className={'explication' + (className ? ' ' + className : '')}>
       <svg className="expl__scene" viewBox="0 0 240 140" aria-hidden="true" focusable="false">{s.dessin}</svg>
-      <figcaption><Guide texte={texte} geste={geste} accessoire={accessoire} /></figcaption>
+      <figcaption>{texte && <p className="expl__bulle">{texte}</p>}</figcaption>
     </figure>
   );
 }

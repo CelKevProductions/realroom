@@ -7,6 +7,7 @@ import Animations from '@/components/accueil/Animations.js';
 import PieceAccueil from '@/components/accueil/PieceAccueil.js';
 import PlanOuverture from '@/components/accueil/PlanOuverture.js';
 import PiedAccueil from '@/components/accueil/PiedAccueil.js';
+import RenduIA from '@/components/accueil/RenduIA.js';
 import { texte, remplir, prix } from '@/lib/i18n.js';
 import { PACKS, CREDITS, LIMITES, MARQUE, LANGUES } from '@/lib/config.js';
 import { PRODUITS } from '@/lib/catalogue.js';
@@ -77,7 +78,7 @@ export default async function Accueil({ params }) {
   const demo = `/${lang}/demo`;
   const inscription = `/${lang}/connexion?inscription=1`;
   const offerts = remplir(a.inscriptionNote, { n: CREDITS.bienvenue });
-  const menu = [['#methode', a.menu.methode], ['#catalogue', a.menu.catalogue], ['#tarifs', a.menu.tarifs], ['#faq', a.menu.faq]];
+  const menu = [['#methode', a.menu.methode], ['#rendu', a.menu.rendu], ['#catalogue', a.menu.catalogue], ['#tarifs', a.menu.tarifs], ['#faq', a.menu.faq]];
   const chiffres = [['meubles', NB_MEUBLES], ['familles', NB_FAMILLES], ['pieces', LIMITES.piecesParProjet], ['credits', CREDITS.bienvenue]];
   const ld = [
     {
@@ -204,6 +205,27 @@ export default async function Accueil({ params }) {
             </div>
           </section>
         </div>
+
+        {/* ---------- rendu photo IA : la maquette et le rendu, à comparer en glissant ---------- */}
+        <section className="acc-section acc-rendu" id="rendu" aria-labelledby="rendu-titre" data-arret>
+          <Reperes />
+          <div className="acc-grille">
+            <div className="acc-rendu__texte">
+              <Etiquette data-anim="fondu">{a.renduSurtitre}</Etiquette>
+              <h2 id="rendu-titre" className="acc-h2 acc-rendu__titre" data-anim="lignes">{a.renduTitre}</h2>
+              <p className="acc-rendu__intro" data-anim="fondu">{a.renduTexte}</p>
+              <dl className="acc-rendu__points" data-anim="fondu">
+                {a.renduPoints.map(([valeur, sens]) => (
+                  <div key={sens}><dt>{remplir(valeur, { n: CREDITS.rendu, s: CREDITS.rendu > 1 ? 's' : '' })}</dt><dd>{sens}</dd></div>
+                ))}
+              </dl>
+              <div className="acc-rendu__action" data-anim="fondu"><Bouton href={demo}>{a.renduBouton}</Bouton></div>
+            </div>
+            <div className="acc-rendu__image" data-anim="fondu">
+              <RenduIA avant="/images/chambre-maquette-1200.jpg" apres="/images/chambre-rendu-1200.jpg" libelles={a.renduImage} />
+            </div>
+          </div>
+        </section>
 
         {/* ---------- chiffres clés ---------- */}
         <section className="acc-section acc-chiffres" aria-labelledby="chiffres-titre" data-arret>

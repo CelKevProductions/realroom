@@ -661,7 +661,7 @@ function Compris({ x, lang, piece, lu, erreur, occupe, corrigerCotes, aller }) {
   </>;
 }
 
-function TypePiece({ x, r, poser, lu }) {
+function TypePiece({ x, t, r, poser, lu }) {
   const devine = lu?.indices?.devine ? lu.indices.fonction : null;
   return <>
     <Tete x={x} ecran="type" titre={x.type.titre} aide={devine ? x.type.devineAide : x.type.aide} />
@@ -671,7 +671,7 @@ function TypePiece({ x, r, poser, lu }) {
     </div>
     <label className={s.champ} data-q>
       <span>{x.type.nomPiece} <small>· {x.type.nomAide}</small></span>
-      <input className={s.saisie} value={r.nomPiece} maxLength={80} placeholder={x.type.options[r.fonction][0]} onChange={e => poser({ nomPiece: e.target.value })} />
+      <input className={s.saisie} value={r.nomPiece} maxLength={80} placeholder={t.fonctions[r.fonction]} onChange={e => poser({ nomPiece: e.target.value })} />
     </label>
   </>;
 }
@@ -780,7 +780,7 @@ function Style({ x, r, poser }) {
         <button key={id} type="button" className={s.style} aria-pressed={r.styles.includes(id)} data-touche={LETTRES[i]} data-presse="" onClick={() => basculer(id)}>
           <SceneStyle id={id} className={s.vignette} />
           <b>{x.style.styles[id][0]}</b>
-          <span>{x.style.styles[id][1]}</span>
+          <span className={s.styleTexte}>{x.style.styles[id][1]}</span>
           <span className={s.pastilles} aria-hidden="true">{PALETTES[id].map(c => <i key={c} style={{ background: c }} />)}</span>
           <span className={s.touche} aria-hidden="true">{LETTRES[i]}</span>
           <span className={s.coche} aria-hidden="true"><Picto nom="coche" /></span>
@@ -843,7 +843,7 @@ function Recap({ x, t, lang, r, poser, piece, existants, inspirations, ecrans, m
   const gardes = existants.filter(it => r.meubles[it.id] && r.meubles[it.id] !== 'remplace').map(it => x.noms[nomCourt(it)] || nomCourt(it));
   const f = r.foyer;
   const lignes = [
-    ['type', x.recap.lignes.piece, `${r.nomPiece.trim() || x.type.options[r.fonction][0]}${res ? ` · ${res.surface.toLocaleString(x.locale, { maximumFractionDigits: 1 })} m²` : ''}`],
+    ['type', x.recap.lignes.piece, `${r.nomPiece.trim() || t.fonctions[r.fonction]}${res ? ` · ${res.surface.toLocaleString(x.locale, { maximumFractionDigits: 1 })} m²` : ''}`],
     ['zones', x.recap.lignes.zones, r.espaces.length ? r.espaces.map(z => x.zones.options[z]).join(', ') + (r.espaces.includes('repas') ? ` · ${remplir(x.recap.places, { n: r.placesRepas })}` : '') : x.zones.rien],
     ['meubles', x.recap.lignes.meubles, gardes.length ? gardes.join(', ') : x.recap.tout],
     ['foyer', x.recap.lignes.foyer, [pl(f.adultes, x.recap.adulte), f.enfants ? pl(f.enfants, x.recap.enfant) : '', f.chien ? x.foyer.chien : '', f.chat ? x.foyer.chat : '', x.foyer.frequences[f.recevoir]].filter(Boolean).join(' · ')],
@@ -949,7 +949,7 @@ function ScenePlan({ x, ecran, piece, existants, etatMeuble, cyclerMeuble, chois
 }
 
 // la fiche du projet se remplit au fil des réponses
-function Fiche({ x, lang, projet, nom, piece, r, ecran, ecrans, existants }) {
+function Fiche({ x, t, lang, projet, nom, piece, r, ecran, ecrans, existants }) {
   const k = ecrans.indexOf(ecran);
   const vu = e => ecrans.includes(e) && ecrans.indexOf(e) <= k;
   const res = piece?.modele ? resumePlan(piece.modele, piece.agencement || []) : null;
@@ -963,7 +963,7 @@ function Fiche({ x, lang, projet, nom, piece, r, ecran, ecrans, existants }) {
         {res ? <PlanVivant modele={piece.modele} items={piece.agencement || []} etats={vu('meubles') ? etats : {}} cotes={false} label={x.apercu.piece} /> : x.apercu.planVide}
       </div>
       <dl className={s.ficheLignes}>
-        {res && <div><dt>{x.apercu.piece}</dt><dd>{r.nomPiece.trim() || x.type.options[r.fonction][0]} · {res.surface.toLocaleString(x.locale, { maximumFractionDigits: 1 })} m²</dd></div>}
+        {res && <div><dt>{x.apercu.piece}</dt><dd>{r.nomPiece.trim() || t.fonctions[r.fonction]} · {res.surface.toLocaleString(x.locale, { maximumFractionDigits: 1 })} m²</dd></div>}
         {vu('zones') && <div><dt>{x.apercu.zones}</dt><dd>{r.espaces.length ? r.espaces.map(z => x.zones.options[z]).join(', ') : x.zones.rien}</dd></div>}
         {vu('meubles') && <div><dt>{x.apercu.meubles}</dt><dd>{gardes ? `${gardes} / ${existants.length}` : x.recap.tout}</dd></div>}
         {vu('foyer') && <div><dt>{x.apercu.foyer}</dt><dd><Picto nom="adulte" />{f.adultes}{f.enfants > 0 && <> <Picto nom="enfant" />{f.enfants}</>}{f.chien && <> <Picto nom="chien" /></>}{f.chat && <> <Picto nom="chat" /></>}</dd></div>}

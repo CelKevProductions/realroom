@@ -632,7 +632,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       {/* propositions de l'assistant et Shuffle : en bande, comme les variantes d'un configurateur */}
       {onglet === 'propositions' && !attente && (
         <div className="plateau__film">
-          {variantes ? <Variantes piece={piece} items={items} produits={produits} demande={{mode,envies,budget,garder:[...garder],aRemplacer:[...aRemplacer],espaces,placesRepas}} lang={lang} attente={!!attente} onShuffle={() => changerVariante()} onChoisir={changerVariante} onRelancer={() => ouvrirBrief()} />
+          {variantes ? <Variantes piece={piece} items={items} produits={produits} demande={{mode,envies,budget,garder:[...garder],aRemplacer:[...aRemplacer],espaces,placesRepas}} lang={lang} attente={!!attente} onShuffle={() => changerVariante()} onChoisir={changerVariante} onRelancer={() => ouvrirBrief()} onFermer={fermer} />
             : <div className="plateau__vide">
               <p><b>{fr ? 'Pas encore de proposition.' : 'No proposal yet.'}</b> {fr ? 'L’assistant compose la pièce avec de vrais meubles ; Shuffle en propose d’autres dispositions.' : 'The assistant arranges the room with real furniture; Shuffle suggests other layouts.'}</p>
               <button type="button" className="btn btn--plein btn--petit" onClick={() => ouvrirBrief()} disabled={!assistantDisponible || inspirationOccupe}>{fr ? 'Composer avec l’assistant' : 'Arrange with the assistant'}</button>

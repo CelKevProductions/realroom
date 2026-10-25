@@ -129,7 +129,7 @@ export default function Attente({ lang, x, racine, piece, demande, relancer, mod
   const message = a.erreurs[erreur] || a.erreurs.generique;
   const items = etat === 'pret' ? resultat.piece.agencement : [];
   const ghost = (
-    <g className={s.pvFantomes} aria-hidden="true" style={{ opacity: etat === 'calcul' ? 1 : 0, transition: 'opacity .5s' }}>
+    <g aria-hidden="true" style={{ opacity: etat === 'calcul' ? 1 : 0, transition: 'opacity .5s' }}>
       {fantomes.map((f, i) => <rect key={i} className={s.pvFantome + ' pv-fantome'} x={-f.w / 2} y={-f.d / 2} width={f.w} height={f.d} rx={Math.min(.12, f.d / 4)} style={{ fill: f.teinte }} />)}
     </g>
   );

@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from 'react';
 import { ouvrirDialogue, fermerDialogue, apparaitre } from '@/components/Mouvement.js';
 import { remplir } from '@/lib/i18n.js';
 import { gsap, initialiser, mouvementPermis } from '@/components/mouvement/regles.js';
-import { Panda } from '@/components/mouvement/Panda.js';
 
 const lu = cle => { try { return localStorage.getItem(cle) === '1'; } catch (_) { return true; } };
 const noter = cle => { try { localStorage.setItem(cle, '1'); } catch (_) { /* navigation privée */ } };
@@ -92,7 +91,6 @@ export default function Tuto({ id, etapes, libelles, auto = true, className = 'b
       <dialog ref={dlg} className="dialogue tuto" aria-label={libelles.guide} onCancel={ev => { ev.preventDefault(); fermer(); }} onClick={ev => { if (ev.target === dlg.current) fermer(); }}>
         <div className="tuto__illu" aria-hidden="true">
           <svg ref={illu} key={i} viewBox="0 0 160 120">{ILLUS[e.illu] || ILLUS.maquette}</svg>
-          <Panda taille={58} geste={i === 0 ? 'salut' : null} className="tuto__panda" />
         </div>
         <div className="dialogue__corps tuto__corps" ref={corps}>
           <p className="tuto__etape">{remplir(libelles.etape, { n: i + 1, t: etapes.length })}</p>

@@ -294,8 +294,6 @@ dialog.tuto { width: min(520px, 100% - 24px); }
 .tuto__illu .tuto__accent { stroke: var(--rouille); }
 .tuto__illu .tuto__ia { fill: var(--rouille); stroke: none; font: 700 12px var(--m); }
 .tuto__illu { position: relative; }
-.tuto__illu .tuto__panda { position: absolute; right: 16px; bottom: 6px; width: 58px; margin: 0; stroke: none; }
-@media (max-width: 480px) { .tuto__illu .tuto__panda { width: 46px; right: 10px; } }
 .tuto__corps { gap: 14px; }
 .tuto__etape { font: 500 .75rem var(--m); color: var(--graphite); }
 .tuto__texte { color: var(--graphite); line-height: 1.55; }
@@ -616,19 +614,10 @@ html[data-mvt] [data-entree]:not(.is-entre):not([data-entree='trait']), html[dat
 }
 .catalogue__sources{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}
 
-/* ---------- le panda (guide) et les explications en mouvement ---------- */
-.panda { flex: none; overflow: visible; }
-.panda__trait { stroke: var(--encre); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.panda__corps, .panda__blanc { fill: var(--blanc); }
-.panda__noir, .panda__noir-plein { fill: var(--encre); }
-.panda__joue { fill: var(--rouille); opacity: .35; }
-.panda__bouche { fill: none; stroke: var(--encre); stroke-width: 2; stroke-linecap: round; }
-.panda__metre rect { fill: var(--rouille); }
-.panda__metre path { fill: none; stroke: var(--rouille); stroke-width: 2.4; stroke-linecap: round; }
-.guide-panda { display: flex; align-items: flex-end; gap: 10px; }
-.guide-panda__bulle {
-  position: relative; margin-bottom: 18px; padding: 10px 14px; max-width: 30ch;
-  border: 1px solid var(--bord); border-radius: 18px 18px 18px 4px; background: var(--blanc); box-shadow: var(--ombre-legere);
+/* ---------- les explications en mouvement (une scène au trait et sa phrase) ---------- */
+.expl__bulle {
+  margin: 0 0 6px; padding: 10px 14px; max-width: 34ch;
+  border: 1px solid var(--bord); border-radius: 18px; background: var(--blanc); box-shadow: var(--ombre-legere);
   font-size: .9rem; line-height: 1.35; color: var(--encre);
 }
 .explication { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 28px; margin: 0; padding: 18px 0 6px; border-top: 1px solid var(--trait); }
@@ -655,7 +644,7 @@ html[data-mvt] [data-entree]:not(.is-entre):not([data-entree='trait']), html[dat
 .expl__flash { fill: var(--blanc); opacity: 0; pointer-events: none; }
 .expl__vignette { fill: var(--blanc); }
 .expl__loupe circle { fill: rgba(251, 250, 248, .55); }
-@media (max-width: 560px) { .expl__scene { width: min(200px, 70%); } .guide-panda__bulle { max-width: none; } .guide-panda .panda { width: 60px; height: auto; } }
+@media (max-width: 560px) { .expl__scene { width: min(200px, 70%); } .expl__bulle { max-width: none; } }
 
 /* ---------- parcours « configurateur » : la pièce en grand plan à gauche, les choix à droite, un pied fixe ---------- */
 .parcours--plateau { padding-bottom: 0; }
