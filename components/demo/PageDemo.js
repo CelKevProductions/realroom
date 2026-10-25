@@ -8,6 +8,7 @@ import Piece from '@/components/Piece.js';
 import Compte from '@/components/Compte.js';
 import Croquis from '@/components/Croquis.js';
 import Parcours from '@/components/parcours/Parcours.js';
+import Nouveau from '@/components/nouveau/Nouveau.js';
 import { useFil } from '@/components/fil.js';
 import { lire, piece, publique, rendusDe, listeProjets, projetComplet, projet } from '@/components/demo/magasin.js';
 import { repondre } from '@/components/demo/api.js';
@@ -43,6 +44,10 @@ export default function PageDemo({ lang, t, vue, id, couts, packs, approfondisse
   if (vue === 'projet') {
     const p = projetComplet(id);
     return p ? <Projet key={id} lang={lang} t={t} initial={p} /> : <Introuvable lang={lang} t={t} />;
+  }
+  if (vue === 'nouveau') {
+    const p = id ? projet(id) : null;
+    return id && !p ? <Introuvable lang={lang} t={t} /> : <Nouveau lang={lang} t={t} projetInitial={p ? { id, nom: p.nom } : null} />;
   }
   if (vue === 'parcours') return projet(id) ? <ParcoursDemo lang={lang} t={t} id={id} approfondissement={approfondissement} /> : <Introuvable lang={lang} t={t} />;
   if (vue === 'piece') {
