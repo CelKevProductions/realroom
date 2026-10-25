@@ -1,10 +1,10 @@
 'use client';
-// Scène 3D de l'accueil : un petit immeuble de quatre appartements (chiens, chats, tortues, lapins)
-// s'assemble, puis l'histoire suit les chapitres de la méthode : la façade s'ouvre sur des pièces vides,
-// les meubles arrivent, Shuffle les change de place sous leurs pattes, puis on visite chaque appartement
-// et tout le monde dit merci. On joue avec les animaux : clic, caresse, on les attrape, on les secoue.
+// Scène 3D de l'accueil : une tour en maquette, un appartement par étage, qu'on remonte en faisant
+// défiler la page ; chaque étage est une étape de RealRoom : le relevé au téléphone, les meubles qui
+// arrivent, Shuffle, le rendu photo IA ; à la fin, toute la tour, et tout le monde dit merci. On joue avec
+// les habitants : clic, caresse, on les attrape, on les secoue.
 // Événements (document) : écoute rr:piece-intro (sinon l'intro part 3 s après le montage) et
-// rr:piece-chapitre (detail.chapitre 0 à 3, detail.visite : l'étape d'Aménager ou de Visiter) et
+// rr:piece-chapitre (detail.chapitre 0 à 4, detail.visite : au 4, 1 = toute la tour) et
 // rr:piece-shuffle (on reclique sur Shuffle : une autre idée) ; émet
 // rr:piece-prete à la première image. three.js n'est chargé qu'après l'affichage (piece3d/scene.js).
 // Sans WebGL : une image fixe ; mouvement réduit : l'état de chaque chapitre, immobile.
@@ -13,22 +13,22 @@ import { useEffect, useRef, useState } from 'react';
 const IMAGE = '/images/chambre-maquette-1200.jpg';
 const ATTENTE_INTRO = 3000;   // ms
 const DESCRIPTION = {
-  fr: 'Un petit immeuble pastel sur une île, posé étage par étage. Sa façade s’ouvre comme une maison de poupée : quatre appartements vides, que des chiens, des chats, des tortues et des lapins relèvent avec leur téléphone pendant que le plan de chaque pièce se trace. Puis les meubles arrivent, et Shuffle les change de place sous leurs pattes : un lapin tombe à la renverse, les tortues rentrent dans leur carapace, le fauteuil boude. Ensuite, chacun profite de son appartement : les chiens jouent à la console, les chats aux échecs, les tortues lisent en buvant du thé, les lapins regardent une série sous un plaid, dans le noir. À la fin, tout le monde est heureux. On peut cliquer sur un animal, le caresser, l’attraper et le secouer : tout bouge dans la pièce.',
-  en: 'A small pastel building on an island, assembled floor by floor. Its front opens like a doll’s house: four empty flats that dogs, cats, turtles and bunnies scan with their phones while the plan of each room draws itself. Then the furniture arrives, and Shuffle moves it under their paws: a bunny falls over, the turtles hide in their shells, the armchair sulks. Then everyone enjoys their home: the dogs play video games, the cats play chess, the turtles read with a cup of tea, the bunnies watch a show under a blanket, in the dark. In the end, everyone is happy. You can click an animal, pet it, grab it and shake it: everything in the room moves.'
+  fr: 'Une tour en maquette, posée étage par étage, qu’on remonte en faisant défiler la page. Au 1er étage, deux lapins scannent une pièce vide avec leur téléphone pendant que son plan se trace au sol. Au 2e, les meubles d’une première proposition arrivent chez deux chiens. Au 3e, Shuffle change les meubles de place chez deux chats, et le fauteuil boude. Au 4e, une lame de lumière traverse le salon de deux tortues et la maquette devient une photo réaliste. Pour finir, on voit toute la tour et tout le monde salue. On peut cliquer sur un habitant, le caresser, l’attraper et le secouer.',
+  en: 'A model tower, assembled floor by floor, that you climb as you scroll. On the 1st floor, two bunnies scan an empty room with their phones while its plan draws itself on the floor. On the 2nd, the furniture of a first proposal arrives at two dogs’ place. On the 3rd, Shuffle moves the furniture around two cats, and the armchair sulks. On the 4th, a blade of light sweeps through two turtles’ living room and the model turns into a realistic photo. Finally, you see the whole tower and everyone waves. You can click a resident, pet it, grab it and shake it.'
 };
-// ce que disent les animaux (bulle) : une phrase par visite, merci, Shuffle, et selon l'espèce : au clic,
-// quand on les attrape, quand on les secoue, à l'atterrissage, quand on les caresse
+// ce que disent les habitants (bulle) : une phrase par étage (relevé, meubles, rendu), merci, Shuffle, et
+// selon l'espèce : au clic, quand on les attrape, quand on les secoue, à l'atterrissage, quand on les caresse
 const TEXTES = {
   fr: {
-    merci: 'Merci ! On adore nos nouveaux apparts.',
+    merci: 'Merci ! On s’y voit déjà.',
     coucou: 'Attrape-moi !',
     shuffle: 'Shuffle !',
-    visites: ['Ouaf ! Encore une partie ?', 'Échec et… miaou.', 'Chut, c’est le meilleur chapitre.', 'Pas de spoiler, c’est la fin !'],
+    etapes: ['On relève la pièce…', 'Ça, c’est une proposition !', '', 'Clic ! Voilà la photo.'],
     clic: {
-      chien: ['Ouaf ! Tu joues avec nous ?', 'Ouaf, ouaf !', 'Encore une partie ?'],
-      chat: ['Miaou ?', 'Échec et miaou.', 'Chut, je réfléchis.'],
-      tortue: ['Doucement…', 'Chut, je lis.', 'Un peu de thé ?'],
-      lapin: ['Pas de spoiler !', 'Tu as une carotte ?', 'Viens sous le plaid !']
+      chien: ['Ouaf ! Tu aimes le canapé ?', 'Ouaf, ouaf !', 'On a tout gardé.'],
+      chat: ['Miaou ?', 'Encore un Shuffle ?', 'Chut, je réfléchis.'],
+      tortue: ['Doucement…', 'Chut, je lis.', 'Souris, c’est pour la photo.'],
+      lapin: ['Trois mètres quarante !', 'Ne bouge pas, je scanne.', 'Tu as une carotte ?']
     },
     saisie: { chien: 'Wouhou, plus haut !', chat: 'Repose-moi tout de suite.', tortue: 'Oh là, doucement…', lapin: 'Wiii !' },
     secoue: { chien: 'Ça tourne, ça tourne…', chat: 'Mes moustaches !', tortue: 'Ma carapace…', lapin: 'Je vois des carottes partout…' },
@@ -36,15 +36,15 @@ const TEXTES = {
     caresse: { chien: 'Encore des caresses !', chat: 'Rrrrr…', tortue: 'Ça chatouille.', lapin: 'Hihi !' }
   },
   en: {
-    merci: 'Thank you! We love our new homes.',
+    merci: 'Thank you! We can see ourselves there already.',
     coucou: 'Grab me!',
     shuffle: 'Shuffle!',
-    visites: ['Woof! One more game?', 'Check… meowte.', 'Shh, best chapter ever.', 'No spoilers, it’s the end!'],
+    etapes: ['Scanning the room…', 'Now that’s a proposal!', '', 'Click! Here’s the photo.'],
     clic: {
-      chien: ['Woof! Want to play?', 'Woof woof!', 'One more game?'],
-      chat: ['Meow?', 'Checkmeowte.', 'Shh, I’m thinking.'],
-      tortue: ['Slowly…', 'Shh, I’m reading.', 'Some tea?'],
-      lapin: ['No spoilers!', 'Got a carrot?', 'Come under the blanket!']
+      chien: ['Woof! Like the sofa?', 'Woof woof!', 'We kept everything.'],
+      chat: ['Meow?', 'Another Shuffle?', 'Shh, I’m thinking.'],
+      tortue: ['Slowly…', 'Shh, I’m reading.', 'Smile, it’s for the photo.'],
+      lapin: ['Eleven feet two!', 'Hold still, I’m scanning.', 'Got a carrot?']
     },
     saisie: { chien: 'Woohoo, higher!', chat: 'Put me down right now.', tortue: 'Whoa, gently…', lapin: 'Wheee!' },
     secoue: { chien: 'Everything’s spinning…', chat: 'My whiskers!', tortue: 'My shell…', lapin: 'I see carrots everywhere…' },
@@ -85,7 +85,7 @@ export default function PieceAccueil({ lang = 'fr' }) {
     const lancer = () => { introVoulue = true; piece?.intro(); };
     const surChapitre = e => {
       const n = Number(e?.detail?.chapitre);
-      if (!Number.isInteger(n) || n < 0 || n > 3) return;
+      if (!Number.isInteger(n) || n < 0 || n > 4) return;
       const k = Number(e.detail.visite);
       chapitre = n;
       visite = Number.isInteger(k) && k >= 0 ? k : 0;

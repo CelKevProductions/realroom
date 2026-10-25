@@ -1,60 +1,61 @@
 // Moteur de la scène d'accueil, chargé à la demande par PieceAccueil (three.js n'est pas dans le
-// paquet initial). Un immeuble jouet de quatre appartements : des chiens, des chats, des tortues et des
-// lapins y vivent comme des humains. L'histoire suit les chapitres de la page (défilement guidé) :
-//   0 (héros) : l'immeuble s'assemble étage par étage, façade fermée ;
-//   1 (Relever) : la façade s'ouvre comme une maison de poupée, le plan de chaque pièce se trace ; les
-//     pièces sont vides et leurs habitants les relèvent au téléphone (l'un tourne sur lui-même, l'autre
-//     fait le tour des murs, un faisceau balaie la pièce devant eux) ;
-//   2 (Aménager), deux arrêts : les meubles arrivent (première proposition), puis Shuffle les change de
-//     place sous leurs pattes : surprises, un lapin tombe, les tortues rentrent dans leur carapace, le
-//     fauteuil boude ; et tout le monde est content ;
-//   3 (Visiter), une visite par arrêt du défilement : on s'approche de chaque appartement (console, échecs,
-//     lecture, série sous le plaid dans le noir), puis tout le monde salue et dit merci.
+// paquet initial). Une tour en maquette, un appartement par étage, qu'on remonte en faisant défiler la
+// page : chaque étage est une étape de RealRoom (chapitres de la page, défilement guidé) :
+//   0 (héros) : en bas de la tour, devant le hall ; les stores des étages sont baissés ;
+//   1 (Relever), 1er étage : le store remonte sur une pièce brute et vide, que deux lapins relèvent au
+//     téléphone (l'un tourne sur lui-même, l'autre fait le tour des murs) pendant que le plan se trace ;
+//   2 (Aménager), 2e étage : les meubles de la première proposition arrivent chez les chiens ;
+//   3 (Shuffle), 3e étage : chez les chats, Shuffle change les meubles de place sous leurs pattes (le
+//     fauteuil boude) ; on reclique sur « Shuffle » : une autre idée ;
+//   4 (Rendu photo IA), 4e étage : une lame de lumière traverse le salon des tortues et la maquette devient
+//     une photo (rendu.js) ; second arrêt : on recule pour voir toute la tour, tout le monde salue.
 // En avançant d'un arrêt au suivant, l'histoire se joue ; en remontant ou en sautant, la scène rejoint
-// l'état voulu. On peut jouer avec les animaux : un clic (ou un doigt posé) et ils répondent ; on les
+// l'état voulu. On peut jouer avec les habitants : un clic (ou un doigt posé) et ils répondent ; on les
 // attrape (glisser à la souris, appui long au doigt) : il pend à la main et se balance ; on le secoue
 // (les meubles sautent, les voisins sursautent, l'animal finit étourdi), on le lance (il rebondit sur les
 // meubles, roule, bascule, puis rentre à sa place : physique.js) ; on les caresse en frottant la souris
 // dessus. Ils contournent les meubles en marchant (chemins.js). Rendu seulement à l'écran et onglet actif ;
 // mouvement réduit : l'état de chaque chapitre, immobile, et seulement le clic.
 import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { initialiser, COURBES } from '@/components/mouvement/regles.js';
-import { matieresMeubles, atelierOmbres, construireMeuble, preparer, fusion, bloc, cyl, facettes, assembler, MEUBLES } from './maquette.js';
-import { construireImmeuble, APPARTEMENTS, CENTRES, SOLS, AH, AP } from './immeuble.js';
+import { matieresMeubles, atelierOmbres, construireMeuble, preparer, fusion, bloc, cyl, assembler, MEUBLES } from './maquette.js';
+import { construireImmeuble, ETAGES, SOLS, AH, TOIT } from './immeuble.js';
 import {
-  matieresAnimaux, creerAnimal, couronneEtoiles, nuageOrage, reserveCoeurs, ESPECES,
-  bond, marcher, surprise, chute, relever, cacherEtoiles, tournoyer, seCacher, coucou, proche
+  matieresAnimaux, creerAnimal, nuageOrage, reserveCoeurs,
+  bond, marcher, surprise, cacherEtoiles, seCacher, coucou, proche
 } from './animaux.js';
 import { grille, chemin, pointLibre } from './chemins.js';
 import { avancer, boitesDe, corpsDebout, pieds as piedsDu, CENTRE, PRISE } from './physique.js';
 import { definitionAdaptative } from './definition.js';
+import { creerRendu } from './rendu.js';
 
 const RAD = Math.PI / 180, R = Math.PI / 2;
 const REDUIT = '(prefers-reduced-motion: reduce)';
 const T_FIXE = 1.234;   // mouvement réduit : la vie est figée à cet instant
 const borne = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-const lisse = t => t * t * (3 - 2 * t);
-const bosse = (t, p, d, decalage = 0) => { const x = ((t + decalage) % p + p) % p / d; return x < 1 ? Math.sin(x * Math.PI) : 0; };
 const ECRASE = { x: 1.03, y: .93, z: 1.03 };   // amorti à la pose d'un meuble
 
 // caméra : point visé (cx, cy, cz), direction depuis ce point (az : de +z vers +x, el : au-dessus de
 // l'horizon, en degrés), demi-cadre à faire tenir (rx × ry, m), champ vertical (fov)
 const CAM = {
-  immeuble: { az: 30, el: 13, rx: 5.6, ry: 5, cx: 0, cy: 4.1, cz: .4, fov: 30 },
-  ouvert: { az: 5, el: 7, rx: 5.15, ry: 3.1, cx: 0, cy: 4.05, cz: .8, fov: 30 },
-  amenager: { az: 12, el: 15, rx: 5, ry: 3.1, cx: 0, cy: 3.95, cz: .6, fov: 30 },
-  fin: { az: 4, el: 9, rx: 5.15, ry: 3.3, cx: 0, cy: 4.1, cz: .8, fov: 30 }
+  // au pied de la tour, un peu en contre-plongée : le hall, et les étages qui montent
+  bas: { az: 26, el: -2, rx: 5.2, ry: 5.3, cx: 0, cy: 4.5, cz: .4, fov: 32 },
+  // toute la tour, pour finir
+  tour: { az: 22, el: 7, rx: 5.4, ry: 8.1, cx: 0, cy: 6.9, cz: .3, fov: 30 }
 };
-const VISITES = APPARTEMENTS.map((a, i) => ({ az: [4, 8, 10, 2][i], el: 11, rx: 2.3, ry: 1.6, cx: CENTRES[a.cote], cy: SOLS[a.etage] + 1, cz: .5, fov: 30 }));
-const cadrage = (n, k) => (n === 0 ? CAM.immeuble : n === 1 ? CAM.ouvert : n === 2 ? CAM.amenager : k >= 4 ? CAM.fin : VISITES[k]);
+const ETAGE = SOLS.map((y, f) => ({ az: [6, -5, 7, -4][f], el: 9, rx: 2.75, ry: 1.75, cx: 0, cy: y + 1.08, cz: .7, fov: 30 }));
+// chapitre n (0 héros, 1 à 4 un étage chacun ; au 4, le second arrêt k = 1 : toute la tour)
+const cadrage = (n, k) => (n === 0 ? CAM.bas : n === 4 && k >= 1 ? CAM.tour : ETAGE[n - 1]);
 // la pièce (repère d'un appartement) : un animal tenu ou lancé y reste
 const MURS = { x: 1.85, zMin: -1.45, zMax: 1.3, plafond: 1.1 };
 
-// meubles de chaque appartement (repère de l'appartement, m) : [x, z, orientation] de la première
-// proposition (A) et de celle de Shuffle (B) ; avant, les pièces sont vides. Quand on reclique sur
+// meubles de chaque étage (repère de l'appartement, m) : [x, z, orientation] de la première proposition
+// (A) et de celle de Shuffle (B). Le 1er étage reste brut et vide (on le relève). Quand on reclique sur
 // « Shuffle », une autre idée (C) : B en miroir (coord)
 const PIECES = [
-  { // 0 chiens : A, le canapé contre le mur de gauche face à la console ; B, deux poufs devant la console
+  {},
+  { // 2e, chiens : la première proposition, le canapé contre le mur de gauche face à la console
     tapis: { A: [.1, -.1, 0], B: [-.5, .05, 0] },
     canape: { A: [-1.7, 0, R], B: [.55, -1.3, 0] },
     meubleTV: { A: [1.95, -.1, -R], B: [-1.6, -.1, R - .4] },
@@ -63,7 +64,7 @@ const PIECES = [
     plante: { A: [-1.85, -1.45, 0], B: [1.9, -1.45, 0] },
     lampadaire: { A: [-1.85, 1.4, 0], B: [-1.9, -1.45, 0] }
   },
-  { // 1 chats : A, un coin lecture (fauteuil, lampe, guéridon) ; B, le guéridon et son échiquier entre le fauteuil et le pouf
+  { // 3e, chats : A, un coin lecture (fauteuil, lampe, guéridon) ; B, le guéridon et son échiquier entre le fauteuil et le pouf
     tapisRond: { A: [.9, -.4, 0], B: [0, .25, 0] },
     gueridon: { A: [.55, -.95, 0], B: [0, .2, 0] },
     fauteuil: { A: [1.45, -1, -.6], B: [-.85, .2, R - .35] },
@@ -72,83 +73,50 @@ const PIECES = [
     plante: { A: [-1.9, -1.45, 0], B: [1.9, 1.2, 0] },
     lampadaire: { A: [1.95, -1.5, 0], B: [-1.9, 1.2, 0] }
   },
-  { // 2 tortues : A, le canapé contre le mur de gauche, la table devant ; B, le canapé face à nous, la table basse et le thé
-    tapis: { A: [-.6, -.2, R], B: [-.2, -.45, 0] },
-    canape: { A: [-1.7, -.2, R], B: [-.2, -1.3, 0] },
-    table: { A: [-.85, -.2, R], B: [-.2, -.25, 0] },
-    etagere: { A: [.6, -1.58, 0], B: [1.98, -.65, -R] },
-    lampadaire: { A: [-1.85, -1.5, 0], B: [-1.75, -1.42, 0] },
-    plante: { A: [1.85, -1.4, 0], B: [1.85, 1.25, 0] }
-  },
-  { // 3 lapins : A, la télé à gauche, le canapé à droite ; B, le canapé en biais face à la télé
-    tapis: { A: [0, -.1, 0], B: [-.45, .2, 0] },
-    canape: { A: [1.7, -.1, -R], B: [.95, .1, -R + .45] },
-    meubleTV: { A: [-1.95, -.1, R], B: [-1.6, .05, R - .4] },
-    etagere: { A: [.2, -1.58, 0], B: [-1.25, -1.58, 0] },
-    lampadaire: { A: [1.9, 1.35, 0], B: [1.9, -1.45, 0] },
-    plante: { A: [-1.9, -1.45, 0], B: [1.9, 1.3, 0] }
+  { // 4e, tortues : le canapé face à nous, la table basse et le thé (B, la pièce terminée)
+    tapis: { A: [-.2, -.45, 0], B: [-.2, -.45, 0] },
+    canape: { A: [-.2, -1.3, 0], B: [-.2, -1.3, 0] },
+    table: { A: [-.2, -.25, 0], B: [-.2, -.25, 0] },
+    etagere: { A: [1.98, -.65, -R], B: [1.98, -.65, -R] },
+    lampadaire: { A: [-1.75, -1.42, 0], B: [-1.75, -1.42, 0] },
+    plante: { A: [1.85, 1.25, 0], B: [1.85, 1.25, 0] }
   }
 ];
-// habitants (deux par appartement)
+// habitants (deux par étage), aux couleurs douces
 const HABITANTS = [
-  [{ espece: 'chien', pelage: '#F1C08B', clair: '#FFF3E2', sombre: '#B9835A', graine: 0 },
-    { espece: 'chien', pelage: '#FFF6EA', clair: '#FFFFFF', sombre: '#A0806C', graine: 1 }],
-  [{ espece: 'chat', pelage: '#F6B07A', clair: '#FFF0E0', graine: 2 },
-    { espece: 'chat', pelage: '#B8B2AC', clair: '#F2EEEA', graine: 3 }],
-  [{ espece: 'tortue', pelage: '#AEC9A4', clair: '#F4ECD6', carapace: '#7FA48A', accessoire: 'lunettes', couverture: 'corail', graine: 4 },
-    { espece: 'tortue', pelage: '#B9CFAE', clair: '#F4ECD6', carapace: '#C9A27A', couverture: 'menthe', graine: 5 }],
-  [{ espece: 'lapin', graine: 6 },
-    { espece: 'lapin', graine: 7 }]
+  [{ espece: 'lapin', pelage: '#EDE6DD', clair: '#FBF8F3', graine: 6 }, { espece: 'lapin', pelage: '#C9B7A4', clair: '#F3ECE3', graine: 7 }],
+  [{ espece: 'chien', pelage: '#E6BE93', clair: '#FBF1E4', sombre: '#A9825F', graine: 0 },
+    { espece: 'chien', pelage: '#F4EEE6', clair: '#FFFFFF', sombre: '#9B8273', graine: 1 }],
+  [{ espece: 'chat', pelage: '#D9A27C', clair: '#F7EDE2', graine: 2 }, { espece: 'chat', pelage: '#A8A39E', clair: '#EFEBE7', graine: 3 }],
+  [{ espece: 'tortue', pelage: '#A9BC9F', clair: '#EFE7D4', carapace: '#7E9682', accessoire: 'lunettes', graine: 4 },
+    { espece: 'tortue', pelage: '#B4C2A8', clair: '#EFE7D4', carapace: '#B39274', graine: 5 }]
 ];
-// où ils sont et ce qu'ils font : le relevé des pièces vides (chapitres 0 et 1), debout parmi les
-// meubles de la première proposition (2, premier arrêt) puis de Shuffle (2, second arrêt), à leur
-// activité (3). via : le chemin jusqu'au siège ; etapes : les murs que l'on relève ([x, z, r]), assez
-// loin pour que le faisceau ne les traverse pas.
+// où ils sont et ce qu'ils font. 1er : le relevé (routines) ; 2e : la pièce vide, puis debout parmi les
+// meubles ; 3e : debout dans la première proposition, puis dans celle de Shuffle ; 4e : assises sur le
+// canapé, elles lisent. via : le chemin jusqu'au siège ; etapes : les murs que l'on relève ([x, z, r]).
 const Q = Math.PI / 2;
-const VIE = [
-  [{ x: -.8, z: -.3, r: .9, scanne: 1, routine: 'tour' }, { x: .6, z: .7, r: 2.5, scanne: 1, routine: 'releve', etapes: [[.8, -.2, Q], [-.1, -.35, 2 * Q]] }],
-  [{ x: .85, z: .45, r: -.6, scanne: 1, routine: 'tour' }, { x: -.3, z: .4, r: .5, scanne: 1, routine: 'releve', etapes: [[-.8, -.1, -Q], [.3, -.35, 2 * Q]] }],
-  [{ x: .9, z: -.4, r: -.5, scanne: 1, routine: 'tour' }, { x: -.3, z: .7, r: -1.5, scanne: 1, routine: 'releve', etapes: [[-.8, .1, -Q], [0, -.35, 2 * Q]] }],
-  [{ x: -.6, z: .4, r: .5, scanne: 1, routine: 'tour' }, { x: .3, z: .8, r: 1, scanne: 1, routine: 'releve', etapes: [[.8, .2, Q], [-.1, -.35, 2 * Q]] }]
-];
-const DEBOUT_A = [
-  [{ x: .35, z: .45, r: -.5 }, { x: -.45, z: -.35, r: .6 }],
-  [{ x: .3, z: .95, r: .3 }, { x: -.4, z: 1, r: -.2 }],
-  [{ x: .55, z: .45, r: -.6 }, { x: -.15, z: .85, r: .3 }],
-  [{ x: -.35, z: .3, r: .4 }, { x: .55, z: .75, r: -.3 }]
-];
-const DEBOUT = [
-  [{ x: .25, z: -.45, r: .3 }, { x: -.05, z: .85, r: .2 }],
-  [{ x: -.35, z: .95, r: .4 }, { x: .45, z: .95, r: -.3 }],
-  [{ x: .45, z: .5, r: -.2 }, { x: -.75, z: .5, r: .2 }],
-  [{ x: -.35, z: .85, r: .3 }, { x: .25, z: .95, r: -.3 }]
-];
-const ACTIVITE = [
-  [{ x: -.8, z: -.65, y: .36, r: -.92, joue: 1, assis: 1, via: [[-.4, -.55]] }, { x: -.2, z: .1, y: .36, r: -1.35, joue: 1, assis: 1, via: [[.2, .25]] }],
-  [{ x: -.775, z: .227, y: .44, r: 1.22, assis: 1, via: [[-.6, .8]] }, { x: .78, z: .2, y: .36, r: -1.22, assis: 1, via: [[.75, .75]] }],
-  [{ x: .225, z: -1.18, y: .5, r: 0, lit: 1, assis: 1, via: [[.6, -.65]] }, { x: -.625, z: -1.18, y: .5, r: 0, lit: 1, assis: 1, via: [[-.95, -.65]] }],
-  [{ x: .684, z: -.244, y: .5, r: -1.12, grignote: 1, assis: 1, via: [[.15, .02]] }, { x: 1.054, z: .522, y: .5, r: -1.12, grignote: 1, assis: 1, via: [[.52, .78]] }]
-];
+const VIE = [{ x: -.6, z: .4, r: .5, scanne: 1, routine: 'tour' }, { x: .3, z: .8, r: 1, scanne: 1, routine: 'releve', etapes: [[.8, .2, Q], [-.1, -.35, 2 * Q]] }];
+const ATTENTE = [{ x: -.5, z: .5, r: .5 }, { x: .5, z: .7, r: -.4 }];
+const DEBOUT_A = [null, [{ x: .35, z: .45, r: -.5 }, { x: -.45, z: -.35, r: .6 }], [{ x: .3, z: .95, r: .3 }, { x: -.4, z: 1, r: -.2 }], null];
+const DEBOUT_B = [{ x: -.35, z: .95, r: .4 }, { x: .45, z: .95, r: -.3 }];
+const ASSISES = [{ x: .225, z: -1.18, y: .5, r: 0, lit: 1, assis: 1, via: [[.6, -.65]] }, { x: -.625, z: -1.18, y: .5, r: 0, lit: 1, assis: 1, via: [[-.95, -.65]] }];
 const BASE = { souffle: 1, salut: 0, arrose: 0, lit: 0, joue: 0, dort: 0, mange: 0, grignote: 0, pense: 0, pousse: 0, acclame: 0, assis: 0, cache: 0, remue: 0, teteX: 0, teteY: 0, scanne: 0 };
 const DRAPEAUX = ['arrose', 'lit', 'joue', 'dort', 'mange', 'grignote', 'assis', 'scanne'];
 const drapeaux = p => Object.fromEntries(DRAPEAUX.map(k => [k, p[k] || 0]));
 // C, l'autre idée de Shuffle : B en miroir (les meubles comme les poses)
 const coord = (i, id, nom) => { const d = PIECES[i][id]; if (nom !== 'C') return d[nom]; const [x, z, r] = d.B; return [-x, z, -r]; };
 const miroir = p => ({ ...p, x: -p.x, r: -p.r, via: p.via?.map(([x, z]) => [-x, z]) });
-const deboutDe = (nom, i, j) => (nom === 'A' ? DEBOUT_A[i][j] : nom === 'C' ? miroir(DEBOUT[i][j]) : DEBOUT[i][j]);
-// v : la disposition de Shuffle en cours (B, ou C)
-const poseDe = (h, n, k, v) => (n <= 1 ? VIE[h.i][h.j] : n === 2 ? deboutDe(k ? v : 'A', h.i, h.j) : v === 'C' ? miroir(ACTIVITE[h.i][h.j]) : ACTIVITE[h.i][h.j]);
-// disposition des meubles à chaque arrêt : aucune (pièces vides), la première proposition, Shuffle
-const dispoDe = (n, k, v) => (n <= 1 ? null : n === 2 && !k ? 'A' : v);
-// état de la scène attendu à chaque chapitre
-const cible = (n, k) => ({
-  ouvre: n ? 1 : 0, trace: n ? 2 : 0, rotW: n === 0 ? 1 : n === 3 && k >= 4 ? .35 : 0,
-  nuit: n === 3 ? 1 : 0, tele0: n === 3 ? 1 : 0, tele3: n === 3 ? 1 : 0, plaid: n === 3 ? 1 : 0
-});
-const JEU = ['#FFB4A2', '#A8E6CF', '#FFE08A', '#B9AEEA', '#8FCBEA'].map(c => new THREE.Color(c));
-const SERIE = ['#9DB8F0', '#C3B5F5', '#8FD3E8', '#F5C7B8', '#A5C8F2'].map(c => new THREE.Color(c));
-const NOIR = new THREE.Color('#2E2A33');
-const NUIT = new THREE.Color('#2B2A4A');
+const deboutDe = (nom, i, j) => (nom === 'A' ? DEBOUT_A[i][j] : i !== 2 ? DEBOUT_A[i][j] : nom === 'C' ? miroir(DEBOUT_B[j]) : DEBOUT_B[j]);
+// pose d'un habitant au chapitre n (v : la disposition de Shuffle en cours, B ou C)
+const poseDe = (h, n, k, v) => (h.i === 0 ? VIE[h.j] : h.i === 1 ? (n >= 2 ? DEBOUT_A[1][h.j] : ATTENTE[h.j])
+  : h.i === 2 ? deboutDe(n >= 3 ? v : 'A', 2, h.j) : ASSISES[h.j]);
+// disposition des meubles d'un étage au chapitre n : aucune (pièce vide), la première proposition, Shuffle
+const dispoDe = (i, n, v) => (i === 0 ? null : i === 1 ? (n >= 2 ? 'A' : null) : i === 2 ? (n >= 3 ? v : 'A') : 'B');
+const fin = (n, k) => n === 4 && k >= 1;
+// état de la scène attendu à chaque chapitre : stores remontés jusqu'à l'étage atteint, relevé tracé,
+// rendu photo fait
+const cible = (n, k) => ({ s0: n >= 1 ? 1 : 0, s1: n >= 2 ? 1 : 0, s2: n >= 3 ? 1 : 0, s3: n >= 4 ? 1 : 0, trace: n >= 1 ? 2 : 0, rendu: n >= 4 ? 1 : 0, rotW: n === 0 || fin(n, k) ? 1 : 0 });
+const STORE = ['s0', 's1', 's2', 's3'];
 
 // ombre ronde et douce sous un animal
 function texOmbreRonde() {
@@ -193,74 +161,6 @@ function tasses(m) {
   }
   return { groupe, vapeurs, matVapeur };
 }
-// plaid rayé sur les genoux des lapins (repère du canapé) : un drap souple qui épouse leurs genoux et
-// retombe en plis devant l'assise, avec un bol de pop-corn posé dessus. Il se déplie depuis le centre.
-const GENOUX = [-.425, .425];   // où sont assis les lapins (x du canapé)
-function couverture(arete) {
-  // les rayures : une petite texture peinte (corail, raies beurre, bordure)
-  const c = document.createElement('canvas');
-  c.width = 256; c.height = 64;
-  const x = c.getContext('2d');
-  x.fillStyle = '#FFB49C'; x.fillRect(0, 0, 256, 64);
-  x.fillStyle = '#FFE49A';
-  for (let k = 0; k < 7; k++) x.fillRect(14 + k * 36, 0, 10, 64);
-  x.fillStyle = '#F7957A'; x.fillRect(0, 56, 256, 8);
-  const tex = new THREE.CanvasTexture(c);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  const plein = col => new THREE.MeshLambertMaterial({ color: col });
-  const m = { plaid: new THREE.MeshLambertMaterial({ map: tex, side: THREE.DoubleSide }), bol: plein('#9ECDA9'), mais: plein('#FFF6DC'), arete };
-  // profil du drap (z, y), de sa lisière sous les ventres jusqu'au bord qui pend devant l'assise
-  const profil = new THREE.SplineCurve([[.2, .64], [.33, .62], [.44, .58], [.5, .5], [.52, .36], [.53, .2]].map(([z, y]) => new THREE.Vector2(z, y)));
-  const L = 1.5, NU = 40, NV = 26, g = new THREE.PlaneGeometry(1, 1, NU, NV), pos = g.attributes.position, _p = new THREE.Vector2();
-  for (let k = 0; k < pos.count; k++) {
-    const u = pos.getX(k) + .5, v = .5 - pos.getY(k), x = (u - .5) * L;
-    profil.getPoint(v, _p);
-    let z = _p.x, y = _p.y;
-    const genoux = v < .55 ? Math.sin(Math.PI * v / .55) : 0;
-    // il bombe sur les genoux, se creuse entre eux, tombe aux deux bouts
-    y += genoux * (.08 * GENOUX.reduce((s, g0) => s + Math.exp(-(((x - g0) / .2) ** 2)), 0) - .03);
-    y -= genoux * .07 * Math.max(0, (Math.abs(x) / (L / 2) - .75) / .25) ** 2;
-    // des plis dans ce qui pend
-    const pend = Math.max(0, (v - .55) / .45);
-    z += pend * .025 * Math.sin(x * 22) + pend * pend * .03;
-    pos.setXYZ(k, x, y, z);
-  }
-  g.computeVertexNormals();
-  const drap = new THREE.Mesh(g, m.plaid);
-  const p = [['bol', cyl(.1, .075, .08, 0, .6, .36, 18)]];
-  for (const [bx, bz] of [[-.04, .35], [.03, .33], [-.01, .4], [.04, .39], [-.06, .31], [.0, .36]]) p.push(['mais', facettes(.032, bx, .695, bz)]);
-  const groupe = new THREE.Group();
-  groupe.position.set(0, .55, .4);
-  const contenu = assembler(new THREE.Group(), p, m);
-  contenu.add(drap);
-  contenu.position.set(0, -.55, -.4);
-  groupe.add(contenu);
-  groupe.visible = false;
-  return { groupe, m, tex };
-}
-// rideaux de la fenêtre des lapins : deux pans plissés sur une tringle ; ouverts le jour, fermés pour
-// la série (c'est pour ça qu'il fait noir chez eux). Repère de l'appartement ; ferme(k) : 0 ouvert, 1 fermé
-function rideaux(mat) {
-  const groupe = new THREE.Group(), z = -AP / 2 + .24, pans = [];
-  groupe.add(new THREE.Mesh(new THREE.CylinderGeometry(.015, .015, 2, 8).rotateZ(Math.PI / 2).translate(0, 2.2, z), mat.tringle));
-  for (const s of [-1, 1]) {
-    const g = new THREE.PlaneGeometry(1, 1.42, 30, 1), pos = g.attributes.position;
-    for (let k = 0; k < pos.count; k++) {
-      const x = pos.getX(k) + .5;
-      // pivot au bord extérieur, le pan s'étend vers le milieu ; ses plis se resserrent quand il s'ouvre
-      pos.setXYZ(k, -s * x, pos.getY(k), .03 * Math.sin(x * 30));
-    }
-    g.computeVertexNormals();
-    const pan = new THREE.Mesh(g, mat.rideau);
-    pan.position.set(s * .95, 2.18 - .71, z);
-    groupe.add(pan);
-    pans.push(pan);
-  }
-  return {
-    groupe,
-    fermer(k) { pans.forEach(p => { p.scale.x = .24 + .76 * k; }); }
-  };
-}
 
 export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, visite = 0, surPrete, surPanne }) {
   const gsap = initialiser();
@@ -269,30 +169,41 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   const mobile = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
 
   const renderer = new THREE.WebGLRenderer({ canvas: toile, antialias: true, alpha: true, powerPreference: 'default' });
-  let im, ma, ombres, mm;
+  let im, ma, ombres, mm, environnement, pmrem;
   try {
     renderer.setClearColor(0x000000, 0);
+    // rendu « maquette d'architecte » : tons neutres conservés, lumière d'atelier, coupes du rendu photo
+    renderer.toneMapping = THREE.NeutralToneMapping;
+    renderer.toneMappingExposure = 1;
+    renderer.localClippingEnabled = true;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    pmrem = new THREE.PMREMGenerator(renderer);
+    environnement = pmrem.fromScene(new RoomEnvironment(), .04).texture;
     im = construireImmeuble();
     ma = matieresAnimaux();
     ombres = atelierOmbres();
-    mm = APPARTEMENTS.map(def => matieresMeubles(def.meubles));
+    mm = ETAGES.map(def => matieresMeubles(def.meubles));
   } catch (e) {
+    pmrem?.dispose();
     renderer.dispose();
     throw e;
   }
 
   const scene = new THREE.Scene();
+  scene.environment = environnement;
+  scene.environmentIntensity = .42;
   // la caméra n'approche jamais à moins de 6 m : un plan proche loin de l'œil garde la profondeur précise
   // (sinon les surfaces très proches, comme un tapis sur le sol, scintillent)
-  const camera = new THREE.PerspectiveCamera(30, 1, 1.5, 90);
-  // lumière douce : ciel blanc, rebond pêche, un soleil d'avant droit (pas de carte d'ombres)
-  scene.add(new THREE.HemisphereLight('#fffaf4', '#e9cdbd', .8 * Math.PI));
-  const soleil = new THREE.DirectionalLight('#ffffff', .62 * Math.PI);
-  soleil.position.set(3.5, 6, 4.5);
+  const camera = new THREE.PerspectiveCamera(30, 1, 1.5, 120);
+  // lumière d'atelier : ciel clair, rebond chaud, une grande source douce d'avant droit
+  scene.add(new THREE.HemisphereLight('#FFF9F2', '#D8CABD', 1.25));
+  const soleil = new THREE.DirectionalLight('#FFF4E8', 1.55);
+  soleil.position.set(4, 7, 6);
   scene.add(soleil, im.groupe);
 
-  // ---------- les appartements : leurs meubles (une palette chacun) et leurs accessoires
-  const apparts = APPARTEMENTS.map((def, i) => {
+  // ---------- les appartements : leurs meubles (une palette par étage) et leurs accessoires
+  const apparts = ETAGES.map((def, i) => {
     const groupe = im.appartements[i].groupe, meubles = {};
     for (const [nom, d] of Object.entries(PIECES[i])) {
       const mb = construireMeuble(d.id || nom, mm[i], ombres);
@@ -301,24 +212,17 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     }
     return { i, groupe, meubles, ordre: Object.keys(meubles), dispo: null };
   });
-  const echecs = echiquier(mm[1]);
-  apparts[1].meubles.gueridon.objet.add(echecs.groupe);
-  const the = tasses(mm[2]);
-  apparts[2].meubles.table.objet.add(the.groupe);
-  const plaid = couverture(mm[3].arete);
-  apparts[3].meubles.canape.objet.add(plaid.groupe);
-  const matRideaux = { rideau: new THREE.MeshLambertMaterial({ color: '#F6A08C', side: THREE.DoubleSide }), tringle: mm[3].fonce };
-  const rideau = rideaux(matRideaux);
-  apparts[3].groupe.add(rideau.groupe);
-  rideau.fermer(0);
-  im.appartements[3].lune.visible = false;   // rideaux fermés : pas de lune chez les lapins
-  // humeurs des meubles : le fauteuil des chats boude (nuage d'orage), le lampadaire des lapins est sonné
+  const echecs = echiquier(mm[2]);
+  apparts[2].meubles.gueridon.objet.add(echecs.groupe);
+  const the = tasses(mm[3]);
+  apparts[3].meubles.table.objet.add(the.groupe);
+  // humeur des meubles : le fauteuil des chats boude (nuage d'orage) quand Shuffle le déplace
   const orage = nuageOrage(ma);
   orage.position.y = 1.1;
-  apparts[1].meubles.fauteuil.objet.add(orage);
-  const sonne = couronneEtoiles(ma, .24, 5);
-  sonne.position.y = 1.78;
-  apparts[3].meubles.lampadaire.objet.add(sonne);
+  apparts[2].meubles.fauteuil.objet.add(orage);
+  // le dernier étage est meublé dès le départ (sa disposition ne change pas) : on y prépare le rendu photo
+  placerDirect(apparts[3], 'B');
+  const rendu = creerRendu({ ap: apparts[3], mm: mm[3], scene, environnement });
 
   // ---------- les habitants
   const tOmbre = texOmbreRonde();
@@ -329,6 +233,8 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     o.renderOrder = 1;
     a.ombre = o;
     apparts[i].groupe.add(a.objet, o);
+    // au dernier étage, elles posent pour la photo : elles portent une vraie ombre
+    if (i === 3) a.objet.traverse(x => { if (x.isMesh) x.castShadow = true; });
     // tenu, vol, retour : on joue avec lui (attrapé, lancé, il rentre à sa place) ; phys : son corps
     // (physique.js) tant qu'on joue avec lui ; parleFin : sa bouche bouge
     return { a, i, j, emu: false, occupe: 0, n: j, tenu: null, vol: null, retour: null, phys: null, parleFin: 0, sursaut: 0, caresse: 0 };
@@ -339,24 +245,29 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   const _v = new THREE.Vector3(), _a = new THREE.Vector3(), _b = new THREE.Vector3();
   const coeursSur = (a, n = 2) => { a.tete.getWorldPosition(_v); coeurs.jaillir(gsap, _v.x, _v.y + .4, _v.z, n); };
 
-  // la nuit chez les lapins : leurs meubles, eux et le plaid s'assombrissent, la télé les éclaire
-  const sombres = [];
-  const assombrir = m => { if (m?.color && m.emissive && !sombres.some(([x]) => x === m)) sombres.push([m, m.color.clone()]); };
-  Object.entries(mm[3]).forEach(([cle, m]) => { if (cle !== 'arete' && cle !== 'ecran') assombrir(m); });
-  habitants[3].forEach(h => Object.values(h.a.mats).forEach(assombrir));
-  Object.values(plaid.m).forEach(assombrir);
-  assombrir(matRideaux.rideau);
+  // l'éclair de l'appareil photo, à la fin du rendu
+  const eclair = document.createElement('div');
+  eclair.setAttribute('aria-hidden', 'true');
+  Object.assign(eclair.style, { position: 'absolute', inset: 0, background: '#FFFDF8', opacity: 0, pointerEvents: 'none' });
+  boite.appendChild(eclair);
 
   // état animé (GSAP)
-  const etat = { ouvre: 0, trace: 0, rotW: 1, nuit: 0, tele0: 0, tele3: 0, plaid: 0 };
-  const act = apparts.map(() => ({ v: 0 }));   // activité de chaque appartement (chapitre 3)
-  const cam = { ...CAM.immeuble };
+  const etat = { s0: 0, s1: 0, s2: 0, s3: 0, trace: 0, rendu: 0, rotW: 1 };
+  const cam = { ...CAM.bas };
   const tps = { rot: 0 };
   let courant = -1, visiteCourante = 0, voulu = chapitre, voulueVisite = visite, variante = 'B';
   let introFaite = false, introTl = null, histoire = null, histoireNom = '', routines = [];
-  let raf = 0, avant = 0, t = 0, detruit = false, premiere = false, visible = true, nuitVue = -1;
+  let raf = 0, avant = 0, t = 0, detruit = false, premiere = false, visible = true;
   let largeur = 1, hauteur = 1, px = 0, py = 0, vx = 0, vy = 0, tremble = 0, fete = 0;
   const enJeu = h => !!(h.tenu || h.vol || h.retour);
+
+  function placerDirect(ap, nom) {
+    ap.dispo = nom;
+    ap.ordre.forEach(id => {
+      const o = ap.meubles[id].objet, [x, z, r] = coord(ap.i, id, nom);
+      o.visible = true; o.position.set(x, 0, z); o.rotation.set(0, r, 0); o.scale.set(1, 1, 1);
+    });
+  }
 
   // ---------- meubles
   const tuerMeuble = o => gsap.killTweensOf([o.position, o.rotation, o.scale]);
@@ -416,7 +327,7 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   }
   // le fauteuil boude, le lampadaire est sonné, puis tout se calme
   function bouder() {
-    const f = apparts[1].meubles.fauteuil.objet;
+    const f = apparts[2].meubles.fauteuil.objet;
     gsap.timeline()
       .set(orage, { visible: true }, 0)
       .to(orage.scale, { x: 1, y: 1, z: 1, duration: .35, ease: 'back.out(3)' }, 0)
@@ -426,23 +337,12 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
       .to(orage.scale, { x: .001, y: .001, z: .001, duration: .3, ease: 'power2.in' }, 2.1)
       .set(orage, { visible: false }, 2.4);
   }
-  function sonner() {
-    const lp = apparts[3].meubles.lampadaire.objet;
-    gsap.timeline()
-      .set(sonne, { visible: true }, 0)
-      .to(sonne.scale, { x: 1, y: 1, z: 1, duration: .35, ease: 'back.out(3)' }, 0)
-      .to(lp.rotation, { z: .14, duration: .22, yoyo: true, repeat: 7, ease: 'sine.inOut' }, 0)
-      .to(lp.rotation, { x: .1, duration: .3, yoyo: true, repeat: 5, ease: 'sine.inOut' }, .1)
-      .to(lp.rotation, { x: 0, z: 0, duration: .3 }, 1.9)
-      .to(sonne.scale, { x: .001, y: .001, z: .001, duration: .3, ease: 'power2.in' }, 2.1)
-      .set(sonne, { visible: false }, 2.4);
-  }
   function calmer() {
-    const f = apparts[1].meubles.fauteuil.objet, lp = apparts[3].meubles.lampadaire.objet;
-    gsap.killTweensOf([orage, orage.scale, orage.position, sonne, sonne.scale, f.rotation, lp.rotation]);
-    orage.visible = sonne.visible = false;
-    orage.scale.setScalar(.001); sonne.scale.setScalar(.001); orage.position.y = 1.1;
-    f.rotation.z = 0; lp.rotation.x = lp.rotation.z = 0;
+    const f = apparts[2].meubles.fauteuil.objet;
+    gsap.killTweensOf([orage, orage.scale, orage.position, f.rotation]);
+    orage.visible = false;
+    orage.scale.setScalar(.001); orage.position.y = 1.1;
+    f.rotation.z = 0;
   }
 
   // ---------- chemins : chaque disposition a sa grille (chemins.js), calculée la première fois
@@ -472,7 +372,7 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     a.objet.rotation.order = 'YXZ';
     a.saut.position.set(0, 0, 0); a.saut.rotation.set(0, 0, 0);
     a.corps.scale.set(1, 1, 1); a.corps.rotation.set(0, 0, 0); a.tete.rotation.set(0, 0, 0);
-    const salue = n === 3 && k >= 4;
+    const salue = fin(n, k);
     Object.assign(a.etat, BASE, drapeaux(p), { salut: salue ? 1 : 0 });
     a.regard(salue ? 'content' : 'normal');
     a.alerte.visible = false; a.alerte.scale.setScalar(.001);
@@ -503,34 +403,34 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   }
   // le relevé des pièces vides, en boucle : l'un tourne sur lui-même un quart de tour à la fois, l'autre
   // va d'un mur à l'autre, s'y tourne et le balaie de son faisceau
+  // le relevé du 1er étage, en boucle : l'un tourne sur lui-même un quart de tour à la fois, l'autre
+  // va d'un mur à l'autre, s'y tourne et le balaie de son faisceau
   function arreterRoutines() { routines.forEach(r => r.tl.kill()); routines = []; }
   function arreterRoutine(h) { routines = routines.filter(r => (r.h === h ? (r.tl.kill(), false) : true)); }
   function lancerRoutines() {
     arreterRoutines();
     if (reduit) return;
-    tous.forEach(lancerRoutine);
+    habitants[0].forEach(lancerRoutine);
   }
   function lancerRoutine(h) {
     arreterRoutine(h);
-    if (reduit || enJeu(h)) return;
-    {
-      const p = VIE[h.i][h.j], a = h.a;
-      let tl = null;
-      if (p.routine === 'tour') {
-        tl = gsap.timeline({ repeat: -1, delay: .6 + h.i * .15 });
-        for (let q = 0; q < 4; q++) tl.to(a.objet.rotation, { y: `+=${Q}`, duration: 1.6, ease: 'sine.inOut' }).to({}, { duration: .9 });
-      } else if (p.routine === 'releve') {
-        tl = gsap.timeline({ repeat: -1, delay: .3 + h.i * .2 });
-        let de = [p.x, p.z];
-        for (const [x, z, r] of [...p.etapes, [p.x, p.z, p.r]]) {
-          tl.add(marcher(gsap, a, [[x, z]], { depuis: de }))
-            .to(a.objet.rotation, { y: () => proche(a.objet.rotation.y, r), duration: .5, ease: 'sine.inOut' })
-            .to({}, { duration: 1.8 });
-          de = [x, z];
-        }
+    if (reduit || enJeu(h) || h.i !== 0) return;
+    const p = VIE[h.j], a = h.a;
+    let tl = null;
+    if (p.routine === 'tour') {
+      tl = gsap.timeline({ repeat: -1, delay: .6 });
+      for (let q = 0; q < 4; q++) tl.to(a.objet.rotation, { y: `+=${Q}`, duration: 1.6, ease: 'sine.inOut' }).to({}, { duration: .9 });
+    } else if (p.routine === 'releve') {
+      tl = gsap.timeline({ repeat: -1, delay: .3 });
+      let de = [p.x, p.z];
+      for (const [x, z, r] of [...p.etapes, [p.x, p.z, p.r]]) {
+        tl.add(marcher(gsap, a, [[x, z]], { depuis: de }))
+          .to(a.objet.rotation, { y: () => proche(a.objet.rotation.y, r), duration: .5, ease: 'sine.inOut' })
+          .to({}, { duration: 1.8 });
+        de = [x, z];
       }
-      if (tl) routines.push({ h, tl });
     }
+    if (tl) routines.push({ h, tl });
   }
 
   // ---------- bulle (HTML, au-dessus de qui parle)
@@ -542,13 +442,13 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     return haut(v.copy(_a).add(_b).multiplyScalar(.5), .62);
   };
   const ancreAnimal = a => v => haut(a.tete.getWorldPosition(v), .62);
-  const ancreFin = v => v.set(0, SOLS[1] + AH + .45, 1.4);
-  const ancreHaut = v => v.set(0, SOLS[1] + AH + .2, 1.6);
+  const ancreFin = v => v.set(0, TOIT + .9, .6);
+  const ancreEtage = f => v => v.set(0, SOLS[f] + AH - .15, 1.4);
+  // la phrase posée de chaque arrêt : celle de l'étage atteint (relevé, meubles, rendu), merci à la fin
   function definirBase(n, k) {
-    const texte = n === 3 ? (k < 4 ? textes.visites?.[k] : textes.merci) : '';
-    bulleBase = texte ? { texte, ancre: k < 4 ? ancreAppart(k) : ancreFin } : null;
-    // qui parle : le premier habitant de l'appartement visité, ou tout le monde à la fin
-    if (texte) (k < 4 ? [habitants[k][0]] : tous).forEach(h => { h.parleFin = t + 1.3; });
+    const texte = n >= 1 && n <= 4 ? (fin(n, k) ? textes.merci : n === 3 ? '' : textes.etapes?.[n - 1]) : '';
+    bulleBase = texte ? { texte, ancre: fin(n, k) ? ancreFin : ancreAppart(n - 1) } : null;
+    if (texte) (fin(n, k) ? tous : [habitants[n - 1][0]]).forEach(h => { h.parleFin = t + 1.3; });
     afficherBulle();
   }
   // h : l'animal qui parle (sa bouche bouge)
@@ -581,23 +481,24 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     bulle.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
   }
 
+
   // ---------- chapitres
   // tout à l'état du chapitre n, d'un coup, sauf la caméra
   function figer(n, k) {
     arreterRoutines();
     calmer();
-    apparts.forEach(ap => placerMeubles(ap, dispoDe(n, k, variante), true));
+    apparts.forEach(ap => placerMeubles(ap, dispoDe(ap.i, n, variante), true));
     tous.forEach(h => { poserAnimal(h, n, k); h.a.saut.scale.set(1, 1, 1); });
-    gsap.killTweensOf([etat, ...act]);
+    gsap.killTweensOf([etat, eclair.style]);
+    eclair.style.opacity = 0;
     Object.assign(etat, cible(n, k));
-    act.forEach(x => { x.v = n === 3 ? 1 : 0; });
   }
   function poser(n, k) {
     figer(n, k);
     gsap.killTweensOf(cam);
     Object.assign(cam, cadrage(n, k));
-    if (n === 0) tps.rot = t;
-    if (n <= 1) lancerRoutines();
+    if (n === 0 || fin(n, k)) tps.rot = t;
+    lancerRoutines();
     definirBase(n, k);
     marquer();
   }
@@ -611,202 +512,176 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     if (r !== undefined) tl.to(a.objet.rotation, { y: () => proche(a.objet.rotation.y, r), duration: .3 }, fin);
     return fin + .3;
   }
-
-  // 0 → 1 : la façade s'ouvre sur des pièces vides, le plan se trace pendant qu'ils les relèvent ; surpris,
-  // ils sursautent
-  function ouvrir(propre) {
-    if (!propre) figer(0, 0);
-    gsap.killTweensOf([cam, etat]);
-    apparts.forEach(ap => { if (ap.dispo) retirerMeubles(ap, true); });
-    if (!routines.length) lancerRoutines();
-    const tl = gsap.timeline();
-    tl.to(etat, { rotW: 0, duration: .8, ease: 'power1.inOut' }, 0)
-      .to(cam, { ...CAM.ouvert, duration: 1.9, ease: COURBES.pivot }, 0)
-      .to(etat, { ouvre: 1, duration: 1.6, ease: 'back.out(1.2)' }, .3)
-      .fromTo(etat, { trace: 0 }, { trace: 2, duration: 3.8, ease: 'none', immediateRender: false }, 1.4);
-    tous.forEach((h, j) => tl.add(surprise(gsap, h.a, { haut: .16 }), 1.2 + j * .1));
+  // on monte d'un étage : la caméra suit la façade, le store de l'étage remonte
+  function monter(tl, n, k, debut = 0) {
+    tl.call(() => definirBase(-1), null, debut)
+      .to(cam, { ...cadrage(n, k), duration: 2, ease: COURBES.pivot }, debut)
+      .to(etat, { rotW: 0, duration: .8, ease: 'power1.inOut' }, debut);
+    if (n >= 1 && n <= 4) tl.to(etat, { [STORE[n - 1]]: 1, duration: 1.2, ease: 'power2.inOut' }, debut + .55);
     return tl;
   }
 
-  // 1 → 2, premier arrêt : les meubles arrivent dans les pièces vides (première proposition) ; chacun
-  // interrompt ce qu'il faisait, s'écarte, puis vient voir, content
+  // 0 → 1, 1er étage : le store remonte sur une pièce vide ; deux lapins la relèvent au téléphone et le
+  // plan se trace au sol
+  function releve(propre) {
+    if (!propre) figer(0, 0);
+    gsap.killTweensOf([cam, etat]);
+    if (!routines.length) lancerRoutines();
+    const tl = monter(gsap.timeline(), 1, 0);
+    tl.fromTo(etat, { trace: 0 }, { trace: 2, duration: 4, ease: 'none', immediateRender: false }, 1.5);
+    habitants[0].forEach((h, j) => tl.add(surprise(gsap, h.a, { haut: .14 }), 1.5 + j * .15));
+    tl.call(() => definirBase(1, 0), null, 2.2);
+    return tl;
+  }
+
+  // 1 → 2, 2e étage : les meubles de la première proposition arrivent dans la pièce vide ; les chiens
+  // s'écartent, puis viennent voir, contents
   function livrer(propre) {
-    arreterRoutines();
-    gsap.killTweensOf([cam, etat, ...act]);
+    gsap.killTweensOf([cam, etat]);
     calmer();
     if (!propre) figer(1, 0);
     else {
-      apparts.forEach(ap => { if (ap.dispo) retirerMeubles(ap, true); });
-      tous.forEach(h => stabiliser(h, VIE[h.i][h.j]));
+      if (apparts[1].dispo) retirerMeubles(apparts[1], true);
+      habitants[1].forEach(h => stabiliser(h, ATTENTE[h.j]));
     }
-    const T = [.45, .85, 1.25, 1.65];
-    const tl = gsap.timeline();
-    tl.to(cam, { ...CAM.amenager, duration: 1.6, ease: COURBES.pivot }, 0)
-      .to(etat, { ouvre: 1, trace: 2, rotW: 0, duration: .5 }, 0);
-    T.forEach((x, i) => {
-      tl.call(() => livrerMeubles(apparts[i], 'A', false), null, x);
-      habitants[i].forEach((h, j) => {
-        const a = h.a, d = x + .3 + j * .12, q = DEBOUT_A[i][j];
-        tl.to(a.etat, { dort: 0, mange: 0, lit: 0, assis: 0, scanne: 0, duration: .2 }, d - .1);
-        if (a.espece === 'tortue') tl.add(seCacher(gsap, a, .7), d);
-        else tl.add(surprise(gsap, a, { haut: a.etat.dort > .5 ? .3 : .18 }), d);
-        const fin = allerVers(tl, h, [[q.x, q.z]], d + (a.espece === 'tortue' ? 1.3 : .9), q.r, 'A');
-        tl.call(() => { a.regard('content'); coeursSur(a, 2); }, null, fin)
-          .to(a.etat, { acclame: 1, duration: .25, yoyo: true, repeat: 1 }, fin);
-      });
+    const tl = monter(gsap.timeline(), 2, 0), x = 1.5;
+    tl.to(etat, { s0: 1, trace: 2, duration: .4 }, 0)
+      .call(() => livrerMeubles(apparts[1], 'A', false), null, x);
+    habitants[1].forEach((h, j) => {
+      const a = h.a, d = x + .3 + j * .12, q = DEBOUT_A[1][j];
+      tl.add(surprise(gsap, a, { haut: .18 }), d);
+      const f = allerVers(tl, h, [[q.x, q.z]], d + .9, q.r, 'A');
+      tl.call(() => { a.regard('content'); coeursSur(a, 2); }, null, f)
+        .to(a.etat, { acclame: 1, duration: .25, yoyo: true, repeat: 1 }, f);
     });
+    tl.call(() => definirBase(2, 0), null, x + 2.6);
     return tl;
   }
 
-  // Shuffle ! les meubles passent de la disposition de à vers (B, ou C quand on reclique) sous leurs
-  // pattes ; chacun réagit à sa façon, puis tout le monde est content
-  function melanger(propre, de, vers) {
-    arreterRoutines();
-    gsap.killTweensOf([cam, etat, ...act]);
+  // 2 → 3, 3e étage : Shuffle ! chez les chats, les meubles passent de la disposition de à vers (B, ou C
+  // quand on reclique) sous leurs pattes : ils bondissent, le fauteuil boude, puis tout le monde est content
+  function melanger(propre, de, vers, ici = false) {
+    gsap.killTweensOf([cam, etat]);
     calmer();
-    if (!propre) figer(2, 0);
-    else tous.forEach(h => stabiliser(h, deboutDe(de, h.i, h.j)));
-    const [hd1, hd2] = habitants[0], [hc1, hc2] = habitants[1], [ht1, ht2] = habitants[2], [hl1, hl2] = habitants[3];
-    const D = habitants.map(l => l.map(h => deboutDe(vers, h.i, h.j)));
-    const T = [.5, .85, 1.2, 1.55];
-    const tl = gsap.timeline();
-    tl.call(() => dire(textes.shuffle, ancreHaut, 1.8), null, .05)
-      .to(cam, { ...CAM.amenager, rx: CAM.amenager.rx * .95, ry: CAM.amenager.ry * .95, duration: .4, ease: 'power2.out' }, .1)
-      .to(cam, { ...CAM.amenager, duration: .7, ease: 'power2.inOut' }, .5)
-      .to(etat, { ouvre: 1, trace: 2, rotW: 0, duration: .4 }, 0);
-    T.forEach((x, i) => tl.call(() => disposer(apparts[i], vers, false), null, x));
-    const ici = h => [h.a.objet.position.x, h.a.objet.position.z];
-    // chiens : l'un sursaute et s'écarte d'un bond, l'autre tourne sur lui-même, ravi
-    let x = T[0];
-    const [ex, ez] = pointLibre(grilleDe(0, vers), ici(hd1)[0] + .45, ici(hd1)[1] - .1);
-    tl.add(surprise(gsap, hd1.a), x - .1)
-      .add(bond(gsap, hd1.a, ex, ez, { hauteur: .26, duree: .4 }), x + .25)
-      .add(tournoyer(gsap, hd2.a), x + .1);
-    allerVers(tl, hd1, [[D[0][0].x, D[0][0].z]], x + 1.4, D[0][0].r, vers, { depuis: [ex, ez] });
-    allerVers(tl, hd2, [[D[0][1].x, D[0][1].z]], x + 1.6, D[0][1].r, vers);
-    // chats : le fauteuil leur fonce dessus, ils bondissent ; le fauteuil boude
-    x = T[1];
-    tl.add(surprise(gsap, hc1.a, { haut: .3 }), x)
-      .add(surprise(gsap, hc2.a, { haut: .36 }), x + .25)
+    if (!propre) figer(ici ? 3 : 2, 0);
+    else habitants[2].forEach(h => stabiliser(h, deboutDe(de, 2, h.j)));
+    if (!ici) placerMeubles(apparts[2], de, true);
+    const [c1, c2] = habitants[2];
+    const D = habitants[2].map(h => deboutDe(vers, 2, h.j));
+    const tl = ici ? gsap.timeline() : monter(gsap.timeline(), 3, 0);
+    const x = ici ? .3 : 1.6;
+    tl.to(etat, { s0: 1, s1: 1, trace: 2, duration: .4 }, 0)
+      .call(() => dire(textes.shuffle, ancreEtage(2), 1.8), null, x - .25)
+      .call(() => disposer(apparts[2], vers, false), null, x);
+    if (ici) tl.to(cam, { ...ETAGE[2], rx: ETAGE[2].rx * .96, ry: ETAGE[2].ry * .96, duration: .35, ease: 'power2.out' }, 0)
+      .to(cam, { ...ETAGE[2], duration: .7, ease: 'power2.inOut' }, .4);
+    tl.add(surprise(gsap, c1.a, { haut: .3 }), x)
+      .add(surprise(gsap, c2.a, { haut: .36 }), x + .25)
       .call(bouder, null, x + 1);
-    allerVers(tl, hc1, [[D[1][0].x, D[1][0].z]], x + 1.5, D[1][0].r, vers);
-    allerVers(tl, hc2, [[D[1][1].x, D[1][1].z]], x + 1.7, D[1][1].r, vers);
-    // tortues : elles rentrent dans leur carapace, puis ressortent, tout doucement
-    x = T[2];
-    tl.add(seCacher(gsap, ht1.a, 1.3), x - .05)
-      .add(seCacher(gsap, ht2.a, 1.2), x + .05);
-    allerVers(tl, ht1, [[D[2][0].x, D[2][0].z]], x + 2, D[2][0].r, vers);
-    allerVers(tl, ht2, [[D[2][1].x, D[2][1].z]], x + 2.1, D[2][1].r, vers);
-    // lapins : le tapis part sous l'un (il tombe), l'autre sursaute ; le lampadaire est sonné
-    x = T[3];
-    const [fx, fz] = [ici(hl1)[0] - .15, ici(hl1)[1] - .25];
-    tl.add(surprise(gsap, hl1.a, { revenir: false }), x - .25)
-      .add(surprise(gsap, hl2.a), x + .05)
-      .add(chute(gsap, hl1.a, -.15, -.25), x + .5)
-      .call(sonner, null, x + .9)
-      .add(relever(gsap, hl1.a), x + 2);
-    allerVers(tl, hl2, [[D[3][1].x, D[3][1].z]], x + 1.2, D[3][1].r, vers);
-    allerVers(tl, hl1, [[D[3][0].x, D[3][0].z]], x + 3.3, D[3][0].r, vers, { depuis: [fx, fz] });
-    // une fois installés : contents, ils applaudissent
-    T.forEach((x, i) => tl.call(() => habitants[i].forEach(h => { h.a.regard('content'); coeursSur(h.a, 2); }), null, x + (i === 2 ? 4.2 : i === 3 ? 5 : 3.2))
-      .to(habitants[i].map(h => h.a.etat), { acclame: 1, duration: .25, yoyo: true, repeat: 1 }, x + (i === 2 ? 4.2 : i === 3 ? 5 : 3.2)));
+    allerVers(tl, c1, [[D[0].x, D[0].z]], x + 1.5, D[0].r, vers);
+    allerVers(tl, c2, [[D[1].x, D[1].z]], x + 1.7, D[1].r, vers);
+    tl.call(() => habitants[2].forEach(h => { h.a.regard('content'); coeursSur(h.a, 2); }), null, x + 3.2)
+      .to(habitants[2].map(h => h.a.etat), { acclame: 1, duration: .25, yoyo: true, repeat: 1 }, x + 3.2);
     return tl;
   }
 
-  // 2 → 3 : chacun s'installe à son activité ; chez les lapins, plaid et lumière éteinte
-  function emmenager(k) {
-    figer(2, 1);
-    const tl = gsap.timeline(), fins = [0, 0, 0, 0];
-    tl.to(cam, { ...cadrage(3, k), duration: 1.7, ease: COURBES.pivot }, 0);
-    habitants.forEach((liste, i) => liste.forEach((h, j) => {
-      const a = h.a, q = poseDe(h, 3, k, variante), debut = .15 + i * .2 + j * .15;
-      tl.call(() => a.regard('content'), null, debut);
-      const fin = allerVers(tl, h, q.via, debut + .1, undefined, variante, { duree: ESPECES[a.espece].duree * .8 }) - .3;
-      tl.add(bond(gsap, a, q.x, q.z, { y: q.y, hauteur: .3, duree: .45, roulis: 0 }), fin)
-        .call(() => { a.objet.userData.sol = q.y; }, null, fin + .45)
-        .to(a.objet.rotation, { y: () => proche(a.objet.rotation.y, q.r), duration: .35 }, fin + .45)
-        .to(a.etat, { ...drapeaux(q), duration: .45 }, fin + .55)
-        .call(() => a.regard('normal'), null, fin + 1);
-      fins[i] = Math.max(fins[i], fin + 1);
-    }));
-    fins.forEach((f, i) => tl.to(act[i], { v: 1, duration: .6 }, f).call(() => habitants[i].forEach(h => coeursSur(h.a, 2)), null, f + .1));
-    tl.to(etat, { tele0: 1, duration: .4 }, fins[0] - .4)
-      .to(etat, { plaid: 1, duration: .55, ease: 'back.out(2)' }, fins[3] - .3)
-      .to(etat, { nuit: 1, tele3: 1, duration: 1.2, ease: 'power2.inOut' }, fins[3] + .3)
-      .call(() => definirBase(3, k), null, k < 4 ? fins[k] + .2 : Math.max(...fins) + .4);
-    if (k >= 4) tous.forEach((h, j) => tl.to(h.a.etat, { salut: 1, duration: .3 }, Math.max(...fins) + j * .06).call(() => h.a.regard('content'), null, Math.max(...fins) + j * .06));
+  // 3 → 4, 4e étage : le rendu photo. Les tortues lisent ; une lame de lumière traverse la pièce et la
+  // maquette devient photo (rendu.js), puis l'éclair de l'appareil
+  function photographier(propre) {
+    if (!propre) figer(3, 0);
+    gsap.killTweensOf([cam, etat, eclair.style]);
+    const tl = monter(gsap.timeline(), 4, 0);
+    tl.to(etat, { s0: 1, s1: 1, s2: 1, trace: 2, duration: .4 }, 0)
+      .fromTo(etat, { rendu: 0 }, { rendu: 1, duration: 2.8, ease: 'power1.inOut', immediateRender: false }, 2)
+      .fromTo(eclair.style, { opacity: 0 }, { opacity: .8, duration: .08, ease: 'none', immediateRender: false }, 4.85)
+      .to(eclair.style, { opacity: 0, duration: .7, ease: 'power2.out' }, 4.95)
+      .call(() => habitants[3].forEach(h => { h.a.regard('content'); coeursSur(h.a, 2); }), null, 5)
+      .call(() => definirBase(4, 0), null, 5.1);
     return tl;
   }
 
-  // dans le dernier chapitre : on passe d'un appartement à l'autre ; à la fin, tout le monde salue
-  function visiter(k) {
-    const tl = gsap.timeline(), salue = k >= 4;
+  // second arrêt du 4e étage : on recule pour voir toute la tour ; tout le monde salue et dit merci
+  function conclure() {
+    const tl = gsap.timeline();
     tl.call(() => definirBase(-1), null, 0)
-      .to(cam, { ...cadrage(3, k), duration: 1.4, ease: COURBES.pivot }, 0)
-      .to(etat, { rotW: salue ? .35 : 0, duration: 1 }, 0);
+      .to(cam, { ...CAM.tour, duration: 2.2, ease: COURBES.pivot }, 0)
+      .to(etat, { ...cible(4, 1), duration: 1 }, 0)
+      .call(() => { tps.rot = t; }, null, 1.6);
     tous.forEach((h, j) => {
-      const d = salue ? .9 + j * .06 : .1;
-      tl.to(h.a.etat, { salut: salue ? 1 : 0, duration: .3 }, d)
-        .call(() => { h.emu = false; h.a.regard(salue ? 'content' : 'normal'); if (salue) coeursSur(h.a, 2); }, null, d);
+      const d = 1.2 + j * .06;
+      tl.to(h.a.etat, { salut: 1, duration: .3 }, d)
+        .call(() => { h.emu = false; h.a.regard('content'); coeursSur(h.a, 2); }, null, d);
     });
-    tl.call(() => definirBase(3, k), null, 1.1);
+    tl.call(() => definirBase(4, 1), null, 1.6);
+    return tl;
+  }
+  // on revient du dernier arrêt vers le 4e étage
+  function revenirEtage() {
+    const tl = gsap.timeline();
+    tl.call(() => definirBase(-1), null, 0)
+      .to(cam, { ...ETAGE[3], duration: 1.6, ease: COURBES.pivot }, 0)
+      .to(etat, { ...cible(4, 0), duration: .8 }, 0);
+    tous.forEach(h => tl.to(h.a.etat, { salut: 0, duration: .3 }, .2).call(() => h.a.regard('normal'), null, .2));
+    tl.call(() => definirBase(4, 0), null, 1.4);
     return tl;
   }
 
-  // autre passage (on remonte, ou on saute un chapitre) : la scène rejoint l'état du chapitre ;
+  // autre passage (on redescend, ou on saute un chapitre) : la scène rejoint l'état du chapitre ;
   // les animaux disparaissent d'un petit « pop » et réapparaissent à leur place
   function rejoindre(n, k) {
     arreterRoutines();
     calmer();
     definirBase(-1);
-    gsap.killTweensOf([cam, etat, ...act]);
-    if (n === 0) tps.rot = t;
+    gsap.killTweensOf([cam, etat, eclair.style]);
+    eclair.style.opacity = 0;
+    if (n === 0 || fin(n, k)) tps.rot = t;
     const tl = gsap.timeline();
-    tl.to(cam, { ...cadrage(n, k), duration: 1.5, ease: COURBES.pivot }, 0)
-      .to(etat, { ...cible(n, k), duration: 1.1, ease: 'power2.inOut' }, 0)
-      .to(act, { v: n === 3 ? 1 : 0, duration: .8 }, .3);
-    const dispo = dispoDe(n, k, variante);
-    apparts.forEach((ap, i) => { if (ap.dispo !== dispo) tl.call(() => placerMeubles(ap, dispo, false), null, .25 + i * .15); });
+    tl.to(cam, { ...cadrage(n, k), duration: 1.8, ease: COURBES.pivot }, 0)
+      .to(etat, { ...cible(n, k), duration: 1.2, ease: 'power2.inOut' }, 0);
+    apparts.forEach((ap, i) => {
+      const dispo = dispoDe(i, n, variante);
+      if (ap.dispo !== dispo) tl.call(() => placerMeubles(ap, dispo, false), null, .25 + i * .12);
+    });
     tous.forEach((h, j) => {
       const d = .05 + j * .03;
       tl.to(h.a.saut.scale, { x: .001, y: .001, z: .001, duration: .22, ease: 'power2.in' }, d)
         .call(() => poserAnimal(h, n, k), null, d + .25)
         .to(h.a.saut.scale, { x: 1, y: 1, z: 1, duration: .5, ease: 'back.out(2)' }, 1.2 + j * .04);
     });
-    if (n <= 1) tl.call(lancerRoutines, null, 1.9);
-    if (n === 3) tl.call(() => definirBase(3, k), null, 1.6);
+    tl.call(lancerRoutines, null, 1.9)
+      .call(() => definirBase(n, k), null, 1.6);
     return tl;
   }
 
   function aller(n, k, instant) {
-    const de = courant, kDe = visiteCourante, propre = !histoire || !histoire.isActive(), nom = histoireNom;
+    const de = courant, kDe = visiteCourante, propre = !histoire || !histoire.isActive();
     survoler(null);   // la caméra bouge : l'animal sous la souris n'est plus le même
     finirJeux();      // l'histoire reprend la main sur les animaux avec qui on jouait
     courant = n; visiteCourante = k;
     if (histoire) { histoire.kill(); histoire = null; }
     if (instant) { poser(n, k); return; }
-    if (de === 0 && n === 1) { histoire = ouvrir(propre); histoireNom = 'ouvrir'; }
-    else if (de === 1 && n === 2 && k === 0) { histoire = livrer(propre || nom === 'ouvrir'); histoireNom = 'livrer'; }
-    else if (de === 2 && kDe === 0 && n === 2 && k === 1) { histoire = melanger(propre, 'A', variante); histoireNom = 'melanger'; }
-    else if (de === 2 && kDe === 1 && n === 3) { histoire = emmenager(k); histoireNom = 'emmenager'; }
-    else if (de === 3 && n === 3) {
-      // une installation interrompue : chacun file à sa place avant la visite suivante
-      if (!propre && nom !== 'visiter') figer(3, k);
-      histoire = visiter(k); histoireNom = 'visiter';
-    } else { histoire = rejoindre(n, k); histoireNom = 'rejoindre'; }
+    if (de === 0 && n === 1) { histoire = releve(propre); histoireNom = 'releve'; }
+    else if (de === 1 && n === 2) { histoire = livrer(propre); histoireNom = 'livrer'; }
+    else if (de === 2 && n === 3) { histoire = melanger(propre, 'A', variante); histoireNom = 'melanger'; }
+    else if (de === 3 && n === 4 && k === 0) { histoire = photographier(propre); histoireNom = 'photographier'; }
+    else if (de === 4 && kDe === 0 && n === 4 && k >= 1) {
+      if (!propre) figer(4, 0);
+      histoire = conclure(); histoireNom = 'conclure';
+    } else if (de === 4 && kDe >= 1 && n === 4 && k === 0) { histoire = revenirEtage(); histoireNom = 'revenir'; }
+    else { histoire = rejoindre(n, k); histoireNom = 'rejoindre'; }
     histoire.eventCallback('onUpdate', marquer);
   }
   // on reclique sur « Shuffle » alors qu'on y est déjà : une autre idée (B ↔ C)
   function encore() {
-    if (detruit || !introFaite || courant !== 2 || visiteCourante !== 1) return;
+    if (detruit || !introFaite || courant !== 3) return;
     const de = variante, propre = !histoire || !histoire.isActive();
     survoler(null);
     finirJeux();
     if (histoire) { histoire.kill(); histoire = null; }
-    if (!propre) figer(2, 1);
+    if (!propre) figer(3, 0);
     variante = de === 'B' ? 'C' : 'B';
-    if (reduit) { poser(2, 1); return; }
-    histoire = melanger(true, de, variante);
+    if (reduit) { poser(3, 0); return; }
+    histoire = melanger(true, de, variante, true);
     histoireNom = 'melanger';
     histoire.eventCallback('onUpdate', marquer);
   }
@@ -815,24 +690,23 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     if (introTl) { introTl.kill(); introTl = null; }
     if (histoire) { histoire.kill(); histoire = null; }
     introFaite = true;
-    [im.rdc, ...im.etages, im.facade, im.sommet].forEach(o => o.position.set(0, 0, 0));
+    [im.rdc, ...im.etages, im.sommet].forEach(o => o.position.set(0, 0, 0));
     im.socle.scale.set(1, 1, 1);
     courant = n; visiteCourante = k;
     poser(n, k);
   }
 
-  // intro : l'île apparaît, puis les étages tombent l'un sur l'autre
+  // intro : le socle se pose, puis les étages se posent l'un sur l'autre, du hall au toit
   function intro() {
     if (introFaite || introTl || detruit) return;
     if (reduit) { toutDeSuite(voulu, voulueVisite); return; }
     tps.rot = t;
     const tl = gsap.timeline({ onUpdate: marquer, onComplete: finIntro });
-    tl.fromTo(im.socle.scale, { x: .001, y: .001, z: .001 }, { x: 1, y: 1, z: 1, duration: .8, ease: 'back.out(1.7)' }, 0)
-      .fromTo(cam, { az: 12, el: 5 }, { az: CAM.immeuble.az, el: CAM.immeuble.el, duration: 2.6, ease: 'power2.inOut' }, 0);
-    [[im.rdc], [im.etages[0]], [im.etages[1], im.facade], [im.sommet]].forEach((liste, i) => {
-      liste.forEach(o => tl.fromTo(o.position, { y: 12 }, { y: 0, duration: .75, ease: 'bounce.out' }, .35 + i * .3));
+    tl.fromTo(im.socle.scale, { x: .001, y: .001, z: .001 }, { x: 1, y: 1, z: 1, duration: .9, ease: 'expo.out' }, 0)
+      .fromTo(cam, { az: 8, el: -9 }, { az: CAM.bas.az, el: CAM.bas.el, duration: 2.8, ease: 'power2.inOut' }, 0);
+    [im.rdc, ...im.etages, im.sommet].forEach((o, i) => {
+      tl.fromTo(o.position, { y: 6 }, { y: 0, duration: .7, ease: 'power3.out' }, .3 + i * .17);
     });
-    tl.to(etat, { rotW: 1, duration: 1.4, ease: 'power1.inOut' }, 2.2);
     introTl = tl;
   }
   function finIntro() {
@@ -849,79 +723,24 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
       if (n !== 0) { intro(); introTl?.timeScale(3); }
       return;
     }
-    if (n !== courant || (n >= 2 && k !== visiteCourante)) aller(n, k, reduit);
+    if (n !== courant || (n === 4 && k !== visiteCourante)) aller(n, k, reduit);
   }
 
-  // ---------- la vie de chaque appartement, à chaque image (tt : temps de la scène)
-  function vivreApparts(tt) {
-    // chiens : à la console, chacun son tour applaudit
-    habitants[0].forEach((h, j) => {
-      if (enJeu(h)) return;
-      const v = act[0].v * bosse(tt, 5.5, 1.3, j * 2.75);
-      if (act[0].v > .001) h.a.etat.acclame = v;
-      basculer(h, v > .35, 'content');
-    });
-    // chats : les échecs, chacun son tour : il réfléchit, puis avance une pièce
-    const [c1, c2] = habitants[1].map(h => h.a);
-    const a1 = act[1].v, pense = [0, 0], pousse = [0, 0];
-    if (a1 > .001) {
-      const tour = Math.floor(tt / 4) % 2, p = (tt % 4) / 4;
-      pense[tour] = a1 * (1 - lisse(borne((p - .55) / .12)));
-      pousse[tour] = a1 * (p > .68 && p < .96 ? Math.sin((p - .68) / .28 * Math.PI) : 0);
-      echecs.mobiles.forEach((pc, j) => {
-        const tj = tt - j * 4, n = Math.floor(tj / 8), q = borne((((tj % 8) + 8) % 8 / 4 - .72) / .2);
-        const [a, b] = echecs.cases[j], de = n % 2 ? b : a, vers = n % 2 ? a : b, k = lisse(q);
-        pc.position.set(de[0] + (vers[0] - de[0]) * k, .012 + Math.sin(q * Math.PI) * .05, de[1] + (vers[1] - de[1]) * k);
-      });
-    }
-    if (!enJeu(habitants[1][0])) { c1.etat.pense = pense[0]; c1.etat.pousse = pousse[0]; c1.etat.teteX = .2 * a1; }
-    if (!enJeu(habitants[1][1])) { c2.etat.pense = pense[1]; c2.etat.pousse = pousse[1]; c2.etat.teteX = .2 * a1; }
-    // tortues : le thé fume
-    const a2 = act[2].v;
+  // ---------- la vie des étages, à chaque image (tt : temps de la scène) : le thé des tortues fume ; à
+  // la fin, des cœurs jaillissent ici et là
+  function vivre(tt) {
+    const a = borne(etat.s3 * 1.5);
     the.vapeurs.forEach((v, i) => {
-      v.visible = a2 > .01;
+      v.visible = a > .01;
       if (!v.visible) return;
       const p = (tt * .45 + (i % 3) / 3) % 1;
       v.position.set(v.userData.x + Math.sin(p * 7 + i) * .012, .44 + p * .26, .08);
-      v.scale.setScalar(Math.max(.001, Math.sin(p * Math.PI) * a2 * (.7 + p * .6)));
+      v.scale.setScalar(Math.max(.001, Math.sin(p * Math.PI) * a * (.7 + p * .6)));
     });
-    // lapins : sous le plaid, un sursaut devant la série de temps en temps
-    plaid.groupe.visible = etat.plaid > .01;
-    plaid.groupe.scale.setScalar(Math.max(.001, etat.plaid));
-    habitants[3].forEach((h, j) => { if (!enJeu(h)) basculer(h, act[3].v > .5 && bosse(tt, 9, .9, 4 + j * .12) > .15, 'surpris'); });
-    // à la fin, tout le monde est heureux : des cœurs jaillissent ici et là
-    if (courant === 3 && visiteCourante >= 4 && !reduit && tt > fete) {
+    if (fin(courant, visiteCourante) && !reduit && tt > fete) {
       fete = tt + 2.6;
       const h = tous[Math.floor(Math.random() * tous.length)];
       if (!enJeu(h)) coeursSur(h.a, 2);
-    }
-  }
-  // une émotion passagère (sauf pendant le salut final)
-  function basculer(h, oui, nom) {
-    if (oui === h.emu) return;
-    h.emu = oui;
-    if (h.a.etat.salut > .5) return;
-    h.a.regard(oui ? nom : 'normal');
-  }
-  // écran de télé : couleurs qui changent (jeu : vite ; série : lentement), lueur
-  function ecran(i, niveau, rythme, palette, tt) {
-    const m = mm[i].ecran;
-    if (niveau < .002) { m.color.copy(NOIR); m.emissive.setScalar(0); return null; }
-    const c = palette[Math.floor(tt / rythme) % palette.length], scint = .86 + .14 * Math.sin(tt * 23) * Math.sin(tt * 7.3);
-    m.color.copy(NOIR).lerp(c, niveau * scint);
-    m.emissive.copy(c).multiplyScalar(.45 * niveau);
-    return c;
-  }
-  function nuitLapins(k, lueur, force) {
-    if (Math.abs(k - nuitVue) > .001) {
-      nuitVue = k;
-      im.nuit(3, k);
-      rideau.fermer(borne(k * 1.7));   // les rideaux se ferment, puis la lumière baisse
-      for (const [m, jour] of sombres) m.color.copy(jour).lerp(NUIT, k * .66);
-    }
-    for (const [m] of sombres) {
-      if (lueur && k > .01) m.emissive.copy(lueur).multiplyScalar(.2 * k * force);
-      else m.emissive.setScalar(0);
     }
   }
 
@@ -945,12 +764,11 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     const tt = reduit ? T_FIXE : t;
     placer();
     jouer(dt);
-    im.ouvrir(etat.ouvre);
+    STORE.forEach((s, f) => im.ouvrir(f, etat[s]));
     im.tracer(etat.trace);
-    im.vivre(tt);
-    ecran(0, etat.tele0, .32, JEU, tt);
-    nuitLapins(etat.nuit, ecran(3, etat.tele3, 1.3, SERIE, tt), etat.tele3 * (.8 + .2 * Math.sin(tt * 17) * Math.sin(tt * 5.1)));
-    vivreApparts(tt);
+    rendu.appliquer(etat.rendu);
+    rendu.ombres(etat.rendu > .001 && etat.s3 > .5);
+    vivre(tt);
     // ombres de contact des meubles : restent au sol, s'élargissent et pâlissent quand le meuble est en l'air
     for (const ap of apparts) for (const id of ap.ordre) {
       const { objet: o, ombre } = ap.meubles[id];
@@ -1014,12 +832,11 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   }
   const _e = { x: 0, y: 0, dist: 0 };
   function viser(e) {
-    if (etat.ouvre < .6) return null;
     const b = toile.getBoundingClientRect(), mx = e.clientX - b.left, my = e.clientY - b.top;
     const tv = Math.tan(camera.fov * RAD / 2);
     let choix = null, dmin = Infinity;
     for (const h of tous) {
-      if (h.a.saut.scale.x < .5) continue;   // on peut le rattraper en plein vol
+      if (h.a.saut.scale.x < .5 || etat[STORE[h.i]] < .6) continue;   // on peut le rattraper en plein vol
       if (!aLEcran(h, b, _e)) continue;
       const r = Math.max(18, .42 / (2 * _e.dist * tv) * b.height);
       const d = Math.hypot(mx - _e.x, my - _e.y);
@@ -1093,7 +910,7 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
       if (!enJeu(h) && !h.phys) continue;
       poserAnimal(h, courant < 0 ? 0 : courant, visiteCourante);
       h.a.saut.scale.set(1, 1, 1);
-      if (courant <= 1) lancerRoutine(h);
+      lancerRoutine(h);
     }
     window.__rrSaisie = false;
   }
@@ -1297,12 +1114,12 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     tl.add(marcher(gsap, a, trajet(h.i, de, chemin, nom), { depuis: de }));
     if (assise) tl.add(bond(gsap, a, p.x, p.z, { y: p.y, hauteur: .3, duree: .45, roulis: 0 })).call(() => { a.objet.userData.sol = p.y; });
     tl.to(a.objet.rotation, { y: () => proche(a.objet.rotation.y, p.r), duration: .35 })
-      .to(a.etat, { ...drapeaux(p), salut: courant === 3 && visiteCourante >= 4 ? 1 : 0, duration: .4 })
+      .to(a.etat, { ...drapeaux(p), salut: fin(courant, visiteCourante) ? 1 : 0, duration: .4 })
       .call(() => {
         if (a.regardCourant !== 'normal' && a.regardCourant !== 'content') a.regard('normal');
-        if (courant === 3 && visiteCourante >= 4) a.regard('content');
+        if (fin(courant, visiteCourante)) a.regard('content');
         h.retour = null;
-        if (courant <= 1 && p.routine) lancerRoutine(h);
+        if (p.routine) lancerRoutine(h);
       });
     return tl;
   }
@@ -1315,7 +1132,7 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
       if (h.tenu && dt > 0) tenir(h, dt);
       else if (h.vol && dt > 0) voler(h, dt);
     }
-    if (reduit || !fin) return;
+    if (reduit || !fine) return;
     if (!curseurToile.dedans) { tous.forEach(h => h.a.viser(0, 0)); return; }
     const b = toile.getBoundingClientRect();
     for (const h of tous) {
@@ -1413,14 +1230,14 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   const surVisibilite = () => { if (!document.hidden) relancer(); };
   document.addEventListener('visibilitychange', surVisibilite);
   // parallaxe : la souris fait pivoter la caméra de ±3°, pas de contrôle orbital
-  const fin = matchMedia('(pointer: fine)').matches;
+  const fine = matchMedia('(pointer: fine)').matches;
   const surPointeur = e => {
     if (reduit) return;
     vx = borne((e.clientX / innerWidth) * 2 - 1, -1, 1);
     vy = borne((e.clientY / innerHeight) * 2 - 1, -1, 1);
   };
   const surSortie = () => { vx = vy = 0; };
-  if (fin) {
+  if (fine) {
     addEventListener('pointermove', surPointeur, { passive: true });
     document.documentElement.addEventListener('pointerleave', surSortie);
   }
@@ -1428,7 +1245,7 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     reduit = mq.matches;
     toucher();
     if (reduit) { annulerPrise(); vx = vy = px = py = 0; tremble = 0; toutDeSuite(voulu, voulueVisite); }
-    else { if (courant <= 1) lancerRoutines(); relancer(); }
+    else { lancerRoutines(); relancer(); }
   };
   mq.addEventListener?.('change', surPreference);
   const surPerte = e => { e.preventDefault(); surPanne?.(); };
@@ -1440,7 +1257,7 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
   else {
     lancerRoutines();
     im.socle.scale.setScalar(.001);
-    [im.rdc, ...im.etages, im.facade, im.sommet].forEach(o => { o.position.y = 40; });
+    [im.rdc, ...im.etages, im.sommet].forEach(o => { o.position.y = 40; });
   }
   mesurer();
   sale = false;
@@ -1478,7 +1295,8 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     histoire = null;
     arreterRoutines();
     calmer();
-    gsap.killTweensOf([cam, etat, ...act]);
+    gsap.killTweensOf([cam, etat, eclair.style]);
+    eclair.remove();
     tous.forEach(h => { h.retour?.kill(); tuerAnimal(h.a); gsap.killTweensOf(h.a.saut.scale); h.a.liberer(); });
     apparts.forEach(ap => ap.ordre.forEach(id => { const o = ap.meubles[id].objet; gsap.killTweensOf([o.position, o.rotation, o.scale]); }));
     coeurs.cacher(gsap);
@@ -1487,15 +1305,16 @@ export function creerPiece({ toile, boite, bulle, textes = {}, chapitre = 0, vis
     scene.traverse(o => { if (o.geometry) o.geometry.dispose(); });
     Object.values(ma).forEach(x => x.dispose());
     mm.forEach(m => Object.values(m).forEach(x => x.dispose()));
-    Object.values(plaid.m).forEach(x => x.dispose());
-    plaid.tex.dispose();
-    matRideaux.rideau.dispose();
+    rendu.liberer();
     the.matVapeur.dispose();
     ombres.liberer();
     tOmbre.dispose();
+    environnement.dispose();
+    pmrem.dispose();
     renderer.dispose();
     if (!toile.isConnected) { try { renderer.forceContextLoss(); } catch (_) { /* déjà perdu */ } }
   }
 
   return { intro, chapitre: choisir, encore, detruire };
 }
+

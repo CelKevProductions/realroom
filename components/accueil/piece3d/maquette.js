@@ -15,12 +15,12 @@ const Y_OMBRE = .015;
 // ---------- matières d'un appartement : canapé (gris), tapis, coussins et bois clair, accents
 export function matieresMeubles(p = {}) {
   const decale = { polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 };
-  const plein = color => new THREE.MeshLambertMaterial({ color, ...decale });
+  const plein = color => new THREE.MeshStandardMaterial({ color, roughness: .82, metalness: 0, ...decale });
   return {
     gris: plein(p.canape || '#BFDCC5'), clair: plein(p.clair || C.clair), fonce: plein(p.fonce || C.fonce),
     signal: plein(p.accent || C.signal), tapis: plein(p.tapis || '#FFCFB6'), beurre: plein(p.beurre || C.beurre),
     menthe: plein(p.plante || C.menthe), ecran: plein(C.ecran), bois: plein(p.bois || '#E9C9A6'),
-    arete: new THREE.LineBasicMaterial({ color: C.encre, transparent: true, opacity: .16, depthWrite: false })
+    arete: new THREE.LineBasicMaterial({ color: C.encre, transparent: true, opacity: .12, depthWrite: false })
   };
 }
 

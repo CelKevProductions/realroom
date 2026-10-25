@@ -25,7 +25,7 @@ export function MiniPlan({ modele, items, produits }) {
   </svg>;
 }
 
-export default function Variantes({ piece, items, produits, demande, lang, attente, onShuffle, onChoisir, onRelancer }) {
+export default function Variantes({ piece, items, produits, demande, lang, attente, onShuffle, onChoisir, onRelancer, onFermer }) {
   const contexte = etatVariantes(piece, items);
   if (!contexte) return null;
   const fr = lang !== 'en', { etat } = contexte;
@@ -36,6 +36,7 @@ export default function Variantes({ piece, items, produits, demande, lang, atten
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M3 6h3c5 0 7 12 12 12h3m-4-4 4 4-4 4M3 18h3c2 0 3-2 5-5m3-4c1-2 2-3 4-3h3m-4-4 4 4-4 4" /></svg>
         Shuffle
       </button>
+      {onFermer && <button type="button" className={s.fermer} onClick={onFermer} aria-label={fr ? 'Fermer les propositions' : 'Close the proposals'} title={fr ? 'Fermer' : 'Close'}><span aria-hidden="true">×</span></button>}
     </div>
     {obsolete ? <p className={s.aide}>{fr ? 'La pièce ou tes choix ont changé. Relance l’assistant pour créer des propositions adaptées.' : 'The room or your choices have changed. Restart the assistant to create matching proposals.'}
       <button type="button" onClick={onRelancer} disabled={attente}>{fr ? 'Relancer l’assistant' : 'Restart assistant'}</button></p>

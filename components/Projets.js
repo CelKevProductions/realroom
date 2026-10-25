@@ -1,8 +1,8 @@
 'use client';
-// Mes projets : un projet = un logement (ou un lieu), avec ses pièces
+// Mes projets : un projet = un logement (ou un lieu), avec ses pièces ; « Nouveau projet » ouvre
+// les questions guidées en plein écran (nouveau/Nouveau.js)
 import Link from 'next/link';
 import { useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { api } from '@/components/api.js';
 import { useRacine } from '@/components/chemins.js';
 import { useFil } from '@/components/fil.js';
@@ -12,20 +12,12 @@ import Tuto from '@/components/Tuto.js';
 import { remplir } from '@/lib/i18n.js';
 
 export default function Projets({ lang, t, initiaux }) {
-  const router = useRouter();
   const racine = useRacine(lang);
   const [projets, setProjets] = useState(initiaux);
-  const [attente, setAttente] = useState(false);
   const page = useRef(null);
   useEntree(page);
   useFil([{ nom: t.projets.titre }]);
 
-  async function creer() {
-    setAttente(true);
-    const r = await api('/api/projets', { method: 'POST', corps: { nom: t.projets.nomDefaut } });
-    setAttente(false);
-    if (r.ok) router.push(`${racine}/projets/${r.projet.id}`);
-  }
   async function supprimer(id) {
     if (!confirm(t.projets.confirmer)) return;
     const r = await api(`/api/projets/${id}`, { method: 'DELETE' });
@@ -37,7 +29,7 @@ export default function Projets({ lang, t, initiaux }) {
         <Titre>{t.projets.titre}</Titre>
         <div className="app-page__actions" data-entree="">
           <Tuto id="accueil" etapes={t.tuto.accueil} libelles={t.tuto} />
-          <button className="btn btn--plein" onClick={creer} disabled={attente}>{t.projets.nouveau}</button>
+          <Link className="btn btn--plein" href={`${racine}/nouveau`}>{t.projets.nouveau}</Link>
         </div>
       </div>
       {!projets.length && <p className="vide" data-entree="">{t.projets.vide}</p>}
@@ -56,10 +48,10 @@ export default function Projets({ lang, t, initiaux }) {
             </div>
           </article>
         ))}
-        <button className="carte-vide" onClick={creer} disabled={attente}>
+        <Link className="carte-vide" href={`${racine}/nouveau`}>
           <span className="carte-vide__plus" aria-hidden="true" />
           <b>{t.projets.nouveau}</b>
-        </button>
+        </Link>
       </div>
     </div>
   );

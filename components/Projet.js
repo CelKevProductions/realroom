@@ -73,10 +73,11 @@ export default function Projet({ lang, t, initial }) {
         <input className="titre-modifiable" data-entree="" value={nom} maxLength={80} aria-label={t.projets.renommer}
           onChange={e => setNom(e.target.value)} onBlur={renommer} onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
         <div className="app-page__actions" data-entree="">
-          {/* un seul chemin mis en avant : le parcours guidé ; l'ajout simple d'une pièce reste discret */}
-          <button className="btn btn--lien" onClick={ouvrir}>{t.projet.ajouter}</button>
+          {/* un seul chemin mis en avant : la pièce ajoutée par les questions guidées ; l'ajout rapide reste discret */}
+          <button className="btn btn--lien" onClick={ouvrir}>{t.projet.ajoutRapide}</button>
           {pretes.length > 1 && <button className="btn btn--clair" onClick={analyserTout}>{t.projet.analyserTout}</button>}
-          <Link className="btn btn--plein" href={`${racine}/projets/${p.id}/parcours`}>{lang === 'en' ? 'Furnish my rooms' : 'Aménager mes pièces'}</Link>
+          {p.pieces.length > 0 && <Link className="btn btn--clair" href={`${racine}/projets/${p.id}/parcours`}>{t.projet.amenager}</Link>}
+          <Link className="btn btn--plein" href={`${racine}/nouveau?projet=${p.id}`}>{t.projet.ajouter}</Link>
         </div>
       </div>
       {message && <p className="avis avis--ok app-page__avis">{message}</p>}
@@ -97,10 +98,10 @@ export default function Projet({ lang, t, initial }) {
             </Link>
           );
         })}
-        <button className="carte-vide" onClick={ouvrir}>
+        <Link className="carte-vide" href={`${racine}/nouveau?projet=${p.id}`}>
           <span className="carte-vide__plus" aria-hidden="true" />
           <b>{t.projet.ajouter}</b>
-        </button>
+        </Link>
       </div>
 
       <dialog ref={dialogue} className="dialogue" onClick={e => { if (e.target === dialogue.current) fermer(); }} onCancel={e => { e.preventDefault(); fermer(); }}>

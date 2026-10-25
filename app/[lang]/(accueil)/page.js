@@ -7,6 +7,7 @@ import Animations from '@/components/accueil/Animations.js';
 import PieceAccueil from '@/components/accueil/PieceAccueil.js';
 import PlanOuverture from '@/components/accueil/PlanOuverture.js';
 import PiedAccueil from '@/components/accueil/PiedAccueil.js';
+import RenduIA from '@/components/accueil/RenduIA.js';
 import { texte, remplir, prix } from '@/lib/i18n.js';
 import { PACKS, CREDITS, LIMITES, MARQUE, LANGUES } from '@/lib/config.js';
 import { PRODUITS } from '@/lib/catalogue.js';
@@ -27,8 +28,6 @@ const deux = n => String(n).padStart(2, '0');
 const REELS = Object.values(PRODUITS).filter(p => !p.generique);
 const NB_MEUBLES = REELS.length;
 const NB_FAMILLES = new Set(REELS.map(p => p.fam)).size;
-// la boutique du catalogue (l'adresse d'une fiche produit, sans le chemin)
-const BOUTIQUE = (() => { try { return new URL(REELS.find(p => p.url).url).origin; } catch (_) { return null; } })();
 
 // « *mot* » : le mot est surligné de pêche
 const accent = s => s.split(/(\*[^*]+\*)/).filter(Boolean).map((m, i) => (m.startsWith('*') ? <em key={i}>{m.slice(1, -1)}</em> : m));
@@ -42,15 +41,16 @@ const mots = s => {
     return em ? [<em key={j}>{liste}</em>] : liste;
   });
 };
-// icônes au trait des invitations à essayer, une par chapitre : relever (téléphone qui scanne), aménager
-// (canapé), visiter (volume 3D)
+// icônes au trait des invitations à essayer, une par étage : relever (téléphone qui scanne), aménager
+// (canapé), Shuffle (flèches croisées), rendu photo (appareil)
 const ICONES = [
   <svg key="r" viewBox="0 0 24 24"><rect x="7.5" y="3.5" width="9" height="17" rx="2.4" /><path d="M3.5 8V6a2.5 2.5 0 0 1 2.5-2.5M20.5 8V6A2.5 2.5 0 0 0 18 3.5M3.5 16v2A2.5 2.5 0 0 0 6 20.5M20.5 16v2a2.5 2.5 0 0 1-2.5 2.5M10 12h4" /></svg>,
   <svg key="a" viewBox="0 0 24 24"><path d="M5.5 11V8.5A2.5 2.5 0 0 1 8 6h8a2.5 2.5 0 0 1 2.5 2.5V11" /><path d="M3.5 12.5a1.5 1.5 0 0 1 3 0V14h11v-1.5a1.5 1.5 0 0 1 3 0V17a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1zM6 18v2M18 18v2" /></svg>,
-  <svg key="v" viewBox="0 0 24 24"><path d="M12 3.5 19.5 7.7v8.6L12 20.5l-7.5-4.2V7.7z" /><path d="M4.5 7.7 12 12l7.5-4.3M12 12v8.5" /></svg>
+  <svg key="s" viewBox="0 0 24 24"><path d="M3.5 7h3.2c2 0 3.1.9 4.3 2.6l2 2.8c1.2 1.7 2.3 2.6 4.3 2.6h3.2M3.5 17h3.2c1.6 0 2.6-.6 3.6-1.7M14 8.7c1-1.1 2-1.7 3.6-1.7h2.9M18 4.5 20.5 7 18 9.5M18 14.5l2.5 2.5-2.5 2.5" /></svg>,
+  <svg key="p" viewBox="0 0 24 24"><path d="M3.5 8.5A2 2 0 0 1 5.5 6.5h2l1.4-2h6.2l1.4 2h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z" /><circle cx="12" cy="13" r="3.6" /></svg>
 ];
-// chapitres (data-chapitre) qui ont plusieurs arrêts du défilement guidé : Aménager, Visiter (quatre appartements et la fin)
-const ETAPES = { 2: 2, 3: 5 };
+// chapitres (data-chapitre) qui ont plusieurs arrêts du défilement guidé : le rendu photo, puis toute la tour
+const ETAPES = { 4: 2 };
 // étiquette : une pastille blanche avec un point corail (dessiné en CSS)
 const Etiquette = ({ children, className = '', ...p }) => <p className={'acc-etiquette ' + className} {...p}>{children}</p>;
 // libellé de lien qui « roule » au survol : le texte monte, sa copie arrive par dessous (CSS seul)
@@ -77,7 +77,7 @@ export default async function Accueil({ params }) {
   const demo = `/${lang}/demo`;
   const inscription = `/${lang}/connexion?inscription=1`;
   const offerts = remplir(a.inscriptionNote, { n: CREDITS.bienvenue });
-  const menu = [['#methode', a.menu.methode], ['#catalogue', a.menu.catalogue], ['#tarifs', a.menu.tarifs], ['#faq', a.menu.faq]];
+  const menu = [['#methode', a.menu.methode], ['#rendu', a.menu.rendu], ['#tarifs', a.menu.tarifs], ['#faq', a.menu.faq]];
   const chiffres = [['meubles', NB_MEUBLES], ['familles', NB_FAMILLES], ['pieces', LIMITES.piecesParProjet], ['credits', CREDITS.bienvenue]];
   const ld = [
     {
@@ -155,17 +155,13 @@ export default async function Accueil({ params }) {
             </figure>
           </div>
 
-          <section className="acc-methode" id="methode" aria-labelledby="methode-titre">
-            <div className="acc-methode__tete">
-              <Etiquette data-anim="fondu">{a.methodeSurtitre}</Etiquette>
-              <h2 id="methode-titre" className="acc-h2" data-anim="lignes">{a.methodeTitre}</h2>
-            </div>
+          <section className="acc-methode" id="methode" aria-label={a.methodeSurtitre}>
             <div className="acc-chapitres">
               <span className="acc-chapitres__jauge" aria-hidden="true" />
               <ol className="acc-chapitres__liste">
                 {a.chapitres.map((c, i) => {
-                  // chapitres à plusieurs arrêts du défilement guidé : Aménager (une proposition, puis Shuffle),
-                  // Visiter (un appartement par arrêt, puis tout le monde, et la conclusion)
+                  // un étage de la tour par chapitre ; le dernier a deux arrêts : le rendu, puis toute la tour
+                  // et la conclusion
                   const etapes = ETAPES[i + 1];
                   const fin = i === a.chapitres.length - 1;
                   const contenu = (
@@ -173,12 +169,11 @@ export default async function Accueil({ params }) {
                       <p className="acc-mono acc-chapitre__tete"><span className="acc-crochets acc-chapitre__num">{deux(i + 1)}</span><span className="acc-chapitre__etiquettes">{c.etiquettes.join(' · ')}</span></p>
                       <h3 className="acc-chapitre__titre">{c.titre}</h3>
                       <p className="acc-chapitre__texte" data-mots>{c.texte}</p>
-                      {i === 1 && (
+                      {i === 2 && (
                         <ol className="acc-etapes">
-                          {a.propositions.map((p, k) => <li key={p} data-etape={k}><button type="button" className="acc-etapes__bouton"><span className="acc-etapes__point" aria-hidden="true" />{p}</button></li>)}
+                          <li data-etape={0}><button type="button" className="acc-etapes__bouton"><span className="acc-etapes__point" aria-hidden="true" />{a.shuffleBouton}</button></li>
                         </ol>
                       )}
-                      {fin && <p className="acc-visiter"><span className="acc-point" aria-hidden="true" />{a.visiter}</p>}
                       <Link href={demo} className="acc-essai">
                         <span className="acc-essai__icone" aria-hidden="true">{ICONES[i]}</span>
                         <span className="acc-essai__texte"><strong>{a.essais[i][0]}</strong><span>{a.essais[i][1]}</span></span>
@@ -205,6 +200,27 @@ export default async function Accueil({ params }) {
           </section>
         </div>
 
+        {/* ---------- rendu photo IA : la maquette et le rendu, à comparer en glissant ---------- */}
+        <section className="acc-section acc-rendu" id="rendu" aria-labelledby="rendu-titre" data-arret>
+          <Reperes />
+          <div className="acc-grille">
+            <div className="acc-rendu__texte">
+              <Etiquette data-anim="fondu">{a.renduSurtitre}</Etiquette>
+              <h2 id="rendu-titre" className="acc-h2 acc-rendu__titre" data-anim="lignes">{a.renduTitre}</h2>
+              <p className="acc-rendu__intro" data-anim="fondu">{a.renduTexte}</p>
+              <dl className="acc-rendu__points" data-anim="fondu">
+                {a.renduPoints.map(([valeur, sens]) => (
+                  <div key={sens}><dt>{remplir(valeur, { n: CREDITS.rendu, s: CREDITS.rendu > 1 ? 's' : '' })}</dt><dd>{sens}</dd></div>
+                ))}
+              </dl>
+              <div className="acc-rendu__action" data-anim="fondu"><Bouton href={demo}>{a.renduBouton}</Bouton></div>
+            </div>
+            <div className="acc-rendu__image" data-anim="fondu">
+              <RenduIA avant="/images/chambre-maquette-1200.jpg" apres="/images/chambre-rendu-1200.jpg" libelles={a.renduImage} />
+            </div>
+          </div>
+        </section>
+
         {/* ---------- chiffres clés ---------- */}
         <section className="acc-section acc-chiffres" aria-labelledby="chiffres-titre" data-arret>
           <Reperes />
@@ -222,17 +238,6 @@ export default async function Accueil({ params }) {
             ))}
           </dl>
           <Regle data-trait />
-        </section>
-
-        {/* ---------- catalogue ---------- */}
-        <section className="acc-section acc-catalogue" id="catalogue" aria-labelledby="catalogue-titre" data-arret>
-          <Reperes />
-          <div className="acc-grille">
-            <Etiquette data-anim="fondu">{a.catalogueSurtitre}</Etiquette>
-            <h2 id="catalogue-titre" className="acc-h2 acc-catalogue__titre" data-anim="lignes">{a.catalogueTitre}</h2>
-            <p className="acc-catalogue__texte" data-anim="fondu">{remplir(a.catalogueTexte, { n: NB_MEUBLES })}</p>
-            {BOUTIQUE && <a className="acc-lien acc-catalogue__tout" href={BOUTIQUE} target="_blank" rel="noopener">{a.catalogueTout}<i className="acc-fleche acc-fleche--haut" aria-hidden="true" /></a>}
-          </div>
         </section>
 
         {/* ---------- tarifs ---------- */}

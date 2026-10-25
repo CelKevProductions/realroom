@@ -191,7 +191,7 @@ export default function Parcours({ lang, t, projetId, projetNom, initial, produi
             <p className="parcours__chapitre chiffre">{String(k + 1).padStart(2, '0')} / {String(ECRANS.length).padStart(2, '0')}</p>
             <h2 data-titre-etape="">{x.ecrans[ecran.id].titre}</h2>
             <p className="parcours__intro">{x.ecrans[ecran.id].intro}</p>
-            <Explication key={active} scene={SCENE[active]} texte={x.etapes[active].panda} geste={k === 0 ? 'salut' : null} />
+            <Explication key={active} scene={SCENE[active]} texte={x.etapes[active].bulle} />
             {message && <p className={'avis ' + (message.erreur ? 'avis--alerte' : 'avis--note')}>{message.texte}</p>}
             {montrees.map(e => (
               <Bloc key={e} etape={e}>
