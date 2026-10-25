@@ -322,7 +322,7 @@ html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-
 .acc-piece [data-n] { opacity: 0; transition: opacity .6s var(--sortie); }
 .acc-scene:not([data-actif]) .acc-piece [data-n="0"], .acc-scene[data-actif="0"] .acc-piece [data-n="0"],
 .acc-scene[data-actif="1"] .acc-piece [data-n="1"], .acc-scene[data-actif="2"] .acc-piece [data-n="2"],
-.acc-scene[data-actif="3"] .acc-piece [data-n="3"] { opacity: 1; }
+.acc-scene[data-actif="3"] .acc-piece [data-n="3"], .acc-scene[data-actif="4"] .acc-piece [data-n="4"] { opacity: 1; }
 
 /* téléphone et tablette : la pièce passe sous le héros, puis reste en haut de l'écran pendant la méthode */
 @media (max-width: 959.98px) {
@@ -335,8 +335,6 @@ html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-
 
 /* méthode : trois chapitres, une jauge qui se remplit, un repère qui passe à l'orange */
 .acc-methode { position: relative; padding: 56px var(--marge) 8px; }
-.acc-methode__tete { margin-bottom: clamp(28px, 5vw, 64px); }
-.acc-methode__tete .acc-h2 { max-width: 14ch; }
 .acc-chapitres { position: relative; padding-left: 28px; }
 .acc-chapitres::before { content: ''; position: absolute; left: -1px; top: 0; bottom: 0; width: 4px; border-radius: 4px; background: color-mix(in srgb, var(--encre) 7%, transparent); }
 .acc-chapitres__jauge { position: absolute; left: -1px; top: 0; bottom: 0; width: 4px; border-radius: 4px; background: var(--rouille); transform-origin: 50% 0; }
@@ -368,7 +366,6 @@ html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-
 .acc-etapes li.is-actif .acc-etapes__bouton { opacity: 1; background: var(--blanc); color: var(--c-ton); box-shadow: var(--ombre-legere); scale: 1.04; }
 .acc-etapes__point { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--peche); transition: background-color .4s, scale .6s cubic-bezier(.34, 1.56, .64, 1); }
 .acc-etapes li.is-actif .acc-etapes__point { background: var(--rouille); scale: 1.3; }
-.acc-visiter { display: flex; align-items: center; gap: 10px; margin-top: 22px; font-weight: 600; color: var(--c-ton); }
 /* invitation à essayer, sous chaque chapitre : une carte blanche, son icône pastel, la flèche corail des boutons */
 .acc-essai {
   display: flex; align-items: center; gap: 14px; width: min(100%, 430px); margin-top: clamp(26px, 4svh, 44px); padding: 11px 11px 11px 11px;
@@ -395,7 +392,7 @@ html[data-acc~="ouverture"] .acc-plan__texte { animation: acc-apparait .5s ease-
   .acc-chapitre--etapes :is(.acc-chapitre__corps, .acc-chapitre__contenu) { display: flex; flex-direction: column; }
   .acc-chapitre--etapes .acc-chapitre__tete { order: -3; }
   .acc-chapitre--etapes .acc-chapitre__titre { order: -2; }
-  .acc-chapitre--etapes :is(.acc-etapes, .acc-visiter) { order: -1; margin: 12px 0 0; }
+  .acc-chapitre--etapes .acc-etapes { order: -1; margin: 12px 0 0; }
   .acc-chapitre--etapes .acc-chapitre__texte { margin-top: 14px; }
 }
 html[data-acc~="anime"] .acc-chapitre--fin .acc-chapitre__corps { display: grid; }
@@ -416,7 +413,8 @@ html[data-acc~="anime"] .acc-conclusion em {
 html[data-acc~="anime"] .acc-scene[data-conclusion] .acc-conclusion em { background-size: 100% 100%; transition: background-size .7s cubic-bezier(.65, 0, .35, 1) 1.1s; }
 .acc-scene[data-actif="1"] [data-chapitre="1"] .acc-chapitre__tete::before,
 .acc-scene[data-actif="2"] [data-chapitre="2"] .acc-chapitre__tete::before,
-.acc-scene[data-actif="3"] [data-chapitre="3"] .acc-chapitre__tete::before { background: var(--rouille); border-color: var(--rouille); }
+.acc-scene[data-actif="3"] [data-chapitre="3"] .acc-chapitre__tete::before,
+.acc-scene[data-actif="4"] [data-chapitre="4"] .acc-chapitre__tete::before { background: var(--rouille); border-color: var(--rouille); }
 
 @media (min-width: 960px) {
   .acc-scene { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gouttiere); padding-inline: var(--marge); }
@@ -497,16 +495,6 @@ html[data-acc~="anime"] .acc-scene[data-conclusion] .acc-conclusion em { backgro
   .acc-rendu__image { grid-column: 6 / -1; margin-top: 0; }
 }
 @media (max-width: 520px) { .acc-rendu__points { grid-template-columns: minmax(0, 1fr); } .acc-rendu__points > div { display: flex; align-items: baseline; gap: 10px; } .acc-rendu__points dd { margin: 0; } }
-
-/* catalogue : un titre, un texte et le lien vers la boutique */
-.acc-catalogue__titre { max-width: 14ch; }
-.acc-catalogue__texte { margin-top: 20px; max-width: 48ch; color: var(--c-doux); }
-.acc-catalogue__tout { margin-top: 24px; justify-self: start; align-items: center; gap: .5em; }
-@media (min-width: 760px) {
-  .acc-catalogue__titre { grid-column: 1 / span 8; }
-  .acc-catalogue__texte { grid-column: 1 / span 6; grid-row: 3; }
-  .acc-catalogue__tout { grid-column: 9 / -1; grid-row: 3; justify-self: end; align-self: end; margin-top: 0; }
-}
 
 /* tarifs : trois cellules, prix en chasse fixe */
 .acc-tarifs__titre { max-width: 16ch; }

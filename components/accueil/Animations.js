@@ -8,8 +8,8 @@
 // Dialogue avec la pièce 3D (components/accueil/PieceAccueil.js), par événements sur document :
 //  - « rr:piece-prete » (reçu) : la 3D est prête, le compteur du préchargement peut finir ;
 //  - « rr:piece-intro » (émis) : fin du préchargement, ou tout de suite s'il n'y en a pas ;
-//  - « rr:piece-chapitre » (émis, detail.chapitre de 0 à 3, detail.visite) : chapitre actif au défilement
-//    (0 = héros) ; dans le dernier, la visite en cours (un appartement après l'autre, puis tous) ;
+//  - « rr:piece-chapitre » (émis, detail.chapitre de 0 à 4, detail.visite) : chapitre actif au défilement
+//    (0 = héros, puis un étage de la tour par chapitre) ; dans le dernier, 1 = toute la tour ;
 //  - « rr:piece-shuffle » (émis) : on reclique sur « Shuffle » alors qu'on y est déjà : une autre idée.
 // Ils restent lisibles après coup (window.__rrPieceIntro, window.__rrPieceChapitre) pour une 3D montée plus tard ;
 // le chapitre courant est renvoyé chaque fois que la 3D se dit prête.
@@ -111,7 +111,7 @@ function demarrer() {
       if (actif) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
     });
     // tout le monde est heureux : la conclusion prend la place du dernier chapitre
-    if (scene) scene.toggleAttribute('data-conclusion', n === 3 && k === 4);
+    if (scene) scene.toggleAttribute('data-conclusion', n === 4 && k === 1);
     emettre('rr:piece-chapitre', { chapitre: n, visite: k });
   };
   // la 3D s'est montée ou rechargée après coup : elle reçoit l'état courant
@@ -164,22 +164,20 @@ function demarrer() {
   page.addEventListener('click', ancre);
   nettoyages.push(() => page.removeEventListener('click', ancre));
 
-  // ---------- 4 bis. étapes d'Aménager : un clic y emmène comme le défilement ; Shuffle, encore : une autre idée
+  // ---------- 4 bis. bouton de Shuffle : un clic y emmène comme le défilement ; déjà là : une autre idée
   const surEtape = e => {
     const bouton = e.target.closest && e.target.closest('.acc-etapes__bouton');
     const li = bouton && bouton.closest('[data-etape]');
     const el = li && li.closest('[data-chapitre]');
     if (!el) return;
     const n = Number(el.dataset.chapitre), k = Number(li.dataset.etape);
-    if (n === chapitre && k === visite) { if (k > 0) emettre('rr:piece-shuffle'); return; }
+    if (n === chapitre && k === visite) { if (n === 3) emettre('rr:piece-shuffle'); return; }
     const cible = arretChapitre(el, page) + k * innerHeight * VISITE;
     if (guide) guide.allerA(cible);
     else window.scrollTo({ top: cible, behavior: mouvement ? 'smooth' : 'auto' });
   };
   page.addEventListener('click', surEtape);
   nettoyages.push(() => page.removeEventListener('click', surEtape));
-
-  // ---------- 5. catalogue : les rangées de meubles accélèrent avec le défilement de la page
 
   // défilement doux, une fois le préchargement passé
   const lancerLenis = () => {
@@ -236,10 +234,10 @@ function demarrer() {
   };
 }
 
-// chapitres au défilement (0 = héros, 1 à 3 = méthode) : la 3D suit, le cadre change d'état,
+// chapitres au défilement (0 = héros, 1 à 4 = méthode, un étage chacun) : la 3D suit, le cadre change d'état,
 // la jauge de la méthode se remplit
 function suivreChapitres(page, annoncer, mouvement) {
-  // chapitres à étapes (Aménager, Visiter) : une étape par arrêt du défilement guidé (guide.js), d'après la position
+  // chapitre à étapes (Rendu, puis la conclusion) : une étape par arrêt du défilement guidé (guide.js), d'après la position
   const visiteIci = el => {
     const n = Number(el.dataset.etapes || 0);
     if (!n) return 0;

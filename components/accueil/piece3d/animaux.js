@@ -18,7 +18,7 @@ import * as THREE from 'three';
 const COULEURS = {
   oeil: '#26232B', reflet: '#FFFFFF', joue: '#FF9DB4', rose: '#FFB7C5', corail: '#F2613F', menthe: '#9ECDA9',
   beurre: '#FFE08A', lilas: '#B9AEEA', orage: '#8D86A3', eau: '#8FCBEA', papier: '#FFFBF3', carotte: '#F79A5B',
-  vert: '#7DBE8C', zzz: '#9C8FD0', clair: '#FFFBF6', popcorn: '#FFF6DC', ecran: '#D2F5DF', scan: '#5FD39C'
+  vert: '#7DBE8C', zzz: '#9C8FD0', clair: '#FFFBF6', popcorn: '#FFF6DC', ecran: '#D2F5DF', scan: '#E08A66'
 };
 // allure de chaque espèce : longueur, durée et hauteur d'un pas, roulis du corps
 export const ESPECES = {
@@ -30,7 +30,7 @@ export const ESPECES = {
 export const ECHELLE = 1.2;
 
 export function matieresAnimaux() {
-  const mat = c => new THREE.MeshLambertMaterial({ color: c });
+  const mat = c => new THREE.MeshStandardMaterial({ color: c, roughness: .8 });
   const m = {};
   for (const k of ['rose', 'corail', 'menthe', 'beurre', 'lilas', 'orage', 'papier', 'carotte', 'vert', 'zzz', 'clair', 'popcorn']) m[k] = mat(COULEURS[k]);
   m.papier.side = THREE.DoubleSide;
@@ -250,11 +250,11 @@ function carotte(mat) {
 export function creerAnimal(mat, look = {}) {
   const { espece = 'lapin', graine = 0, accessoire = '', couleurAcc = 'menthe', couverture = 'corail' } = look;
   const lapin = espece === 'lapin', chien = espece === 'chien', chat = espece === 'chat', tortue = espece === 'tortue';
-  const lambert = c => new THREE.MeshLambertMaterial({ color: c });
+  const lambert = c => new THREE.MeshStandardMaterial({ color: c, roughness: .78 });
   const mats = { pelage: lambert(look.pelage || '#FFFDFB') };
   mats.clair = look.clair ? lambert(look.clair) : mats.pelage;
   mats.sombre = look.sombre ? lambert(look.sombre) : mats.pelage;
-  if (tortue) mats.carapace = new THREE.MeshLambertMaterial({ color: look.carapace || '#7FBF8F', flatShading: true });
+  if (tortue) mats.carapace = new THREE.MeshStandardMaterial({ color: look.carapace || '#7FBF8F', roughness: .7, flatShading: true });
   const P = mats.pelage, Cl = mats.clair, S = mats.sombre, acc = mat[couleurAcc] || mat.menthe;
 
   const objet = new THREE.Group();
