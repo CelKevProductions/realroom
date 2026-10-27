@@ -46,6 +46,7 @@ export default function Variantes({ piece, items, produits, demande, lang, atten
             disabled={attente || v.id === etat.selection} onClick={() => onChoisir(v.id)}>
             <MiniPlan modele={piece.modele} items={v.agencement} produits={produits} />
             <b>{fr ? 'Proposition' : 'Proposal'} {v.numero}</b>
+            {v.titre && <small className={s.idee}>{v.titre}</small>}
             <small>{v.proposition.programme?.complet ? (fr ? 'Complète' : 'Complete') : (fr ? 'À compléter' : 'Incomplete')}</small>
             {produits && <small>{new Intl.NumberFormat(fr ? 'fr-FR' : 'en-GB', {style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v.agencement.filter(it=>it.garde!==false&&it.origine==='catalogue').reduce((s,it)=>s+(produits[it.sku]?.prix||0),0))}{v.agencement.some(it=>produits[it.sku]?.generique) ? ' ≈' : ''}</small>}
           </button>)}

@@ -22,6 +22,8 @@ import { normaliserParcours, agencementAvecContraintes, etatVide } from '@/lib/p
 import { etatVariantes } from '@/lib/variation-disposition.js';
 import { piecesDuParcours } from '@/components/demo/magasin.js';
 import { bilanRespace } from '@/lib/moteurs/bilan-respace.js';
+import { demandeDemoIA } from '@/lib/demo-ia.js';
+import { partisAttendus } from '@/lib/architecte.js';
 
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const maintenant = () => new Date().toISOString();
@@ -238,19 +240,41 @@ async function amenager(p, b, langue) {
   return ok({ piece: publique(p), respace });
 }
 
+// Claude « architecte » (serveur) : trois partis que le moteur du navigateur suit. Sans réponse
+// utilisable, le moteur aménage seul et l'atelier le dit.
+async function partisDeClaude(p, attendus, langue) {
+  try {
+    const r = await fetch('/api/demo/architecte', { method: 'POST', cache: 'no-store', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...demandeDemoIA({ ...p, agencement: attendus.agencement }, attendus.brief, langue), deja: attendus.deja }) });
+    const j = await r.json().catch(() => ({}));
+    return Array.isArray(j.partis) && j.partis.length ? { partis: j.partis } : { erreur: j.erreur || 'architecte-indisponible' };
+  } catch (_) { return { erreur: 'architecte-indisponible' }; }
+}
+
 async function variantes(p, b, langue) {
   if (!p.modele) return non('pas-de-modele', 409);
   if (p.etat === 'analyse') return non('en-cours', 409);
   const revision = p.maj_le, produits = (await chargerCatalogue()).produits;
+  const demande = { ...b, langue };
+  delete demande.partis;
+  const attendus = b.action !== 'choisir' && !b.respace ? partisAttendus(p, demande) : null;
+  let architecte;
+  if (attendus) {
+    const r = await partisDeClaude(p, attendus, langue);
+    if (r.partis) demande.partis = r.partis; else architecte = { erreur: r.erreur };
+  }
   let resultat;
   // refus de l'assistant (aucune disposition, budget, meubles conservés) : même réponse que le serveur
-  try { resultat = await assistantEnArrierePlan({ piece: structuredClone(p), demande: { ...b, langue }, produits }); }
+  try { resultat = await assistantEnArrierePlan({ piece: structuredClone(p), demande, produits }); }
   catch (e) { if (e?.code) return non(e.code, e.statut || 409); throw e; }
   let respace;
   ({ resultat, respace } = await avecRespace(p, resultat, b));
   if (pieceDe(p.id) !== p || p.maj_le !== revision) return non('amenagement-conflit', 409);
   ecrire(() => { p.agencement = resultat.agencement; p.proposition = resultat.proposition; toucher(p); });
-  return ok({ piece: publique(p), assistant: resultat.assistant, respace });
+  const idee = b.action !== 'choisir' && resultat.assistant?.message !== 'aucune-autre-variante' && resultat.proposition.moteur?.architecte;
+  if (!architecte && idee) architecte = { titre: idee.titre };
+  else if (!architecte && demande.partis && b.action !== 'shuffle') architecte = { erreur: 'architecte-ne-tient-pas' };
+  return ok({ piece: publique(p), assistant: resultat.assistant, respace, architecte });
 }
 
 async function generer(p, b) {
