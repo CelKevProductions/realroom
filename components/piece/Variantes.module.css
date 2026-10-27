@@ -14,6 +14,7 @@
 .carte svg{width:100%;height:92px;margin-bottom:6px}
 .carte b{font-size:.8rem;font-weight:600;letter-spacing:-.01em}
 .carte small{font:.7rem var(--m);color:var(--graphite)}
+.carte .idee{font:500 .72rem var(--m);color:var(--encre);line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .carte[aria-pressed=true]{background:var(--blanc);border-color:var(--encre);box-shadow:inset 0 -2px 0 var(--rouille);cursor:default}
 .carte:hover:not(:disabled){border-color:var(--trait-fort);background:var(--calque)}
 .carte:disabled:not([aria-pressed=true]){opacity:.5;cursor:default}

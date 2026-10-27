@@ -18,6 +18,7 @@ import Resultat from '@/components/piece/Resultat.js';
 import Journal from '@/components/piece/Journal.js';
 import BarreCommande from '@/components/piece/BarreCommande.js';
 import AccesRespace, { messageRespace, useCodeRespace } from '@/components/piece/AccesRespace.js';
+import { messageArchitecte } from '@/components/piece/messageArchitecte.js';
 import { bilanRespace } from '@/lib/moteurs/bilan-respace.js';
 import Tuto from '@/components/Tuto.js';
 import { apparaitre, deplier, animer } from '@/components/Mouvement.js';
@@ -371,7 +372,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       setSelection(null);
       aCadrer.current = null;
       setOnglet(assistant ? 'propositions' : 'meubles');
-      dire(messageRespace(r.respace, lang) || tp.reamenage);
+      dire(messageRespace(r.respace, lang) || messageArchitecte(r.architecte, lang) || tp.reamenage);
       // la nouvelle pièce se dévoile : la caméra fait un lent quart de tour
       if (vue === 'dessus') editeur.current?.balayer();
     } catch (e) {
@@ -391,7 +392,7 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       if (!r.ok) throw r;
       setPiece(r.piece); setSelection(null); aCadrer.current = null;
       if (r.assistant?.message === 'aucune-autre-variante') dire(lang === 'fr' ? 'Aucune autre disposition aussi complète n’a été trouvée. Tu peux conserver celle-ci ou ajuster le brief.' : 'No equally complete alternative was found. Keep this one or adjust your brief.');
-      else { dire(messageRespace(r.respace, lang) || (lang === 'fr' ? 'Proposition affichée et enregistrée.' : 'Proposal displayed and saved.')); if (vue === 'dessus') editeur.current?.balayer(); }
+      else { dire(messageRespace(r.respace, lang) || messageArchitecte(r.architecte, lang) || (lang === 'fr' ? 'Proposition affichée et enregistrée.' : 'Proposal displayed and saved.')); if (vue === 'dessus') editeur.current?.balayer(); }
     } catch (e) { dire(erreurAssistant(e), true); }
     finally { reamenagement.current = false; setAttente(false); }
   }
@@ -527,8 +528,8 @@ export default function Atelier({ lang, t, piece, setPiece, rendus, setRendus, s
       <div className="panneau__corps" role="tabpanel" inert={!!attente || undefined}>
         {prop && prop.concept && (
           <div className="concept">
-            <b>{tp.concept}{prop.moteur?.type === 'ia' ? ' · ' + t.demo.ia : ''}{bilanRespace(prop) ? ' · ReSpace' : ''}</b>
-            <p>{prop.concept}</p>
+            <b>{tp.concept}{prop.moteur?.type === 'ia' ? ' · ' + t.demo.ia : ''}{prop.moteur?.architecte ? (lang === 'en' ? ' · Claude’s idea' : ' · Idée de Claude') : ''}{bilanRespace(prop) ? ' · ReSpace' : ''}</b>
+            <p>{prop.moteur?.architecte?.titre && <strong>{prop.moteur.architecte.titre}. </strong>}{prop.concept}</p>
             <PlanVie proposition={prop} langue={lang} />
             {prop.conseils && prop.conseils.length > 0 && <><b className="concept__sous">{tp.conseils}</b><ul>{prop.conseils.map(c => <li key={c}>{c}</li>)}</ul></>}
             {prop.alertes && prop.alertes.length > 0 && <><b className="concept__sous">{tp.alertes}</b><ul>{prop.alertes.map(c => <li key={c}>{c}</li>)}</ul></>}
